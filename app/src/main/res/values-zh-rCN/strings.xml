@@ -63,6 +63,10 @@
     <string name="adb_warning">ADB 方式会修改系统设置。如遇网络连接问题，请禁用此选项并使用 VPN 方式。</string>
     <string name="disable_ipv6_label">禁用 IPv6 / 强制 IPv4</string>
 
+    <!-- Beta updates -->
+    <string name="beta_updates_label">接收测试版更新</string>
+    <string name="beta_updates_description">在自动更新检查中包含测试版本</string>
+
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">自动启动</string>
     <string name="auto_start_label">开机启动</string>

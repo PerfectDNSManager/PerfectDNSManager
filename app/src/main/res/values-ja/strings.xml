@@ -63,6 +63,10 @@
     <string name="adb_warning">ADB メソッドはシステム設定を変更します。接続に問題が発生した場合は、このオプションを無効にして VPN メソッドを使用してください。</string>
     <string name="disable_ipv6_label">IPv6 を無効にする / IPv4 を強制</string>
 
+    <!-- Beta updates -->
+    <string name="beta_updates_label">ベータ版アップデートを受け取る</string>
+    <string name="beta_updates_description">自動アップデート確認にベータ版を含める</string>
+
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">自動起動</string>
     <string name="auto_start_label">起動時に起動</string>

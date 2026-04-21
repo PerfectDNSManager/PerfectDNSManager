@@ -63,6 +63,10 @@
     <string name="adb_warning">ADB विधि सिस्टम सेटिंग्स को बदलती है। कनेक्टिविटी समस्या होने पर, इस विकल्प को अक्षम करें और VPN विधि का उपयोग करें।</string>
     <string name="disable_ipv6_label">IPv6 अक्षम करें / IPv4 बाध्य करें</string>
 
+    <!-- Beta updates -->
+    <string name="beta_updates_label">बीटा अपडेट प्राप्त करें</string>
+    <string name="beta_updates_description">स्वचालित अपडेट जाँच में बीटा संस्करण शामिल करें</string>
+
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">स्वचालित स्टार्टअप</string>
     <string name="auto_start_label">बूट पर लॉन्च</string>

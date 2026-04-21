@@ -63,6 +63,10 @@
     <string name="adb_warning">El método ADB modifica los ajustes del sistema. En caso de problemas de conectividad, desactiva esta opción y usa el método VPN.</string>
     <string name="disable_ipv6_label">Desactivar IPv6 / Forzar IPv4</string>
 
+    <!-- Beta updates -->
+    <string name="beta_updates_label">Recibir actualizaciones beta</string>
+    <string name="beta_updates_description">Incluir versiones beta en la verificación automática de actualizaciones</string>
+
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">Inicio automático</string>
     <string name="auto_start_label">Iniciar al arrancar</string>
