@@ -49,11 +49,17 @@
         android:padding="12dp"
         android:layout_marginBottom="12dp">
         <LinearLayout
+            android:id="@+id/rowAutoStart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="4dp">
+            android:background="@drawable/focusable_item_background"
+            android:foreground="@drawable/btn_focus_foreground"
+            android:padding="8dp"
+            android:layout_marginBottom="4dp"
+            android:focusable="true"
+            android:clickable="true">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -65,13 +71,20 @@
                 android:id="@+id/switchAutoStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="true" />
+                android:focusable="false"
+                android:clickable="false" />
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/rowAutoReconnect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:background="@drawable/focusable_item_background"
+            android:foreground="@drawable/btn_focus_foreground"
+            android:padding="8dp"
+            android:focusable="true"
+            android:clickable="true">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -83,7 +96,8 @@
                 android:id="@+id/switchAutoReconnect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="true" />
+                android:focusable="false"
+                android:clickable="false" />
         </LinearLayout>
         <TextView
             android:id="@+id/tvAutoReconnectDns"
@@ -95,10 +109,16 @@
             android:layout_marginBottom="4dp"
             android:visibility="gone"/>
         <LinearLayout
+            android:id="@+id/rowDisableIpv6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:background="@drawable/focusable_item_background"
+            android:foreground="@drawable/btn_focus_foreground"
+            android:padding="8dp"
+            android:focusable="true"
+            android:clickable="true">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -110,7 +130,8 @@
                 android:id="@+id/switchDisableIpv6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="true" />
+                android:focusable="false"
+                android:clickable="false" />
         </LinearLayout>
     </LinearLayout>
 
@@ -151,10 +172,16 @@
         android:padding="12dp"
         android:layout_marginBottom="12dp">
         <LinearLayout
+            android:id="@+id/rowAdvanced"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:background="@drawable/focusable_item_background"
+            android:foreground="@drawable/btn_focus_foreground"
+            android:padding="8dp"
+            android:focusable="true"
+            android:clickable="true">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -167,7 +194,8 @@
                 android:id="@+id/switchAdvanced"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="true" />
+                android:focusable="false"
+                android:clickable="false" />
         </LinearLayout>
         <!-- Contenu caché par défaut -->
         <LinearLayout

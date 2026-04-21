@@ -37,11 +37,10 @@
         #result strong { color: var(--text); }
         .logo { text-align: center; margin-bottom: 16px; }
         .logo img { height: 48px; }
-        .manual-section { display: none; margin-top: 12px; }
-        .manual-section textarea { width: 100%; min-height: 100px; padding: 10px; border-radius: 8px; border: 1px solid #444; background: var(--surface); color: var(--text); font-family: monospace; font-size: 12px; resize: vertical; }
         .lock-icon { font-size: 1.2em; }
         a { color: var(--primary); }
         .footer { text-align: center; margin-top: 24px; color: var(--text-dim); font-size: 0.8em; }
+        .actions { display: flex; gap: 8px; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -56,17 +55,13 @@
                 <button onclick="decryptFromCode()" id="btnDecrypt">Decrypt</button>
             </div>
             <div id="status"></div>
-            <div class="manual-section" id="manualSection">
-                <p style="color: var(--text-dim); font-size: 0.85em; margin-bottom: 8px;">
-                    CORS blocked. Open the link above in a new tab, copy the content, and paste it below:
-                </p>
-                <textarea id="manualContent" placeholder="Paste encrypted content here..."></textarea>
-                <br><br>
-                <button onclick="decryptManual()" class="btn-accent">Decrypt pasted content</button>
-            </div>
         </div>
 
         <div id="result"></div>
+        <div class="actions" id="actions" style="display:none;">
+            <button onclick="copyResult()">Copy</button>
+            <button onclick="downloadResult()" class="btn-accent">Download</button>
+        </div>
 
         <div class="footer">
             <a href="https://appstorefr.github.io/PerfectDNSManager/">Perfect DNS Manager</a> &mdash; Open source DNS manager for Android
@@ -74,201 +69,162 @@
     </div>
 
 <script>
-    let currentKey = null;
-    let currentFileUrl = null;
+    const PDM_BASE = 'https://pdm.appstorefr.net';
+    let currentPlaintext = null;
 
-    // Check if URL fragment contains auto-decrypt info
     window.addEventListener('DOMContentLoaded', () => {
-        let hash = window.location.hash.substring(1);
+        const hash = window.location.hash.substring(1);
         if (!hash) return;
 
-        // Try to find the pipe separator (| or %7C)
-        let sep = -1;
-        if (hash.includes('|')) {
-            sep = hash.indexOf('|');
-        } else if (hash.includes('%7C')) {
-            sep = hash.indexOf('%7C');
-        } else if (hash.includes('%7c')) {
-            sep = hash.indexOf('%7c');
+        // Legacy format: #fileUrl|key (v1.0.78 shares, VPS vault+cut)
+        if (hash.includes('|') || hash.includes('%7C') || hash.includes('%7c')) {
+            legacyDecryptFromFragment(hash);
+            return;
         }
 
-        if (sep > 0) {
-            let fileUrlPart = hash.substring(0, sep);
-            let keyPart = hash.substring(sep);
-            // Remove separator from key
-            if (keyPart.startsWith('%7C') || keyPart.startsWith('%7c')) {
-                keyPart = keyPart.substring(3);
-            } else {
-                keyPart = keyPart.substring(1);
-            }
-            // Decode the file URL part
-            try { fileUrlPart = decodeURIComponent(fileUrlPart); } catch(e) {}
-            autoDecryptFromFragment(fileUrlPart, keyPart);
+        // New format on docs page is unusual (the app sends users directly to
+        // pdm.appstorefr.net), but if a slug+key pair is provided via
+        // ?s=SLUG#KEY, handle it here for convenience.
+        const params = new URLSearchParams(window.location.search);
+        const slug = params.get('s');
+        if (slug && hash) {
+            decryptFromSlug(slug, hash);
         }
     });
 
-    async function autoDecryptFromFragment(fileUrl, key) {
-        currentFileUrl = fileUrl;
-        currentKey = key;
-        setStatus('info', 'Downloading and decrypting...');
+    function legacyDecryptFromFragment(hash) {
+        let sep = -1;
+        if (hash.includes('|')) sep = hash.indexOf('|');
+        else if (hash.includes('%7C')) sep = hash.indexOf('%7C');
+        else if (hash.includes('%7c')) sep = hash.indexOf('%7c');
 
-        // Try multiple methods to fetch the encrypted data
-        let encryptedBase64 = null;
-
-        // Method 1: Direct fetch
-        try {
-            const resp = await fetch(currentFileUrl);
-            if (resp.ok) encryptedBase64 = (await resp.text()).trim();
-        } catch (e) { /* CORS blocked, try proxy */ }
-
-        // Method 2: allorigins proxy
-        if (!encryptedBase64) {
-            try {
-                setStatus('info', 'Trying alternative download...');
-                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(currentFileUrl);
-                const resp = await fetch(proxyUrl);
-                if (resp.ok) encryptedBase64 = (await resp.text()).trim();
-            } catch (e) { /* proxy also failed */ }
+        let fileUrlPart = hash.substring(0, sep);
+        let keyPart = hash.substring(sep);
+        if (keyPart.startsWith('%7C') || keyPart.startsWith('%7c')) {
+            keyPart = keyPart.substring(3);
+        } else {
+            keyPart = keyPart.substring(1);
         }
-
-        // Method 3: corsproxy.io
-        if (!encryptedBase64) {
-            try {
-                const proxyUrl2 = 'https://corsproxy.io/?' + encodeURIComponent(currentFileUrl);
-                const resp = await fetch(proxyUrl2);
-                if (resp.ok) encryptedBase64 = (await resp.text()).trim();
-            } catch (e) { /* all methods failed */ }
-        }
-
-        if (encryptedBase64) {
-            try {
-                const plaintext = await decryptAES(encryptedBase64, currentKey);
-                showResult(plaintext);
-                setStatus('ok', 'Decrypted successfully!');
-                return;
-            } catch (e) {
-                setStatus('err', 'Decryption failed: ' + e.message);
-                return;
-            }
-        }
-
-        // All methods failed — show manual paste
-        setStatus('err', 'Cannot download file automatically. <a href="' + currentFileUrl + '" target="_blank" style="color:#FFD700">Click here to open the file</a>, then copy-paste the content below.');
-        document.getElementById('manualSection').style.display = 'block';
+        try { fileUrlPart = decodeURIComponent(fileUrlPart); } catch(e) {}
+        legacyAutoDecrypt(fileUrlPart, keyPart);
     }
 
-    async function decryptFromCode() {
-        let code = document.getElementById('codeInput').value.trim();
-        if (!code) return;
-
-        // Extract code from full URL if needed
-        if (code.startsWith('http')) {
-            const m = code.match(/\/([^\/]+)$/);
-            if (m) code = m[1];
-        }
-
-        setStatus('info', 'Resolving code...');
-
-        // Method 1: Try the resolve API (CORS-enabled endpoint)
+    async function legacyAutoDecrypt(fileUrl, keyB64) {
+        setStatus('info', 'Downloading legacy share…');
+        let b64 = null;
         try {
-            const resp = await fetch('https://cut.appstorefr.net/api/cut/resolve/' + encodeURIComponent(code));
-            if (resp.ok) {
-                const json = await resp.json();
-                if (json.ok && json.url) {
-                    const hashIdx = json.url.indexOf('#');
-                    if (hashIdx >= 0) {
-                        let fragment = json.url.substring(hashIdx + 1);
-                        try { fragment = decodeURIComponent(fragment); } catch(e) {}
-                        const pipe = fragment.indexOf('|');
-                        if (pipe >= 0) {
-                            let fileUrl = fragment.substring(0, pipe);
-                            const key = fragment.substring(pipe + 1);
-                            try { fileUrl = decodeURIComponent(fileUrl); } catch(e) {}
-                            autoDecryptFromFragment(fileUrl, key);
-                            return;
-                        }
-                    }
-                }
-            }
-        } catch (e) { /* resolve API not available, fallback to redirect */ }
-
-        // Method 2: Redirect via cut (browser follows 301, fragment in URL)
-        setStatus('info', 'Redirecting...');
-        const cutUrl = 'https://cut.appstorefr.net/' + code;
-        window.location.href = cutUrl;
-    }
-
-    async function decryptManual() {
-        const content = document.getElementById('manualContent').value.trim();
-        if (!content || !currentKey) {
-            setStatus('err', 'Paste the encrypted content first');
+            const r = await fetch(fileUrl);
+            if (r.ok) b64 = (await r.text()).trim();
+        } catch (e) { /* CORS or VPS down */ }
+        if (!b64) {
+            setStatus('err', 'Legacy share unavailable. VPS may be decommissioned. Ask the sender for a new share (v1.1.0+).');
             return;
         }
         try {
-            setStatus('info', 'Decrypting...');
-            const plaintext = await decryptAES(content, currentKey);
-            showResult(plaintext);
+            const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+            const text = await decryptBytes(bytes, keyB64);
+            showResult(text);
             setStatus('ok', 'Decrypted successfully!');
-            document.getElementById('manualSection').style.display = 'none';
         } catch (e) {
             setStatus('err', 'Decryption failed: ' + e.message);
         }
     }
 
-    async function decryptAES(encryptedBase64, keyBase64) {
-        // Decode key (URL-safe base64)
-        const keyB64 = keyBase64.replace(/-/g, '+').replace(/_/g, '/');
-        const keyBytes = Uint8Array.from(atob(keyB64), c => c.charCodeAt(0));
+    async function decryptFromSlug(slug, keyB64) {
+        setStatus('info', 'Downloading…');
+        try {
+            const r = await fetch(PDM_BASE + '/r/' + encodeURIComponent(slug), { cache: 'no-store' });
+            if (r.status === 404) { setStatus('err', 'Share expired or not found.'); return; }
+            if (!r.ok) { setStatus('err', 'Server error (' + r.status + ').'); return; }
+            const bytes = new Uint8Array(await r.arrayBuffer());
+            if (bytes.length < 28) { setStatus('err', 'Invalid content (too short).'); return; }
+            const text = await decryptBytes(bytes, keyB64);
+            showResult(text);
+            setStatus('ok', 'Decrypted successfully!');
+        } catch (e) {
+            setStatus('err', 'Decryption failed: ' + e.message);
+        }
+    }
 
-        // Decode encrypted data (standard base64)
-        const combined = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
+    async function decryptFromCode() {
+        let input = document.getElementById('codeInput').value.trim();
+        if (!input) return;
 
-        // Extract IV (first 12 bytes) and ciphertext
+        // If it's a full pdm.appstorefr.net URL with a fragment, extract slug + key
+        try {
+            const u = new URL(input);
+            if (u.hostname === 'pdm.appstorefr.net' && u.hash) {
+                const slug = u.pathname.replace(/^\/(d\/)?/, '').replace(/\/$/, '');
+                const key = u.hash.substring(1);
+                if (slug && key) { await decryptFromSlug(slug, key); return; }
+            }
+        } catch (e) { /* not a URL, treat as code */ }
+
+        // If user pasted just the slug from a URL
+        const m = input.match(/^[A-Za-z0-9]{4,16}$/);
+        if (m) {
+            // Redirect to the worker which holds the decrypt logic inline.
+            // The user must know the key (fragment) — code-only input is useless.
+            setStatus('info', 'Redirecting to pdm.appstorefr.net…');
+            window.location.href = PDM_BASE + '/' + encodeURIComponent(input);
+            return;
+        }
+
+        setStatus('err', 'Invalid input. Paste a pdm.appstorefr.net URL or a share code.');
+    }
+
+    async function decryptBytes(combined, keyB64) {
         const iv = combined.slice(0, 12);
-        const ciphertext = combined.slice(12);
-
-        // Import key
-        const cryptoKey = await crypto.subtle.importKey(
-            'raw', keyBytes, { name: 'AES-GCM' }, false, ['decrypt']
+        const ct = combined.slice(12);
+        const keyBytes = Uint8Array.from(
+            atob(keyB64.replace(/-/g, '+').replace(/_/g, '/')),
+            c => c.charCodeAt(0)
         );
-
-        // Decrypt
-        const decrypted = await crypto.subtle.decrypt(
-            { name: 'AES-GCM', iv: iv, tagLength: 128 },
-            cryptoKey,
-            ciphertext
-        );
-
-        return new TextDecoder().decode(decrypted);
+        const key = await crypto.subtle.importKey('raw', keyBytes, 'AES-GCM', false, ['decrypt']);
+        const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+        return new TextDecoder().decode(pt);
     }
 
     function showResult(text) {
+        currentPlaintext = text;
         const el = document.getElementById('result');
         el.style.display = 'block';
         el.innerHTML = markdownToHtml(text);
+        document.getElementById('actions').style.display = 'flex';
+    }
+
+    function copyResult() {
+        if (!currentPlaintext) return;
+        navigator.clipboard.writeText(currentPlaintext).then(() => {
+            setStatus('ok', 'Copied to clipboard!');
+        });
+    }
+
+    function downloadResult() {
+        if (!currentPlaintext) return;
+        const blob = new Blob([currentPlaintext], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'pdm-export.txt';
+        a.click();
+        URL.revokeObjectURL(url);
     }
 
     function markdownToHtml(md) {
         let html = md
             .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-            // Headers
             .replace(/^### (.+)$/gm, '<h3>$1</h3>')
             .replace(/^## (.+)$/gm, '<h2>$1</h2>')
             .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-            // Bold + italic
             .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
             .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.+?)\*/g, '<em>$1</em>')
-            // Code
             .replace(/`([^`]+)`/g, '<code>$1</code>')
-            // HR
             .replace(/^---$/gm, '<hr>')
-            // Blockquote
             .replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>')
-            // Links
             .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
 
-        // Tables
         html = html.replace(/^(\|.+\|)\n(\|[-| :]+\|)\n((?:\|.+\|\n?)+)/gm, (match, header, sep, body) => {
             const headers = header.split('|').filter(c => c.trim()).map(c => '<th>' + c.trim() + '</th>').join('');
             const rows = body.trim().split('\n').map(row => {
@@ -278,7 +234,6 @@
             return '<table><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table>';
         });
 
-        // Line breaks
         html = html.replace(/\n/g, '<br>');
         return html;
     }

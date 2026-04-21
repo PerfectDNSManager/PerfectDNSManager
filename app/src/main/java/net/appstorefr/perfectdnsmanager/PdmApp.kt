@@ -8,8 +8,15 @@ class PdmApp : Application() {
     override fun onCreate() {
         super.onCreate()
         try {
-            val mode = getSharedPreferences("prefs", Context.MODE_PRIVATE)
-                .getString("theme_mode", "system") ?: "system"
+            val prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            // Première installation : forcer dark. Les utilisateurs existants (avec
+            // la clé déjà présente, même valeur "system") gardent leur préférence.
+            val mode = if (prefs.contains("theme_mode")) {
+                prefs.getString("theme_mode", "dark") ?: "dark"
+            } else {
+                prefs.edit().putString("theme_mode", "dark").apply()
+                "dark"
+            }
             applyThemeMode(mode)
         } catch (_: Throwable) {
             // Never crash startup on theme init

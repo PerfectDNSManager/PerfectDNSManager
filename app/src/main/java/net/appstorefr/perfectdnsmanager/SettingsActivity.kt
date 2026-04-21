@@ -80,6 +80,12 @@ class SettingsActivity : AppCompatActivity() {
         val switchAutoStart: Switch = findViewById(R.id.switchAutoStart)
         val switchAutoReconnect: Switch = findViewById(R.id.switchAutoReconnect)
         val switchDisableIpv6: Switch = findViewById(R.id.switchDisableIpv6)
+        val rowAutoStart: LinearLayout = findViewById(R.id.rowAutoStart)
+        val rowAutoReconnect: LinearLayout = findViewById(R.id.rowAutoReconnect)
+        val rowDisableIpv6: LinearLayout = findViewById(R.id.rowDisableIpv6)
+        rowAutoStart.setOnClickListener { switchAutoStart.toggle() }
+        rowAutoReconnect.setOnClickListener { if (switchAutoReconnect.isEnabled) switchAutoReconnect.toggle() }
+        rowDisableIpv6.setOnClickListener { switchDisableIpv6.toggle() }
 
         // ── Toggle fonctions avancées ──
         val switchAdvanced: Switch = findViewById(R.id.switchAdvanced)
@@ -359,6 +365,7 @@ class SettingsActivity : AppCompatActivity() {
         val advancedEnabled = prefs.getBoolean("advanced_features_enabled", false)
         switchAdvanced.isChecked = advancedEnabled
         layoutAdvanced.visibility = if (advancedEnabled) View.VISIBLE else View.GONE
+        findViewById<LinearLayout>(R.id.rowAdvanced).setOnClickListener { switchAdvanced.toggle() }
 
         switchAdvanced.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("advanced_features_enabled", isChecked).apply()
@@ -489,7 +496,7 @@ class SettingsActivity : AppCompatActivity() {
                 .show()
         }
 
-        switchAdvanced.requestFocus()
+        findViewById<LinearLayout>(R.id.rowAdvanced).requestFocus()
         btnBack.setOnClickListener { finish() }
         btnAbout.setOnClickListener { startActivity(Intent(this, AboutActivity::class.java)) }
         btnHowTo.setOnClickListener { startActivity(Intent(this, HowToActivity::class.java)) }
