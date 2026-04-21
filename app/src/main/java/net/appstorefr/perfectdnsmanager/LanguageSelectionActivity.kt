@@ -49,7 +49,10 @@ class LanguageSelectionActivity : AppCompatActivity() {
     }
 
     private fun saveLanguageAndStart(langCode: String) {
-        prefs.edit().putString("language", langCode).apply()
+        prefs.edit()
+            .putString("language", langCode)
+            .putBoolean("language_change_pending", true)
+            .apply()
         startMainActivity()
     }
 

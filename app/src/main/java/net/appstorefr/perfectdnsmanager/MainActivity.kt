@@ -1095,7 +1095,10 @@ class MainActivity : AppCompatActivity() {
 
         // Bouton langue
         updateLanguageButton()
-        btnLanguage.setOnClickListener { showLanguageDialog() }
+        btnLanguage.setOnClickListener {
+            startActivity(Intent(this, LanguageSelectionActivity::class.java)
+                .putExtra("FORCE_SHOW", true))
+        }
     }
 
     private fun updateLanguageButton() {
@@ -1116,34 +1119,6 @@ class MainActivity : AppCompatActivity() {
             else -> "\uD83C\uDDEC\uD83C\uDDE7"
         }
         btnLanguage.text = flag
-    }
-
-    private fun showLanguageDialog() {
-        val languages = arrayOf(
-            "\uD83C\uDDEB\uD83C\uDDF7 Fran\u00e7ais",
-            "\uD83C\uDDEC\uD83C\uDDE7 English",
-            "\uD83C\uDDE9\uD83C\uDDEA Deutsch",
-            "\uD83C\uDDEA\uD83C\uDDF8 Espa\u00f1ol",
-            "\uD83C\uDDEE\uD83C\uDDF9 Italiano",
-            "\uD83C\uDDE7\uD83C\uDDF7 Portugu\u00eas",
-            "\uD83C\uDDF7\uD83C\uDDFA \u0420\u0443\u0441\u0441\u043a\u0438\u0439",
-            "\uD83C\uDDE8\uD83C\uDDF3 \u4e2d\u6587",
-            "\uD83C\uDDF8\uD83C\uDDE6 \u0627\u0644\u0639\u0631\u0628\u064a\u0629",
-            "\uD83C\uDDEE\uD83C\uDDF3 \u0939\u093f\u0928\u094d\u0926\u0940",
-            "\uD83C\uDDE7\uD83C\uDDE9 \u09AC\u09BE\u0982\u09B2\u09BE",
-            "\uD83C\uDDEF\uD83C\uDDF5 \u65E5\u672C\u8A9E"
-        )
-        val codes = arrayOf("fr", "en", "de", "es", "it", "pt", "ru", "zh", "ar", "hi", "bn", "ja")
-        AlertDialog.Builder(this)
-            .setTitle("Language")
-            .setItems(languages) { _, which ->
-                prefs.edit()
-                    .putString("language", codes[which])
-                    .putBoolean("language_change_pending", true)
-                    .apply()
-                recreate()
-            }
-            .show()
     }
 
     private fun checkVersionMigration() {
