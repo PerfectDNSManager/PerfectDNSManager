@@ -138,3 +138,30 @@ jobs:
           prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
           files: ${{ steps.apk.outputs.path }}
           generate_release_notes: true
+
+      - name: Stage stable-name APK for latest-beta pointer
+        if: steps.meta.outputs.prerelease == 'true' && (github.event_name == 'push' || github.event.inputs.create_release == 'true')
+        id: beta_apk
+        run: |
+          STABLE_NAME="PerfectDNSManager-latest-beta.apk"
+          STABLE_PATH="app/build/outputs/apk/release/$STABLE_NAME"
+          cp "${{ steps.apk.outputs.path }}" "$STABLE_PATH"
+          echo "path=$STABLE_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Update latest-beta pointer release
+        if: steps.meta.outputs.prerelease == 'true' && (github.event_name == 'push' || github.event.inputs.create_release == 'true')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest-beta
+          name: Latest beta
+          prerelease: true
+          body: |
+            Lien stable pointant toujours vers la dernière bêta publiée.
+
+            Build actuel : **${{ steps.meta.outputs.tag_name }}**
+
+            Installation :
+            ```
+            https://github.com/appstorefr/PerfectDNSManager/releases/download/latest-beta/PerfectDNSManager-latest-beta.apk
+            ```
+          files: ${{ steps.beta_apk.outputs.path }}
