@@ -63,6 +63,10 @@
     <string name="adb_warning">The ADB method modifies system settings. If you experience connectivity issues, disable this option and use the VPN method.</string>
     <string name="disable_ipv6_label">Disable IPv6 / Force IPv4</string>
 
+    <!-- Beta updates -->
+    <string name="beta_updates_label">Receive beta updates</string>
+    <string name="beta_updates_description">Include beta versions in the automatic update check</string>
+
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">Auto-start</string>
     <string name="auto_start_label">Launch at boot</string>

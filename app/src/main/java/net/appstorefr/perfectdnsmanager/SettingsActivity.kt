@@ -87,6 +87,15 @@ class SettingsActivity : AppCompatActivity() {
         rowAutoReconnect.setOnClickListener { if (switchAutoReconnect.isEnabled) switchAutoReconnect.toggle() }
         rowDisableIpv6.setOnClickListener { switchDisableIpv6.toggle() }
 
+        // ── Mises à jour bêta ──
+        val rowBetaUpdates: LinearLayout = findViewById(R.id.rowBetaUpdates)
+        val switchBetaUpdates: Switch = findViewById(R.id.switchBetaUpdates)
+        switchBetaUpdates.isChecked = prefs.getBoolean("beta_updates_enabled", false)
+        rowBetaUpdates.setOnClickListener { switchBetaUpdates.toggle() }
+        switchBetaUpdates.setOnCheckedChangeListener { _, checked ->
+            prefs.edit().putBoolean("beta_updates_enabled", checked).apply()
+        }
+
         // ── Toggle fonctions avancées ──
         val switchAdvanced: Switch = findViewById(R.id.switchAdvanced)
         val layoutAdvanced: LinearLayout = findViewById(R.id.layoutAdvancedSection)

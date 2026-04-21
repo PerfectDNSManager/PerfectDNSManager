@@ -68,6 +68,10 @@
     <string name="theme_dark">🌙 Sombre</string>
     <string name="theme_choose_title">Choisir le thème</string>
 
+    <!-- Mises à jour bêta -->
+    <string name="beta_updates_label">Recevoir les mises à jour bêta</string>
+    <string name="beta_updates_description">Inclure les versions bêta dans la vérification automatique des mises à jour</string>
+
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">Démarrage automatique</string>
     <string name="auto_start_label">Lancement au démarrage</string>

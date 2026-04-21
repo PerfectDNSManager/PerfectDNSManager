@@ -18,78 +18,123 @@ class UpdateManager(private val context: Context) {
     companion object {
         private const val TAG = "UpdateManager"
         private const val GITHUB_REPO = "appstorefr/PerfectDNSManager"
+        private const val LATEST_BETA_TAG = "latest-beta"
+        private const val LATEST_STABLE_ASSET = "latest.apk"
+        private const val LATEST_BETA_ASSET = "PerfectDNSManager-latest-beta.apk"
+        private val BETA_BODY_VERSION_RE = Regex("""Build actuel\s*:\s*\**\s*(v?\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?)""")
     }
 
+    private data class ReleaseInfo(val version: String, val apkUrl: String, val apkSize: Long)
+
     /**
-     * Compare deux versions sémantiques (ex: "1.0.52" vs "1.0.55").
-     * @return positif si remote > local, 0 si égales, négatif si remote < local
+     * Compare deux versions sémantiques avec support des suffixes pré-release (`1.1.0-beta.3`).
+     * Une version sans suffixe est supérieure à la même version avec suffixe.
+     * Renvoie positif si remote > local, 0 si égales, négatif si remote < local.
      */
     private fun compareVersions(remote: String, local: String): Int {
-        val r = remote.removePrefix("v").split(".").map { it.toIntOrNull() ?: 0 }
-        val l = local.removePrefix("v").split(".").map { it.toIntOrNull() ?: 0 }
-        val maxLen = maxOf(r.size, l.size)
-        for (i in 0 until maxLen) {
-            val rp = r.getOrElse(i) { 0 }
-            val lp = l.getOrElse(i) { 0 }
-            if (rp != lp) return rp - lp
+        val (rBase, rSuffix) = splitVersion(remote)
+        val (lBase, lSuffix) = splitVersion(local)
+        val baseCmp = compareNumericParts(rBase, lBase)
+        if (baseCmp != 0) return baseCmp
+        if (rSuffix == null && lSuffix == null) return 0
+        if (rSuffix == null) return 1
+        if (lSuffix == null) return -1
+        return compareNumericParts(rSuffix, lSuffix)
+    }
+
+    private fun splitVersion(v: String): Pair<String, String?> {
+        val clean = v.removePrefix("v").trim()
+        val idx = clean.indexOf('-')
+        return if (idx < 0) clean to null else clean.substring(0, idx) to clean.substring(idx + 1)
+    }
+
+    private fun compareNumericParts(a: String, b: String): Int {
+        val ap = a.split('.', '-').map { it.replace(Regex("[^0-9]"), "").toIntOrNull() ?: 0 }
+        val bp = b.split('.', '-').map { it.replace(Regex("[^0-9]"), "").toIntOrNull() ?: 0 }
+        for (i in 0 until maxOf(ap.size, bp.size)) {
+            val av = ap.getOrElse(i) { 0 }
+            val bv = bp.getOrElse(i) { 0 }
+            if (av != bv) return av - bv
         }
         return 0
     }
 
+    private fun betaEnabled(): Boolean =
+        context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            .getBoolean("beta_updates_enabled", false)
+
     /**
-     * Vérification manuelle (About) : affiche Toast "à jour" ou télécharge directement.
+     * Vérification manuelle (About) : Toast "à jour" ou téléchargement direct.
      */
     fun checkForUpdateGitHub(githubRepo: String, currentVersion: String) {
-        fetchLatestRelease(githubRepo) { tagName, apkUrl, _ ->
-            if (tagName != null && apkUrl != null && compareVersions(tagName, currentVersion) > 0) {
-                showToastOnMainThread(context.getString(R.string.update_available, tagName))
-                downloadAndInstallUpdate(apkUrl)
-            } else if (tagName != null) {
+        fetchBestRelease(githubRepo, betaEnabled()) { release ->
+            if (release == null) return@fetchBestRelease
+            if (compareVersions(release.version, currentVersion) > 0) {
+                showToastOnMainThread(context.getString(R.string.update_available, release.version))
+                downloadAndInstallUpdate(release.apkUrl)
+            } else {
                 showToastOnMainThread(context.getString(R.string.app_up_to_date))
             }
         }
     }
 
     /**
-     * Vérification silencieuse au lancement : affiche un AlertDialog si MAJ dispo,
-     * ne fait rien sinon. Ne se déclenche qu'une fois par version détectée.
+     * Vérification silencieuse au lancement : AlertDialog si MAJ dispo, ne se déclenche
+     * qu'une fois par version détectée.
      */
     fun checkOnLaunch(currentVersion: String) {
         val prefs = context.getSharedPreferences("update_prefs", Context.MODE_PRIVATE)
         val dismissedVersion = prefs.getString("dismissed_version", null)
 
-        fetchLatestRelease(GITHUB_REPO) { tagName, apkUrl, apkSize ->
-            if (tagName != null && apkUrl != null && compareVersions(tagName, currentVersion) > 0) {
-                // Ne pas re-proposer une version déjà refusée
-                if (tagName == dismissedVersion) return@fetchLatestRelease
+        fetchBestRelease(GITHUB_REPO, betaEnabled()) { release ->
+            if (release == null) return@fetchBestRelease
+            if (compareVersions(release.version, currentVersion) <= 0) return@fetchBestRelease
+            if (release.version == dismissedVersion) return@fetchBestRelease
 
-                val sizeStr = if (apkSize > 0) {
-                    String.format("%.1f Mo", apkSize / 1_000_000.0)
-                } else ""
-
-                runOnMainThread {
-                    if (context is Activity && !context.isFinishing) {
-                        AlertDialog.Builder(context)
-                            .setTitle(context.getString(R.string.update_dialog_title))
-                            .setMessage(context.getString(R.string.update_dialog_message, tagName, sizeStr))
-                            .setPositiveButton(context.getString(R.string.update_dialog_install)) { _, _ ->
-                                downloadAndInstallUpdate(apkUrl)
-                            }
-                            .setNegativeButton(context.getString(R.string.update_dialog_later)) { _, _ ->
-                                prefs.edit().putString("dismissed_version", tagName).apply()
-                            }
-                            .setCancelable(false)
-                            .show()
-                    }
+            val sizeStr = if (release.apkSize > 0) String.format("%.1f Mo", release.apkSize / 1_000_000.0) else ""
+            runOnMainThread {
+                if (context is Activity && !context.isFinishing) {
+                    AlertDialog.Builder(context)
+                        .setTitle(context.getString(R.string.update_dialog_title))
+                        .setMessage(context.getString(R.string.update_dialog_message, release.version, sizeStr))
+                        .setPositiveButton(context.getString(R.string.update_dialog_install)) { _, _ ->
+                            downloadAndInstallUpdate(release.apkUrl)
+                        }
+                        .setNegativeButton(context.getString(R.string.update_dialog_later)) { _, _ ->
+                            prefs.edit().putString("dismissed_version", release.version).apply()
+                        }
+                        .setCancelable(false)
+                        .show()
                 }
             }
         }
     }
 
-    private fun fetchLatestRelease(githubRepo: String, callback: (tagName: String?, apkUrl: String?, apkSize: Long) -> Unit) {
-        val apiUrl = "https://api.github.com/repos/$githubRepo/releases/latest"
-        Log.i(TAG, "Vérification mise à jour GitHub: $apiUrl")
+    /**
+     * Récupère la « meilleure » release :
+     *   - canal stable seul : `releases/latest` (la dernière non-prerelease)
+     *   - canal bêta activé : compare la stable et le release pinné `latest-beta`,
+     *     prend la version la plus haute. La version exacte de la bêta est lue
+     *     dans le body du release `latest-beta` (« Build actuel : v1.1.0-beta.X »).
+     */
+    private fun fetchBestRelease(githubRepo: String, includeBeta: Boolean, callback: (ReleaseInfo?) -> Unit) {
+        if (!includeBeta) {
+            fetchRelease("https://api.github.com/repos/$githubRepo/releases/latest", LATEST_STABLE_ASSET, callback)
+            return
+        }
+        fetchRelease("https://api.github.com/repos/$githubRepo/releases/latest", LATEST_STABLE_ASSET) { stable ->
+            fetchRelease("https://api.github.com/repos/$githubRepo/releases/tags/$LATEST_BETA_TAG", LATEST_BETA_ASSET) { beta ->
+                val best = when {
+                    stable != null && beta != null -> if (compareVersions(beta.version, stable.version) > 0) beta else stable
+                    else -> stable ?: beta
+                }
+                callback(best)
+            }
+        }
+    }
 
+    private fun fetchRelease(apiUrl: String, preferredAsset: String, callback: (ReleaseInfo?) -> Unit) {
+        Log.i(TAG, "Fetching release: $apiUrl")
         Fuel.get(apiUrl)
             .header("Accept", "application/vnd.github.v3+json")
             .responseString { _, _, result ->
@@ -97,37 +142,47 @@ class UpdateManager(private val context: Context) {
                     is Result.Success -> {
                         try {
                             val json = JSONObject(result.get())
-                            val tagName = json.getString("tag_name").removePrefix("v")
-                            Log.i(TAG, "Version actuelle, GitHub: $tagName")
-
-                            val assets = json.getJSONArray("assets")
-                            var apkUrl: String? = null
-                            var apkSize: Long = 0
-                            for (i in 0 until assets.length()) {
-                                val asset = assets.getJSONObject(i)
-                                val name = asset.getString("name")
-                                if (name == "latest.apk") {
-                                    apkUrl = asset.getString("browser_download_url")
-                                    apkSize = asset.optLong("size", 0)
-                                    break
-                                }
-                                if (apkUrl == null && name.endsWith(".apk")) {
-                                    apkUrl = asset.getString("browser_download_url")
-                                    apkSize = asset.optLong("size", 0)
-                                }
+                            val tagName = json.optString("tag_name", "")
+                            val body = json.optString("body", "")
+                            val version = if (tagName == LATEST_BETA_TAG) {
+                                BETA_BODY_VERSION_RE.find(body)?.groupValues?.get(1)?.removePrefix("v") ?: tagName
+                            } else {
+                                tagName.removePrefix("v")
                             }
-                            callback(tagName, apkUrl, apkSize)
+                            val (apkUrl, apkSize) = pickAsset(json.getJSONArray("assets"), preferredAsset)
+                            if (apkUrl != null) callback(ReleaseInfo(version, apkUrl, apkSize)) else callback(null)
                         } catch (e: Exception) {
-                            Log.e(TAG, "Erreur parsing GitHub API", e)
-                            showToastOnMainThread(context.getString(R.string.update_check_error))
+                            Log.e(TAG, "Erreur parsing release", e)
+                            callback(null)
                         }
                     }
                     is Result.Failure -> {
-                        Log.e(TAG, "Erreur vérification MAJ GitHub", result.getException())
-                        // Silencieux en mode auto-check
+                        Log.w(TAG, "Release indisponible ($apiUrl): ${result.getException().message}")
+                        callback(null)
                     }
                 }
             }
+    }
+
+    private fun pickAsset(assets: org.json.JSONArray, preferredName: String): Pair<String?, Long> {
+        var preferredUrl: String? = null
+        var preferredSize: Long = 0
+        var fallbackUrl: String? = null
+        var fallbackSize: Long = 0
+        for (i in 0 until assets.length()) {
+            val asset = assets.getJSONObject(i)
+            val name = asset.optString("name", "")
+            if (name == preferredName) {
+                preferredUrl = asset.optString("browser_download_url", null)
+                preferredSize = asset.optLong("size", 0)
+                break
+            }
+            if (fallbackUrl == null && name.endsWith(".apk")) {
+                fallbackUrl = asset.optString("browser_download_url", null)
+                fallbackSize = asset.optLong("size", 0)
+            }
+        }
+        return if (preferredUrl != null) preferredUrl to preferredSize else fallbackUrl to fallbackSize
     }
 
     private fun downloadAndInstallUpdate(apkUrl: String) {
