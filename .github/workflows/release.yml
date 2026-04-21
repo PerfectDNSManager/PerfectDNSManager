@@ -4,16 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       version_suffix:
-        description: "Suffixe version (ex: beta.1, rc.2 — vide pour stable)"
+        description: "Version suffix (ex: beta.1). Leave empty for stable."
         required: false
         default: "beta.0"
       create_release:
-        description: "Créer une release GitHub avec l'APK"
+        description: "Create a GitHub Release with the APK"
         type: boolean
         default: false
   push:
     tags:
       - "v*"
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -47,38 +50,49 @@ jobs:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
           if [ -z "$KEYSTORE_BASE64" ]; then
-            echo "::error::Secret KEYSTORE_BASE64 manquant"
+            echo "::error::Secret KEYSTORE_BASE64 is missing"
             exit 1
           fi
           mkdir -p signing
           echo "$KEYSTORE_BASE64" | base64 -d > signing/release-keystore.jks
           ls -l signing/release-keystore.jks
 
-      - name: Compute version suffix
-        id: ver
+      - name: Compute version and release metadata
+        id: meta
         run: |
           SUFFIX=""
           IS_PRERELEASE="false"
+          TAG_NAME=""
+          RELEASE_NAME=""
+
           if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
-            TAG="${GITHUB_REF_NAME#v}"
-            if [[ "$TAG" == *-* ]]; then
-              SUFFIX="${TAG#*-}"
-              IS_PRERELEASE="true"
-            fi
+            TAG_NAME="${GITHUB_REF_NAME}"
+            RELEASE_NAME="${GITHUB_REF_NAME}"
+            CLEAN="${GITHUB_REF_NAME#v}"
+            case "$CLEAN" in
+              *-*) SUFFIX="${CLEAN#*-}"; IS_PRERELEASE="true" ;;
+            esac
           else
             SUFFIX="${{ github.event.inputs.version_suffix }}"
-            [ -n "$SUFFIX" ] && IS_PRERELEASE="true"
+            TAG_NAME="v-dispatch-${GITHUB_RUN_NUMBER}"
+            RELEASE_NAME="Manual build #${GITHUB_RUN_NUMBER}"
+            if [ -n "$SUFFIX" ]; then IS_PRERELEASE="true"; fi
           fi
+
           if [ -n "$SUFFIX" ]; then
-            # Patch version.properties with suffix
             if grep -q "VERSION_SUFFIX" app/version.properties 2>/dev/null; then
               sed -i "s/^VERSION_SUFFIX=.*/VERSION_SUFFIX=$SUFFIX/" app/version.properties
             else
               echo "VERSION_SUFFIX=$SUFFIX" >> app/version.properties
             fi
           fi
-          echo "suffix=$SUFFIX" >> $GITHUB_OUTPUT
-          echo "prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+
+          {
+            echo "suffix=$SUFFIX"
+            echo "prerelease=$IS_PRERELEASE"
+            echo "tag_name=$TAG_NAME"
+            echo "release_name=$RELEASE_NAME"
+          } >> "$GITHUB_OUTPUT"
           cat app/version.properties
 
       - name: Build release APK
@@ -96,16 +110,17 @@ jobs:
         run: |
           APK=$(find app/build/outputs/apk/release -name "*.apk" | head -n1)
           if [ -z "$APK" ]; then
-            echo "::error::Aucun APK trouvé dans app/build/outputs/apk/release"
+            echo "::error::No APK found in app/build/outputs/apk/release"
             exit 1
           fi
-          echo "path=$APK" >> $GITHUB_OUTPUT
-          echo "name=$(basename "$APK")" >> $GITHUB_OUTPUT
+          echo "path=$APK" >> "$GITHUB_OUTPUT"
+          echo "name=$(basename "$APK")" >> "$GITHUB_OUTPUT"
           ls -lh "$APK"
 
       - name: Verify signature
         run: |
-          "$ANDROID_HOME"/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -n1)/apksigner verify --verbose "${{ steps.apk.outputs.path }}" | head -30
+          BT_DIR=$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -n1)
+          "$ANDROID_HOME/build-tools/$BT_DIR/apksigner" verify --verbose "${{ steps.apk.outputs.path }}" | head -30
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
@@ -118,8 +133,8 @@ jobs:
         if: github.event_name == 'push' || github.event.inputs.create_release == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event_name == 'push' && github.ref_name || format('v-dispatch-{0}', github.run_number) }}
-          name: ${{ github.event_name == 'push' && github.ref_name || format('Manual build #{0}', github.run_number) }}
-          prerelease: ${{ steps.ver.outputs.prerelease == 'true' }}
+          tag_name: ${{ steps.meta.outputs.tag_name }}
+          name: ${{ steps.meta.outputs.release_name }}
+          prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
           files: ${{ steps.apk.outputs.path }}
           generate_release_notes: true
