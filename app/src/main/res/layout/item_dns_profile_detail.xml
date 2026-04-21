@@ -25,7 +25,7 @@
             android:paddingEnd="8dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:textSize="11sp"
             android:textStyle="bold"
             android:layout_marginEnd="8dp"/>
@@ -35,7 +35,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:textSize="15sp"
             android:textStyle="bold"/>
 
@@ -43,7 +43,7 @@
             android:id="@+id/tvMethod"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#888888"
+            android:textColor="@color/pdm_text_disabled"
             android:textSize="12sp"/>
     </LinearLayout>
 
@@ -52,7 +52,7 @@
         android:id="@+id/tvAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#2196F3"
+        android:textColor="@color/pdm_accent_alt"
         android:textSize="12sp"
         android:fontFamily="monospace"
         android:layout_marginBottom="2dp"/>
@@ -62,6 +62,6 @@
         android:id="@+id/tvDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#999999"
+        android:textColor="@color/pdm_text_disabled"
         android:textSize="11sp"/>
 </LinearLayout>

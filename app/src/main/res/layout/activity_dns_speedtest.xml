@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#1E1E1E"
+    android:background="@color/pdm_background"
     android:padding="16dp">
 
     <!-- Top bar: Back + Title -->
@@ -20,9 +20,9 @@
             android:textSize="18sp"
             android:padding="12dp"
             android:minHeight="48dp"
-            android:backgroundTint="#333355"
+            android:backgroundTint="@color/pdm_surface_elevated"
             android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:layout_gravity="start|center_vertical"
             android:focusable="true"
             android:nextFocusDown="@id/btnStartStop"/>
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dns_speedtest_title"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_gravity="center"/>
@@ -49,9 +49,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dns_speedtest_button"
-            android:backgroundTint="#4CAF50"
+            android:backgroundTint="@color/pdm_accent"
             android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:textStyle="bold"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
@@ -66,12 +66,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="12dp"
-            android:textColor="#AAAAAA"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="12sp"
             android:fontFamily="monospace"
             android:maxLines="3"
             android:text="DNS Speedtest"
-            android:background="#121212"
+            android:background="@color/pdm_background"
             android:padding="8dp"/>
     </LinearLayout>
 
@@ -89,7 +89,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginEnd="4dp"
-            android:background="#0D0D1A"
+            android:background="@color/pdm_background"
             android:padding="6dp"
             android:fillViewport="true"
             android:focusable="false"
@@ -111,7 +111,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginStart="4dp"
-            android:background="#1A1A0D"
+            android:background="@color/pdm_background"
             android:foreground="@drawable/btn_focus_foreground"
             android:padding="6dp"
             android:fillViewport="true"
@@ -124,7 +124,7 @@
                 android:id="@+id/tvRanking"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#AAAAAA"
+                android:textColor="@color/pdm_text_secondary"
                 android:textSize="11sp"
                 android:fontFamily="monospace"
                 android:lineSpacingExtra="1dp"

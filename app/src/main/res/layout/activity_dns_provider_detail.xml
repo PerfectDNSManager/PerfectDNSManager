@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#1E1E1E"
+    android:background="@color/pdm_background"
     android:padding="16dp">
 
     <!-- Header: Back + Provider name -->
@@ -24,7 +24,7 @@
             android:minHeight="48dp"
             android:background="@drawable/focusable_item_background"
             android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_item_text"
             android:focusable="true"
             android:nextFocusDown="@id/rvProfiles"
             android:nextFocusRight="@id/rvProfiles"/>
@@ -48,7 +48,7 @@
                 android:id="@+id/tvProviderName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:textSize="22sp"
                 android:textStyle="bold"/>
         </LinearLayout>
@@ -68,26 +68,26 @@
             android:id="@+id/tvSpeedLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#CCCCCC"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="13sp"/>
         <TextView
             android:id="@+id/tvSpeedStars"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFD700"
+            android:textColor="@color/pdm_accent_gold"
             android:textSize="13sp"
             android:layout_marginEnd="16dp"/>
         <TextView
             android:id="@+id/tvPrivacyLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#CCCCCC"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="13sp"/>
         <TextView
             android:id="@+id/tvPrivacyStars"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFD700"
+            android:textColor="@color/pdm_accent_gold"
             android:textSize="13sp"/>
     </LinearLayout>
 
@@ -99,10 +99,10 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="8dp"
         android:text="@string/add_nextdns_profile"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/pdm_text_primary"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:backgroundTint="#388E3C"
+        android:backgroundTint="@color/pdm_accent"
         android:foreground="@drawable/btn_focus_foreground"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"

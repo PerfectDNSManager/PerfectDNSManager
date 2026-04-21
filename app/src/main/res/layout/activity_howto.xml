@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/pdm_background"
     android:padding="32dp">
 
     <LinearLayout
@@ -17,7 +17,7 @@
             android:text="@string/howto_title"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:layout_marginBottom="16dp"/>
 
         <!-- Statut ADB -->
@@ -29,7 +29,7 @@
             android:textStyle="bold"
             android:gravity="center"
             android:padding="12dp"
-            android:background="#22FFFFFF"
+            android:background="@color/pdm_tint_neutral"
             android:layout_marginBottom="24dp"/>
 
         <!-- Bouton ouvrir options développeur -->
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:text="@string/howto_open_dev_options"
             android:background="@drawable/focusable_item_background"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_item_text"
             android:padding="16dp"
             android:layout_marginBottom="32dp"
             android:focusable="true" />
@@ -51,12 +51,12 @@
             android:text="@string/howto_step1_title"
             android:textSize="17sp"
             android:textStyle="bold"
-            android:textColor="#00AAFF"
+            android:textColor="@color/pdm_accent_alt"
             android:layout_marginBottom="8dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#CCCCCC"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="14sp"
             android:layout_marginBottom="20dp"
             android:text="@string/howto_step1_desc"/>
@@ -68,12 +68,12 @@
             android:text="@string/howto_step2_title"
             android:textSize="17sp"
             android:textStyle="bold"
-            android:textColor="#00AAFF"
+            android:textColor="@color/pdm_accent_alt"
             android:layout_marginBottom="8dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#CCCCCC"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="14sp"
             android:layout_marginBottom="20dp"
             android:text="@string/howto_step2_desc"/>
@@ -85,12 +85,12 @@
             android:text="@string/howto_step3_title"
             android:textSize="17sp"
             android:textStyle="bold"
-            android:textColor="#00AAFF"
+            android:textColor="@color/pdm_accent_alt"
             android:layout_marginBottom="8dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#CCCCCC"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="14sp"
             android:layout_marginBottom="20dp"
             android:text="@string/howto_step3_desc"/>
@@ -100,21 +100,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#22FF8800"
+            android:background="@color/pdm_tint_warning"
             android:padding="14dp"
             android:layout_marginBottom="16dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/howto_note_tv_title"
-                android:textColor="#FFAA44"
+                android:textColor="@color/pdm_accent_support"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:layout_marginBottom="6dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#CCCCCC"
+                android:textColor="@color/pdm_text_secondary"
                 android:textSize="13sp"
                 android:text="@string/howto_note_tv_desc"/>
         </LinearLayout>
@@ -124,21 +124,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#22FF0000"
+            android:background="@color/pdm_tint_danger"
             android:padding="14dp"
             android:layout_marginBottom="16dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/howto_compat_title"
-                android:textColor="#FF8A80"
+                android:textColor="@color/pdm_danger"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:layout_marginBottom="6dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#CCCCCC"
+                android:textColor="@color/pdm_text_secondary"
                 android:textSize="13sp"
                 android:text="@string/howto_compat_desc"/>
         </LinearLayout>
@@ -148,21 +148,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#22FFAB00"
+            android:background="@color/pdm_tint_warning"
             android:padding="14dp"
             android:layout_marginBottom="16dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/howto_android11_title"
-                android:textColor="#FFD54F"
+                android:textColor="@color/pdm_accent_gold"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:layout_marginBottom="6dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#CCCCCC"
+                android:textColor="@color/pdm_text_secondary"
                 android:textSize="13sp"
                 android:text="@string/howto_android11_desc"/>
         </LinearLayout>
@@ -172,21 +172,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#22FF4444"
+            android:background="@color/pdm_tint_danger"
             android:padding="14dp"
             android:layout_marginBottom="16dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/howto_firestick_title"
-                android:textColor="#FF6644"
+                android:textColor="@color/pdm_danger"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:layout_marginBottom="6dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#CCCCCC"
+                android:textColor="@color/pdm_text_secondary"
                 android:textSize="13sp"
                 android:text="@string/howto_firestick_desc"/>
         </LinearLayout>
@@ -196,21 +196,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#2200CC88"
+            android:background="@color/pdm_tint_accent"
             android:padding="14dp"
             android:layout_marginBottom="24dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/howto_recommendation_title"
-                android:textColor="#00CC88"
+                android:textColor="@color/pdm_accent"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:layout_marginBottom="6dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#CCCCCC"
+                android:textColor="@color/pdm_text_secondary"
                 android:textSize="13sp"
                 android:text="@string/howto_recommendation_desc"/>
         </LinearLayout>
@@ -224,9 +224,9 @@
             android:textSize="18sp"
             android:padding="12dp"
             android:minHeight="48dp"
-            android:backgroundTint="#444444"
+            android:backgroundTint="@color/pdm_border"
             android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:focusable="true"/>
 
     </LinearLayout>

@@ -1,5 +1,19 @@
 package net.appstorefr.perfectdnsmanager
 
+import net.appstorefr.perfectdnsmanager.util.pdmBackground
+import net.appstorefr.perfectdnsmanager.util.pdmBorder
+import net.appstorefr.perfectdnsmanager.util.pdmSurface
+import net.appstorefr.perfectdnsmanager.util.pdmSurfaceInput
+import net.appstorefr.perfectdnsmanager.util.pdmSurfaceElevated
+import net.appstorefr.perfectdnsmanager.util.pdmTextPrimary
+import net.appstorefr.perfectdnsmanager.util.pdmTextSecondary
+import net.appstorefr.perfectdnsmanager.util.pdmTextDisabled
+import net.appstorefr.perfectdnsmanager.util.pdmAccent
+import net.appstorefr.perfectdnsmanager.util.pdmAccentAlt
+import net.appstorefr.perfectdnsmanager.util.pdmAccentGold
+import net.appstorefr.perfectdnsmanager.util.pdmDanger
+import net.appstorefr.perfectdnsmanager.util.pdmWarning
+
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -177,6 +191,9 @@ class MainActivity : AppCompatActivity() {
 
         // Vérification auto des mises à jour au lancement
         checkForAppUpdate()
+
+        // Récupère le message broadcast du Worker (pdm.appstorefr.net/api/message)
+        net.appstorefr.perfectdnsmanager.util.MessageManager.fetchAndShow(this)
     }
 
     private fun checkForAppUpdate() {
@@ -333,7 +350,7 @@ class MainActivity : AppCompatActivity() {
                 val fullText = spannable.toString()
                 val dnsLineStart = fullText.indexOf(dnsStatusText)
                 if (dnsLineStart >= 0) {
-                    val color = if (dnsActive) Color.parseColor("#66BB6A") else Color.parseColor("#FF5555")
+                    val color = if (dnsActive) pdmAccent() else pdmDanger()
                     spannable.setSpan(
                         ForegroundColorSpan(color),
                         dnsLineStart,
@@ -347,7 +364,7 @@ class MainActivity : AppCompatActivity() {
                         android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                 }
-                tvStatusInfo.setTextColor(Color.parseColor("#AAAAAA"))
+                tvStatusInfo.setTextColor(pdmTextSecondary())
                 tvStatusInfo.setTypeface(null, android.graphics.Typeface.NORMAL)
                 tvStatusInfo.text = spannable
             }
@@ -381,7 +398,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applyGoldenIndicators() {
-        val gold = Color.parseColor("#FFD700")
+        val gold = pdmAccentGold()
         val tvProvider: TextView = findViewById(R.id.tvDnsProviderLabel)
         val tvActivation: TextView = findViewById(R.id.tvActivationLabel)
         val tvTools: TextView = findViewById(R.id.tvToolsLabel)
@@ -490,11 +507,11 @@ class MainActivity : AppCompatActivity() {
         generatingThread = null
         isGenerating = false
         btnGenerateReport.text = getString(R.string.generate_report_button)
-        btnGenerateReport.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#1B5E20"))
-        tvReportContent.setTextColor(Color.parseColor("#AAAAAA"))
+        btnGenerateReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmAccent())
+        tvReportContent.setTextColor(pdmTextSecondary())
         tvReportContent.text = getString(R.string.no_report_yet)
         btnShareReport.isEnabled = reportGenerated
-        btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor(if (reportGenerated) "#4CAF50" else "#B71C1C"))
+        btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(if (reportGenerated) pdmAccent() else pdmDanger())
     }
 
     private fun generateReport() {
@@ -515,9 +532,9 @@ class MainActivity : AppCompatActivity() {
         isGenerating = true
         reportGenerated = false
         btnGenerateReport.text = "\u23F9 Stop"
-        btnGenerateReport.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#B71C1C"))
+        btnGenerateReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmDanger())
         btnShareReport.isEnabled = false
-        btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#B71C1C"))
+        btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmDanger())
         lastSpeedResult = null
         lastLeakResult = null
         lastLeakIspResult = null
@@ -526,7 +543,7 @@ class MainActivity : AppCompatActivity() {
         lastIpv6 = null
 
         val display = StringBuilder()
-        tvReportContent.setTextColor(Color.parseColor("#AAAAAA"))
+        tvReportContent.setTextColor(pdmTextSecondary())
         tvReportContent.text = getString(R.string.report_progress_blocking)
 
         generatingThread = Thread {
@@ -677,10 +694,10 @@ class MainActivity : AppCompatActivity() {
                 isGenerating = false
                 generatingThread = null
                 btnGenerateReport.text = getString(R.string.generate_report_button)
-                btnGenerateReport.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#1B5E20"))
+                btnGenerateReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmAccent())
                 btnShareReport.isEnabled = true
-                btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#4CAF50"))
-                tvReportContent.setTextColor(Color.parseColor("#CCCCCC"))
+                btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmAccent())
+                tvReportContent.setTextColor(pdmTextSecondary())
                 tvReportContent.text = display.toString().trimEnd()
                 Toast.makeText(this, getString(R.string.report_complete), Toast.LENGTH_SHORT).show()
             }
@@ -701,26 +718,26 @@ class MainActivity : AppCompatActivity() {
         }
         val cbNetwork = android.widget.CheckBox(this).apply {
             text = getString(R.string.share_toggle_network); isChecked = true
-            setTextColor(0xFFCCCCCC.toInt()); textSize = 14f
+            setTextColor(pdmTextSecondary()); textSize = 14f
         }
         val cbSpeedtest = android.widget.CheckBox(this).apply {
             text = getString(R.string.share_toggle_speedtest); isChecked = lastSpeedResult != null
             isEnabled = lastSpeedResult != null
-            setTextColor(0xFFCCCCCC.toInt()); textSize = 14f
+            setTextColor(pdmTextSecondary()); textSize = 14f
         }
         val cbLeak = android.widget.CheckBox(this).apply {
             text = getString(R.string.share_toggle_leak); isChecked = lastLeakResult != null
             isEnabled = lastLeakResult != null
-            setTextColor(0xFFCCCCCC.toInt()); textSize = 14f
+            setTextColor(pdmTextSecondary()); textSize = 14f
         }
         val cbBlocking = android.widget.CheckBox(this).apply {
             text = getString(R.string.share_toggle_blocking); isChecked = lastBlockingResult != null
             isEnabled = lastBlockingResult != null
-            setTextColor(0xFFCCCCCC.toInt()); textSize = 14f
+            setTextColor(pdmTextSecondary()); textSize = 14f
         }
         val cbDevice = android.widget.CheckBox(this).apply {
             text = getString(R.string.share_toggle_device); isChecked = true
-            setTextColor(0xFFCCCCCC.toInt()); textSize = 14f
+            setTextColor(pdmTextSecondary()); textSize = 14f
         }
         layout.addView(cbNetwork)
         layout.addView(cbBlocking)
@@ -741,7 +758,7 @@ class MainActivity : AppCompatActivity() {
     private fun uploadReport(includeNetwork: Boolean, includeSpeed: Boolean, includeLeak: Boolean, includeBlocking: Boolean, includeDevice: Boolean = true) {
         Toast.makeText(this, getString(R.string.report_generating), Toast.LENGTH_SHORT).show()
         btnShareReport.isEnabled = false
-        btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#B71C1C"))
+        btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmDanger())
         Thread {
             try {
                 val appVersion = try {
@@ -925,15 +942,15 @@ class MainActivity : AppCompatActivity() {
                 )
                 runOnUiThread {
                     btnShareReport.isEnabled = true
-                    btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#4CAF50"))
+                    btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmAccent())
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
                     clipboard.setPrimaryClip(android.content.ClipData.newPlainText("Report Code", result.shortCode))
-                    val url1 = "https://appstorefr.github.io/PerfectDNSManager/decrypt.html"
-                    val text = "Ouvrir le rapport :\n$url1\n\nEntrez le code ${result.shortCode} pour afficher le rapport.\n\n(code copié dans le presse-papier)"
+                    val url1 = result.fullUrl
+                    val text = "Lien de partage (chiffré de bout en bout) :\n$url1\n\nCode : ${result.shortCode} (copié dans le presse-papier)\n\nExpire dans 72h."
                     val msg = android.text.SpannableString(text)
                     val code = result.shortCode
-                    val greenColor = android.graphics.Color.parseColor("#4CAF50")
-                    val linkColor = android.graphics.Color.parseColor("#2196F3")
+                    val greenColor = pdmAccent()
+                    val linkColor = pdmAccentAlt()
                     // Color code occurrences in green
                     val idx1 = msg.indexOf(code)
                     if (idx1 >= 0) msg.setSpan(android.text.style.ForegroundColorSpan(greenColor), idx1, idx1 + code.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -953,7 +970,7 @@ class MainActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 runOnUiThread {
                     btnShareReport.isEnabled = true
-                    btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#4CAF50"))
+                    btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmAccent())
                     Toast.makeText(this, getString(R.string.share_ip_error) + ": ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
@@ -1276,7 +1293,7 @@ class MainActivity : AppCompatActivity() {
     private fun setActiveStatus(active: Boolean, statusText: String) {
         isActive = active
         btnToggle.text = getString(R.string.deactivate)
-        btnToggle.setTextColor(0xFF2E7D32.toInt()) // Vert foncé quand actif
+        btnToggle.setTextColor(pdmAccent()) // Vert foncé quand actif
         btnToggle.setBackgroundResource(R.drawable.btn_deactivate_background)
         btnToggle.requestFocus()
         // Refresh right panel with full network info + DNS status
@@ -1286,7 +1303,7 @@ class MainActivity : AppCompatActivity() {
     private fun setInactiveStatus() {
         isActive = false
         btnToggle.text = getString(R.string.activate)
-        btnToggle.setTextColor(0xFF7B1F3A.toInt()) // Bordeaux quand inactif
+        btnToggle.setTextColor(pdmDanger()) // Bordeaux quand inactif
         btnToggle.setBackgroundResource(R.drawable.btn_activate_background)
         btnToggle.requestFocus()
         // Refresh right panel with full network info + DNS status

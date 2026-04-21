@@ -19,6 +19,7 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
     <application
+        android:name=".PdmApp"
         android:allowBackup="true"
         android:usesCleartextTraffic="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -28,7 +29,7 @@
         android:banner="@drawable/banner"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar"
+        android:theme="@style/Theme.PerfectDNSChanger"
         tools:targetApi="31">
 
         <provider
@@ -68,7 +69,7 @@
         <activity
             android:name=".LanguageSelectionActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.PerfectDNSChanger" />
 
         <service
             android:name=".service.DnsVpnService"
@@ -97,14 +98,14 @@
         <activity android:name=".DnsRewriteActivity" android:exported="false" />
         <activity android:name=".DnsSpeedtestActivity" android:exported="false" />
         <activity android:name=".DomainTesterActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:theme="@style/Theme.PerfectDNSChanger"
             android:exported="false" />
         <activity
             android:name=".DnsProviderDetailActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:theme="@style/Theme.PerfectDNSChanger"
             android:exported="false" />
         <activity android:name=".InternetSpeedtestActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:theme="@style/Theme.PerfectDNSChanger"
             android:exported="false" />
 
     </application>

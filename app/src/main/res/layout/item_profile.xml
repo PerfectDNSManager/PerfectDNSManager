@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="13sp"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:textStyle="bold"
                 android:singleLine="true"
                 android:ellipsize="end" />
@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="10sp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:paddingHorizontal="10dp"
             android:paddingVertical="4dp"
             android:background="@drawable/btn_green_connect"
@@ -77,7 +77,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:textSize="12sp"
-        android:textColor="#CCCCCC" />
+        android:textColor="@color/pdm_text_secondary" />
 
     <!-- Ratings: 2 lines -->
     <LinearLayout
@@ -100,14 +100,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="10sp"
-                android:textColor="#CCCCCC" />
+                android:textColor="@color/pdm_text_secondary" />
 
             <TextView
                 android:id="@+id/tvSpeedStars"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="10sp"
-                android:textColor="#FFD700" />
+                android:textColor="@color/pdm_accent_gold" />
         </LinearLayout>
 
         <LinearLayout
@@ -121,14 +121,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="10sp"
-                android:textColor="#CCCCCC" />
+                android:textColor="@color/pdm_text_secondary" />
 
             <TextView
                 android:id="@+id/tvPrivacyStars"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="10sp"
-                android:textColor="#4CAF50" />
+                android:textColor="@color/pdm_accent" />
         </LinearLayout>
     </LinearLayout>
 

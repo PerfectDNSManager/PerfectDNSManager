@@ -62,6 +62,11 @@
     <string name="dns_dot_adb">📡 Afficher les DNS DoT via ADB</string>
     <string name="adb_warning">La méthode ADB modifie les paramètres système. En cas de problème de connectivité, désactivez cette option et utilisez la méthode VPN.</string>
     <string name="disable_ipv6_label">Désactiver IPv6 / Forcer IPv4</string>
+    <string name="theme_label">🎨 Thème</string>
+    <string name="theme_system">Automatique (système)</string>
+    <string name="theme_light">☀️ Clair</string>
+    <string name="theme_dark">🌙 Sombre</string>
+    <string name="theme_choose_title">Choisir le thème</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">Démarrage automatique</string>

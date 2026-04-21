@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/pdm_background"
     android:fillViewport="true">
 <LinearLayout
     android:layout_width="match_parent"
@@ -24,7 +24,7 @@
             android:text="@string/back_arrow"
             android:background="@drawable/focusable_item_background"
             android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_item_text"
             android:textSize="18sp"
             android:padding="12dp"
             android:minHeight="48dp"
@@ -36,7 +36,7 @@
             android:text="@string/settings_title"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:gravity="center"/>
     </LinearLayout>
 
@@ -45,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="#22FFFFFF"
+        android:background="@color/pdm_tint_neutral"
         android:padding="12dp"
         android:layout_marginBottom="12dp">
         <LinearLayout
@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/auto_start_label"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:textSize="15sp"/>
             <Switch
                 android:id="@+id/switchAutoStart"
@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/auto_reconnect_label"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:textSize="15sp"/>
             <Switch
                 android:id="@+id/switchAutoReconnect"
@@ -89,7 +89,7 @@
             android:id="@+id/tvAutoReconnectDns"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#88FFFFFF"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="13sp"
             android:paddingStart="4dp"
             android:layout_marginBottom="4dp"
@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/disable_ipv6_label"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:textSize="15sp"/>
             <Switch
                 android:id="@+id/switchDisableIpv6"
@@ -114,12 +114,40 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Sélecteur de thème -->
+    <LinearLayout
+        android:id="@+id/rowTheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/focusable_item_background"
+        android:foreground="@drawable/btn_focus_foreground"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:focusable="true"
+        android:clickable="true">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/theme_label"
+            android:textColor="@color/pdm_text_primary"
+            android:textSize="15sp"/>
+        <TextView
+            android:id="@+id/tvThemeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/pdm_accent_alt"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
     <!-- Section Fonctions avancées -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="#22FF6F00"
+        android:background="@color/pdm_tint_warning"
         android:padding="12dp"
         android:layout_marginBottom="12dp">
         <LinearLayout
@@ -132,7 +160,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/advanced_features_title"
-                android:textColor="#FF6F00"
+                android:textColor="@color/pdm_accent_support"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
             <Switch
@@ -167,14 +195,14 @@
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
                     android:src="@android:drawable/ic_menu_sort_by_size"
-                    android:tint="#CCCCCC"
+                    android:tint="@color/pdm_text_secondary"
                     android:scaleType="fitCenter"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/show_profile_variants"
-                    android:textColor="#CCCCCC"
+                    android:textColor="@color/pdm_text_secondary"
                     android:textSize="14sp"/>
                 <Switch
                     android:id="@+id/switchProfileVariants"
@@ -201,14 +229,14 @@
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
                     android:src="@android:drawable/ic_menu_compass"
-                    android:tint="#CCCCCC"
+                    android:tint="@color/pdm_text_secondary"
                     android:scaleType="fitCenter"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/show_doq_dns"
-                    android:textColor="#CCCCCC"
+                    android:textColor="@color/pdm_text_secondary"
                     android:textSize="14sp"/>
                 <Switch
                     android:id="@+id/switchDoqDns"
@@ -235,7 +263,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/dns_dot_adb"
-                    android:textColor="#CCCCCC"
+                    android:textColor="@color/pdm_text_secondary"
                     android:textSize="14sp"/>
                 <Switch
                     android:id="@+id/switchAdbDot"
@@ -262,14 +290,14 @@
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
                     android:src="@android:drawable/ic_menu_manage"
-                    android:tint="#CCCCCC"
+                    android:tint="@color/pdm_text_secondary"
                     android:scaleType="fitCenter"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/show_standard_dns"
-                    android:textColor="#CCCCCC"
+                    android:textColor="@color/pdm_text_secondary"
                     android:textSize="14sp"/>
                 <Switch
                     android:id="@+id/switchStandardDns"
@@ -296,7 +324,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/show_operator_dns"
-                    android:textColor="#CCCCCC"
+                    android:textColor="@color/pdm_text_secondary"
                     android:textSize="14sp"/>
                 <Switch
                     android:id="@+id/switchOperatorDns"
@@ -314,7 +342,7 @@
                 android:orientation="vertical"
                 android:visibility="gone"
                 android:layout_marginTop="8dp"
-                android:background="#11FFFFFF"
+                android:background="@color/pdm_tint_neutral"
                 android:padding="10dp">
 
                 <LinearLayout
@@ -337,7 +365,7 @@
                         android:text="@string/how_to_adb"
                         android:background="@drawable/focusable_item_background"
                         android:foreground="@drawable/btn_focus_foreground"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/pdm_item_text"
                         android:textSize="13sp"
                         android:padding="8dp"
                         android:focusable="true" />
@@ -347,9 +375,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/adb_warning"
-                    android:textColor="#FF8A80"
+                    android:textColor="@color/pdm_danger"
                     android:textSize="12sp"
-                    android:background="#22FF0000"
+                    android:background="@color/pdm_tint_danger"
                     android:padding="8dp"/>
 
                 <!-- Section Auto-permission ADB -->
@@ -359,14 +387,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_marginTop="10dp"
-                    android:background="#22388E3C"
+                    android:background="@color/pdm_tint_accent"
                     android:padding="10dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/self_grant_section_title"
-                        android:textColor="#81C784"
+                        android:textColor="@color/pdm_accent"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="4dp"/>
@@ -375,7 +403,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/self_grant_section_desc"
-                        android:textColor="#AAAAAA"
+                        android:textColor="@color/pdm_text_secondary"
                         android:textSize="11sp"
                         android:layout_marginBottom="8dp"/>
 
@@ -391,9 +419,9 @@
                         android:id="@+id/btnSelfGrant"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:backgroundTint="#388E3C"
+                        android:backgroundTint="@color/pdm_accent"
                         android:foreground="@drawable/btn_focus_foreground"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/pdm_text_primary"
                         android:textSize="12sp"
                         android:focusable="true" />
                 </LinearLayout>
@@ -406,14 +434,14 @@
                     android:orientation="vertical"
                     android:visibility="gone"
                     android:layout_marginTop="10dp"
-                    android:background="#227B1FA2"
+                    android:background="@color/pdm_tint_info"
                     android:padding="10dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/shizuku_section_title"
-                        android:textColor="#CE93D8"
+                        android:textColor="@color/pdm_accent_purple"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="4dp"/>
@@ -422,7 +450,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/shizuku_section_desc"
-                        android:textColor="#AAAAAA"
+                        android:textColor="@color/pdm_text_secondary"
                         android:textSize="11sp"
                         android:layout_marginBottom="8dp"/>
 
@@ -438,9 +466,9 @@
                         android:id="@+id/btnShizukuAction"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:backgroundTint="#7B1FA2"
+                        android:backgroundTint="@color/pdm_accent_purple"
                         android:foreground="@drawable/btn_focus_foreground"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/pdm_text_primary"
                         android:textSize="12sp"
                         android:focusable="true" />
                 </LinearLayout>
@@ -453,9 +481,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/url_rewrite_warning"
-                android:textColor="#FFD54F"
+                android:textColor="@color/pdm_accent_gold"
                 android:textSize="12sp"
-                android:background="#22FFAB00"
+                android:background="@color/pdm_tint_warning"
                 android:padding="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"/>
@@ -465,9 +493,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:text="@string/url_rewrite_button"
-                android:backgroundTint="#4A148C"
+                android:backgroundTint="@color/pdm_accent_purple_deep"
                 android:foreground="@drawable/btn_focus_foreground"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:textSize="14sp"
                 android:layout_marginBottom="4dp"
                 android:focusable="true" />
@@ -478,9 +506,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:text="@string/split_tunnel_button"
-                android:backgroundTint="#0277BD"
+                android:backgroundTint="@color/pdm_accent_info"
                 android:foreground="@drawable/btn_focus_foreground"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:textSize="14sp"
                 android:focusable="true" />
 
@@ -492,7 +520,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="#22007FFF"
+        android:background="@color/pdm_tint_info"
         android:padding="12dp"
         android:layout_marginBottom="12dp">
 
@@ -511,7 +539,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/import_export_title"
-                android:textColor="#42A5F5"
+                android:textColor="@color/pdm_accent_alt"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
             <TextView
@@ -519,7 +547,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="▶"
-                android:textColor="#42A5F5"
+                android:textColor="@color/pdm_accent_alt"
                 android:textSize="16sp"/>
         </LinearLayout>
 
@@ -535,9 +563,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:text="@string/export_config_button"
-                android:backgroundTint="#1565C0"
+                android:backgroundTint="@color/pdm_accent_info"
                 android:foreground="@drawable/btn_focus_foreground"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:textSize="14sp"
                 android:layout_marginBottom="4dp"
                 android:focusable="true" />
@@ -546,9 +574,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:text="@string/import_config_button"
-                android:backgroundTint="#2E7D32"
+                android:backgroundTint="@color/pdm_accent"
                 android:foreground="@drawable/btn_focus_foreground"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:textSize="14sp"
                 android:layout_marginBottom="4dp"
                 android:focusable="true" />
@@ -557,9 +585,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:text="@string/restore_dns_button"
-                android:backgroundTint="#1565C0"
+                android:backgroundTint="@color/pdm_accent_info"
                 android:foreground="@drawable/btn_focus_foreground"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:textSize="14sp"
                 android:focusable="true" />
             <Button
@@ -567,9 +595,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:text="@string/reset_app_button"
-                android:backgroundTint="#B71C1C"
+                android:backgroundTint="@color/pdm_danger"
                 android:foreground="@drawable/btn_focus_foreground"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:drawableStart="@android:drawable/ic_dialog_alert"
@@ -585,9 +613,9 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:text="@string/support_us_button"
-        android:backgroundTint="#FF6F00"
+        android:backgroundTint="@color/pdm_accent_support"
         android:foreground="@drawable/btn_focus_foreground"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/pdm_text_primary"
         android:textSize="14sp"
         android:layout_marginBottom="4dp"
         android:focusable="true" />
@@ -598,9 +626,9 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:text="@string/about"
-        android:backgroundTint="#333355"
+        android:backgroundTint="@color/pdm_surface_elevated"
         android:foreground="@drawable/btn_focus_foreground"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/pdm_text_primary"
         android:textSize="14sp"
         android:focusable="true" />
 </LinearLayout>

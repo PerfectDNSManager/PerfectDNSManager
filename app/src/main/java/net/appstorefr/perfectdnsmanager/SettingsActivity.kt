@@ -1,5 +1,20 @@
 package net.appstorefr.perfectdnsmanager
 
+import net.appstorefr.perfectdnsmanager.util.pdmBackground
+import net.appstorefr.perfectdnsmanager.util.pdmBorder
+import net.appstorefr.perfectdnsmanager.util.pdmSurface
+import net.appstorefr.perfectdnsmanager.util.pdmSurfaceInput
+import net.appstorefr.perfectdnsmanager.util.pdmSurfaceElevated
+import net.appstorefr.perfectdnsmanager.util.pdmTextPrimary
+import net.appstorefr.perfectdnsmanager.util.pdmTextSecondary
+import net.appstorefr.perfectdnsmanager.util.pdmTextDisabled
+import net.appstorefr.perfectdnsmanager.util.pdmAccent
+import net.appstorefr.perfectdnsmanager.util.pdmAccentAlt
+import net.appstorefr.perfectdnsmanager.util.pdmAccentGold
+import net.appstorefr.perfectdnsmanager.util.pdmAccentSupport
+import net.appstorefr.perfectdnsmanager.util.pdmDanger
+import net.appstorefr.perfectdnsmanager.util.pdmWarning
+
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -96,6 +111,40 @@ class SettingsActivity : AppCompatActivity() {
         switchAutoReconnect.isChecked = prefs.getBoolean("auto_reconnect_dns", false)
         switchAutoReconnect.isEnabled = switchAutoStart.isChecked
 
+        // ── Sélecteur de thème ──
+        val rowTheme: LinearLayout = findViewById(R.id.rowTheme)
+        val tvThemeValue: TextView = findViewById(R.id.tvThemeValue)
+        fun updateThemeLabel() {
+            val mode = prefs.getString("theme_mode", "system") ?: "system"
+            tvThemeValue.text = when (mode) {
+                "light" -> getString(R.string.theme_light)
+                "dark" -> getString(R.string.theme_dark)
+                else -> getString(R.string.theme_system)
+            }
+        }
+        updateThemeLabel()
+        rowTheme.setOnClickListener {
+            val modes = arrayOf("system", "light", "dark")
+            val labels = arrayOf(
+                getString(R.string.theme_system),
+                getString(R.string.theme_light),
+                getString(R.string.theme_dark)
+            )
+            val current = prefs.getString("theme_mode", "system") ?: "system"
+            val currentIdx = modes.indexOf(current).coerceAtLeast(0)
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.theme_choose_title))
+                .setSingleChoiceItems(labels, currentIdx) { dlg, which ->
+                    val newMode = modes[which]
+                    prefs.edit().putString("theme_mode", newMode).apply()
+                    PdmApp.applyThemeMode(newMode)
+                    dlg.dismiss()
+                    recreate()
+                }
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show()
+        }
+
         switchAutoStart.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("auto_start_enabled", isChecked).apply()
             switchAutoReconnect.isEnabled = isChecked
@@ -180,7 +229,7 @@ class SettingsActivity : AppCompatActivity() {
             // Afficher un avertissement sous le toggle
             val tvAdbCompat = TextView(this).apply {
                 text = getString(R.string.adb_requires_android9)
-                setTextColor(0xFFFF8A80.toInt())
+                setTextColor(pdmDanger())
                 textSize = 12f
                 setPadding(12, 4, 12, 8)
             }
@@ -254,7 +303,7 @@ class SettingsActivity : AppCompatActivity() {
             btnSelfGrant?.isEnabled = false
             btnSelfGrant?.text = getString(R.string.self_grant_connecting)
             tvPermissionStatus?.text = getString(R.string.self_grant_progress)
-            tvPermissionStatus?.setTextColor(0xFFFFD54F.toInt())
+            tvPermissionStatus?.setTextColor(pdmAccentGold())
 
             Thread {
                 adbDnsManager.selfGrantPermission(object : AdbDnsManager.SelfGrantCallback {
@@ -293,7 +342,7 @@ class SettingsActivity : AppCompatActivity() {
                                 }
                                 error == "GRANT_NOT_EFFECTIVE" -> {
                                     tvPermissionStatus?.text = getString(R.string.self_grant_not_effective)
-                                    tvPermissionStatus?.setTextColor(0xFFFF9800.toInt())
+                                    tvPermissionStatus?.setTextColor(pdmAccentSupport())
                                 }
                                 else -> {
                                     tvPermissionStatus?.text = getString(R.string.self_grant_error, error)
@@ -567,7 +616,7 @@ class SettingsActivity : AppCompatActivity() {
         // Description
         rootLayout.addView(TextView(this).apply {
             text = getString(R.string.split_tunnel_desc)
-            setTextColor(0xFFAAAAAA.toInt()); textSize = 12f
+            setTextColor(pdmTextSecondary()); textSize = 12f
             setPadding(0, 0, 0, 12)
         })
 
@@ -576,7 +625,7 @@ class SettingsActivity : AppCompatActivity() {
 
         val tvCount = TextView(this).apply {
             text = getString(R.string.split_tunnel_apps_count, countChecked())
-            setTextColor(0xFFFFD700.toInt()); textSize = 13f
+            setTextColor(pdmWarning()); textSize = 13f
             setPadding(0, 8, 0, 8)
         }
         rootLayout.addView(tvCount)
@@ -584,8 +633,8 @@ class SettingsActivity : AppCompatActivity() {
         // ── Collapsible category builder ──
         fun makeFocusBg(normalColor: Int): android.graphics.drawable.StateListDrawable {
             val focused = android.graphics.drawable.GradientDrawable().apply {
-                setColor(0xFF3A3A5A.toInt()); cornerRadius = 8f
-                setStroke(2, 0xFFFFD700.toInt())
+                setColor(pdmSurfaceElevated()); cornerRadius = 8f
+                setStroke(2, pdmWarning())
             }
             val normal = android.graphics.drawable.GradientDrawable().apply {
                 setColor(normalColor); cornerRadius = 8f
@@ -611,12 +660,12 @@ class SettingsActivity : AppCompatActivity() {
 
             val header = TextView(this).apply {
                 text = "\u25B6 $title"
-                setTextColor(0xFFFFD700.toInt()); textSize = 14f
+                setTextColor(pdmWarning()); textSize = 14f
                 setTypeface(null, android.graphics.Typeface.BOLD)
                 setPadding(16, 16, 16, 16)
                 isFocusable = true
                 isClickable = true
-                background = makeFocusBg(0xFF1E1E2E.toInt())
+                background = makeFocusBg(pdmBackground())
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -629,7 +678,7 @@ class SettingsActivity : AppCompatActivity() {
                 visibility = View.GONE
                 setPadding(16, 4, 8, 8)
                 background = android.graphics.drawable.GradientDrawable().apply {
-                    setColor(0xFF1A1A2A.toInt())
+                    setColor(pdmSurface())
                     cornerRadius = 0f
                 }
                 layoutParams = LinearLayout.LayoutParams(
@@ -648,7 +697,7 @@ class SettingsActivity : AppCompatActivity() {
                     setPadding(12, 6, 12, 6)
                     isFocusable = true
                     isClickable = true
-                    background = makeFocusBg(0xFF1A1A2A.toInt())
+                    background = makeFocusBg(pdmSurface())
                 }
                 val cb = android.widget.CheckBox(this).apply {
                     isFocusable = false
@@ -666,7 +715,7 @@ class SettingsActivity : AppCompatActivity() {
                 val label = if (isInstalled) app.name else "${app.name} (non install\u00e9)"
                 row.addView(TextView(this).apply {
                     text = label
-                    setTextColor(if (isInstalled) 0xFFDDDDDD.toInt() else 0xFF666666.toInt())
+                    setTextColor(if (isInstalled) pdmBorder() else pdmTextDisabled())
                     textSize = 13f
                     setPadding(8, 0, 0, 0)
                     layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
@@ -698,12 +747,12 @@ class SettingsActivity : AppCompatActivity() {
         // ── Collapsible "All apps" section ──
         val allAppsHeader = TextView(this).apply {
             text = "\u25B6 \uD83D\uDCF1 Toutes les applications"
-            setTextColor(0xFFFFD700.toInt()); textSize = 14f
+            setTextColor(pdmWarning()); textSize = 14f
             setTypeface(null, android.graphics.Typeface.BOLD)
             setPadding(16, 16, 16, 16)
             isFocusable = true
             isClickable = true
-            background = makeFocusBg(0xFF1E1E2E.toInt())
+            background = makeFocusBg(pdmBackground())
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -720,14 +769,14 @@ class SettingsActivity : AppCompatActivity() {
         // Search bar
         val searchInput = android.widget.EditText(this).apply {
             hint = getString(R.string.split_tunnel_search)
-            setTextColor(0xFFFFFFFF.toInt()); setHintTextColor(0xFF666666.toInt())
+            setTextColor(pdmTextPrimary()); setHintTextColor(pdmTextDisabled())
             textSize = 14f; setPadding(20, 12, 20, 12)
             isFocusable = true
             isFocusableInTouchMode = true
             background = android.graphics.drawable.GradientDrawable().apply {
-                setColor(0xFF333333.toInt())
+                setColor(pdmSurfaceInput())
                 cornerRadius = 8f
-                setStroke(1, 0xFF555555.toInt())
+                setStroke(1, pdmBorder())
             }
         }
         allAppsContent.addView(searchInput)
@@ -735,7 +784,7 @@ class SettingsActivity : AppCompatActivity() {
         // Hint text
         val searchHint = TextView(this).apply {
             text = "Tapez pour rechercher parmi ${allItems.size} applications..."
-            setTextColor(0xFF888888.toInt()); textSize = 12f
+            setTextColor(pdmTextDisabled()); textSize = 12f
             setPadding(8, 8, 0, 8)
         }
         allAppsContent.addView(searchHint)
@@ -756,7 +805,7 @@ class SettingsActivity : AppCompatActivity() {
                 setPadding(12, 6, 12, 6)
                 isFocusable = true
                 isClickable = true
-                background = makeFocusBg(0xFF1A1A2A.toInt())
+                background = makeFocusBg(pdmSurface())
             }
             val cb = android.widget.CheckBox(this).apply {
                 isFocusable = false
@@ -773,12 +822,12 @@ class SettingsActivity : AppCompatActivity() {
             }
             col.addView(TextView(this).apply {
                 text = item.label
-                setTextColor(0xFFDDDDDD.toInt()); textSize = 13f
+                setTextColor(pdmBorder()); textSize = 13f
                 setPadding(12, 0, 0, 0)
             })
             col.addView(TextView(this).apply {
                 text = item.pkg
-                setTextColor(0xFF777777.toInt()); textSize = 10f
+                setTextColor(pdmTextDisabled()); textSize = 10f
                 setPadding(12, 0, 0, 0)
             })
             row.addView(col)
@@ -823,7 +872,7 @@ class SettingsActivity : AppCompatActivity() {
                     if (results.size == 30) {
                         resultsContainer.addView(TextView(this@SettingsActivity).apply {
                             text = "... affinez votre recherche"
-                            setTextColor(0xFF888888.toInt()); textSize = 11f
+                            setTextColor(pdmTextDisabled()); textSize = 11f
                             setPadding(12, 8, 0, 4)
                         })
                     }
@@ -936,7 +985,7 @@ class SettingsActivity : AppCompatActivity() {
 
         val tvExplain = TextView(this).apply {
             text = getString(R.string.rewrite_explain)
-            setTextColor(0xFFCCCCCC.toInt())
+            setTextColor(pdmTextSecondary())
             textSize = 12f
         }
         layout.addView(tvExplain)
@@ -944,26 +993,26 @@ class SettingsActivity : AppCompatActivity() {
         val lbl = { text: String ->
             TextView(this).apply {
                 this.text = text
-                setTextColor(0xFFCCCCCC.toInt())
+                setTextColor(pdmTextSecondary())
                 setPadding(0, 16, 0, 4)
                 textSize = 13f
             }
         }
 
         val etDomain = android.widget.EditText(this).apply {
-            setTextColor(0xFFFFFFFF.toInt())
-            setHintTextColor(0xFF888888.toInt())
+            setTextColor(pdmTextPrimary())
+            setHintTextColor(pdmTextDisabled())
             hint = getString(R.string.source_domain_hint)
             isSingleLine = true
-            setBackgroundColor(0xFF333333.toInt())
+            setBackgroundColor(pdmSurfaceInput())
             setPadding(20, 15, 20, 15)
         }
         val etTarget = android.widget.EditText(this).apply {
-            setTextColor(0xFFFFFFFF.toInt())
-            setHintTextColor(0xFF888888.toInt())
+            setTextColor(pdmTextPrimary())
+            setHintTextColor(pdmTextDisabled())
             hint = getString(R.string.dest_domain_hint)
             isSingleLine = true
-            setBackgroundColor(0xFF333333.toInt())
+            setBackgroundColor(pdmSurfaceInput())
             setPadding(20, 15, 20, 15)
         }
 
@@ -1038,23 +1087,23 @@ class SettingsActivity : AppCompatActivity() {
         val cbProfiles = android.widget.CheckBox(this).apply {
             text = getString(R.string.export_toggle_profiles)
             isChecked = true; isEnabled = false
-            setTextColor(0xFFCCCCCC.toInt())
+            setTextColor(pdmTextSecondary())
         }
         val cbDefault = android.widget.CheckBox(this).apply {
             text = getString(R.string.export_toggle_default_dns); isChecked = true
-            setTextColor(0xFFFFFFFF.toInt())
+            setTextColor(pdmTextPrimary())
         }
         val cbNextDns = android.widget.CheckBox(this).apply {
             text = getString(R.string.export_toggle_nextdns); isChecked = true
-            setTextColor(0xFFFFFFFF.toInt())
+            setTextColor(pdmTextPrimary())
         }
         val cbRewrite = android.widget.CheckBox(this).apply {
             text = getString(R.string.export_toggle_rewrite); isChecked = true
-            setTextColor(0xFFFFFFFF.toInt())
+            setTextColor(pdmTextPrimary())
         }
         val cbSettings = android.widget.CheckBox(this).apply {
             text = getString(R.string.export_toggle_settings); isChecked = true
-            setTextColor(0xFFFFFFFF.toInt())
+            setTextColor(pdmTextPrimary())
         }
 
         layout.addView(cbProfiles)
@@ -1112,16 +1161,14 @@ class SettingsActivity : AppCompatActivity() {
                 )
                 runOnUiThread {
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("Share Code", result.shortCode))
+                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("Share Link", result.fullUrl))
                     val msg = android.text.SpannableString(
-                        "Code : ${result.shortCode}\n\nOuvrir la configuration :\nhttps://appstorefr.github.io/PerfectDNSManager/decrypt.html\n\nEntrez le code ${result.shortCode} pour importer.\n\n(code copié dans le presse-papier)"
+                        "Code : ${result.shortCode}\n\nLien complet (chiffré de bout en bout) :\n${result.fullUrl}\n\nOuvrez ce lien ou collez-le dans PDM sur l'autre appareil pour importer.\n\n(lien copié dans le presse-papier)"
                     )
                     val code = result.shortCode
-                    val greenColor = android.graphics.Color.parseColor("#4CAF50")
+                    val greenColor = pdmAccent()
                     val idx1 = msg.indexOf(code)
                     if (idx1 >= 0) msg.setSpan(android.text.style.ForegroundColorSpan(greenColor), idx1, idx1 + code.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    val idx2 = msg.indexOf(code, idx1 + code.length)
-                    if (idx2 >= 0) msg.setSpan(android.text.style.ForegroundColorSpan(greenColor), idx2, idx2 + code.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     AlertDialog.Builder(this)
                         .setTitle(getString(R.string.upload_success_title))
                         .setMessage(msg)
@@ -1145,20 +1192,20 @@ class SettingsActivity : AppCompatActivity() {
             setPadding(60, 40, 60, 20)
         }
         val tvExplain = TextView(this).apply {
-            text = getString(R.string.enter_share_code)
-            setTextColor(0xFFCCCCCC.toInt()); textSize = 13f
+            text = "Collez le lien complet de partage reçu (https://pdm.appstorefr.net/…#…) :"
+            setTextColor(pdmTextSecondary()); textSize = 13f
         }
         layout.addView(tvExplain)
         val editCode = android.widget.EditText(this).apply {
-            hint = getString(R.string.share_code_hint)
-            setTextColor(0xFFFFFFFF.toInt()); setHintTextColor(0xFF888888.toInt())
-            setBackgroundColor(0xFF333333.toInt()); setPadding(20, 15, 20, 15)
+            hint = "https://pdm.appstorefr.net/123456#..."
+            setTextColor(pdmTextPrimary()); setHintTextColor(pdmTextDisabled())
+            setBackgroundColor(pdmSurfaceInput()); setPadding(20, 15, 20, 15)
             isSingleLine = true
         }
         layout.addView(editCode)
         val tvInfo = TextView(this).apply {
             text = getString(R.string.import_code_explain)
-            setTextColor(0xFF888888.toInt()); textSize = 11f
+            setTextColor(pdmTextDisabled()); textSize = 11f
             setPadding(0, 16, 0, 0)
         }
         layout.addView(tvInfo)
@@ -1261,12 +1308,12 @@ class SettingsActivity : AppCompatActivity() {
                 }
                 "not_running" -> {
                     tv.text = getString(R.string.shizuku_not_running)
-                    tv.setTextColor(0xFFFF9800.toInt())
+                    tv.setTextColor(pdmAccentSupport())
                     btn.text = getString(R.string.shizuku_open)
                 }
                 "no_permission" -> {
                     tv.text = getString(R.string.shizuku_no_permission)
-                    tv.setTextColor(0xFFFF9800.toInt())
+                    tv.setTextColor(pdmAccentSupport())
                     btn.text = getString(R.string.shizuku_grant_permission)
                 }
                 "ready" -> {

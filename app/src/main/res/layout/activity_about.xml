@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/pdm_background"
     android:padding="24dp">
 
     <LinearLayout
@@ -19,9 +19,9 @@
             android:textSize="18sp"
             android:padding="12dp"
             android:minHeight="48dp"
-            android:backgroundTint="#333355"
+            android:backgroundTint="@color/pdm_surface_elevated"
             android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:layout_gravity="start"
             android:layout_marginBottom="16dp"
             android:focusable="true"/>
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/about_title"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
@@ -40,11 +40,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/about_community_text"
-            android:textColor="#CCCCEE"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="13sp"
             android:gravity="center"
             android:lineSpacingExtra="4dp"
-            android:background="#22FFFFFF"
+            android:background="@color/pdm_tint_neutral"
             android:padding="16dp"
             android:layout_marginBottom="12dp"/>
 
@@ -54,9 +54,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/support_about_button"
-            android:backgroundTint="#FF6F00"
+            android:backgroundTint="@color/pdm_accent_support"
             android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:layout_marginBottom="20dp"
             android:focusable="true"/>
 
@@ -64,7 +64,7 @@
             android:id="@+id/tvVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#AAAACC"
+            android:textColor="@color/pdm_text_disabled"
             android:textSize="15sp"
             android:layout_marginBottom="8dp"
             android:text="Version 1.0"/>
@@ -74,9 +74,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/check_for_updates"
-            android:backgroundTint="#0066AA"
+            android:backgroundTint="@color/pdm_accent_info"
             android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:layout_marginBottom="20dp"
             android:focusable="true"/>
 
@@ -85,11 +85,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/gpl_license_text"
-            android:textColor="#81C784"
+            android:textColor="@color/pdm_accent"
             android:textSize="12sp"
             android:gravity="center"
             android:lineSpacingExtra="3dp"
-            android:background="#22388E3C"
+            android:background="@color/pdm_tint_accent"
             android:padding="14dp"
             android:layout_marginBottom="12dp"
             android:autoLink="web"
@@ -100,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Credits"
-            android:textColor="#D4A017"
+            android:textColor="@color/pdm_warning"
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="center"
@@ -111,11 +111,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/credits_text"
-            android:textColor="#CCCCEE"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="13sp"
             android:gravity="center"
             android:lineSpacingExtra="4dp"
-            android:background="#22FFFFFF"
+            android:background="@color/pdm_tint_neutral"
             android:padding="16dp"
             android:layout_marginBottom="12dp"/>
 

@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- État focus -->
     <item android:state_focused="true">
         <shape android:shape="rectangle">
-            <solid android:color="#44FFFFFF" />
-            <stroke android:width="4dp" android:color="#00E5FF" />
-            <corners android:radius="8dp" />
+            <solid android:color="@color/pdm_surface_elevated" />
+            <stroke android:width="2dp" android:color="@color/pdm_accent" />
+            <corners android:radius="6dp" />
         </shape>
     </item>
-    <!-- État normal (fond sombre pour distinguer des profils) -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#2A2A2A" />
-            <corners android:radius="8dp" />
+            <solid android:color="@color/pdm_surface" />
+            <corners android:radius="6dp" />
         </shape>
     </item>
 </selector>

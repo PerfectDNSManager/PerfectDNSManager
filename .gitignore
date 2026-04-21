@@ -16,3 +16,8 @@ captures/
 PerfectDNSManager-SPEC-*.md
 *.zip
 dns_providers.txt
+
+# Signing secrets (CI uses env vars / GitHub secrets, never commit)
+signing/
+*.jks
+*.keystore

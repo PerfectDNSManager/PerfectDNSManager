@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/pdm_background"
     android:orientation="vertical"
     android:padding="24dp"
     android:gravity="center_horizontal">
@@ -15,9 +15,9 @@
         android:textSize="18sp"
         android:padding="12dp"
         android:minHeight="48dp"
-        android:backgroundTint="#333355"
+        android:backgroundTint="@color/pdm_surface_elevated"
         android:foreground="@drawable/btn_focus_foreground"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/pdm_text_primary"
         android:layout_gravity="start"
         android:layout_marginBottom="12dp"
         android:focusable="true"
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/support_us_title"
-        android:textColor="#FFEB3B"
+        android:textColor="@color/pdm_accent_gold"
         android:textSize="22sp"
         android:textStyle="bold"
         android:layout_marginBottom="4dp"/>
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/support_us_message"
-        android:textColor="#CCCCCC"
+        android:textColor="@color/pdm_text_secondary"
         android:textSize="13sp"
         android:layout_marginBottom="20dp"/>
 
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:text="@string/select_crypto_button"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/pdm_item_text"
         android:textSize="15sp"
         android:background="@drawable/focusable_item_background"
         android:layout_marginBottom="20dp"
@@ -59,7 +59,7 @@
         android:id="@+id/tvCryptoName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#14B8A6"
+        android:textColor="@color/pdm_accent"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginBottom="12dp"/>
@@ -89,7 +89,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="#888888"
+        android:textColor="@color/pdm_text_disabled"
         android:textSize="11sp"/>
 
 </LinearLayout>

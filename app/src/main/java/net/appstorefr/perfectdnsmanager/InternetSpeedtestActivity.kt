@@ -1,5 +1,18 @@
 package net.appstorefr.perfectdnsmanager
 
+import net.appstorefr.perfectdnsmanager.util.pdmBackground
+import net.appstorefr.perfectdnsmanager.util.pdmBorder
+import net.appstorefr.perfectdnsmanager.util.pdmSurface
+import net.appstorefr.perfectdnsmanager.util.pdmSurfaceInput
+import net.appstorefr.perfectdnsmanager.util.pdmSurfaceElevated
+import net.appstorefr.perfectdnsmanager.util.pdmTextPrimary
+import net.appstorefr.perfectdnsmanager.util.pdmTextSecondary
+import net.appstorefr.perfectdnsmanager.util.pdmTextDisabled
+import net.appstorefr.perfectdnsmanager.util.pdmAccent
+import net.appstorefr.perfectdnsmanager.util.pdmAccentAlt
+import net.appstorefr.perfectdnsmanager.util.pdmDanger
+import net.appstorefr.perfectdnsmanager.util.pdmWarning
+
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -55,19 +68,21 @@ enum class SpeedBackend(val label: String) {
  */
 class InternetSpeedtestActivity : AppCompatActivity() {
 
+    // Theme-aware colors (instance-level, resolves via Context)
+    private val COLOR_BG: Int get() = pdmBackground()
+    private val COLOR_WHITE: Int get() = pdmTextPrimary()
+    private val COLOR_LIGHT_GREY: Int get() = pdmTextSecondary()
+    private val COLOR_GREEN: Int get() = pdmAccent()
+    private val COLOR_RED: Int get() = pdmDanger()
+    private val COLOR_DIM: Int get() = pdmTextDisabled()
+
     companion object {
         private const val TAG = "InternetSpeedtest"
 
-        // Dark theme colors
-        private const val COLOR_BG = 0xFF1E1E1E.toInt()
+        // Data-viz palette (constants, volontairement non-thématiques)
         private const val COLOR_BG_CARD = 0xFF16213E.toInt()
-        private const val COLOR_WHITE = 0xFFFFFFFF.toInt()
-        private const val COLOR_LIGHT_GREY = 0xFFCCCCCC.toInt()
         private const val COLOR_CYAN = 0xFF00E5FF.toInt()
-        private const val COLOR_GREEN = 0xFF4CAF50.toInt()
-        private const val COLOR_RED = 0xFFF44336.toInt()
         private const val COLOR_VIOLET = 0xFFBB86FC.toInt()
-        private const val COLOR_DIM = 0xFF888888.toInt()
         private const val COLOR_CHIP_INACTIVE = 0xFF2A2A4A.toInt()
 
         // Cloudflare endpoints

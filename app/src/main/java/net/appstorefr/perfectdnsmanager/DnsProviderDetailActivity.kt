@@ -1,5 +1,18 @@
 package net.appstorefr.perfectdnsmanager
 
+import net.appstorefr.perfectdnsmanager.util.pdmBackground
+import net.appstorefr.perfectdnsmanager.util.pdmBorder
+import net.appstorefr.perfectdnsmanager.util.pdmSurface
+import net.appstorefr.perfectdnsmanager.util.pdmSurfaceInput
+import net.appstorefr.perfectdnsmanager.util.pdmSurfaceElevated
+import net.appstorefr.perfectdnsmanager.util.pdmTextPrimary
+import net.appstorefr.perfectdnsmanager.util.pdmTextSecondary
+import net.appstorefr.perfectdnsmanager.util.pdmTextDisabled
+import net.appstorefr.perfectdnsmanager.util.pdmAccent
+import net.appstorefr.perfectdnsmanager.util.pdmAccentAlt
+import net.appstorefr.perfectdnsmanager.util.pdmDanger
+import net.appstorefr.perfectdnsmanager.util.pdmWarning
+
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -124,22 +137,22 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         }
 
         val etName = EditText(this).apply {
-            setText(profile.name); setTextColor(0xFFFFFFFF.toInt())
-            setBackgroundColor(0xFF333333.toInt()); setPadding(20, 15, 20, 15)
-            hint = getString(R.string.profile_name); setHintTextColor(0xFF888888.toInt())
+            setText(profile.name); setTextColor(pdmTextPrimary())
+            setBackgroundColor(pdmSurfaceInput()); setPadding(20, 15, 20, 15)
+            hint = getString(R.string.profile_name); setHintTextColor(pdmTextDisabled())
         }
         val etPrimary = EditText(this).apply {
-            setText(profile.primary); setTextColor(0xFFFFFFFF.toInt())
-            setBackgroundColor(0xFF333333.toInt()); setPadding(20, 15, 20, 15)
-            hint = getString(R.string.primary_dns); setHintTextColor(0xFF888888.toInt())
+            setText(profile.primary); setTextColor(pdmTextPrimary())
+            setBackgroundColor(pdmSurfaceInput()); setPadding(20, 15, 20, 15)
+            hint = getString(R.string.primary_dns); setHintTextColor(pdmTextDisabled())
         }
         val etSecondary = EditText(this).apply {
-            setText(profile.secondary ?: ""); setTextColor(0xFFFFFFFF.toInt())
-            setBackgroundColor(0xFF333333.toInt()); setPadding(20, 15, 20, 15)
-            hint = getString(R.string.secondary_dns_optional); setHintTextColor(0xFF888888.toInt())
+            setText(profile.secondary ?: ""); setTextColor(pdmTextPrimary())
+            setBackgroundColor(pdmSurfaceInput()); setPadding(20, 15, 20, 15)
+            hint = getString(R.string.secondary_dns_optional); setHintTextColor(pdmTextDisabled())
         }
 
-        val lbl = { text: String -> TextView(this).apply { this.text = text; setTextColor(0xFFCCCCCC.toInt()); setPadding(0, 16, 0, 8) } }
+        val lbl = { text: String -> TextView(this).apply { this.text = text; setTextColor(pdmTextSecondary()); setPadding(0, 16, 0, 8) } }
 
         layout.addView(lbl(getString(R.string.name_label))); layout.addView(etName)
         layout.addView(lbl(getString(R.string.primary_dns_label))); layout.addView(etPrimary)
@@ -170,11 +183,37 @@ class DnsProviderDetailActivity : AppCompatActivity() {
             .setMessage("${profile.providerName} \u2014 ${profile.name}\n${profile.primary}")
             .setPositiveButton(getString(R.string.delete)) { _, _ ->
                 profileManager.deleteProfile(profile.id)
+                if (profile.isCustom && profile.providerName == "NextDNS") {
+                    val nextDnsId = extractNextDnsId(profile.primary)
+                    if (nextDnsId != null) {
+                        val customPrefs = getSharedPreferences("nextdns_profiles", MODE_PRIVATE)
+                        val savedIds = (customPrefs.getStringSet("profile_ids", emptySet()) ?: emptySet()).toMutableSet()
+                        if (savedIds.remove(nextDnsId)) {
+                            customPrefs.edit().putStringSet("profile_ids", savedIds).apply()
+                        }
+                    }
+                }
                 Toast.makeText(this, getString(R.string.profile_deleted), Toast.LENGTH_SHORT).show()
                 recreate()
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .show()
+    }
+
+    /**
+     * Extrait l'ID NextDNS depuis l'URL primaire d'un profil.
+     * Formats : quic://dns.nextdns.io/ID, https://dns.nextdns.io/ID, ID.dns.nextdns.io.
+     * Renvoie null pour le mode Standard (IP sans ID).
+     */
+    private fun extractNextDnsId(primary: String): String? {
+        val trimmed = primary.trim()
+        Regex("""(?:quic://|https://)dns\.nextdns\.io/([a-z0-9]+)""").find(trimmed)?.let {
+            return it.groupValues[1]
+        }
+        Regex("""^([a-z0-9]+)\.dns\.nextdns\.io$""").find(trimmed)?.let {
+            return it.groupValues[1]
+        }
+        return null
     }
 
     private fun showAddNextDnsProfileDialog() {
@@ -185,7 +224,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
 
         val tvProto = TextView(this).apply {
             text = "Protocole :"
-            setTextColor(0xFFCCCCCC.toInt())
+            setTextColor(pdmTextSecondary())
             textSize = 13f
             setPadding(0, 0, 0, 8)
         }
@@ -204,7 +243,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         for (i in protocols.indices) {
             val rb = RadioButton(this).apply {
                 text = protocols[i]
-                setTextColor(0xFFFFFFFF.toInt())
+                setTextColor(pdmTextPrimary())
                 buttonTintList = ColorStateList.valueOf(protoColors[i])
                 id = View.generateViewId()
                 textSize = 14f
@@ -225,7 +264,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
             }
             override fun updateDrawState(ds: android.text.TextPaint) {
                 super.updateDrawState(ds)
-                ds.color = 0xFF64B5F6.toInt()
+                ds.color = this@DnsProviderDetailActivity.pdmAccentAlt()
                 ds.isUnderlineText = true
             }
         }, urlStart, urlEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -233,7 +272,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         val tvWarning = TextView(this).apply {
             text = spannableWarning
             movementMethod = LinkMovementMethod.getInstance()
-            setTextColor(0xFFFFCC00.toInt())
+            setTextColor(pdmWarning())
             textSize = 12f
             setPadding(0, 12, 0, 8)
             visibility = View.GONE
@@ -253,15 +292,15 @@ class DnsProviderDetailActivity : AppCompatActivity() {
 
         val tvId = TextView(this).apply {
             text = "\nProfile ID NextDNS :"
-            setTextColor(0xFFCCCCCC.toInt())
+            setTextColor(pdmTextSecondary())
             textSize = 13f
         }
         layout.addView(tvId)
 
         val etProfileId = EditText(this).apply {
             hint = "ex: abc123"
-            setTextColor(0xFFFFFFFF.toInt())
-            setHintTextColor(0xFF666666.toInt())
+            setTextColor(pdmTextPrimary())
+            setHintTextColor(pdmTextDisabled())
             textSize = 14f
             focusable = View.FOCUSABLE
         }

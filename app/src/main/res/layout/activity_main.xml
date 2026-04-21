@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#1E1E1E"
+    android:background="@color/pdm_background"
     android:padding="16dp"
     tools:context=".MainActivity">
 
@@ -16,14 +16,13 @@
 
         <Button
             android:id="@+id/btnLanguage"
+            style="@style/PDMButton.Ghost"
             android:layout_width="wrap_content"
             android:layout_height="52dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/focusable_item_background"
-            android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
+            android:textColor="@color/pdm_text_primary"
+            android:textSize="28sp"
             android:textAllCaps="false"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
@@ -34,6 +33,7 @@
 
         <TextView
             android:id="@+id/tvTitle"
+            style="@style/PDMText.Subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/btnLanguage"
@@ -42,8 +42,8 @@
             android:gravity="center"
             android:text="@string/dns_switcher"
             android:textSize="16sp"
-            android:textColor="#D4A017"
-            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/pdm_text_primary"
+            android:letterSpacing="0.02"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp" />
 
@@ -53,8 +53,7 @@
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/focusable_item_background"
-            android:foreground="@drawable/btn_focus_foreground"
+            android:background="@drawable/pdm_btn_secondary"
             android:src="@drawable/ic_settings"
             android:scaleType="centerInside"
             android:padding="8dp"
@@ -67,12 +66,11 @@
     <!-- 1| Fournisseur DNS -->
     <TextView
         android:id="@+id/tvDnsProviderLabel"
+        style="@style/PDMText.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/dns_provider_label"
-        android:textSize="13sp"
-        android:textColor="#CCCCCC"
-        android:layout_marginBottom="3dp" />
+        android:layout_marginBottom="4dp" />
 
     <LinearLayout
         android:id="@+id/layoutSelectDns"
@@ -82,9 +80,8 @@
         android:gravity="center_vertical"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:layout_marginBottom="4dp"
-        android:background="@drawable/focusable_item_background"
-        android:foreground="@drawable/btn_focus_foreground"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/pdm_btn_secondary"
         android:focusable="true"
         android:clickable="true"
         android:nextFocusUp="@id/btnLanguage"
@@ -101,12 +98,12 @@
 
         <TextView
             android:id="@+id/tvSelectDns"
+            style="@style/PDMText.Body"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/dns_select_button"
-            android:textSize="13sp"
-            android:textColor="#2E7D32"
+            android:textColor="@color/pdm_accent"
             android:gravity="center"
             android:textAllCaps="false" />
     </LinearLayout>
@@ -114,25 +111,22 @@
     <!-- 2| Activation -->
     <TextView
         android:id="@+id/tvActivationLabel"
+        style="@style/PDMText.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/activation_label"
-        android:textSize="13sp"
-        android:textColor="#CCCCCC"
-        android:layout_marginBottom="3dp" />
+        android:layout_marginBottom="4dp" />
 
     <Button
         android:id="@+id/btnToggle"
+        style="@style/PDMButton.Primary"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="48dp"
         android:text="@string/activate"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:background="@drawable/btn_activate_background"
-        android:foreground="@drawable/btn_focus_foreground"
         android:focusable="true"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:nextFocusUp="@id/layoutSelectDns"
         android:nextFocusDown="@id/swToolsToggle" />
 
@@ -142,23 +136,21 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="3dp">
+        android:layout_marginBottom="4dp">
 
         <TextView
             android:id="@+id/tvToolsLabel"
+            style="@style/PDMText.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/tools_section_label"
-            android:textSize="13sp"
-            android:textColor="#CCCCCC" />
+            android:text="@string/tools_section_label" />
 
         <Switch
             android:id="@+id/swToolsToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:focusable="true"
-            android:background="@drawable/focusable_item_background"
             android:nextFocusUp="@id/btnToggle"
             android:nextFocusDown="@id/btnDomainTester" />
     </LinearLayout>
@@ -170,8 +162,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:background="#12FFFFFF"
-        android:padding="8dp">
+        android:background="@drawable/pdm_card_bg"
+        android:padding="10dp">
 
         <!-- Boutons Testeur domaine + Générer rapport côte à côte -->
         <LinearLayout
@@ -182,34 +174,28 @@
 
             <Button
                 android:id="@+id/btnDomainTester"
+                style="@style/PDMButton"
                 android:layout_width="0dp"
-                android:layout_height="34dp"
+                android:layout_height="38dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp"
                 android:text="@string/quick_dns_test_button"
-                android:textSize="11sp"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#0D47A1"
-                android:foreground="@drawable/btn_focus_foreground"
+                android:textSize="12sp"
                 android:focusable="true"
-                android:textAllCaps="false"
                 android:nextFocusUp="@id/btnToggle"
                 android:nextFocusRight="@id/btnGenerateReport"
                 android:nextFocusDown="@id/btnSpeedtest" />
 
             <Button
                 android:id="@+id/btnGenerateReport"
+                style="@style/PDMButton"
                 android:layout_width="0dp"
-                android:layout_height="34dp"
+                android:layout_height="38dp"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:text="@string/generate_report_button"
-                android:textSize="11sp"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#1B5E20"
-                android:foreground="@drawable/btn_focus_foreground"
+                android:textSize="12sp"
                 android:focusable="true"
-                android:textAllCaps="false"
                 android:nextFocusUp="@id/btnToggle"
                 android:nextFocusLeft="@id/btnDomainTester"
                 android:nextFocusDown="@id/btnShareReport" />
@@ -224,34 +210,28 @@
 
             <Button
                 android:id="@+id/btnSpeedtest"
+                style="@style/PDMButton"
                 android:layout_width="0dp"
-                android:layout_height="34dp"
+                android:layout_height="38dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp"
                 android:text="@string/internet_speedtest_advanced"
-                android:textSize="11sp"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#FF6F00"
-                android:foreground="@drawable/btn_focus_foreground"
+                android:textSize="12sp"
                 android:focusable="true"
-                android:textAllCaps="false"
                 android:nextFocusUp="@id/btnDomainTester"
                 android:nextFocusRight="@id/btnShareReport"
                 android:nextFocusDown="@id/scrollStatus" />
 
             <Button
                 android:id="@+id/btnShareReport"
+                style="@style/PDMButton.Primary"
                 android:layout_width="0dp"
-                android:layout_height="34dp"
+                android:layout_height="38dp"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:text="@string/share_report_button"
-                android:textSize="11sp"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#B71C1C"
-                android:foreground="@drawable/btn_focus_foreground"
+                android:textSize="12sp"
                 android:focusable="true"
-                android:textAllCaps="false"
                 android:nextFocusUp="@id/btnGenerateReport"
                 android:nextFocusLeft="@id/btnSpeedtest"
                 android:nextFocusDown="@id/scrollReport" />
@@ -263,31 +243,30 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="4dp">
 
-            <!-- Left: Status info (DNS actif, IP, etc.) -->
+            <!-- Left: Status info -->
             <ScrollView
                 android:id="@+id/scrollStatus"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginEnd="2dp"
+                android:layout_marginEnd="4dp"
                 android:fillViewport="true"
-                android:background="@drawable/focusable_item_background"
+                android:background="@drawable/pdm_card_bg"
                 android:focusable="true"
                 android:nextFocusUp="@id/btnSpeedtest"
                 android:nextFocusRight="@id/scrollReport">
                 <TextView
                     android:id="@+id/tvStatusInfo"
+                    style="@style/PDMText.Mono"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/no_active_dns"
                     android:textSize="11sp"
-                    android:textColor="#AAAAAA"
-                    android:fontFamily="monospace"
-                    android:lineSpacingExtra="2dp"
-                    android:padding="6dp" />
+                    android:textColor="@color/pdm_text_secondary"
+                    android:padding="10dp" />
             </ScrollView>
 
             <!-- Right: Report -->
@@ -296,22 +275,21 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginStart="2dp"
+                android:layout_marginStart="4dp"
                 android:fillViewport="true"
-                android:background="@drawable/focusable_item_background"
+                android:background="@drawable/pdm_card_bg"
                 android:focusable="true"
                 android:nextFocusUp="@id/btnShareReport"
                 android:nextFocusLeft="@id/scrollStatus">
                 <TextView
                     android:id="@+id/tvReportContent"
+                    style="@style/PDMText.Mono"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/no_report_yet"
                     android:textSize="11sp"
-                    android:textColor="#AAAAAA"
-                    android:fontFamily="monospace"
-                    android:lineSpacingExtra="2dp"
-                    android:padding="6dp" />
+                    android:textColor="@color/pdm_text_secondary"
+                    android:padding="10dp" />
             </ScrollView>
         </LinearLayout>
     </LinearLayout>

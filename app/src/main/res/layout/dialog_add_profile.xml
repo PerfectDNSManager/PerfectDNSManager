@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#1E1E1E">
+    android:background="@color/pdm_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:text="@string/new_dns_profile"
             android:textSize="18sp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:textStyle="bold"
             android:gravity="center"
             android:layout_marginBottom="8dp" />
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/profile_name"
-            android:textColor="#CCCCCC"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="14sp"
             android:layout_marginBottom="4dp" />
 
@@ -34,9 +34,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/profile_name_hint"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:background="#444444"
+            android:textColor="@color/pdm_text_primary"
+            android:textColorHint="@color/pdm_text_disabled"
+            android:background="@drawable/edit_text_background"
             android:padding="10dp"
             android:layout_marginBottom="10dp"
             android:focusable="true" />
@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/dns_type"
-            android:textColor="#CCCCCC"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="14sp"
             android:layout_marginBottom="8dp" />
 
@@ -62,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:text="DNS over HTTPS (DoH) — Recommandé"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:buttonTint="#44FF44"
                 android:background="@drawable/focusable_item_background"
                 android:padding="8dp"
@@ -73,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:text="DNS over TLS (DoT)"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:buttonTint="#FFB700"
                 android:background="@drawable/focusable_item_background"
                 android:padding="8dp"
@@ -84,7 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:text="DNS over QUIC (DoQ)"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:buttonTint="#7B68EE"
                 android:background="@drawable/focusable_item_background"
                 android:padding="8dp"
@@ -95,7 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:text="Standard (UDP non chiffré)"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_text_primary"
                 android:buttonTint="#888888"
                 android:background="@drawable/focusable_item_background"
                 android:padding="8dp"
@@ -107,7 +107,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/primary_dns"
-            android:textColor="#CCCCCC"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="14sp"
             android:layout_marginBottom="4dp" />
 
@@ -116,9 +116,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/primary_dns_hint"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:background="#444444"
+            android:textColor="@color/pdm_text_primary"
+            android:textColorHint="@color/pdm_text_disabled"
+            android:background="@drawable/edit_text_background"
             android:padding="10dp"
             android:layout_marginBottom="8dp"
             android:focusable="true" />
@@ -129,7 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/secondary_dns_optional"
-            android:textColor="#CCCCCC"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="14sp"
             android:layout_marginBottom="4dp"
             android:visibility="gone" />
@@ -139,9 +139,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/secondary_dns_hint"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:background="#444444"
+            android:textColor="@color/pdm_text_primary"
+            android:textColorHint="@color/pdm_text_disabled"
+            android:background="@drawable/edit_text_background"
             android:padding="10dp"
             android:layout_marginBottom="8dp"
             android:visibility="gone"
@@ -153,7 +153,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="DNS Primaire IPv6 (optionnel)"
-            android:textColor="#CCCCCC"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="14sp"
             android:layout_marginBottom="4dp"
             android:visibility="gone"/>
@@ -163,9 +163,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="ex: 2606:4700:4700::1111"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:background="#444444"
+            android:textColor="@color/pdm_text_primary"
+            android:textColorHint="@color/pdm_text_disabled"
+            android:background="@drawable/edit_text_background"
             android:padding="10dp"
             android:layout_marginBottom="8dp"
             android:visibility="gone"
@@ -177,9 +177,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="DNS Secondaire IPv6 (optionnel)"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
-            android:background="#444444"
+            android:textColor="@color/pdm_text_primary"
+            android:textColorHint="@color/pdm_text_disabled"
+            android:background="@drawable/edit_text_background"
             android:padding="10dp"
             android:layout_marginBottom="10dp"
             android:visibility="gone"
@@ -197,7 +197,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_item_text"
                 android:background="@drawable/focusable_item_background"
                 android:layout_marginEnd="12dp"
                 android:focusable="true" />
@@ -207,7 +207,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/save"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/pdm_item_text"
                 android:background="@drawable/focusable_item_background"
                 android:focusable="true" />
         </LinearLayout>

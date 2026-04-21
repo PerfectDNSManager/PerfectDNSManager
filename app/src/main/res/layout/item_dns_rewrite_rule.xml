@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:padding="12dp"
     android:gravity="center_vertical"
-    android:background="#2C2C2E">
+    android:background="@color/pdm_surface">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -17,7 +17,7 @@
             android:id="@+id/tvFromDomain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:textSize="16sp"
             android:text="ygg.re"/>
 
@@ -25,7 +25,7 @@
             android:id="@+id/tvToDomain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#CCCCCC"
+            android:textColor="@color/pdm_text_secondary"
             android:textSize="14sp"
             android:text="→ google.fr"/>
 
@@ -35,14 +35,17 @@
         android:id="@+id/switchEnableRule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"/>
+        android:layout_marginStart="16dp"
+        android:focusable="true"
+        android:foreground="@drawable/btn_focus_foreground"/>
 
     <ImageButton
         android:id="@+id/btnDeleteRule"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@android:drawable/ic_menu_delete"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_marginStart="8dp"/>
+        android:background="@drawable/focusable_item_background"
+        android:layout_marginStart="8dp"
+        android:focusable="true"/>
 
 </LinearLayout>

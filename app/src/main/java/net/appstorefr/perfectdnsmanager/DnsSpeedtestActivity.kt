@@ -1,5 +1,18 @@
 package net.appstorefr.perfectdnsmanager
 
+import net.appstorefr.perfectdnsmanager.util.pdmBackground
+import net.appstorefr.perfectdnsmanager.util.pdmBorder
+import net.appstorefr.perfectdnsmanager.util.pdmSurface
+import net.appstorefr.perfectdnsmanager.util.pdmSurfaceInput
+import net.appstorefr.perfectdnsmanager.util.pdmSurfaceElevated
+import net.appstorefr.perfectdnsmanager.util.pdmTextPrimary
+import net.appstorefr.perfectdnsmanager.util.pdmTextSecondary
+import net.appstorefr.perfectdnsmanager.util.pdmTextDisabled
+import net.appstorefr.perfectdnsmanager.util.pdmAccent
+import net.appstorefr.perfectdnsmanager.util.pdmAccentAlt
+import net.appstorefr.perfectdnsmanager.util.pdmDanger
+import net.appstorefr.perfectdnsmanager.util.pdmWarning
+
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
@@ -40,15 +53,17 @@ class DnsSpeedtestActivity : AppCompatActivity() {
     @Volatile private var running = false
     private var testThread: Thread? = null
 
+    // Theme-aware colors (instance-level)
+    private val COLOR_GREEN: Int get() = pdmAccent()
+    private val COLOR_RED: Int get() = pdmDanger()
+    private val COLOR_GREY: Int get() = pdmTextDisabled()
+    private val COLOR_GOLD: Int get() = pdmWarning()
+
     companion object {
-        private const val COLOR_GREEN = 0xFF4CAF50.toInt()
         private const val COLOR_YELLOW = 0xFFFFEB3B.toInt()
         private const val COLOR_ORANGE = 0xFFFF9800.toInt()
-        private const val COLOR_RED = 0xFFF44336.toInt()
-        private const val COLOR_GREY = 0xFF888888.toInt()
         private const val COLOR_WHITE = 0xFFEEEEEE.toInt()
         private const val COLOR_CYAN = 0xFF00BCD4.toInt()
-        private const val COLOR_GOLD = 0xFFFFD700.toInt()
     }
 
     private data class SpeedResult(
@@ -118,7 +133,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
     private fun setButtonStart() {
         runOnUiThread {
             btnStartStop.text = getString(R.string.dns_speedtest_button)
-            btnStartStop.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF4CAF50.toInt())
+            btnStartStop.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmAccent())
             btnStartStop.isEnabled = true
             running = false
         }
@@ -127,7 +142,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
     private fun setButtonStop() {
         runOnUiThread {
             btnStartStop.text = "\u25A0  Stop"
-            btnStartStop.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFFF44336.toInt())
+            btnStartStop.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmDanger())
             btnStartStop.isEnabled = true
             running = true
         }

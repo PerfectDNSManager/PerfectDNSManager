@@ -3,7 +3,6 @@ package net.appstorefr.perfectdnsmanager.util
 import android.util.Base64
 import android.util.Log
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -24,12 +23,8 @@ class EncryptedSharer {
         private const val GCM_IV_SIZE = 12
         private const val GCM_TAG_SIZE = 128
 
-        private const val VAULT_API_URL = "https://vault.appstorefr.net/api/vault/upload"
-        private const val VAULT_API_KEY = "vault_af7ded81310c93ec6c555678bdac3b68967166e8e51ba3e5"
-        private const val VAULT_RAW_URL = "https://vault.appstorefr.net/raw"
-
-        private const val CUT_API_URL = "https://cut.appstorefr.net/api/cut/links"
-        private const val CUT_API_KEY = "cut_1889e2e1a1a89e228bfec6f1f48351298b5f045eaa1556ea"
+        private const val PDM_BASE_URL = "https://pdm.appstorefr.net"
+        private const val PDM_API_KEY = "2b396e45cea4b5f9d7176bad3552c5ad0ba2c9170e917f5aa235e43f9292ba2e"
 
         data class UploadResult(
             val shortCode: String,
@@ -39,139 +34,141 @@ class EncryptedSharer {
         )
 
         /**
-         * Encrypt content, upload to vault.appstorefr.net, shorten via cut.appstorefr.net.
-         * Content is AES-256-GCM encrypted before upload.
-         * @param content The text content to share
-         * @param fileName The filename for the upload
-         * @param expiresIn Expiry duration (e.g. "1h", "72h")
-         * @return UploadResult with short code and decryption key
+         * Chiffre le contenu en AES-256-GCM (IV||ciphertext||tag), upload sur pdm.appstorefr.net,
+         * retourne un slug court (6 chiffres) et l'URL de déchiffrement avec la clé en fragment.
          */
         fun encryptAndUpload(content: String, fileName: String = "data.enc", expiresIn: String = "1h"): UploadResult {
-            // 1. Generate AES-256 key
             val keyGen = KeyGenerator.getInstance("AES")
             keyGen.init(AES_KEY_SIZE)
             val secretKey = keyGen.generateKey()
-            val keyBase64 = Base64.encodeToString(secretKey.encoded, Base64.URL_SAFE or Base64.NO_WRAP)
+            val keyBase64 = Base64.encodeToString(secretKey.encoded, Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING)
 
-            // 2. Encrypt with AES-256-GCM
             val iv = ByteArray(GCM_IV_SIZE)
             SecureRandom().nextBytes(iv)
             val cipher = Cipher.getInstance("AES/GCM/NoPadding")
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, GCMParameterSpec(GCM_TAG_SIZE, iv))
             val encrypted = cipher.doFinal(content.toByteArray(Charsets.UTF_8))
 
-            // 3. Combine IV + encrypted data
             val combined = iv + encrypted
-            val encryptedBase64 = Base64.encodeToString(combined, Base64.NO_WRAP)
 
-            // 4. Upload to vault.appstorefr.net (encrypted content)
             val client = OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(15, TimeUnit.SECONDS)
                 .build()
 
-            val body = MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("file", fileName,
-                    encryptedBase64.toByteArray().toRequestBody("application/octet-stream".toMediaType()))
+            val nameParam = java.net.URLEncoder.encode(fileName, "UTF-8")
+            val uploadUrl = "$PDM_BASE_URL/api/upload?expires_in=$expiresIn&name=$nameParam"
+
+            val request = Request.Builder()
+                .url(uploadUrl)
+                .header("X-API-Key", PDM_API_KEY)
+                .post(combined.toRequestBody("application/octet-stream".toMediaType()))
                 .build()
 
-            val uploadRequest = Request.Builder()
-                .url(VAULT_API_URL)
-                .header("X-API-Key", VAULT_API_KEY)
-                .post(body)
-                .build()
+            Log.d(TAG, "Uploading ${combined.size} bytes to pdm.appstorefr.net")
+            val response = client.newCall(request).execute()
+            val body = response.body?.string()?.trim() ?: ""
+            response.close()
 
-            Log.d(TAG, "Uploading ${encryptedBase64.length} chars to vault.appstorefr.net")
-            val uploadResponse = client.newCall(uploadRequest).execute()
-            val responseBody = uploadResponse.body?.string()?.trim() ?: ""
-            uploadResponse.close()
-            Log.d(TAG, "vault response: $responseBody")
-
-            val json = JSONObject(responseBody)
-            val vaultId = json.optString("id", "")
-            if (vaultId.isBlank()) {
-                throw Exception("Upload failed: no id in response — $responseBody")
+            if (!response.isSuccessful) {
+                throw Exception("Upload failed (${response.code}): $body")
             }
-            val fileUrl = "$VAULT_RAW_URL/$vaultId"
-            Log.d(TAG, "vault link: $fileUrl")
 
-            // 5. Build decrypt page URL with file URL + key in fragment
-            val decryptPageUrl = "https://appstorefr.github.io/PerfectDNSManager/decrypt.html#${java.net.URLEncoder.encode(fileUrl, "UTF-8")}|$keyBase64"
-            Log.d(TAG, "Decrypt page URL: $decryptPageUrl")
+            val json = JSONObject(body)
+            val slug = json.optString("slug", "")
+            val decryptUrl = json.optString("decrypt_url", "")
+            val rawUrl = json.optString("raw_url", "")
+            if (slug.isBlank() || decryptUrl.isBlank()) {
+                throw Exception("Upload response invalid: $body")
+            }
 
-            // 6. Shorten via cut.appstorefr.net with numeric code
-            Log.d(TAG, "Shortening URL via cut.appstorefr.net...")
-            val shortCode = shortenUrl(decryptPageUrl, client)
-            Log.d(TAG, "Short code: $shortCode")
+            val fullUrl = "$decryptUrl#$keyBase64"
+            Log.d(TAG, "slug=$slug decrypt=$fullUrl")
 
             return UploadResult(
-                shortCode = shortCode,
+                shortCode = slug,
                 decryptionKey = keyBase64,
-                fullUrl = decryptPageUrl,
-                fileUrl = fileUrl
+                fullUrl = fullUrl,
+                fileUrl = rawUrl
             )
         }
 
         /**
-         * Download from short URL, decrypt and return content.
-         * @param shortCode The cut.appstorefr.net short code (e.g. "123456" or full URL)
-         * @return Decrypted content string
+         * Télécharge et déchiffre depuis un code 6 chiffres ou une URL complète (optionnellement avec #clé).
+         * Pour un code nu, la clé doit être fournie séparément via [decrypt].
          */
-        fun downloadAndDecrypt(shortCode: String): String {
+        fun downloadAndDecrypt(shortCodeOrUrl: String, explicitKey: String? = null): String {
+            val (slug, keyFromFragment) = parseSlugAndKey(shortCodeOrUrl)
+            val key = explicitKey ?: keyFromFragment
+                ?: throw Exception("Clé de déchiffrement manquante (attendue dans le fragment #)")
+
             val client = OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .readTimeout(15, TimeUnit.SECONDS)
-                .followRedirects(false)
                 .build()
 
-            // 1. Resolve cut.appstorefr.net short URL via Location header (301)
-            val cutUrl = if (shortCode.startsWith("http")) shortCode
-                else "https://cut.appstorefr.net/$shortCode"
-
-            val expandRequest = Request.Builder()
-                .url(cutUrl)
+            val request = Request.Builder()
+                .url("$PDM_BASE_URL/r/$slug")
                 .build()
-            val expandResponse = client.newCall(expandRequest).execute()
-            val expandedUrl = expandResponse.header("Location") ?: ""
-            expandResponse.close()
+            val response = client.newCall(request).execute()
+            if (!response.isSuccessful) {
+                response.close()
+                throw Exception("Téléchargement échoué (${response.code}) pour slug=$slug")
+            }
+            val bytes = response.body?.bytes() ?: ByteArray(0)
+            response.close()
 
-            if (expandedUrl.isBlank() || !expandedUrl.startsWith("http")) {
-                throw Exception("Cannot resolve short URL: $shortCode")
+            if (bytes.size < GCM_IV_SIZE + 16) {
+                throw Exception("Contenu trop court (${bytes.size} octets)")
             }
 
-            // 2. Extract key from fragment (#)
-            val parts = expandedUrl.split("#", limit = 2)
-            if (parts.size < 2) throw Exception("No decryption key in URL")
-            val fragmentParts = parts[1].split("|", limit = 2)
-            if (fragmentParts.size < 2) throw Exception("Invalid URL format")
-            val fileUrl = java.net.URLDecoder.decode(fragmentParts[0], "UTF-8")
-            val keyBase64 = fragmentParts[1]
+            val keyBytes = Base64.decode(key, Base64.URL_SAFE or Base64.NO_WRAP or Base64.NO_PADDING)
+            val secretKey: SecretKey = SecretKeySpec(keyBytes, "AES")
+            val iv = bytes.copyOfRange(0, GCM_IV_SIZE)
+            val encrypted = bytes.copyOfRange(GCM_IV_SIZE, bytes.size)
 
-            // 3. Download encrypted data from vault
-            val dlClient = OkHttpClient.Builder()
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .followRedirects(true)
-                .followSslRedirects(true)
-                .build()
-
-            val downloadRequest = Request.Builder()
-                .url(fileUrl)
-                .build()
-            val downloadResponse = dlClient.newCall(downloadRequest).execute()
-            val encryptedBase64 = downloadResponse.body?.string() ?: ""
-            downloadResponse.close()
-
-            if (encryptedBase64.isBlank()) throw Exception("Empty response from vault")
-
-            // 4. Decrypt
-            return decrypt(encryptedBase64.trim(), keyBase64)
+            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(GCM_TAG_SIZE, iv))
+            val decrypted = cipher.doFinal(encrypted)
+            return String(decrypted, Charsets.UTF_8)
         }
 
         /**
-         * Decrypt content given the encrypted base64 data and the key.
+         * Accepte : "123456", "123456#clé", "https://pdm.appstorefr.net/123456#clé",
+         * "https://pdm.appstorefr.net/d/123456#clé", ou anciennes URLs github.io avec fragment "fileUrl|key".
+         * Retourne (slug, key?) — key peut être null si absente.
+         */
+        private fun parseSlugAndKey(input: String): Pair<String, String?> {
+            val trimmed = input.trim()
+
+            // URL github.io legacy : #encodedFileUrl|key → on ne peut pas extraire de slug, on lève
+            if (trimmed.contains("appstorefr.github.io", ignoreCase = true)) {
+                throw Exception("Format legacy github.io non supporté dans cette version")
+            }
+
+            val hashIndex = trimmed.indexOf('#')
+            val base = if (hashIndex >= 0) trimmed.substring(0, hashIndex) else trimmed
+            val key = if (hashIndex >= 0) trimmed.substring(hashIndex + 1).takeIf { it.isNotBlank() } else null
+
+            // URL complète : extraire dernier segment
+            val slug = if (base.contains("/")) {
+                base.trimEnd('/').substringAfterLast('/')
+            } else {
+                base
+            }
+
+            val cleanSlug = slug.substringBefore('?')
+            if (!cleanSlug.matches(Regex("^[0-9]{6}$|^[a-z0-9]{5,8}$"))) {
+                throw Exception("Code invalide : $cleanSlug")
+            }
+
+            return cleanSlug to key
+        }
+
+        /**
+         * Point d'entrée pour l'ancien code qui passait base64(IV||ct||tag) + clé.
+         * Conservé pour compatibilité avec d'anciens flux internes (pas de dépendance réseau).
          */
         fun decrypt(encryptedBase64: String, keyBase64: String): String {
             val keyBytes = Base64.decode(keyBase64, Base64.URL_SAFE or Base64.NO_WRAP)
@@ -184,70 +181,7 @@ class EncryptedSharer {
             val cipher = Cipher.getInstance("AES/GCM/NoPadding")
             cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(GCM_TAG_SIZE, iv))
             val decrypted = cipher.doFinal(encrypted)
-
             return String(decrypted, Charsets.UTF_8)
-        }
-
-        /**
-         * Shorten a URL via cut.appstorefr.net with a numeric code (easy to type on TV remote).
-         * Tries up to 5 times with different random numeric codes.
-         * Falls back to auto-generated code if all attempts fail.
-         */
-        private fun shortenUrl(url: String, client: OkHttpClient): String {
-            val random = java.util.Random()
-
-            // Try numeric custom codes (6 digits)
-            for (attempt in 1..5) {
-                val numericCode = (100000 + random.nextInt(900000)).toString()
-                try {
-                    val payload = JSONObject().apply {
-                        put("url", url)
-                        put("code", numericCode)
-                    }
-                    val request = Request.Builder()
-                        .url(CUT_API_URL)
-                        .header("X-API-Key", CUT_API_KEY)
-                        .header("Content-Type", "application/json")
-                        .post(payload.toString().toRequestBody("application/json".toMediaType()))
-                        .build()
-
-                    val response = client.newCall(request).execute()
-                    val body = response.body?.string()?.trim() ?: ""
-                    response.close()
-
-                    if (response.isSuccessful && body.isNotBlank()) {
-                        val json = JSONObject(body)
-                        if (json.optBoolean("ok", false)) {
-                            return json.optString("code", numericCode)
-                        }
-                    }
-                    Log.d(TAG, "cut attempt $attempt ($numericCode) failed: $body")
-                } catch (e: Exception) {
-                    Log.d(TAG, "cut attempt $attempt ($numericCode) error: ${e.message}")
-                }
-            }
-
-            // Fallback: let cut generate its own code
-            Log.d(TAG, "Falling back to auto-generated cut code")
-            val payload = JSONObject().apply {
-                put("url", url)
-            }
-            val request = Request.Builder()
-                .url(CUT_API_URL)
-                .header("X-API-Key", CUT_API_KEY)
-                .header("Content-Type", "application/json")
-                .post(payload.toString().toRequestBody("application/json".toMediaType()))
-                .build()
-            val response = client.newCall(request).execute()
-            val body = response.body?.string()?.trim() ?: ""
-            response.close()
-
-            if (!response.isSuccessful || body.isBlank()) {
-                throw Exception("cut shortening failed: $body")
-            }
-
-            val json = JSONObject(body)
-            return json.optString("code", "")
         }
     }
 }

@@ -1,5 +1,19 @@
 package net.appstorefr.perfectdnsmanager
 
+import net.appstorefr.perfectdnsmanager.util.pdmBackground
+import net.appstorefr.perfectdnsmanager.util.pdmBorder
+import net.appstorefr.perfectdnsmanager.util.pdmSurface
+import net.appstorefr.perfectdnsmanager.util.pdmSurfaceInput
+import net.appstorefr.perfectdnsmanager.util.pdmSurfaceElevated
+import net.appstorefr.perfectdnsmanager.util.pdmTextPrimary
+import net.appstorefr.perfectdnsmanager.util.pdmTextSecondary
+import net.appstorefr.perfectdnsmanager.util.pdmTextDisabled
+import net.appstorefr.perfectdnsmanager.util.pdmAccent
+import net.appstorefr.perfectdnsmanager.util.pdmAccentAlt
+import net.appstorefr.perfectdnsmanager.util.pdmAccentInfo
+import net.appstorefr.perfectdnsmanager.util.pdmDanger
+import net.appstorefr.perfectdnsmanager.util.pdmWarning
+
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -51,7 +65,7 @@ class DomainTesterActivity : AppCompatActivity() {
         allDnsOptions = loadDnsOptions()
 
         val root = ScrollView(this).apply {
-            setBackgroundColor(0xFF1E1E1E.toInt())
+            setBackgroundColor(pdmBackground())
         }
         val mainLayout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -66,7 +80,7 @@ class DomainTesterActivity : AppCompatActivity() {
         }
         val btnBack = Button(this).apply {
             text = getString(R.string.back_arrow)
-            setTextColor(0xFFFFFFFF.toInt())
+            setTextColor(pdmTextPrimary())
             setBackgroundResource(R.drawable.focusable_item_background)
             foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             isFocusable = true
@@ -76,7 +90,7 @@ class DomainTesterActivity : AppCompatActivity() {
         header.addView(btnBack)
         val tvTitle = TextView(this).apply {
             text = getString(R.string.domain_tester_title)
-            setTextColor(0xFFFFFFFF.toInt())
+            setTextColor(pdmTextPrimary())
             textSize = 20f
             setTypeface(typeface, android.graphics.Typeface.BOLD)
             gravity = android.view.Gravity.CENTER
@@ -112,13 +126,13 @@ class DomainTesterActivity : AppCompatActivity() {
                 } catch (_: Exception) { null }
                 val label = if (providerLabel != null) "\uD83D\uDFE2 VPN actif ($providerLabel)" else "\uD83D\uDFE2 VPN actif"
                 text = label
-                setTextColor(0xFF4CAF50.toInt())
+                setTextColor(pdmAccent())
             } else if (isDotActive) {
                 text = "\uD83D\uDFE2 DNS priv\u00E9 actif"
-                setTextColor(0xFF4CAF50.toInt())
+                setTextColor(pdmAccent())
             } else {
                 text = "\uD83D\uDD34 Aucun DNS actif (r\u00E9solution FAI)"
-                setTextColor(0xFFF44336.toInt())
+                setTextColor(pdmDanger())
             }
         }
         mainLayout.addView(tvStatus)
@@ -126,8 +140,8 @@ class DomainTesterActivity : AppCompatActivity() {
         // Add domain button
         val btnAdd = Button(this).apply {
             text = getString(R.string.domain_tester_add)
-            setTextColor(0xFFFFFFFF.toInt())
-            setBackgroundColor(0xFF4CAF50.toInt())
+            setTextColor(pdmTextPrimary())
+            setBackgroundColor(pdmAccent())
             foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             isFocusable = true
             textSize = 14f
@@ -152,7 +166,7 @@ class DomainTesterActivity : AppCompatActivity() {
         // DNS selector section
         val tvDnsLabel = TextView(this).apply {
             text = getString(R.string.domain_tester_dns_select)
-            setTextColor(0xFFCCCCCC.toInt())
+            setTextColor(pdmTextSecondary())
             textSize = 13f
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 bottomMargin = 8
@@ -184,8 +198,8 @@ class DomainTesterActivity : AppCompatActivity() {
         // Run test button
         btnRunTest = Button(this).apply {
             text = getString(R.string.domain_tester_run)
-            setTextColor(0xFFFFFFFF.toInt())
-            setBackgroundColor(0xFF0D47A1.toInt())
+            setTextColor(pdmTextPrimary())
+            setBackgroundColor(pdmAccentInfo())
             foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             isFocusable = true
             textSize = 14f
@@ -201,10 +215,10 @@ class DomainTesterActivity : AppCompatActivity() {
 
         // Results area
         tvResult = TextView(this).apply {
-            setTextColor(0xFFAAAAAA.toInt())
+            setTextColor(pdmTextSecondary())
             textSize = 12f
             typeface = android.graphics.Typeface.MONOSPACE
-            setBackgroundColor(0xFF121212.toInt())
+            setBackgroundColor(pdmSurfaceInput())
             setPadding(16, 16, 16, 16)
             text = getString(R.string.domain_tester_no_result)
         }
@@ -296,10 +310,10 @@ class DomainTesterActivity : AppCompatActivity() {
     }
 
     private fun updateChipColors() {
-        val selectedBg = 0xFF0D47A1.toInt()
-        val unselectedBg = 0xFF333333.toInt()
-        val selectedText = 0xFFFFFFFF.toInt()
-        val unselectedText = 0xFFAAAAAA.toInt()
+        val selectedBg = pdmAccentInfo()
+        val unselectedBg = pdmSurfaceInput()
+        val selectedText = pdmTextPrimary()
+        val unselectedText = pdmTextSecondary()
 
         btnAll?.let { btn ->
             if (isAllSelected) {
@@ -370,7 +384,7 @@ class DomainTesterActivity : AppCompatActivity() {
 
             val tvDomain = TextView(this).apply {
                 text = entry.domain
-                setTextColor(0xFFFFFFFF.toInt())
+                setTextColor(pdmTextPrimary())
                 textSize = 14f
                 layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
             }
@@ -426,9 +440,9 @@ class DomainTesterActivity : AppCompatActivity() {
     private fun showAddDomainDialog() {
         val et = EditText(this).apply {
             hint = "example.com"
-            setTextColor(0xFFFFFFFF.toInt())
-            setHintTextColor(0xFF888888.toInt())
-            setBackgroundColor(0xFF333333.toInt())
+            setTextColor(pdmTextPrimary())
+            setHintTextColor(pdmTextDisabled())
+            setBackgroundColor(pdmSurfaceInput())
             setPadding(30, 20, 30, 20)
         }
         AlertDialog.Builder(this)
@@ -450,8 +464,8 @@ class DomainTesterActivity : AppCompatActivity() {
     private fun showEditDomainDialog(index: Int, entry: TestDomainEntry) {
         val et = EditText(this).apply {
             setText(entry.domain)
-            setTextColor(0xFFFFFFFF.toInt())
-            setBackgroundColor(0xFF333333.toInt())
+            setTextColor(pdmTextPrimary())
+            setBackgroundColor(pdmSurfaceInput())
             setPadding(30, 20, 30, 20)
         }
         AlertDialog.Builder(this)
@@ -475,7 +489,7 @@ class DomainTesterActivity : AppCompatActivity() {
     private fun runTest() {
         isTesting = true
         btnRunTest.text = "\u23F9 Stop"
-        btnRunTest.setBackgroundColor(0xFFB71C1C.toInt())
+        btnRunTest.setBackgroundColor(pdmDanger())
         tvResult.text = getString(R.string.domain_tester_testing)
 
         // Snapshot selected DNS options: "Tous" = all providers, otherwise only selected
@@ -534,7 +548,7 @@ class DomainTesterActivity : AppCompatActivity() {
             runOnUiThread {
                 isTesting = false
                 btnRunTest.text = getString(R.string.domain_tester_run)
-                btnRunTest.setBackgroundColor(0xFF0D47A1.toInt())
+                btnRunTest.setBackgroundColor(pdmAccentInfo())
                 if (sb.isEmpty()) tvResult.text = getString(R.string.domain_tester_no_enabled)
             }
         }
@@ -545,6 +559,6 @@ class DomainTesterActivity : AppCompatActivity() {
         testThread?.interrupt()
         isTesting = false
         btnRunTest.text = getString(R.string.domain_tester_run)
-        btnRunTest.setBackgroundColor(0xFF0D47A1.toInt())
+        btnRunTest.setBackgroundColor(pdmAccentInfo())
     }
 }

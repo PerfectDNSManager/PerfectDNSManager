@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#1E1E1E"
+    android:background="@color/pdm_background"
     android:padding="16dp">
 
     <!-- Header -->
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
             android:text="@string/back"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_item_text"
             android:textSize="18sp"
             android:padding="12dp"
             android:minHeight="48dp"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/choose_dns_server"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/pdm_text_primary"
             android:textSize="22sp"
             android:textStyle="bold"
             android:gravity="center" />
@@ -43,11 +43,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:textColor="#2196F3"
+        android:textColor="@color/pdm_accent_alt"
         android:textSize="13sp"
         android:layout_marginBottom="12dp"
         android:padding="8dp"
-        android:background="#1A2196F3" />
+        android:background="@color/pdm_tint_info" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,8 +61,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/dns_speedtest_shortcut"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#1565C0"
+            android:textColor="@color/pdm_text_primary"
+            android:backgroundTint="@color/pdm_accent_info"
             android:foreground="@drawable/btn_focus_foreground"
             android:focusable="true"
             android:layout_marginEnd="8dp"
@@ -76,8 +76,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/add_new_profile"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#4CAF50"
+            android:textColor="@color/pdm_text_primary"
+            android:backgroundTint="@color/pdm_accent"
             android:foreground="@drawable/btn_focus_foreground"
             android:focusable="true"
             android:nextFocusLeft="@id/btnSpeedtest"

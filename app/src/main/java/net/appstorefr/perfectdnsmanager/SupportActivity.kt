@@ -7,6 +7,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import net.appstorefr.perfectdnsmanager.util.LocaleHelper
+import net.appstorefr.perfectdnsmanager.util.pdmDanger
 
 class SupportActivity : AppCompatActivity() {
 
@@ -22,16 +23,16 @@ class SupportActivity : AppCompatActivity() {
         val networks: String = ""
     )
 
-    private val cryptos = listOf(
+    private val cryptos by lazy { listOf(
         CryptoOption("₿ Bitcoin (BTC)", "bc1qfaqkqzvkj2cdlqhmzkh22lm5lcuk6a5y8raulz", R.drawable.qr_btc, 0xFFF7931A.toInt()),
         CryptoOption("⬡ EVM (ETH / BNB / USDT / USDC…)", "0x71528115FA8aee4D9420F6caDEBfD0C043a316f7", R.drawable.qr_evm, 0xFF627EEA.toInt(), "Base · Polygon · Ethereum · BNB · Gnosis"),
-        CryptoOption("⚡ TRON (USDT / USDC / TRX)", "TV14NpEfmhz72CUBpVyYYRDrwB6hHXUQBu", R.drawable.qr_tron, 0xFFFF4444.toInt()),
+        CryptoOption("⚡ TRON (USDT / USDC / TRX)", "TV14NpEfmhz72CUBpVyYYRDrwB6hHXUQBu", R.drawable.qr_tron, pdmDanger()),
         CryptoOption("💎 TON (USDT / TON)", "UQBvUM90I_T0_e1HAtamIYyCe_bPR4IkMmhzbOMrRde-OUt_", R.drawable.qr_ton, 0xFF0088CC.toInt()),
         CryptoOption("◎ Solana (USDT / USDC / SOL)", "34i3oYht6hfyS6QdZbXnRZtmzQJYXqPcQtXwTmfEBM9y", R.drawable.qr_sol, 0xFF9945FF.toInt()),
         CryptoOption("Ł Litecoin (LTC)", "ltc1qehl698y09u3e3p54zvuxe3d93d6tsfc0d5hdkr", R.drawable.qr_ltc, 0xFFBFBBBB.toInt()),
         CryptoOption("🛡 Zcash (ZEC)", "t1VbmN4XXoUZuU4BcUQLMCCaH7CrMCyVf5g", R.drawable.qr_zec, 0xFFF4B728.toInt()),
         CryptoOption("✕ XRP (XRP / RLUSD)", "rJcav6qAFHorerfAHFPbu8z2cLtEZGiJUM", R.drawable.qr_xrp, 0xFF00AAE4.toInt()),
-    )
+    ) }
 
     private var hasSelected = false
 
@@ -52,7 +53,7 @@ class SupportActivity : AppCompatActivity() {
         // Affichage par défaut : cœur + invitation
         tvCryptoName.text = "❤️"
         tvCryptoName.textSize = 60f
-        tvCryptoName.setTextColor(0xFFFF4444.toInt())
+        tvCryptoName.setTextColor(pdmDanger())
         ivQrCode.visibility = View.GONE
         tvAddress.visibility = View.GONE
         tvNetworks.visibility = View.GONE

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#1E1E1E"
+    android:background="@color/pdm_background"
     android:padding="16dp"
     tools:context=".DnsRewriteActivity">
 
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="@string/dns_rewrite_screen_title"
         android:textSize="22sp"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/pdm_text_primary"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"/>
 
@@ -22,9 +22,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_new_rule"
-        android:backgroundTint="#2196F3"
+        android:backgroundTint="@color/pdm_accent_info"
         android:foreground="@drawable/btn_focus_foreground"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/pdm_text_primary"
         android:layout_marginBottom="16dp"
         android:focusable="true"/>
 
@@ -43,7 +43,7 @@
         android:textSize="18sp"
         android:padding="12dp"
         android:minHeight="48dp"
-        android:backgroundTint="#444444"
+        android:backgroundTint="@color/pdm_border"
         android:foreground="@drawable/btn_focus_foreground"
         android:layout_gravity="start"
         android:layout_marginTop="16dp"
