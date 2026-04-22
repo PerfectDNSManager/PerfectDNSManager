@@ -151,7 +151,7 @@
         android:focusable="true"
         android:clickable="true"
         android:nextFocusUp="@id/rowDisableIpv6"
-        android:nextFocusDown="@id/rowBetaUpdates">
+        android:nextFocusDown="@id/rowAdvanced">
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -165,48 +165,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/pdm_accent_alt"
             android:textSize="14sp"/>
-    </LinearLayout>
-
-    <!-- Section Mises à jour -->
-    <LinearLayout
-        android:id="@+id/rowBetaUpdates"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/focusable_item_background"
-        android:foreground="@drawable/btn_focus_foreground"
-        android:padding="12dp"
-        android:layout_marginBottom="12dp"
-        android:focusable="true"
-        android:clickable="true"
-        android:nextFocusUp="@id/rowTheme"
-        android:nextFocusDown="@id/rowAdvanced">
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/beta_updates_label"
-                android:textColor="@color/pdm_text_primary"
-                android:textSize="15sp"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/beta_updates_description"
-                android:textColor="@color/pdm_text_secondary"
-                android:textSize="12sp"
-                android:layout_marginTop="2dp"/>
-        </LinearLayout>
-        <Switch
-            android:id="@+id/switchBetaUpdates"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:clickable="false" />
     </LinearLayout>
 
     <!-- Section Fonctions avancées -->
@@ -228,7 +186,7 @@
             android:padding="8dp"
             android:focusable="true"
             android:clickable="true"
-            android:nextFocusUp="@id/rowBetaUpdates">
+            android:nextFocusUp="@id/rowTheme">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -252,6 +210,46 @@
             android:orientation="vertical"
             android:visibility="gone"
             android:layout_marginTop="8dp">
+
+            <!-- Mises à jour bêta (avancé) -->
+            <LinearLayout
+                android:id="@+id/rowBetaUpdates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/focusable_item_background"
+                android:foreground="@drawable/btn_focus_foreground"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"
+                android:focusable="true"
+                android:clickable="true">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/beta_updates_label"
+                        android:textColor="@color/pdm_text_primary"
+                        android:textSize="15sp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/beta_updates_description"
+                        android:textColor="@color/pdm_text_secondary"
+                        android:textSize="12sp"
+                        android:layout_marginTop="2dp"/>
+                </LinearLayout>
+                <Switch
+                    android:id="@+id/switchBetaUpdates"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:clickable="false" />
+            </LinearLayout>
 
             <!-- 1. Sous-toggle variantes de profils -->
             <LinearLayout
