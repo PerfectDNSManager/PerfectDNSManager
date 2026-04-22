@@ -2,14 +2,15 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/pdm_accent" />
-            <stroke android:width="3dp" android:color="@color/pdm_text_primary" />
+            <solid android:color="@color/pdm_surface" />
+            <stroke android:width="3dp" android:color="@color/pdm_accent" />
             <corners android:radius="6dp" />
         </shape>
     </item>
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/pdm_accent_pressed" />
+            <solid android:color="@color/pdm_surface_pressed" />
+            <stroke android:width="2dp" android:color="@color/pdm_accent" />
             <corners android:radius="6dp" />
         </shape>
     </item>
