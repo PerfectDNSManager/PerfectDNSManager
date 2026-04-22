@@ -786,7 +786,7 @@ class MainActivity : AppCompatActivity() {
             .setTitle(getString(R.string.share_report_button))
             .setView(layout)
             .setPositiveButton(getString(R.string.share_report_button)) { _, _ ->
-                val checkedIdx = rbButtons.indexOfFirst { it.isChecked }.coerceAtLeast(defaultIdx)
+                val checkedIdx = rbButtons.indexOfFirst { it.isChecked }.let { if (it >= 0) it else defaultIdx }
                 val expiresIn = expValues[checkedIdx]
                 uploadReport(
                     cbNetwork.isChecked,
