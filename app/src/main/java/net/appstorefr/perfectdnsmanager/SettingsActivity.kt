@@ -147,7 +147,7 @@ class SettingsActivity : AppCompatActivity() {
             )
             val current = prefs.getString("theme_mode", "system") ?: "system"
             val currentIdx = modes.indexOf(current).coerceAtLeast(0)
-            AlertDialog.Builder(this)
+            val dialog = AlertDialog.Builder(this)
                 .setTitle(getString(R.string.theme_choose_title))
                 .setSingleChoiceItems(labels, currentIdx) { dlg, which ->
                     val newMode = modes[which]
@@ -157,7 +157,17 @@ class SettingsActivity : AppCompatActivity() {
                     recreate()
                 }
                 .setNegativeButton(getString(R.string.cancel), null)
-                .show()
+                .create()
+            dialog.setOnShowListener {
+                dialog.listView?.apply {
+                    isFocusable = true
+                    isFocusableInTouchMode = true
+                    requestFocus()
+                    setItemChecked(currentIdx, true)
+                    setSelection(currentIdx)
+                }
+            }
+            dialog.show()
         }
 
         switchAutoStart.setOnCheckedChangeListener { _, isChecked ->
