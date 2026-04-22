@@ -745,17 +745,67 @@ class MainActivity : AppCompatActivity() {
         layout.addView(cbSpeedtest)
         layout.addView(cbDevice)
 
-        AlertDialog.Builder(this)
+        // Sélecteur d'expiration
+        val tvExpLabel = TextView(this).apply {
+            text = getString(R.string.share_expires_label)
+            setTextColor(pdmTextSecondary()); textSize = 14f
+            setPadding(0, 24, 0, 8)
+        }
+        layout.addView(tvExpLabel)
+
+        val expValues = arrayOf("1h", "6h", "24h", "72h")
+        val expLabels = arrayOf(
+            getString(R.string.share_exp_1h),
+            getString(R.string.share_exp_6h),
+            getString(R.string.share_exp_24h),
+            getString(R.string.share_exp_72h)
+        )
+        val rgExpiry = android.widget.RadioGroup(this).apply {
+            orientation = android.widget.RadioGroup.HORIZONTAL
+        }
+        val defaultIdx = 2 // 24h
+        val rbButtons = expLabels.mapIndexed { i, label ->
+            android.widget.RadioButton(this).apply {
+                id = View.generateViewId()
+                text = label
+                setTextColor(pdmTextPrimary())
+                buttonTintList = android.content.res.ColorStateList.valueOf(pdmAccent())
+                textSize = 14f
+                isChecked = i == defaultIdx
+                layoutParams = android.widget.RadioGroup.LayoutParams(
+                    0,
+                    android.widget.RadioGroup.LayoutParams.WRAP_CONTENT,
+                    1f
+                )
+            }
+        }
+        rbButtons.forEach { rgExpiry.addView(it) }
+        layout.addView(rgExpiry)
+
+        val dialog = AlertDialog.Builder(this)
             .setTitle(getString(R.string.share_report_button))
             .setView(layout)
             .setPositiveButton(getString(R.string.share_report_button)) { _, _ ->
-                uploadReport(cbNetwork.isChecked, cbSpeedtest.isChecked, cbLeak.isChecked, cbBlocking.isChecked, cbDevice.isChecked)
+                val checkedIdx = rbButtons.indexOfFirst { it.isChecked }.coerceAtLeast(defaultIdx)
+                val expiresIn = expValues[checkedIdx]
+                uploadReport(
+                    cbNetwork.isChecked,
+                    cbSpeedtest.isChecked,
+                    cbLeak.isChecked,
+                    cbBlocking.isChecked,
+                    cbDevice.isChecked,
+                    expiresIn
+                )
             }
             .setNegativeButton(getString(R.string.cancel), null)
-            .show()
+            .create()
+        dialog.setOnShowListener {
+            dialog.getButton(android.content.DialogInterface.BUTTON_POSITIVE)?.requestFocus()
+        }
+        dialog.show()
     }
 
-    private fun uploadReport(includeNetwork: Boolean, includeSpeed: Boolean, includeLeak: Boolean, includeBlocking: Boolean, includeDevice: Boolean = true) {
+    private fun uploadReport(includeNetwork: Boolean, includeSpeed: Boolean, includeLeak: Boolean, includeBlocking: Boolean, includeDevice: Boolean = true, expiresIn: String = "24h") {
         Toast.makeText(this, getString(R.string.report_generating), Toast.LENGTH_SHORT).show()
         btnShareReport.isEnabled = false
         btnShareReport.setBackgroundResource(R.drawable.pdm_btn_danger)
@@ -938,7 +988,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val result = net.appstorefr.perfectdnsmanager.util.EncryptedSharer.encryptAndUpload(
-                    content, "PerfectDNS-report.enc", "72h"
+                    content, "PerfectDNS-report.enc", expiresIn
                 )
                 runOnUiThread {
                     btnShareReport.isEnabled = true
@@ -946,7 +996,7 @@ class MainActivity : AppCompatActivity() {
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
                     clipboard.setPrimaryClip(android.content.ClipData.newPlainText("Report Code", result.shortCode))
                     val url1 = result.fullUrl
-                    val text = "Lien de partage (chiffré de bout en bout) :\n$url1\n\nCode : ${result.shortCode} (copié dans le presse-papier)\n\nExpire dans 72h."
+                    val text = "Lien de partage (chiffré de bout en bout) :\n$url1\n\nCode : ${result.shortCode} (copié dans le presse-papier)\n\nExpire dans $expiresIn."
                     val msg = android.text.SpannableString(text)
                     val code = result.shortCode
                     val greenColor = pdmAccent()
@@ -1268,20 +1318,18 @@ class MainActivity : AppCompatActivity() {
     private fun setActiveStatus(active: Boolean, statusText: String) {
         isActive = active
         btnToggle.text = getString(R.string.deactivate)
-        btnToggle.setTextColor(pdmAccent()) // Vert foncé quand actif
-        btnToggle.setBackgroundResource(R.drawable.btn_deactivate_background)
+        btnToggle.setTextColor(pdmDanger()) // DÉSACTIVER = action destructrice = rouge
+        btnToggle.setBackgroundResource(R.drawable.btn_activate_background)
         btnToggle.requestFocus()
-        // Refresh right panel with full network info + DNS status
         refreshIpDisplay()
     }
 
     private fun setInactiveStatus() {
         isActive = false
         btnToggle.text = getString(R.string.activate)
-        btnToggle.setTextColor(pdmDanger()) // Bordeaux quand inactif
-        btnToggle.setBackgroundResource(R.drawable.btn_activate_background)
+        btnToggle.setTextColor(pdmAccent()) // ACTIVER = action positive = vert
+        btnToggle.setBackgroundResource(R.drawable.btn_deactivate_background)
         btnToggle.requestFocus()
-        // Refresh right panel with full network info + DNS status
         refreshIpDisplay()
     }
 

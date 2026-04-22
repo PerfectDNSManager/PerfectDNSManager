@@ -502,6 +502,13 @@
     <string name="md_domain_still_blocked">Le domaine reste bloqué même avec le DNS actif.</string>
     <string name="md_generated_by">Généré par</string>
 
+    <!-- Share expiry selector -->
+    <string name="share_expires_label">Expiration du lien :</string>
+    <string name="share_exp_1h">1 h</string>
+    <string name="share_exp_6h">6 h</string>
+    <string name="share_exp_24h">24 h</string>
+    <string name="share_exp_72h">72 h</string>
+
     <!-- Device info -->
     <string name="share_toggle_device">Informations appareil</string>
     <string name="md_device_info">Informations appareil</string>
