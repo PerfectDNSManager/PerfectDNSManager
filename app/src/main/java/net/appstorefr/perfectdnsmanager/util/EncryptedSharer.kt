@@ -136,7 +136,7 @@ class EncryptedSharer {
 
         /**
          * Résout la clé depuis un slug nu en suivant le 302 du Worker sans le follower :
-         *   GET /:slug  →  Location: decrypt.html?s=:slug#KEY
+         *   GET /decrypt/:slug  →  Location: decrypt.html?s=:slug#KEY
          * Le fragment du Location header est l'AES key base64url.
          */
         private fun resolveKeyFromSlug(slug: String): String? {
@@ -146,7 +146,7 @@ class EncryptedSharer {
                 .readTimeout(10, TimeUnit.SECONDS)
                 .build()
             val req = Request.Builder()
-                .url("$PDM_BASE_URL/$slug")
+                .url("$PDM_BASE_URL/decrypt/$slug")
                 .head()
                 .build()
             return try {
@@ -160,8 +160,8 @@ class EncryptedSharer {
         }
 
         /**
-         * Accepte : "123456", "123456#clé", "https://pdm.appstorefr.net/123456#clé",
-         * "https://pdm.appstorefr.net/d/123456#clé", ou anciennes URLs github.io avec fragment "fileUrl|key".
+         * Accepte : "123456", "123456#clé", "https://pdm.appstorefr.net/decrypt/123456#clé",
+         * ou anciennes URLs github.io avec fragment "fileUrl|key".
          * Retourne (slug, key?) — key peut être null si absente.
          */
         private fun parseSlugAndKey(input: String): Pair<String, String?> {

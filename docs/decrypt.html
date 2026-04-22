@@ -117,7 +117,7 @@
         // Bare code ou URL sans fragment → on bounce sur le Worker qui renvoie un 302 avec #key
         if (!code && /^[A-Za-z0-9]{4,16}$/.test(input)) code = input;
         if (code) {
-            window.location.href = 'https://pdm.appstorefr.net/' + encodeURIComponent(code);
+            window.location.href = 'https://pdm.appstorefr.net/decrypt/' + encodeURIComponent(code);
             return;
         }
 
