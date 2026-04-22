@@ -507,11 +507,11 @@ class MainActivity : AppCompatActivity() {
         generatingThread = null
         isGenerating = false
         btnGenerateReport.text = getString(R.string.generate_report_button)
-        btnGenerateReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmAccent())
+        btnGenerateReport.setBackgroundResource(R.drawable.pdm_btn_primary)
         tvReportContent.setTextColor(pdmTextSecondary())
         tvReportContent.text = getString(R.string.no_report_yet)
         btnShareReport.isEnabled = reportGenerated
-        btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(if (reportGenerated) pdmAccent() else pdmDanger())
+        btnShareReport.setBackgroundResource(if (reportGenerated) R.drawable.pdm_btn_primary else R.drawable.pdm_btn_danger)
     }
 
     private fun generateReport() {
@@ -532,9 +532,9 @@ class MainActivity : AppCompatActivity() {
         isGenerating = true
         reportGenerated = false
         btnGenerateReport.text = "\u23F9 Stop"
-        btnGenerateReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmDanger())
+        btnGenerateReport.setBackgroundResource(R.drawable.pdm_btn_danger)
         btnShareReport.isEnabled = false
-        btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmDanger())
+        btnShareReport.setBackgroundResource(R.drawable.pdm_btn_danger)
         lastSpeedResult = null
         lastLeakResult = null
         lastLeakIspResult = null
@@ -694,9 +694,9 @@ class MainActivity : AppCompatActivity() {
                 isGenerating = false
                 generatingThread = null
                 btnGenerateReport.text = getString(R.string.generate_report_button)
-                btnGenerateReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmAccent())
+                btnGenerateReport.setBackgroundResource(R.drawable.pdm_btn_primary)
                 btnShareReport.isEnabled = true
-                btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmAccent())
+                btnShareReport.setBackgroundResource(R.drawable.pdm_btn_primary)
                 tvReportContent.setTextColor(pdmTextSecondary())
                 tvReportContent.text = display.toString().trimEnd()
                 Toast.makeText(this, getString(R.string.report_complete), Toast.LENGTH_SHORT).show()
@@ -758,7 +758,7 @@ class MainActivity : AppCompatActivity() {
     private fun uploadReport(includeNetwork: Boolean, includeSpeed: Boolean, includeLeak: Boolean, includeBlocking: Boolean, includeDevice: Boolean = true) {
         Toast.makeText(this, getString(R.string.report_generating), Toast.LENGTH_SHORT).show()
         btnShareReport.isEnabled = false
-        btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmDanger())
+        btnShareReport.setBackgroundResource(R.drawable.pdm_btn_danger)
         Thread {
             try {
                 val appVersion = try {
@@ -942,7 +942,7 @@ class MainActivity : AppCompatActivity() {
                 )
                 runOnUiThread {
                     btnShareReport.isEnabled = true
-                    btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmAccent())
+                    btnShareReport.setBackgroundResource(R.drawable.pdm_btn_primary)
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
                     clipboard.setPrimaryClip(android.content.ClipData.newPlainText("Report Code", result.shortCode))
                     val url1 = result.fullUrl
@@ -970,7 +970,7 @@ class MainActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 runOnUiThread {
                     btnShareReport.isEnabled = true
-                    btnShareReport.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmAccent())
+                    btnShareReport.setBackgroundResource(R.drawable.pdm_btn_primary)
                     Toast.makeText(this, getString(R.string.share_ip_error) + ": ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }

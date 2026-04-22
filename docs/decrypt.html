@@ -49,7 +49,7 @@
         <div class="card" id="inputCard">
             <h2>&#x1F511; Enter share code</h2>
             <div class="input-row">
-                <input type="text" id="codeInput" placeholder="123456 or full pdm.appstorefr.net URL" autofocus onkeydown="if(event.key==='Enter')submitCode()">
+                <input type="text" id="codeInput" placeholder="123456" autofocus onkeydown="if(event.key==='Enter')submitCode()">
                 <button onclick="submitCode()">Decrypt</button>
             </div>
             <div id="status"></div>
@@ -99,27 +99,29 @@
         const input = document.getElementById('codeInput').value.trim();
         if (!input) return;
 
-        // Full pdm.appstorefr.net URL with #key → extract slug, navigate here with ?s=&#key
+        let code = null;
+
+        // Full pdm.appstorefr.net URL (possibly with #key) → extract slug; key comes from worker redirect
         try {
             const u = new URL(input);
-            if (u.hostname === 'pdm.appstorefr.net' && u.hash) {
-                const slug = u.pathname.replace(/^\/(d\/|decrypt\/)?/, '').replace(/\/$/, '');
-                const key = u.hash.substring(1);
-                if (slug && key) {
-                    window.location.href = window.location.pathname + '?s=' + encodeURIComponent(slug) + '#' + key;
+            if (u.hostname === 'pdm.appstorefr.net') {
+                code = u.pathname.replace(/^\/(d\/|decrypt\/)?/, '').replace(/\/$/, '');
+                if (u.hash && code) {
+                    // URL déjà complète avec fragment → on se redirige ici-même
+                    window.location.href = window.location.pathname + '?s=' + encodeURIComponent(code) + u.hash;
                     return;
                 }
             }
         } catch (e) { /* not a URL */ }
 
-        // Bare code → bounce through pdm.appstorefr.net so the user can paste-and-decrypt
-        // (only works when a fragment is already present in the address bar of the source)
-        if (/^[A-Za-z0-9]{4,16}$/.test(input)) {
-            setStatus('err', 'Code-only input has no key. Paste the full pdm.appstorefr.net link including the #fragment.');
+        // Bare code ou URL sans fragment → on bounce sur le Worker qui renvoie un 302 avec #key
+        if (!code && /^[A-Za-z0-9]{4,16}$/.test(input)) code = input;
+        if (code) {
+            window.location.href = 'https://pdm.appstorefr.net/' + encodeURIComponent(code);
             return;
         }
 
-        setStatus('err', 'Invalid input. Paste a pdm.appstorefr.net URL.');
+        setStatus('err', 'Invalid input. Enter a 6-digit code or a pdm.appstorefr.net URL.');
     }
 
     async function decryptBytes(combined, keyB64) {

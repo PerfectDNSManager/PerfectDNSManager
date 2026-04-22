@@ -1208,12 +1208,12 @@ class SettingsActivity : AppCompatActivity() {
             setPadding(60, 40, 60, 20)
         }
         val tvExplain = TextView(this).apply {
-            text = "Collez le lien complet de partage reçu (https://pdm.appstorefr.net/…#…) :"
+            text = "Code à 6 chiffres ou lien https://pdm.appstorefr.net/… :"
             setTextColor(pdmTextSecondary()); textSize = 13f
         }
         layout.addView(tvExplain)
         val editCode = android.widget.EditText(this).apply {
-            hint = "https://pdm.appstorefr.net/123456#..."
+            hint = "123456"
             setTextColor(pdmTextPrimary()); setHintTextColor(pdmTextDisabled())
             setBackgroundColor(pdmSurfaceInput()); setPadding(20, 15, 20, 15)
             isSingleLine = true

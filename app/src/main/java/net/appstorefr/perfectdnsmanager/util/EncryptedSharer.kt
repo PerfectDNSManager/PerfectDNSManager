@@ -58,7 +58,8 @@ class EncryptedSharer {
                 .build()
 
             val nameParam = java.net.URLEncoder.encode(fileName, "UTF-8")
-            val uploadUrl = "$PDM_BASE_URL/api/upload?expires_in=$expiresIn&name=$nameParam"
+            val keyParam = java.net.URLEncoder.encode(keyBase64, "UTF-8")
+            val uploadUrl = "$PDM_BASE_URL/api/upload?expires_in=$expiresIn&name=$nameParam&k=$keyParam"
 
             val request = Request.Builder()
                 .url(uploadUrl)
@@ -77,19 +78,18 @@ class EncryptedSharer {
 
             val json = JSONObject(body)
             val slug = json.optString("slug", "")
-            val decryptUrl = json.optString("decrypt_url", "")
+            val shortUrl = json.optString("short_url", "")
             val rawUrl = json.optString("raw_url", "")
-            if (slug.isBlank() || decryptUrl.isBlank()) {
+            if (slug.isBlank() || shortUrl.isBlank()) {
                 throw Exception("Upload response invalid: $body")
             }
 
-            val fullUrl = "$decryptUrl#$keyBase64"
-            Log.d(TAG, "slug=$slug decrypt=$fullUrl")
+            Log.d(TAG, "slug=$slug short=$shortUrl")
 
             return UploadResult(
                 shortCode = slug,
                 decryptionKey = keyBase64,
-                fullUrl = fullUrl,
+                fullUrl = shortUrl,
                 fileUrl = rawUrl
             )
         }
@@ -100,8 +100,8 @@ class EncryptedSharer {
          */
         fun downloadAndDecrypt(shortCodeOrUrl: String, explicitKey: String? = null): String {
             val (slug, keyFromFragment) = parseSlugAndKey(shortCodeOrUrl)
-            val key = explicitKey ?: keyFromFragment
-                ?: throw Exception("Clé de déchiffrement manquante (attendue dans le fragment #)")
+            val key = explicitKey ?: keyFromFragment ?: resolveKeyFromSlug(slug)
+                ?: throw Exception("Clé introuvable pour ce code (lien peut-être expiré)")
 
             val client = OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
@@ -132,6 +132,31 @@ class EncryptedSharer {
             cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(GCM_TAG_SIZE, iv))
             val decrypted = cipher.doFinal(encrypted)
             return String(decrypted, Charsets.UTF_8)
+        }
+
+        /**
+         * Résout la clé depuis un slug nu en suivant le 302 du Worker sans le follower :
+         *   GET /:slug  →  Location: decrypt.html?s=:slug#KEY
+         * Le fragment du Location header est l'AES key base64url.
+         */
+        private fun resolveKeyFromSlug(slug: String): String? {
+            val client = OkHttpClient.Builder()
+                .followRedirects(false)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .build()
+            val req = Request.Builder()
+                .url("$PDM_BASE_URL/$slug")
+                .head()
+                .build()
+            return try {
+                client.newCall(req).execute().use { resp ->
+                    if (resp.code !in 300..399) return null
+                    val loc = resp.header("Location") ?: return null
+                    val hashIdx = loc.indexOf('#')
+                    if (hashIdx < 0) null else loc.substring(hashIdx + 1).takeIf { it.isNotBlank() }
+                }
+            } catch (_: Exception) { null }
         }
 
         /**

@@ -118,7 +118,9 @@
             android:foreground="@drawable/btn_focus_foreground"
             android:padding="8dp"
             android:focusable="true"
-            android:clickable="true">
+            android:clickable="true"
+            android:nextFocusUp="@id/rowAutoReconnect"
+            android:nextFocusDown="@id/rowTheme">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -147,7 +149,9 @@
         android:padding="12dp"
         android:layout_marginBottom="12dp"
         android:focusable="true"
-        android:clickable="true">
+        android:clickable="true"
+        android:nextFocusUp="@id/rowDisableIpv6"
+        android:nextFocusDown="@id/rowBetaUpdates">
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -175,7 +179,9 @@
         android:padding="12dp"
         android:layout_marginBottom="12dp"
         android:focusable="true"
-        android:clickable="true">
+        android:clickable="true"
+        android:nextFocusUp="@id/rowTheme"
+        android:nextFocusDown="@id/rowAdvanced">
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -221,7 +227,8 @@
             android:foreground="@drawable/btn_focus_foreground"
             android:padding="8dp"
             android:focusable="true"
-            android:clickable="true">
+            android:clickable="true"
+            android:nextFocusUp="@id/rowBetaUpdates">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
