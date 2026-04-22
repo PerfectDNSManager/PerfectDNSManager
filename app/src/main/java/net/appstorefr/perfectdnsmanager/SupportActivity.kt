@@ -62,34 +62,34 @@ class SupportActivity : AppCompatActivity() {
 
         btnSelectCrypto.setOnClickListener {
             val labels = cryptos.map { it.label }.toTypedArray()
-            AlertDialog.Builder(this)
-                .setTitle(getString(R.string.choose_crypto_title))
-                .setItems(labels) { _, which ->
-                    hasSelected = true
-                    val crypto = cryptos[which]
+            net.appstorefr.perfectdnsmanager.util.TvDialog.showMenuPicker(
+                this,
+                getString(R.string.choose_crypto_title),
+                labels
+            ) { which ->
+                hasSelected = true
+                val crypto = cryptos[which]
 
-                    tvCryptoName.textSize = 18f
-                    tvCryptoName.text = crypto.label
-                    tvCryptoName.setTextColor(crypto.color)
+                tvCryptoName.textSize = 18f
+                tvCryptoName.text = crypto.label
+                tvCryptoName.setTextColor(crypto.color)
 
-                    ivQrCode.visibility = View.VISIBLE
-                    ivQrCode.setImageResource(crypto.qrDrawable)
+                ivQrCode.visibility = View.VISIBLE
+                ivQrCode.setImageResource(crypto.qrDrawable)
 
-                    tvAddress.visibility = View.VISIBLE
-                    tvAddress.text = crypto.address
-                    tvAddress.setTextColor(crypto.color)
+                tvAddress.visibility = View.VISIBLE
+                tvAddress.text = crypto.address
+                tvAddress.setTextColor(crypto.color)
 
-                    if (crypto.networks.isNotEmpty()) {
-                        tvNetworks.text = crypto.networks
-                        tvNetworks.visibility = View.VISIBLE
-                    } else {
-                        tvNetworks.visibility = View.GONE
-                    }
-
-                    btnSelectCrypto.text = getString(R.string.select_crypto_button)
+                if (crypto.networks.isNotEmpty()) {
+                    tvNetworks.text = crypto.networks
+                    tvNetworks.visibility = View.VISIBLE
+                } else {
+                    tvNetworks.visibility = View.GONE
                 }
-                .setNegativeButton(getString(R.string.cancel), null)
-                .show()
+
+                btnSelectCrypto.text = getString(R.string.select_crypto_button)
+            }
         }
     }
 }

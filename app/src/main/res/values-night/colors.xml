@@ -16,8 +16,8 @@
     <color name="pdm_text_disabled">#555B66</color>
     <color name="pdm_text_on_accent">#0E0F12</color>
 
-    <color name="pdm_accent">#4CAF50</color>
-    <color name="pdm_accent_pressed">#3E8E41</color>
+    <color name="pdm_accent">#2E7D32</color>
+    <color name="pdm_accent_pressed">#1B5E20</color>
     <color name="pdm_accent_alt">#64B5F6</color>
     <color name="pdm_danger">#E57373</color>
     <color name="pdm_warning">#FFCC00</color>

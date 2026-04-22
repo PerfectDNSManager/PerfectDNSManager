@@ -407,29 +407,30 @@ class DomainTesterActivity : AppCompatActivity() {
 
             // Long-press -> edit/delete popup
             row.setOnLongClickListener {
-                AlertDialog.Builder(this@DomainTesterActivity)
-                    .setTitle(entry.domain)
-                    .setItems(arrayOf("Modifier", "Supprimer")) { _, which ->
-                        when (which) {
-                            0 -> showEditDomainDialog(index, entry)
-                            1 -> {
-                                AlertDialog.Builder(this@DomainTesterActivity)
-                                    .setTitle(getString(R.string.domain_tester_delete_title))
-                                    .setMessage(entry.domain)
-                                    .setPositiveButton(getString(R.string.delete)) { _, _ ->
-                                        val list = loadEntries()
-                                        if (index < list.size) {
-                                            list.removeAt(index)
-                                            saveEntries(list)
-                                            refreshList()
-                                        }
+                net.appstorefr.perfectdnsmanager.util.TvDialog.showMenuPicker(
+                    this@DomainTesterActivity,
+                    entry.domain,
+                    arrayOf("Modifier", "Supprimer")
+                ) { which ->
+                    when (which) {
+                        0 -> showEditDomainDialog(index, entry)
+                        1 -> {
+                            AlertDialog.Builder(this@DomainTesterActivity)
+                                .setTitle(getString(R.string.domain_tester_delete_title))
+                                .setMessage(entry.domain)
+                                .setPositiveButton(getString(R.string.delete)) { _, _ ->
+                                    val list = loadEntries()
+                                    if (index < list.size) {
+                                        list.removeAt(index)
+                                        saveEntries(list)
+                                        refreshList()
                                     }
-                                    .setNegativeButton(getString(R.string.cancel), null)
-                                    .show()
-                            }
+                                }
+                                .setNegativeButton(getString(R.string.cancel), null)
+                                .show()
                         }
                     }
-                    .show()
+                }
                 true
             }
 

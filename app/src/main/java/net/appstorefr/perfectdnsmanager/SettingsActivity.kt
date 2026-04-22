@@ -147,27 +147,17 @@ class SettingsActivity : AppCompatActivity() {
             )
             val current = prefs.getString("theme_mode", "system") ?: "system"
             val currentIdx = modes.indexOf(current).coerceAtLeast(0)
-            val dialog = AlertDialog.Builder(this)
-                .setTitle(getString(R.string.theme_choose_title))
-                .setSingleChoiceItems(labels, currentIdx) { dlg, which ->
-                    val newMode = modes[which]
-                    prefs.edit().putString("theme_mode", newMode).apply()
-                    PdmApp.applyThemeMode(newMode)
-                    dlg.dismiss()
-                    recreate()
-                }
-                .setNegativeButton(getString(R.string.cancel), null)
-                .create()
-            dialog.setOnShowListener {
-                dialog.listView?.apply {
-                    isFocusable = true
-                    isFocusableInTouchMode = true
-                    requestFocus()
-                    setItemChecked(currentIdx, true)
-                    setSelection(currentIdx)
-                }
+            net.appstorefr.perfectdnsmanager.util.TvDialog.showRadioPicker(
+                this,
+                getString(R.string.theme_choose_title),
+                labels,
+                currentIdx
+            ) { which ->
+                val newMode = modes[which]
+                prefs.edit().putString("theme_mode", newMode).apply()
+                PdmApp.applyThemeMode(newMode)
+                recreate()
             }
-            dialog.show()
         }
 
         switchAutoStart.setOnCheckedChangeListener { _, isChecked ->
@@ -989,18 +979,18 @@ class SettingsActivity : AppCompatActivity() {
             items.add("$status ${r.fromDomain} → ${r.toDomain}")
         }
 
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.url_rewrite_title))
-            .setItems(items.toTypedArray()) { _, which ->
-                if (which == 0) {
-                    showAddRewriteRuleDialog(repo)
-                } else {
-                    val rule = rules[which - 1]
-                    showEditRewriteRuleDialog(repo, rule)
-                }
+        net.appstorefr.perfectdnsmanager.util.TvDialog.showMenuPicker(
+            this,
+            getString(R.string.url_rewrite_title),
+            items.toTypedArray()
+        ) { which ->
+            if (which == 0) {
+                showAddRewriteRuleDialog(repo)
+            } else {
+                val rule = rules[which - 1]
+                showEditRewriteRuleDialog(repo, rule)
             }
-            .setNegativeButton(getString(R.string.close), null)
-            .show()
+        }
     }
 
     private fun showAddRewriteRuleDialog(repo: net.appstorefr.perfectdnsmanager.data.DnsRewriteRepository) {

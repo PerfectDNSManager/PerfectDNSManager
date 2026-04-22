@@ -594,26 +594,16 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         }
         val names = ooklaServers.map { it.displayName }.toTypedArray()
         val currentIndex = ooklaServers.indexOf(selectedOoklaServer).coerceAtLeast(0)
-        val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Choisir un serveur Ookla")
-            .setSingleChoiceItems(names, currentIndex) { dlg, which ->
-                selectedOoklaServer = ooklaServers[which]
-                btnServerPicker.text = "\uD83C\uDF10  ${ooklaServers[which].displayName}"
-                logConsole("Serveur : ${ooklaServers[which].displayName}")
-                dlg.dismiss()
-            }
-            .setNegativeButton(getString(R.string.cancel), null)
-            .create()
-        dialog.setOnShowListener {
-            dialog.listView?.apply {
-                isFocusable = true
-                isFocusableInTouchMode = true
-                requestFocus()
-                setItemChecked(currentIndex, true)
-                setSelection(currentIndex)
-            }
+        net.appstorefr.perfectdnsmanager.util.TvDialog.showRadioPicker(
+            this,
+            "Choisir un serveur Ookla",
+            names,
+            currentIndex
+        ) { which ->
+            selectedOoklaServer = ooklaServers[which]
+            btnServerPicker.text = "\uD83C\uDF10  ${ooklaServers[which].displayName}"
+            logConsole("Serveur : ${ooklaServers[which].displayName}")
         }
-        dialog.show()
     }
 
     // ═════════════════════════════════════════════════════════════════════════

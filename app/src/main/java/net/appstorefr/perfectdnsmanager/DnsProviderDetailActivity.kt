@@ -118,16 +118,16 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         val profileManager = net.appstorefr.perfectdnsmanager.data.ProfileManager(this)
         val actions = arrayOf(getString(R.string.edit_button), getString(R.string.delete_button))
 
-        AlertDialog.Builder(this)
-            .setTitle("${profile.providerName} \u2014 ${profile.name}")
-            .setItems(actions) { _, which ->
-                when (which) {
-                    0 -> showEditProfileDialog(profile, profileManager)
-                    1 -> confirmDeleteProfile(profile, profileManager)
-                }
+        net.appstorefr.perfectdnsmanager.util.TvDialog.showMenuPicker(
+            this,
+            "${profile.providerName} \u2014 ${profile.name}",
+            actions
+        ) { which ->
+            when (which) {
+                0 -> showEditProfileDialog(profile, profileManager)
+                1 -> confirmDeleteProfile(profile, profileManager)
             }
-            .setNegativeButton(getString(R.string.cancel), null)
-            .show()
+        }
     }
 
     private fun showEditProfileDialog(profile: DnsProfile, profileManager: net.appstorefr.perfectdnsmanager.data.ProfileManager) {
