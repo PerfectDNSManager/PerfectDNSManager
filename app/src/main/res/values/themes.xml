@@ -72,12 +72,12 @@
 
     <style name="PDMButton.Primary">
         <item name="android:background">@drawable/pdm_btn_primary</item>
-        <item name="android:textColor">@color/pdm_text_on_accent</item>
+        <item name="android:textColor">@color/pdm_accent</item>
     </style>
 
     <style name="PDMButton.Danger">
         <item name="android:background">@drawable/pdm_btn_danger</item>
-        <item name="android:textColor">@color/pdm_text_on_accent</item>
+        <item name="android:textColor">@color/pdm_danger</item>
     </style>
 
     <style name="PDMButton.Ghost">
