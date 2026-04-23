@@ -368,7 +368,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         scrollConsole = ScrollView(this).apply {
             layoutParams = lp(matchParent, dp(120))
             background = GradientDrawable().apply {
-                setColor(0xFF0D0D1A.toInt()); cornerRadius = dp(8).toFloat()
+                setColor(pdmSurfaceInput()); cornerRadius = dp(8).toFloat()
             }
         }
         tvConsole = TextView(this).apply {

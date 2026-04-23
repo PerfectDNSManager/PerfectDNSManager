@@ -58,11 +58,11 @@ class DnsSpeedtestActivity : AppCompatActivity() {
     private val COLOR_RED: Int get() = pdmDanger()
     private val COLOR_GREY: Int get() = pdmTextDisabled()
     private val COLOR_GOLD: Int get() = pdmWarning()
+    private val COLOR_WHITE: Int get() = pdmTextPrimary() // Theme-aware: blanc en dark, noir en light
 
     companion object {
         private const val COLOR_YELLOW = 0xFFFFEB3B.toInt()
         private const val COLOR_ORANGE = 0xFFFF9800.toInt()
-        private const val COLOR_WHITE = 0xFFEEEEEE.toInt()
         private const val COLOR_CYAN = 0xFF00BCD4.toInt()
     }
 
