@@ -233,7 +233,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 setTypeface(typeface, Typeface.BOLD)
                 isFocusable = true
                 foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
-                background = chipBackground(dp(20), COLOR_CHIP_INACTIVE)
+                background = chipBackground(dp(20), COLOR_CYAN, false)
                 setPadding(dp(16), dp(8), dp(16), dp(8))
                 layoutParams = LinearLayout.LayoutParams(wrapContent, wrapContent).apply {
                     marginEnd = dp(8)
@@ -262,7 +262,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             text = "\uD83C\uDF10  Serveur : chargement..."
             setTextColor(COLOR_WHITE)
             textSize = 14f
-            background = chipBackground(dp(12), COLOR_BG_CARD)
+            background = chipBackground(dp(12), COLOR_CYAN, false)
             foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             isFocusable = true
             setPadding(dp(20), dp(14), dp(20), dp(14))
