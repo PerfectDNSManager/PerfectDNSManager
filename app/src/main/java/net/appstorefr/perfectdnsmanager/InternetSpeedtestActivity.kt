@@ -276,7 +276,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         // ── Start / Stop button ──────────────────────────────────────────
         btnStartStop = Button(this).apply {
             text = "D\u00e9marrer le test"
-            setTextColor(COLOR_WHITE)
+            setTextColor(COLOR_GREEN)
             textSize = 16f
             setTypeface(typeface, Typeface.BOLD)
             isFocusable = true
@@ -398,13 +398,25 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
 
     private fun greenPill(r: Int): GradientDrawable =
-        GradientDrawable().apply { setColor(COLOR_GREEN); cornerRadius = r.toFloat() }
+        GradientDrawable().apply {
+            setColor(pdmSurface())
+            setStroke(dp(3), COLOR_GREEN)
+            cornerRadius = r.toFloat()
+        }
 
     private fun redPill(r: Int): GradientDrawable =
-        GradientDrawable().apply { setColor(COLOR_RED); cornerRadius = r.toFloat() }
+        GradientDrawable().apply {
+            setColor(pdmSurface())
+            setStroke(dp(3), COLOR_RED)
+            cornerRadius = r.toFloat()
+        }
 
-    private fun chipBackground(r: Int, color: Int): GradientDrawable =
-        GradientDrawable().apply { setColor(color); cornerRadius = r.toFloat() }
+    private fun chipBackground(r: Int, accentColor: Int, active: Boolean): GradientDrawable =
+        GradientDrawable().apply {
+            setColor(pdmSurface())
+            setStroke(dp(if (active) 2 else 1), if (active) accentColor else pdmBorder())
+            cornerRadius = r.toFloat()
+        }
 
     /** Create a "label + big value" column inside [parent] and return the value TextView. */
     private fun metricBlock(
@@ -448,11 +460,11 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     private fun switchBackend(backend: SpeedBackend) {
         currentBackend = backend
 
-        // Update chip colors
+        // Update chip colors — active = dark surface + cyan stroke; inactive = dark surface + subtle border
         for ((b, btn) in backendButtons) {
-            val color = if (b == backend) COLOR_CYAN else COLOR_CHIP_INACTIVE
-            btn.background = chipBackground(dp(20), color)
-            btn.setTextColor(if (b == backend) 0xFF000000.toInt() else COLOR_WHITE)
+            val active = b == backend
+            btn.background = chipBackground(dp(20), COLOR_CYAN, active)
+            btn.setTextColor(if (active) COLOR_CYAN else COLOR_LIGHT_GREY)
         }
 
         when (backend) {
@@ -636,6 +648,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         val dp8 = dp(8)
         btnStartStop.text = if (isRunning) "Arr\u00eater" else "D\u00e9marrer le test"
         btnStartStop.background = if (isRunning) redPill(dp8) else greenPill(dp8)
+        btnStartStop.setTextColor(if (isRunning) COLOR_RED else COLOR_GREEN)
         btnStartStop.foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
     }
 
