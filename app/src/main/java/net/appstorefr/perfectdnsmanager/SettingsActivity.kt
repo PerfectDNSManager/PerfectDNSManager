@@ -379,6 +379,7 @@ class SettingsActivity : AppCompatActivity() {
         switchAdvanced.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("advanced_features_enabled", isChecked).apply()
             layoutAdvanced.visibility = if (isChecked) View.VISIBLE else View.GONE
+            updateFocusChain()
             // Cascade : si on désactive les fonctions avancées, tout ce qui est dedans se désactive
             if (!isChecked) {
                 switchOperatorDns.isChecked = false
@@ -449,6 +450,7 @@ class SettingsActivity : AppCompatActivity() {
             val expanded = layoutImportExportContent.visibility == View.VISIBLE
             layoutImportExportContent.visibility = if (expanded) View.GONE else View.VISIBLE
             tvArrow.text = if (expanded) "▶" else "▼"
+            updateFocusChain()
         }
 
         val btnExportConfig: Button = findViewById(R.id.btnExportConfig)
@@ -510,6 +512,49 @@ class SettingsActivity : AppCompatActivity() {
         btnAbout.setOnClickListener { startActivity(Intent(this, AboutActivity::class.java)) }
         btnHowTo.setOnClickListener { startActivity(Intent(this, HowToActivity::class.java)) }
         btnSupport.setOnClickListener { startActivity(Intent(this, SupportActivity::class.java)) }
+
+        updateFocusChain()
+    }
+
+    /**
+     * Chaîne dynamique des nextFocus entre sections collapsibles. Appelée au
+     * démarrage et à chaque toggle des sections avancées / import-export pour
+     * garantir qu'un DPAD_DOWN depuis rowAdvanced (ou rowImportExport) atteint
+     * la row suivante correctement, même si la section est dépliée.
+     */
+    private fun updateFocusChain() {
+        val rowAdvanced = findViewById<LinearLayout>(R.id.rowAdvanced)
+        val rowBetaUpdates = findViewById<LinearLayout>(R.id.rowBetaUpdates)
+        val layoutAdvanced = findViewById<LinearLayout>(R.id.layoutAdvancedSection)
+        val rowImportExport = findViewById<LinearLayout>(R.id.rowImportExport)
+        val layoutImportExport = findViewById<LinearLayout>(R.id.layoutImportExportContent)
+        val btnExportConfig = findViewById<Button>(R.id.btnExportConfig)
+        val btnResetApp = findViewById<Button>(R.id.btnResetApp)
+        val btnSplitTunnel = findViewById<Button>(R.id.btnSplitTunnel)
+        val btnSupport = findViewById<Button>(R.id.btnSupport)
+        val btnAbout = findViewById<Button>(R.id.btnAbout)
+
+        val advancedOpen = layoutAdvanced.visibility == View.VISIBLE
+        val importOpen = layoutImportExport.visibility == View.VISIBLE
+
+        // rowAdvanced → vers premier row avancé ou directement Import si fermé
+        rowAdvanced.nextFocusDownId =
+            if (advancedOpen) rowBetaUpdates.id else rowImportExport.id
+        // Dernier bouton visible section avancée → Import
+        btnSplitTunnel.nextFocusDownId = rowImportExport.id
+        rowImportExport.nextFocusUpId =
+            if (advancedOpen) btnSplitTunnel.id else rowAdvanced.id
+
+        // rowImportExport → vers premier bouton export ou directement Support si fermé
+        rowImportExport.nextFocusDownId =
+            if (importOpen) btnExportConfig.id else btnSupport.id
+        btnResetApp.nextFocusDownId = btnSupport.id
+        btnSupport.nextFocusUpId =
+            if (importOpen) btnResetApp.id else rowImportExport.id
+
+        // Footer chain
+        btnSupport.nextFocusDownId = btnAbout.id
+        btnAbout.nextFocusUpId = btnSupport.id
     }
 
     // ── Split tunneling (bypass VPN per-app) ─────────────────────

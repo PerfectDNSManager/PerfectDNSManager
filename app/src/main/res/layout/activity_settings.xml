@@ -41,13 +41,23 @@
     </LinearLayout>
 
     <!-- Section Démarrage auto -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_section_startup"
+        android:textColor="@color/pdm_text_secondary"
+        android:textSize="12sp"
+        android:textAllCaps="true"
+        android:letterSpacing="0.1"
+        android:paddingStart="4dp"
+        android:layout_marginBottom="4dp" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/pdm_tint_neutral"
+        android:background="@drawable/pdm_section_card"
         android:padding="12dp"
-        android:layout_marginBottom="12dp">
+        android:layout_marginBottom="16dp">
         <LinearLayout
             android:id="@+id/rowAutoStart"
             android:layout_width="match_parent"
@@ -168,11 +178,21 @@
     </LinearLayout>
 
     <!-- Section Fonctions avancées -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_section_advanced"
+        android:textColor="@color/pdm_text_secondary"
+        android:textSize="12sp"
+        android:textAllCaps="true"
+        android:letterSpacing="0.1"
+        android:paddingStart="4dp"
+        android:layout_marginBottom="4dp" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/pdm_tint_warning"
+        android:background="@drawable/pdm_section_card"
         android:padding="12dp"
         android:layout_marginBottom="12dp">
         <LinearLayout
@@ -590,13 +610,23 @@
     </LinearLayout>
 
     <!-- Import / Export (collapsible) -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_section_config"
+        android:textColor="@color/pdm_text_secondary"
+        android:textSize="12sp"
+        android:textAllCaps="true"
+        android:letterSpacing="0.1"
+        android:paddingStart="4dp"
+        android:layout_marginBottom="4dp" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/pdm_tint_info"
+        android:background="@drawable/pdm_section_card"
         android:padding="12dp"
-        android:layout_marginBottom="12dp">
+        android:layout_marginBottom="16dp">
 
         <LinearLayout
             android:id="@+id/rowImportExport"

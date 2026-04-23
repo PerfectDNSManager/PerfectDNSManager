@@ -47,6 +47,9 @@
 
     <!-- Settings -->
     <string name="settings_title">Paramètres</string>
+    <string name="settings_section_startup">Démarrage &amp; connexion</string>
+    <string name="settings_section_advanced">Avancé</string>
+    <string name="settings_section_config">Fichier de configuration</string>
     <string name="language_select_button">Langue / Language</string>
     <string name="how_to_adb">🛠 Comment activer ADB</string>
     <string name="adb_status_active">🟢 Débogage ADB : Actif</string>

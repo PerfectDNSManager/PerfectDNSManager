@@ -47,6 +47,9 @@
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
+    <string name="settings_section_startup">Startup &amp; connection</string>
+    <string name="settings_section_advanced">Advanced</string>
+    <string name="settings_section_config">Configuration file</string>
     <string name="language_select_button">Language / Langue</string>
     <string name="how_to_adb">🛠 How to enable ADB</string>
     <string name="adb_status_active">🟢 ADB Debugging: Active</string>
