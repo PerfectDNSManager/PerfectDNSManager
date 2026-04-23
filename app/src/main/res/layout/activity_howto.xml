@@ -42,7 +42,8 @@
             android:textColor="@color/pdm_item_text"
             android:padding="16dp"
             android:layout_marginBottom="32dp"
-            android:focusable="true" />
+            android:focusable="true"
+            android:nextFocusDown="@+id/btnBack" />
 
         <!-- Étape 1 -->
         <TextView
@@ -227,7 +228,8 @@
             android:backgroundTint="@color/pdm_border"
             android:foreground="@drawable/btn_focus_foreground"
             android:textColor="@color/pdm_text_primary"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:nextFocusUp="@id/btnOpenDevOptions"/>
 
     </LinearLayout>
 </ScrollView>

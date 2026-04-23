@@ -37,6 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:focusable="true"
+        android:nextFocusRight="@+id/btnDeleteRule"
         android:foreground="@drawable/btn_focus_foreground"/>
 
     <ImageButton
@@ -46,6 +47,7 @@
         android:src="@android:drawable/ic_menu_delete"
         android:background="@drawable/focusable_item_background"
         android:layout_marginStart="8dp"
-        android:focusable="true"/>
+        android:focusable="true"
+        android:nextFocusLeft="@id/switchEnableRule"/>
 
 </LinearLayout>

@@ -24,7 +24,8 @@
             android:textColor="@color/pdm_text_primary"
             android:layout_gravity="start"
             android:layout_marginBottom="16dp"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:nextFocusDown="@+id/btnSupportAbout"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -56,9 +57,11 @@
             android:text="@string/support_about_button"
             android:background="@drawable/pdm_btn_support"
             android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="@color/pdm_text_primary"
+            android:textColor="@color/pdm_accent_support"
             android:layout_marginBottom="20dp"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:nextFocusUp="@id/btnBack"
+            android:nextFocusDown="@+id/btnCheckForUpdate"/>
 
         <TextView
             android:id="@+id/tvVersion"
@@ -76,9 +79,10 @@
             android:text="@string/check_for_updates"
             android:background="@drawable/pdm_btn_info"
             android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="@color/pdm_text_primary"
+            android:textColor="@color/pdm_accent_alt"
             android:layout_marginBottom="20dp"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:nextFocusUp="@id/btnSupportAbout"/>
 
         <!-- Licence GPL -->
         <TextView

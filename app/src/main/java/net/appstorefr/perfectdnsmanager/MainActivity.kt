@@ -444,6 +444,9 @@ class MainActivity : AppCompatActivity() {
         btnGenerateReport.setOnClickListener { generateReport() }
         btnShareReport.setOnClickListener { shareReport() }
 
+        // Focus initial sur le CTA principal pour navigation D-pad prévisible
+        btnToggle.post { btnToggle.requestFocus() }
+
         // Report scroll zone - click to enter, back to exit
         val scrollReport: ScrollView = findViewById(R.id.scrollReport)
         scrollReport.setOnKeyListener { _, keyCode, event ->

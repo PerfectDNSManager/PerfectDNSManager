@@ -186,7 +186,8 @@
             android:padding="8dp"
             android:focusable="true"
             android:clickable="true"
-            android:nextFocusUp="@id/rowTheme">
+            android:nextFocusUp="@id/rowTheme"
+            android:nextFocusDown="@+id/rowBetaUpdates">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
