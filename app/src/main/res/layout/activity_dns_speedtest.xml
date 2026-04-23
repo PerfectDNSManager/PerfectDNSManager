@@ -49,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dns_speedtest_button"
-            android:backgroundTint="@color/pdm_accent"
+            android:background="@drawable/pdm_btn_primary"
             android:foreground="@drawable/btn_focus_foreground"
             android:textColor="@color/pdm_text_primary"
             android:textStyle="bold"

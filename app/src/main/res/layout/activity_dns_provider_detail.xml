@@ -102,7 +102,7 @@
         android:textColor="@color/pdm_text_primary"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:backgroundTint="@color/pdm_accent"
+        android:background="@drawable/pdm_btn_primary"
         android:foreground="@drawable/btn_focus_foreground"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"

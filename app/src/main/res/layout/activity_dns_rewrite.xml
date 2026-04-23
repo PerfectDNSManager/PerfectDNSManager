@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_new_rule"
-        android:backgroundTint="@color/pdm_accent_info"
+        android:background="@drawable/pdm_btn_info"
         android:foreground="@drawable/btn_focus_foreground"
         android:textColor="@color/pdm_text_primary"
         android:layout_marginBottom="16dp"
