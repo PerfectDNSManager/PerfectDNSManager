@@ -1177,13 +1177,19 @@ class SettingsActivity : AppCompatActivity() {
                 )
                 runOnUiThread {
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("Share Link", result.fullUrl))
+                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("PDM Share", "${result.fullUrl}\nMot de passe : ${result.password}"))
                     val msg = android.text.SpannableString(
-                        "Lien complet (chiffré de bout en bout) :\n${result.fullUrl}\n\nCopié dans le presse-papier. La clé est dans le fragment # et n'est jamais envoyée au serveur.\n\nOuvrez ce lien ou collez-le dans PDM sur l'autre appareil pour importer."
+                        "Lien (chiffré de bout en bout) :\n${result.fullUrl}\n\nMot de passe :\n${result.password}\n\nCopié au presse-papier. Partagez lien + mot de passe séparément. La clé n'est jamais envoyée au serveur."
                     )
                     val linkColor = pdmAccentAlt()
+                    val accentColor = pdmAccent()
                     val urlStart = msg.indexOf(result.fullUrl)
                     if (urlStart >= 0) msg.setSpan(android.text.style.ForegroundColorSpan(linkColor), urlStart, urlStart + result.fullUrl.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    val pwdStart = msg.indexOf(result.password)
+                    if (pwdStart >= 0) {
+                        msg.setSpan(android.text.style.ForegroundColorSpan(accentColor), pwdStart, pwdStart + result.password.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        msg.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), pwdStart, pwdStart + result.password.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
                     AlertDialog.Builder(this)
                         .setTitle(getString(R.string.upload_success_title))
                         .setMessage(msg)
@@ -1207,17 +1213,32 @@ class SettingsActivity : AppCompatActivity() {
             setPadding(60, 40, 60, 20)
         }
         val tvExplain = TextView(this).apply {
-            text = "Collez le lien complet partagé (avec le fragment #clé) :"
+            text = "Lien court (ou code 8 caractères) :"
             setTextColor(pdmTextSecondary()); textSize = 13f
         }
         layout.addView(tvExplain)
         val editCode = android.widget.EditText(this).apply {
-            hint = "https://pdm.appstorefr.net/decrypt/…#KEY"
+            hint = "pdm.appstorefr.net/d/… ou abcd1234"
             setTextColor(pdmTextPrimary()); setHintTextColor(pdmTextDisabled())
             setBackgroundColor(pdmSurfaceInput()); setPadding(20, 15, 20, 15)
             isSingleLine = true
         }
         layout.addView(editCode)
+
+        val tvPwdLabel = TextView(this).apply {
+            text = "Mot de passe (4 mots séparés par -) :"
+            setTextColor(pdmTextSecondary()); textSize = 13f
+            setPadding(0, 16, 0, 0)
+        }
+        layout.addView(tvPwdLabel)
+        val editPwd = android.widget.EditText(this).apply {
+            hint = "foo-bar-baz-qux"
+            setTextColor(pdmTextPrimary()); setHintTextColor(pdmTextDisabled())
+            setBackgroundColor(pdmSurfaceInput()); setPadding(20, 15, 20, 15)
+            isSingleLine = true
+        }
+        layout.addView(editPwd)
+
         val tvInfo = TextView(this).apply {
             text = getString(R.string.import_code_explain)
             setTextColor(pdmTextDisabled()); textSize = 11f
@@ -1230,25 +1251,28 @@ class SettingsActivity : AppCompatActivity() {
             .setView(layout)
             .setPositiveButton(getString(R.string.download_button)) { _, _ ->
                 val code = editCode.text.toString().trim()
-                if (code.isNotEmpty()) {
-                    Toast.makeText(this, getString(R.string.downloading), Toast.LENGTH_SHORT).show()
-                    Thread {
-                        try {
-                            val json = net.appstorefr.perfectdnsmanager.util.EncryptedSharer.downloadAndDecrypt(code)
-                            if (json.isNotBlank()) {
-                                runOnUiThread { confirmAndImport(json) }
-                            } else {
-                                runOnUiThread {
-                                    Toast.makeText(this, getString(R.string.read_error, "Empty response"), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                        } catch (e: Exception) {
+                val pwd = editPwd.text.toString().trim()
+                if (code.isEmpty() || pwd.isEmpty()) {
+                    Toast.makeText(this, "Lien ET mot de passe requis", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+                Toast.makeText(this, getString(R.string.downloading), Toast.LENGTH_SHORT).show()
+                Thread {
+                    try {
+                        val json = net.appstorefr.perfectdnsmanager.util.EncryptedSharer.downloadAndDecrypt(code, pwd)
+                        if (json.isNotBlank()) {
+                            runOnUiThread { confirmAndImport(json) }
+                        } else {
                             runOnUiThread {
-                                Toast.makeText(this, getString(R.string.read_error, e.message ?: ""), Toast.LENGTH_LONG).show()
+                                Toast.makeText(this, getString(R.string.read_error, "Empty response"), Toast.LENGTH_LONG).show()
                             }
                         }
-                    }.start()
-                }
+                    } catch (e: Exception) {
+                        runOnUiThread {
+                            Toast.makeText(this, getString(R.string.read_error, e.message ?: ""), Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }.start()
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .show()

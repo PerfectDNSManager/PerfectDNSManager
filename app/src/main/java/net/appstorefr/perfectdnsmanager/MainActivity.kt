@@ -998,16 +998,22 @@ class MainActivity : AppCompatActivity() {
                     btnShareReport.setBackgroundResource(R.drawable.pdm_btn_primary)
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
                     val url1 = result.fullUrl
-                    // E2EE : on copie l'URL complète (qui contient #KEY). Le slug seul ne suffit plus.
-                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("Report URL", url1))
-                    val text = "Lien de partage (chiffré de bout en bout) :\n$url1\n\nCopié dans le presse-papier. Partagez cette URL complète — la clé est dans le fragment #, jamais envoyée au serveur.\n\nExpire dans $expiresIn."
+                    val pwd = result.password
+                    // Clipboard : URL + mot de passe formaté pour un partage complet en 1 collage.
+                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("PDM Share", "$url1\nMot de passe : $pwd"))
+                    val text = "Lien (chiffré de bout en bout) :\n$url1\n\nMot de passe :\n$pwd\n\nCopié au presse-papier. Partagez lien + mot de passe séparément. La clé n'est jamais envoyée au serveur.\n\nExpire dans $expiresIn."
                     val msg = android.text.SpannableString(text)
                     val linkColor = pdmAccentAlt()
-                    // Make the URL clickable (just the URL portion, pas le fragment si trop long — tout le URL1)
+                    val accentColor = pdmAccent()
                     val urlStart1 = text.indexOf(url1)
                     if (urlStart1 >= 0) {
                         msg.setSpan(android.text.style.URLSpan(url1), urlStart1, urlStart1 + url1.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                         msg.setSpan(android.text.style.ForegroundColorSpan(linkColor), urlStart1, urlStart1 + url1.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
+                    val pwdStart = text.indexOf(pwd)
+                    if (pwdStart >= 0) {
+                        msg.setSpan(android.text.style.ForegroundColorSpan(accentColor), pwdStart, pwdStart + pwd.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        msg.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), pwdStart, pwdStart + pwd.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
                     val dialog = AlertDialog.Builder(this)
                         .setTitle(getString(R.string.share_ip_success_title))

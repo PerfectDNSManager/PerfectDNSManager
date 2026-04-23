@@ -47,9 +47,12 @@
         <p class="subtitle">AES-128-GCM &mdash; Client-side decryption (the key never leaves your browser)</p>
 
         <div class="card" id="inputCard">
-            <h2>&#x1F511; Enter share code</h2>
+            <h2>&#x1F511; Enter share code &amp; password</h2>
             <div class="input-row">
-                <input type="text" id="codeInput" placeholder="123456" autofocus onkeydown="if(event.key==='Enter')submitCode()">
+                <input type="text" id="codeInput" placeholder="abcd1234" autofocus>
+            </div>
+            <div class="input-row">
+                <input type="text" id="pwdInput" placeholder="four-word-password-here" onkeydown="if(event.key==='Enter')submitCode()">
                 <button onclick="submitCode()">Decrypt</button>
             </div>
             <div id="status"></div>
@@ -70,68 +73,76 @@
     const PDM_BASE = 'https://pdm.appstorefr.net';
     let currentPlaintext = null;
 
+    const PBKDF2_ITER = 600000;
+
     window.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams(window.location.search);
         const slug = (params.get('s') || '').trim();
-        const keyB64 = window.location.hash.replace(/^#/, '').trim();
-        if (slug && keyB64) {
-            decryptFromSlug(slug, keyB64);
+        if (slug) {
+            document.getElementById('codeInput').value = slug;
+            document.getElementById('pwdInput').focus();
         }
     });
 
-    async function decryptFromSlug(slug, keyB64) {
-        setStatus('info', 'Downloading…');
+    function extractSlug(input) {
+        const trimmed = input.trim();
+        try {
+            const u = new URL(trimmed);
+            if (u.hostname === 'pdm.appstorefr.net') {
+                return u.pathname.replace(/^\/(d\/|decrypt\/|r\/)?/, '').replace(/\/$/, '').split('?')[0];
+            }
+        } catch (e) { /* not a URL */ }
+        if (/^[a-z0-9]{4,16}$/i.test(trimmed)) return trimmed.toLowerCase();
+        return null;
+    }
+
+    async function submitCode() {
+        const codeRaw = document.getElementById('codeInput').value;
+        const pwd = document.getElementById('pwdInput').value.trim();
+        const slug = extractSlug(codeRaw);
+        if (!slug) { setStatus('err', 'Lien ou code invalide.'); return; }
+        if (!pwd) { setStatus('err', 'Mot de passe requis.'); return; }
+        await decryptFromSlug(slug, pwd);
+    }
+
+    async function decryptFromSlug(slug, password) {
+        setStatus('info', 'Downloading & deriving key (this takes a few seconds)…');
         try {
             const r = await fetch(PDM_BASE + '/r/' + encodeURIComponent(slug), { cache: 'no-store' });
             if (r.status === 404) { setStatus('err', 'Share expired or not found.'); return; }
             if (!r.ok) { setStatus('err', 'Server error (' + r.status + ').'); return; }
             const bytes = new Uint8Array(await r.arrayBuffer());
-            if (bytes.length < 28) { setStatus('err', 'Invalid content (too short).'); return; }
-            const text = await decryptBytes(bytes, keyB64);
+            if (bytes.length < 44) { setStatus('err', 'Invalid content (too short).'); return; }
+            const text = await decryptBytes(bytes, password);
             showResult(text);
             setStatus('ok', 'Decrypted successfully!');
         } catch (e) {
-            setStatus('err', 'Decryption failed: ' + e.message);
+            setStatus('err', 'Decryption failed: ' + (e.message || 'bad password?'));
         }
     }
 
-    function submitCode() {
-        const input = document.getElementById('codeInput').value.trim();
-        if (!input) return;
-
-        let code = null;
-
-        // Full pdm.appstorefr.net URL (possibly with #key) → extract slug; key comes from worker redirect
-        try {
-            const u = new URL(input);
-            if (u.hostname === 'pdm.appstorefr.net') {
-                code = u.pathname.replace(/^\/(d\/|decrypt\/)?/, '').replace(/\/$/, '');
-                if (u.hash && code) {
-                    // URL déjà complète avec fragment → on se redirige ici-même
-                    window.location.href = window.location.pathname + '?s=' + encodeURIComponent(code) + u.hash;
-                    return;
-                }
-            }
-        } catch (e) { /* not a URL */ }
-
-        // Bare code ou URL sans fragment → on bounce sur le Worker qui renvoie un 302 avec #key
-        if (!code && /^[A-Za-z0-9]{4,16}$/.test(input)) code = input;
-        if (code) {
-            window.location.href = 'https://pdm.appstorefr.net/decrypt/' + encodeURIComponent(code);
-            return;
-        }
-
-        setStatus('err', 'Invalid input. Enter a 6-digit code or a pdm.appstorefr.net URL.');
-    }
-
-    async function decryptBytes(combined, keyB64) {
-        const iv = combined.slice(0, 12);
-        const ct = combined.slice(12);
-        const keyBytes = Uint8Array.from(
-            atob(keyB64.replace(/-/g, '+').replace(/_/g, '/')),
-            c => c.charCodeAt(0)
+    async function deriveKey(password, salt) {
+        const pwdKey = await crypto.subtle.importKey(
+            'raw',
+            new TextEncoder().encode(password),
+            'PBKDF2',
+            false,
+            ['deriveKey']
         );
-        const key = await crypto.subtle.importKey('raw', keyBytes, 'AES-GCM', false, ['decrypt']);
+        return crypto.subtle.deriveKey(
+            { name: 'PBKDF2', salt, iterations: PBKDF2_ITER, hash: 'SHA-256' },
+            pwdKey,
+            { name: 'AES-GCM', length: 128 },
+            false,
+            ['decrypt']
+        );
+    }
+
+    async function decryptBytes(combined, password) {
+        const salt = combined.slice(0, 16);
+        const iv = combined.slice(16, 28);
+        const ct = combined.slice(28);
+        const key = await deriveKey(password, salt);
         const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
         return new TextDecoder().decode(pt);
     }
