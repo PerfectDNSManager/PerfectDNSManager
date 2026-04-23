@@ -1179,12 +1179,11 @@ class SettingsActivity : AppCompatActivity() {
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
                     clipboard.setPrimaryClip(android.content.ClipData.newPlainText("Share Link", result.fullUrl))
                     val msg = android.text.SpannableString(
-                        "Code : ${result.shortCode}\n\nLien complet (chiffré de bout en bout) :\n${result.fullUrl}\n\nOuvrez ce lien ou collez-le dans PDM sur l'autre appareil pour importer.\n\n(lien copié dans le presse-papier)"
+                        "Lien complet (chiffré de bout en bout) :\n${result.fullUrl}\n\nCopié dans le presse-papier. La clé est dans le fragment # et n'est jamais envoyée au serveur.\n\nOuvrez ce lien ou collez-le dans PDM sur l'autre appareil pour importer."
                     )
-                    val code = result.shortCode
-                    val greenColor = pdmAccent()
-                    val idx1 = msg.indexOf(code)
-                    if (idx1 >= 0) msg.setSpan(android.text.style.ForegroundColorSpan(greenColor), idx1, idx1 + code.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    val linkColor = pdmAccentAlt()
+                    val urlStart = msg.indexOf(result.fullUrl)
+                    if (urlStart >= 0) msg.setSpan(android.text.style.ForegroundColorSpan(linkColor), urlStart, urlStart + result.fullUrl.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     AlertDialog.Builder(this)
                         .setTitle(getString(R.string.upload_success_title))
                         .setMessage(msg)
@@ -1208,12 +1207,12 @@ class SettingsActivity : AppCompatActivity() {
             setPadding(60, 40, 60, 20)
         }
         val tvExplain = TextView(this).apply {
-            text = "Code à 6 chiffres ou lien https://pdm.appstorefr.net/… :"
+            text = "Collez le lien complet partagé (avec le fragment #clé) :"
             setTextColor(pdmTextSecondary()); textSize = 13f
         }
         layout.addView(tvExplain)
         val editCode = android.widget.EditText(this).apply {
-            hint = "123456"
+            hint = "https://pdm.appstorefr.net/decrypt/…#KEY"
             setTextColor(pdmTextPrimary()); setHintTextColor(pdmTextDisabled())
             setBackgroundColor(pdmSurfaceInput()); setPadding(20, 15, 20, 15)
             isSingleLine = true

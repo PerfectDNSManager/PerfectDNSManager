@@ -997,17 +997,13 @@ class MainActivity : AppCompatActivity() {
                     btnShareReport.isEnabled = true
                     btnShareReport.setBackgroundResource(R.drawable.pdm_btn_primary)
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("Report Code", result.shortCode))
                     val url1 = result.fullUrl
-                    val text = "Lien de partage (chiffré de bout en bout) :\n$url1\n\nCode : ${result.shortCode} (copié dans le presse-papier)\n\nExpire dans $expiresIn."
+                    // E2EE : on copie l'URL complète (qui contient #KEY). Le slug seul ne suffit plus.
+                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("Report URL", url1))
+                    val text = "Lien de partage (chiffré de bout en bout) :\n$url1\n\nCopié dans le presse-papier. Partagez cette URL complète — la clé est dans le fragment #, jamais envoyée au serveur.\n\nExpire dans $expiresIn."
                     val msg = android.text.SpannableString(text)
-                    val code = result.shortCode
-                    val greenColor = pdmAccent()
                     val linkColor = pdmAccentAlt()
-                    // Color code occurrences in green
-                    val idx1 = msg.indexOf(code)
-                    if (idx1 >= 0) msg.setSpan(android.text.style.ForegroundColorSpan(greenColor), idx1, idx1 + code.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    // Make first URL clickable
+                    // Make the URL clickable (just the URL portion, pas le fragment si trop long — tout le URL1)
                     val urlStart1 = text.indexOf(url1)
                     if (urlStart1 >= 0) {
                         msg.setSpan(android.text.style.URLSpan(url1), urlStart1, urlStart1 + url1.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

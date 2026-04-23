@@ -187,7 +187,8 @@ class UpdateManager(private val context: Context) {
 
     private fun downloadAndInstallUpdate(apkUrl: String) {
         showToastOnMainThread(context.getString(R.string.update_downloading))
-        val destination = File(context.cacheDir, "update.apk")
+        val updatesDir = File(context.cacheDir, "updates").apply { mkdirs() }
+        val destination = File(updatesDir, "update.apk")
 
         Fuel.download(apkUrl).fileDestination { _, _ -> destination }.response { _, _, result ->
             when (result) {
