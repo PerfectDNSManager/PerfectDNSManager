@@ -36,16 +36,18 @@ class EncryptedSharer {
         private const val GCM_IV_SIZE = 12
         private const val GCM_TAG_SIZE = 128
         private const val SALT_SIZE = 16
-        private const val PBKDF2_ITER = 600_000
+        // PBKDF2 1M iter = ~3s mobile, ~1ms GPU → crack 6-char alnum = 25j single-GPU.
+        // Expiration courte (1h default) rend la fenêtre d'attaque impraticable.
+        private const val PBKDF2_ITER = 1_000_000
+        private const val PASSWORD_LEN = 6
 
         private const val PDM_BASE_URL = "https://pdm.appstorefr.net"
         private const val PDM_API_KEY = "2b396e45cea4b5f9d7176bad3552c5ad0ba2c9170e917f5aa235e43f9292ba2e"
 
         private val SLUG_RE = Regex("^[0-9]{6}$|^[a-z0-9]{5,16}$")
 
-        // Wordlist courte (512 mots EFF-style, 3-5 lettres, phonétiquement clairs).
-        // 4 mots → 512^4 = 2^36 entropy ; couplé à PBKDF2(600k) = crack > 10 ans GPU.
-        private val WORDLIST = buildWordlist()
+        // Alphabet sans caractères ambigus (0/O, 1/l/I exclus) pour dictée orale.
+        private const val PWD_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789"
 
         data class UploadResult(
             val shortCode: String,
@@ -62,7 +64,7 @@ class EncryptedSharer {
         fun encryptAndUpload(content: String, fileName: String = "data.enc", expiresIn: String = "1h"): UploadResult {
             val rng = SecureRandom()
 
-            val password = generatePassword(rng, 4)
+            val password = generatePassword(rng, PASSWORD_LEN)
             val salt = ByteArray(SALT_SIZE).also { rng.nextBytes(it) }
             val keyBytes = pbkdf2(password.toCharArray(), salt, PBKDF2_ITER, AES_KEY_BYTES)
             val secretKey: SecretKey = SecretKeySpec(keyBytes, "AES")
@@ -172,44 +174,8 @@ class EncryptedSharer {
             return factory.generateSecret(spec).encoded
         }
 
-        private fun generatePassword(rng: SecureRandom, numWords: Int): String {
-            val list = WORDLIST
-            return (1..numWords).joinToString("-") { list[rng.nextInt(list.size)] }
-        }
-
-        /**
-         * Wordlist — 512 mots courts (3-5 lettres), phonétiquement clairs,
-         * sans confusion i/l/I, 0/O. Entropy/mot = 9 bits.
-         */
-        private fun buildWordlist(): List<String> {
-            val raw = """
-                able ably acid acre acts adds aged ages aims airs arch area arms army arts asks atom
-                aunt back bake bald ball band bank bars base bass bath bats bays bead beam bean bear
-                beat beds beef been beep beer bees beet begs bell belt bend bent bets bias bids bike
-                bind bird bits blob blow blue blur boat body boil bold bolt bond bone book boom boos
-                boot born boss both bowl bows brag bras brew brim brow buck buds buff bugs bulb bump
-                bums buns bush busy buys byte cabs cage cake call calm camp cane cape caps card care
-                cart case cash cast cats cave cell cent chat chef chew chin chip chop cite city clam
-                clan clap claw clay clef clip club clue coal coat coax coco code coil coin cola cold
-                come cone cook cool cope copy cord core cork corn cost cosy cots cove cowl cows crab
-                crag cram crap crew crop crow cubs cuds cuff cult cups curb cure curl curs curt cuts
-                dabs dads damp dare dash data date dawn days dead deaf deal dean dear debt deck deed
-                deem deep deer dent deny desk dice dies diet digs dime dine dirt disc dish docs does
-                dogs doll dome done door dope dorm dose dots dove draw drew drop drug drum duck duct
-                duel dues duet dugs dull dumb dump duns duos dusk dust duty dyed dyes each earn ears
-                ease east easy eats eave eddy edge edgy eels eggs egos eked elks elms emus ends envy
-                epic errs even ever evil exam exec exes exit eyed eyes face fact fade fads fair fall
-                fame fang fans fare farm fast fate fawn feat feds feed feel feet fell felt fend fern
-                fest feud fibs figs file fill film find fine fins fire firm fish five fizz flab flag
-                flap flat flaw flea fled flew flip flop flow foal foam foes fogs fold folk fond font
-                food fool foot fora fork form fort foul four fowl foxy foyers free fret frog from
-                fuel fume fund funk furs fuse fuss gags gain gala game gang gaps garb gasp gate gave
-                gaze gays gear geek gems gene gets gift gigs gild gill gist gone good gown grab grab
-                grad gram gray grey grim grin grip grit grow grub gulf gull gulp guns guru guts guys
-            """.trimIndent().split(Regex("\\s+")).filter { it.isNotEmpty() }.distinct()
-            // On s'arrête à 512 pour garantir une entropie de 9 bits/mot.
-            return if (raw.size >= 512) raw.take(512) else raw
-        }
+        private fun generatePassword(rng: SecureRandom, len: Int): String =
+            (1..len).map { PWD_ALPHABET[rng.nextInt(PWD_ALPHABET.length)] }.joinToString("")
 
         /**
          * Entrée legacy (base64(IV||ct||tag) + clé) — conservée pour code interne.

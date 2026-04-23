@@ -52,7 +52,7 @@
                 <input type="text" id="codeInput" placeholder="abcd1234" autofocus>
             </div>
             <div class="input-row">
-                <input type="text" id="pwdInput" placeholder="four-word-password-here" onkeydown="if(event.key==='Enter')submitCode()">
+                <input type="text" id="pwdInput" placeholder="a2z5s1" onkeydown="if(event.key==='Enter')submitCode()">
                 <button onclick="submitCode()">Decrypt</button>
             </div>
             <div id="status"></div>
@@ -73,7 +73,7 @@
     const PDM_BASE = 'https://pdm.appstorefr.net';
     let currentPlaintext = null;
 
-    const PBKDF2_ITER = 600000;
+    const PBKDF2_ITER = 1000000; // Doit matcher EncryptedSharer.kt côté app
 
     window.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams(window.location.search);

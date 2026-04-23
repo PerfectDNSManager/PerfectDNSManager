@@ -766,7 +766,7 @@ class MainActivity : AppCompatActivity() {
         val rgExpiry = android.widget.RadioGroup(this).apply {
             orientation = android.widget.RadioGroup.HORIZONTAL
         }
-        val defaultIdx = 2 // 24h
+        val defaultIdx = 0 // 1h (password 6 chars → TTL court pour limiter brute-force)
         val rbButtons = expLabels.mapIndexed { i, label ->
             android.widget.RadioButton(this).apply {
                 id = View.generateViewId()

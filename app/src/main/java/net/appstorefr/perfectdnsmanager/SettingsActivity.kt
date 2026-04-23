@@ -1226,13 +1226,13 @@ class SettingsActivity : AppCompatActivity() {
         layout.addView(editCode)
 
         val tvPwdLabel = TextView(this).apply {
-            text = "Mot de passe (4 mots séparés par -) :"
+            text = "Mot de passe (6 caractères) :"
             setTextColor(pdmTextSecondary()); textSize = 13f
             setPadding(0, 16, 0, 0)
         }
         layout.addView(tvPwdLabel)
         val editPwd = android.widget.EditText(this).apply {
-            hint = "foo-bar-baz-qux"
+            hint = "a2z5s1"
             setTextColor(pdmTextPrimary()); setHintTextColor(pdmTextDisabled())
             setBackgroundColor(pdmSurfaceInput()); setPadding(20, 15, 20, 15)
             isSingleLine = true
