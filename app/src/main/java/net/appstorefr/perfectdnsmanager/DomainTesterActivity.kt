@@ -140,8 +140,8 @@ class DomainTesterActivity : AppCompatActivity() {
         // Add domain button
         val btnAdd = Button(this).apply {
             text = getString(R.string.domain_tester_add)
-            setTextColor(pdmTextPrimary())
-            setBackgroundColor(pdmAccent())
+            setTextColor(pdmAccent())
+            setBackgroundResource(R.drawable.pdm_btn_primary)
             foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             isFocusable = true
             textSize = 14f
@@ -198,8 +198,8 @@ class DomainTesterActivity : AppCompatActivity() {
         // Run test button
         btnRunTest = Button(this).apply {
             text = getString(R.string.domain_tester_run)
-            setTextColor(pdmTextPrimary())
-            setBackgroundColor(pdmAccentInfo())
+            setTextColor(pdmAccentAlt())
+            setBackgroundResource(R.drawable.pdm_btn_info)
             foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             isFocusable = true
             textSize = 14f
@@ -310,30 +310,29 @@ class DomainTesterActivity : AppCompatActivity() {
     }
 
     private fun updateChipColors() {
-        val selectedBg = pdmAccentInfo()
-        val unselectedBg = pdmSurfaceInput()
-        val selectedText = pdmTextPrimary()
-        val unselectedText = pdmTextSecondary()
+        val accent = pdmAccentAlt()
+        val dimText = pdmTextSecondary()
+
+        fun chipBg(active: Boolean): android.graphics.drawable.GradientDrawable =
+            android.graphics.drawable.GradientDrawable().apply {
+                setColor(pdmSurface())
+                cornerRadius = (8 * resources.displayMetrics.density)
+                setStroke(
+                    ((if (active) 2 else 1) * resources.displayMetrics.density).toInt(),
+                    if (active) accent else pdmBorder()
+                )
+            }
 
         btnAll?.let { btn ->
-            if (isAllSelected) {
-                btn.setBackgroundColor(selectedBg)
-                btn.setTextColor(selectedText)
-            } else {
-                btn.setBackgroundColor(unselectedBg)
-                btn.setTextColor(unselectedText)
-            }
+            btn.background = chipBg(isAllSelected)
+            btn.setTextColor(if (isAllSelected) accent else dimText)
         }
 
         for (btn in chipButtons) {
             val option = btn.tag as DnsOption
-            if (!isAllSelected && option in selectedDnsOptions) {
-                btn.setBackgroundColor(selectedBg)
-                btn.setTextColor(selectedText)
-            } else {
-                btn.setBackgroundColor(unselectedBg)
-                btn.setTextColor(unselectedText)
-            }
+            val active = !isAllSelected && option in selectedDnsOptions
+            btn.background = chipBg(active)
+            btn.setTextColor(if (active) accent else dimText)
         }
     }
 
@@ -490,7 +489,8 @@ class DomainTesterActivity : AppCompatActivity() {
     private fun runTest() {
         isTesting = true
         btnRunTest.text = "\u23F9 Stop"
-        btnRunTest.setBackgroundColor(pdmDanger())
+        btnRunTest.setTextColor(pdmDanger())
+        btnRunTest.setBackgroundResource(R.drawable.pdm_btn_danger)
         tvResult.text = getString(R.string.domain_tester_testing)
 
         // Snapshot selected DNS options: "Tous" = all providers, otherwise only selected
@@ -549,7 +549,8 @@ class DomainTesterActivity : AppCompatActivity() {
             runOnUiThread {
                 isTesting = false
                 btnRunTest.text = getString(R.string.domain_tester_run)
-                btnRunTest.setBackgroundColor(pdmAccentInfo())
+                btnRunTest.setTextColor(pdmAccentAlt())
+                btnRunTest.setBackgroundResource(R.drawable.pdm_btn_info)
                 if (sb.isEmpty()) tvResult.text = getString(R.string.domain_tester_no_enabled)
             }
         }
@@ -560,6 +561,7 @@ class DomainTesterActivity : AppCompatActivity() {
         testThread?.interrupt()
         isTesting = false
         btnRunTest.text = getString(R.string.domain_tester_run)
-        btnRunTest.setBackgroundColor(pdmAccentInfo())
+        btnRunTest.setTextColor(pdmAccentAlt())
+        btnRunTest.setBackgroundResource(R.drawable.pdm_btn_info)
     }
 }
