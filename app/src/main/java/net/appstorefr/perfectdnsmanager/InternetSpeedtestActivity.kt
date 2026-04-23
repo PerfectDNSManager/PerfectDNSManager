@@ -75,15 +75,15 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     private val COLOR_GREEN: Int get() = pdmAccent()
     private val COLOR_RED: Int get() = pdmDanger()
     private val COLOR_DIM: Int get() = pdmTextDisabled()
+    private val COLOR_BG_CARD: Int get() = pdmSurfaceElevated()
+    private val COLOR_CHIP_INACTIVE: Int get() = pdmSurface()
 
     companion object {
         private const val TAG = "InternetSpeedtest"
 
-        // Data-viz palette (constants, volontairement non-thématiques)
-        private const val COLOR_BG_CARD = 0xFF16213E.toInt()
+        // Data-viz palette (download/upload chart — contraste volontaire)
         private const val COLOR_CYAN = 0xFF00E5FF.toInt()
         private const val COLOR_VIOLET = 0xFFBB86FC.toInt()
-        private const val COLOR_CHIP_INACTIVE = 0xFF2A2A4A.toInt()
 
         // Cloudflare endpoints
         private const val CF_BASE = "https://speed.cloudflare.com"
