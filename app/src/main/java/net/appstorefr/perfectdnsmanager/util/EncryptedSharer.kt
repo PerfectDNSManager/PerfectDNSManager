@@ -26,7 +26,7 @@ class EncryptedSharer {
 
     companion object {
         private const val TAG = "EncryptedSharer"
-        private const val AES_KEY_SIZE = 256
+        private const val AES_KEY_SIZE = 128 // Clé 16 bytes = fragment base64url ~22 chars (vs 43 pour AES-256). Sécurité 2^128 largement suffisante.
         private const val GCM_IV_SIZE = 12
         private const val GCM_TAG_SIZE = 128
 
