@@ -2,6 +2,8 @@ package net.appstorefr.perfectdnsmanager.util
 
 import android.util.Base64
 import android.util.Log
+import com.lambdapioneer.argon2kt.Argon2Kt
+import com.lambdapioneer.argon2kt.Argon2Mode
 import net.appstorefr.perfectdnsmanager.BuildConfig
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -12,33 +14,36 @@ import java.security.SecureRandom
 import java.util.concurrent.TimeUnit
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
-import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.GCMParameterSpec
-import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 
 /**
  * Partage E2EE avec lien court + mot de passe.
  *
- * Modèle : user partage deux choses (URL courte 8 chars + passphrase 4 mots).
- * Clé AES-128 dérivée via PBKDF2-SHA256(password, salt_random_16b, 600_000 iter).
+ * Modèle : user partage deux choses (URL courte + password 6 chars).
+ * Clé AES-128 dérivée via Argon2id(m=32 MiB, t=3, p=1, salt=16B).
  * Ciphertext stocké côté serveur sans aucun secret ; le password transite via
  * canal utilisateur (oral, SMS, etc.) et n'atteint jamais le serveur.
  *
- * Format upload body : salt(16) || IV(12) || ciphertext || tag(16).
+ * Format upload body v2 : 0x02 || salt(16) || IV(12) || ciphertext || tag(16).
  */
 class EncryptedSharer {
 
     companion object {
         private const val TAG = "EncryptedSharer"
 
-        private const val AES_KEY_BYTES = 16 // AES-128
+        private const val FORMAT_VERSION: Byte = 0x02
+        private const val AES_KEY_BYTES = 16
         private const val GCM_IV_SIZE = 12
         private const val GCM_TAG_SIZE = 128
         private const val SALT_SIZE = 16
-        // PBKDF2 1M iter = ~3s mobile, ~1ms GPU → crack 6-char alnum = 25j single-GPU.
-        // Expiration courte (1h default) rend la fenêtre d'attaque impraticable.
-        private const val PBKDF2_ITER = 1_000_000
+
+        // Argon2id — RFC 9106 profil mobile-friendly. ~0.5-2s CPU mobile,
+        // mémoire 32 MiB tue l'avantage GPU/ASIC vs PBKDF2.
+        private const val ARGON2_M_KIB = 32 * 1024   // 32 MiB
+        private const val ARGON2_T_COST = 3
+        private const val ARGON2_PARALLEL = 1
+
         private const val PASSWORD_LEN = 6
 
         private const val PDM_BASE_URL = "https://pdm.appstorefr.net"
@@ -56,17 +61,12 @@ class EncryptedSharer {
             val fileUrl: String
         )
 
-        /**
-         * Chiffre en AES-128-GCM avec clé dérivée d'un mot de passe aléatoire
-         * 4 mots. Upload ciphertext (salt||iv||ct||tag) sans aucun secret.
-         * Retourne URL courte + password — les deux à partager séparément.
-         */
         fun encryptAndUpload(content: String, fileName: String = "data.enc", expiresIn: String = "1h"): UploadResult {
             val rng = SecureRandom()
 
             val password = generatePassword(rng, PASSWORD_LEN)
             val salt = ByteArray(SALT_SIZE).also { rng.nextBytes(it) }
-            val keyBytes = pbkdf2(password.toCharArray(), salt, PBKDF2_ITER, AES_KEY_BYTES)
+            val keyBytes = argon2id(password.toByteArray(Charsets.UTF_8), salt, AES_KEY_BYTES)
             val secretKey: SecretKey = SecretKeySpec(keyBytes, "AES")
 
             val iv = ByteArray(GCM_IV_SIZE).also { rng.nextBytes(it) }
@@ -74,7 +74,7 @@ class EncryptedSharer {
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, GCMParameterSpec(GCM_TAG_SIZE, iv))
             val encrypted = cipher.doFinal(content.toByteArray(Charsets.UTF_8))
 
-            val combined = salt + iv + encrypted
+            val combined = byteArrayOf(FORMAT_VERSION) + salt + iv + encrypted
 
             val client = OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
@@ -91,7 +91,7 @@ class EncryptedSharer {
                 .post(combined.toRequestBody("application/octet-stream".toMediaType()))
                 .build()
 
-            if (BuildConfig.DEBUG) Log.d(TAG, "Uploading ${combined.size} bytes")
+            if (BuildConfig.DEBUG) Log.d(TAG, "Uploading ${combined.size} bytes (Argon2id v2)")
             val response = client.newCall(request).execute()
             val body = response.body?.string()?.trim() ?: ""
             response.close()
@@ -112,10 +112,6 @@ class EncryptedSharer {
             )
         }
 
-        /**
-         * Télécharge depuis une URL courte + déchiffre avec le mot de passe.
-         * Le slug peut être un code court ou une URL complète.
-         */
         fun downloadAndDecrypt(shortCodeOrUrl: String, password: String): String {
             val slug = parseSlug(shortCodeOrUrl)
             if (password.isBlank()) throw Exception("Mot de passe requis")
@@ -134,15 +130,18 @@ class EncryptedSharer {
             val bytes = response.body?.bytes() ?: ByteArray(0)
             response.close()
 
-            if (bytes.size < SALT_SIZE + GCM_IV_SIZE + 16) {
+            if (bytes.isEmpty() || bytes[0] != FORMAT_VERSION) {
+                throw Exception("Format non supporté (ancien lien ?)")
+            }
+            if (bytes.size < 1 + SALT_SIZE + GCM_IV_SIZE + 16) {
                 throw Exception("Contenu trop court (${bytes.size} octets)")
             }
 
-            val salt = bytes.copyOfRange(0, SALT_SIZE)
-            val iv = bytes.copyOfRange(SALT_SIZE, SALT_SIZE + GCM_IV_SIZE)
-            val ct = bytes.copyOfRange(SALT_SIZE + GCM_IV_SIZE, bytes.size)
+            val salt = bytes.copyOfRange(1, 1 + SALT_SIZE)
+            val iv = bytes.copyOfRange(1 + SALT_SIZE, 1 + SALT_SIZE + GCM_IV_SIZE)
+            val ct = bytes.copyOfRange(1 + SALT_SIZE + GCM_IV_SIZE, bytes.size)
 
-            val keyBytes = pbkdf2(password.toCharArray(), salt, PBKDF2_ITER, AES_KEY_BYTES)
+            val keyBytes = argon2id(password.toByteArray(Charsets.UTF_8), salt, AES_KEY_BYTES)
             val secretKey: SecretKey = SecretKeySpec(keyBytes, "AES")
 
             val cipher = Cipher.getInstance("AES/GCM/NoPadding")
@@ -168,10 +167,18 @@ class EncryptedSharer {
             return clean
         }
 
-        private fun pbkdf2(password: CharArray, salt: ByteArray, iter: Int, keyLen: Int): ByteArray {
-            val spec = PBEKeySpec(password, salt, iter, keyLen * 8)
-            val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
-            return factory.generateSecret(spec).encoded
+        private fun argon2id(password: ByteArray, salt: ByteArray, keyLen: Int): ByteArray {
+            val argon = Argon2Kt()
+            val result = argon.hash(
+                mode = Argon2Mode.ARGON2_ID,
+                password = password,
+                salt = salt,
+                tCostInIterations = ARGON2_T_COST,
+                mCostInKibibyte = ARGON2_M_KIB,
+                parallelism = ARGON2_PARALLEL,
+                hashLengthInBytes = keyLen
+            )
+            return result.rawHashAsByteArray()
         }
 
         private fun generatePassword(rng: SecureRandom, len: Int): String =

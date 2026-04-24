@@ -13,13 +13,20 @@
         <item name="android:statusBarColor">@color/pdm_background</item>
         <item name="android:navigationBarColor">@color/pdm_background</item>
         <item name="alertDialogTheme">@style/PDMAlertDialog</item>
+        <!-- Contraste track toggle OFF : gris clair sur blanc (light mode) devenait invisible.
+             colorControlNormal pilote la teinte de piste de toute checkbox/switch non cochée. -->
+        <item name="android:colorControlNormal">@color/pdm_toggle_off</item>
     </style>
 
     <!-- ─── Dialogue ─── -->
     <style name="PDMAlertDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:background">@color/pdm_surface_elevated</item>
+        <item name="android:windowBackground">@drawable/pdm_dialog_bg</item>
         <item name="android:textColorPrimary">@color/pdm_text_primary</item>
+        <item name="android:textColorSecondary">@color/pdm_text_secondary</item>
         <item name="colorAccent">@color/pdm_accent</item>
+        <item name="colorControlActivated">@color/pdm_accent</item>
+        <item name="android:colorControlNormal">@color/pdm_text_secondary</item>
     </style>
 
     <!-- ─── Typographie ─── -->

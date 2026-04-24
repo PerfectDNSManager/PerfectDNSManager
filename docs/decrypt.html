@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src https://pdm.appstorefr.net; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
     <title>Perfect DNS Manager - Decrypt</title>
+    <script src="https://cdn.jsdelivr.net/npm/argon2-browser@1.18.0/dist/argon2-bundled.min.js"
+            integrity="sha384-XOR3aNvHciLPIf6r+2glkrmbBbLmIJ1EChMXjw8eBKBf8gE0rDq1TyUNuRdorOqi"
+            crossorigin="anonymous"></script>
     <style>
         :root { --bg: #121212; --surface: #1E1E1E; --card: #252525; --primary: #2196F3; --accent: #FFD700; --text: #FFFFFF; --text-dim: #BBBBBB; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -44,7 +48,7 @@
 <body>
     <div class="container">
         <h1><span class="lock-icon">&#x1F512;</span> Perfect DNS Manager <span>Decrypt</span></h1>
-        <p class="subtitle">AES-128-GCM &mdash; Client-side decryption (the key never leaves your browser)</p>
+        <p class="subtitle">AES-128-GCM + Argon2id &mdash; Client-side decryption (the key never leaves your browser)</p>
 
         <div class="card" id="inputCard">
             <h2>&#x1F511; Enter share code &amp; password</h2>
@@ -52,16 +56,16 @@
                 <input type="text" id="codeInput" placeholder="abcd1234" autofocus>
             </div>
             <div class="input-row">
-                <input type="text" id="pwdInput" placeholder="a2z5s1" onkeydown="if(event.key==='Enter')submitCode()">
-                <button onclick="submitCode()">Decrypt</button>
+                <input type="text" id="pwdInput" placeholder="a2z5s1">
+                <button id="btnDecrypt">Decrypt</button>
             </div>
             <div id="status"></div>
         </div>
 
         <div id="result"></div>
         <div class="actions" id="actions">
-            <button onclick="copyResult()">Copy</button>
-            <button onclick="downloadResult()" class="btn-accent">Download</button>
+            <button id="btnCopy">Copy</button>
+            <button id="btnDownload" class="btn-accent">Download</button>
         </div>
 
         <div class="footer">
@@ -73,7 +77,14 @@
     const PDM_BASE = 'https://pdm.appstorefr.net';
     let currentPlaintext = null;
 
-    const PBKDF2_ITER = 1000000; // Doit matcher EncryptedSharer.kt côté app
+    // Argon2id — doivent matcher EncryptedSharer.kt côté app (format v2)
+    const FORMAT_VERSION = 0x02;
+    const ARGON2_M_KIB = 32 * 1024;   // 32 MiB
+    const ARGON2_T_COST = 3;
+    const ARGON2_PARALLEL = 1;
+    const AES_KEY_BYTES = 16;
+    const SALT_SIZE = 16;
+    const IV_SIZE = 12;
 
     window.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams(window.location.search);
@@ -82,6 +93,12 @@
             document.getElementById('codeInput').value = slug;
             document.getElementById('pwdInput').focus();
         }
+        document.getElementById('btnDecrypt').addEventListener('click', submitCode);
+        document.getElementById('btnCopy').addEventListener('click', copyResult);
+        document.getElementById('btnDownload').addEventListener('click', downloadResult);
+        document.getElementById('pwdInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') submitCode();
+        });
     });
 
     function extractSlug(input) {
@@ -106,13 +123,18 @@
     }
 
     async function decryptFromSlug(slug, password) {
-        setStatus('info', 'Downloading & deriving key (this takes a few seconds)…');
+        setStatus('info', 'Downloading & deriving key (Argon2id, ~1-3s)…');
         try {
             const r = await fetch(PDM_BASE + '/r/' + encodeURIComponent(slug), { cache: 'no-store' });
             if (r.status === 404) { setStatus('err', 'Share expired or not found.'); return; }
             if (!r.ok) { setStatus('err', 'Server error (' + r.status + ').'); return; }
             const bytes = new Uint8Array(await r.arrayBuffer());
-            if (bytes.length < 44) { setStatus('err', 'Invalid content (too short).'); return; }
+            const minLen = 1 + SALT_SIZE + IV_SIZE + 16;
+            if (bytes.length < minLen) { setStatus('err', 'Invalid content (too short).'); return; }
+            if (bytes[0] !== FORMAT_VERSION) {
+                setStatus('err', 'Format non supporté (ancien lien ?).');
+                return;
+            }
             const text = await decryptBytes(bytes, password);
             showResult(text);
             setStatus('ok', 'Decrypted successfully!');
@@ -122,16 +144,21 @@
     }
 
     async function deriveKey(password, salt) {
-        const pwdKey = await crypto.subtle.importKey(
+        if (typeof argon2 === 'undefined' || !argon2.hash) {
+            throw new Error('Argon2 lib non chargée (check réseau / CDN)');
+        }
+        const result = await argon2.hash({
+            pass: new TextEncoder().encode(password),
+            salt: salt,
+            time: ARGON2_T_COST,
+            mem: ARGON2_M_KIB,
+            parallelism: ARGON2_PARALLEL,
+            hashLen: AES_KEY_BYTES,
+            type: argon2.ArgonType.Argon2id
+        });
+        return crypto.subtle.importKey(
             'raw',
-            new TextEncoder().encode(password),
-            'PBKDF2',
-            false,
-            ['deriveKey']
-        );
-        return crypto.subtle.deriveKey(
-            { name: 'PBKDF2', salt, iterations: PBKDF2_ITER, hash: 'SHA-256' },
-            pwdKey,
+            result.hash,
             { name: 'AES-GCM', length: 128 },
             false,
             ['decrypt']
@@ -139,9 +166,9 @@
     }
 
     async function decryptBytes(combined, password) {
-        const salt = combined.slice(0, 16);
-        const iv = combined.slice(16, 28);
-        const ct = combined.slice(28);
+        const salt = combined.slice(1, 1 + SALT_SIZE);
+        const iv = combined.slice(1 + SALT_SIZE, 1 + SALT_SIZE + IV_SIZE);
+        const ct = combined.slice(1 + SALT_SIZE + IV_SIZE);
         const key = await deriveKey(password, salt);
         const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
         return new TextDecoder().decode(pt);

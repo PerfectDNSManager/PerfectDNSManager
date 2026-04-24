@@ -711,29 +711,29 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Soutenir -->
+    <!-- Actions footer (Soutenir + À propos) : style ghost uniforme,
+         visuellement secondaires par rapport aux actions URL Rewrite / Split Tunnel. -->
     <Button
         android:id="@+id/btnSupport"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="44dp"
         android:text="@string/support_us_button"
-        android:background="@drawable/pdm_btn_support"
+        android:background="@drawable/pdm_btn_ghost"
         android:foreground="@drawable/btn_focus_foreground"
-        android:textColor="@color/pdm_text_primary"
-        android:textSize="14sp"
+        android:textColor="@color/pdm_text_secondary"
+        android:textSize="13sp"
         android:layout_marginBottom="4dp"
         android:focusable="true" />
 
-    <!-- À propos (tout en bas) -->
     <Button
         android:id="@+id/btnAbout"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="44dp"
         android:text="@string/about"
-        android:backgroundTint="@color/pdm_surface_elevated"
+        android:background="@drawable/pdm_btn_ghost"
         android:foreground="@drawable/btn_focus_foreground"
-        android:textColor="@color/pdm_text_primary"
-        android:textSize="14sp"
+        android:textColor="@color/pdm_text_secondary"
+        android:textSize="13sp"
         android:focusable="true" />
 </LinearLayout>
 </ScrollView>

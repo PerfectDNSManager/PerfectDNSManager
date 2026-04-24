@@ -25,9 +25,9 @@
     <string name="firestick_warning_title">Firestick সতর্কতা</string>
     <string name="firestick_warning_message">Firestick ডিভাইসে ADB পদ্ধতি ব্যবহার করলে ইন্টারনেট সংযোগ হারাতে পারে। VPN পদ্ধতি ব্যবহার করার পরামর্শ দেওয়া হচ্ছে।</string>
     <string name="continue_anyway">চালিয়ে যান</string>
-    <string name="dns_provider_label">1| DNS প্রদানকারী নির্বাচন:</string>
+    <string name="dns_provider_label">1. DNS প্রদানকারী নির্বাচন:</string>
     <string name="dns_select_button">👉 DNS প্রদানকারী নির্বাচন 👈</string>
-    <string name="activation_label">2| সক্রিয়করণ:</string>
+    <string name="activation_label">2. সক্রিয়করণ:</string>
     <string name="dns_service_used">ব্যবহৃত DNS সেবা:</string>
     <string name="settings_content_description">সেটিংস</string>
     <string name="wan_ipv4_label">IPv4 : </string>
@@ -57,8 +57,8 @@
     <string name="url_rewrite_button">🔀 URL Rewrite</string>
     <string name="restore_dns_button">🔄 প্রাথমিক DNS পুনরুদ্ধার করুন</string>
     <string name="show_operator_dns">🇫🇷 ফ্রান্স অপারেটর DNS দেখান (Orange/Bouygues/SFR/Free/OVH)</string>
-    <string name="show_standard_dns">📋 ক্লাসিক DNS দেখান (এনক্রিপ্ট করা নয়)</string>
-    <string name="show_profile_variants">📋 DNS প্রদানকারীদের বিভিন্ন প্রোফাইল দেখান</string>
+    <string name="show_standard_dns">ক্লাসিক DNS দেখান (এনক্রিপ্ট করা নয়)</string>
+    <string name="show_profile_variants">DNS প্রদানকারীদের বিভিন্ন প্রোফাইল দেখান</string>
     <string name="dns_dot_adb">📡 ADB এর মাধ্যমে DNS DoT দেখান</string>
     <string name="adb_warning">ADB পদ্ধতি সিস্টেম সেটিংস পরিবর্তন করে। সংযোগ সমস্যা হলে, এই বিকল্পটি নিষ্ক্রিয় করুন এবং VPN পদ্ধতি ব্যবহার করুন।</string>
     <string name="disable_ipv6_label">IPv6 নিষ্ক্রিয় করুন / IPv4 জোর করুন</string>
@@ -425,7 +425,7 @@
     <string name="report_blocking_test_after">DNS-এর পরে (সক্রিয়)</string>
 
     <!-- পরীক্ষার সরঞ্জাম (একীভূত মডিউল) -->
-    <string name="tools_section_label">3| পরীক্ষার সরঞ্জাম:</string>
+    <string name="tools_section_label">3. পরীক্ষার সরঞ্জাম দেখান:</string>
     <string name="generate_report_button">▶ রিপোর্ট তৈরি করুন</string>
     <string name="quick_dns_test_button">🔍 ডোমেইন টেস্টার</string>
     <string name="quick_dns_test_running">DNS পরীক্ষা চলছে...</string>
@@ -529,6 +529,13 @@
     <string name="domain_tester_dns_all">সব</string>
     <string name="domain_tester_dns_select">পরীক্ষার জন্য DNS:</string>
     <string name="internet_speedtest_button">গতি পরীক্ষা</string>
-    <string name="internet_speedtest_advanced">গতি পরীক্ষা (উন্নত)</string>
+    <string name="internet_speedtest_advanced">⚡ ইন্টারনেট স্পিড টেস্ট</string>
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+
+    <!-- Theme -->
+    <string name="theme_label">🎨 থিম</string>
+    <string name="theme_system">স্বয়ংক্রিয় (সিস্টেম)</string>
+    <string name="theme_light">☀️ হালকা</string>
+    <string name="theme_dark">🌙 গাঢ়</string>
+    <string name="theme_choose_title">থিম নির্বাচন</string>
 </resources>

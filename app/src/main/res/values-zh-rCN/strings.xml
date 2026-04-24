@@ -25,9 +25,9 @@
     <string name="firestick_warning_title">Firestick 警告</string>
     <string name="firestick_warning_message">在 Firestick 设备上使用 ADB 方式可能导致网络连接中断。建议使用 VPN 方式。</string>
     <string name="continue_anyway">继续</string>
-    <string name="dns_provider_label">1| 选择 DNS 提供商：</string>
+    <string name="dns_provider_label">1. 选择 DNS 提供商：</string>
     <string name="dns_select_button">👉 选择 DNS 提供商 👈</string>
-    <string name="activation_label">2| 激活：</string>
+    <string name="activation_label">2. 激活：</string>
     <string name="dns_service_used">正在使用的 DNS 服务：</string>
     <string name="settings_content_description">设置</string>
     <string name="wan_ipv4_label">IPv4: </string>
@@ -57,8 +57,8 @@
     <string name="url_rewrite_button">🔀 URL Rewrite</string>
     <string name="restore_dns_button">🔄 恢复初始 DNS</string>
     <string name="show_operator_dns">🇫🇷 显示法国运营商 DNS（Orange/Bouygues/SFR/Free/OVH）</string>
-    <string name="show_standard_dns">📋 显示经典 DNS（未加密）</string>
-    <string name="show_profile_variants">📋 显示 DNS 提供商的不同配置</string>
+    <string name="show_standard_dns">显示经典 DNS（未加密）</string>
+    <string name="show_profile_variants">显示 DNS 提供商的不同配置</string>
     <string name="dns_dot_adb">📡 显示通过 ADB 的 DNS DoT</string>
     <string name="adb_warning">ADB 方式会修改系统设置。如遇网络连接问题，请禁用此选项并使用 VPN 方式。</string>
     <string name="disable_ipv6_label">禁用 IPv6 / 强制 IPv4</string>
@@ -425,7 +425,7 @@
     <string name="report_blocking_test_after">DNS之后（活跃）</string>
 
     <!-- 测试工具（统一模块） -->
-    <string name="tools_section_label">3| 测试工具：</string>
+    <string name="tools_section_label">3. 显示测试工具:</string>
     <string name="generate_report_button">▶ 生成报告</string>
     <string name="quick_dns_test_button">🔍 域名测试器</string>
     <string name="quick_dns_test_running">DNS测试进行中...</string>
@@ -529,6 +529,13 @@
     <string name="domain_tester_dns_all">全部</string>
     <string name="domain_tester_dns_select">要测试的 DNS：</string>
     <string name="internet_speedtest_button">测速工具</string>
-    <string name="internet_speedtest_advanced">测速工具 (高级)</string>
+    <string name="internet_speedtest_advanced">⚡ 互联网速度测试</string>
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+
+    <!-- Theme -->
+    <string name="theme_label">🎨 主题</string>
+    <string name="theme_system">自动（系统）</string>
+    <string name="theme_light">☀️ 浅色</string>
+    <string name="theme_dark">🌙 深色</string>
+    <string name="theme_choose_title">选择主题</string>
 </resources>

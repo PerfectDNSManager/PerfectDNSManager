@@ -115,6 +115,9 @@ dependencies {
     // QUIC client pour DoQ (DNS over QUIC)
     implementation("tech.kwik:kwik:0.10.8")
 
+    // Argon2id KDF (JNI sur libargon2) — partage E2EE, remplace PBKDF2
+    implementation("com.lambdapioneer.argon2kt:argon2kt:1.5.0")
+
     // Core library desugaring (java.time.Duration requis par kwik, API 26+)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 

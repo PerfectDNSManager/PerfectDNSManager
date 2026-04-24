@@ -25,9 +25,9 @@
     <string name="firestick_warning_title">Avviso Firestick</string>
     <string name="firestick_warning_message">L\'utilizzo del metodo ADB sui dispositivi Firestick può causare la perdita della connettività Internet. Si consiglia di utilizzare il metodo VPN.</string>
     <string name="continue_anyway">Continua</string>
-    <string name="dns_provider_label">1| Scelta del Fornitore DNS:</string>
+    <string name="dns_provider_label">1. Scelta del Fornitore DNS:</string>
     <string name="dns_select_button">👉 Scegli fornitore DNS 👈</string>
-    <string name="activation_label">2| Attivazione:</string>
+    <string name="activation_label">2. Attivazione:</string>
     <string name="dns_service_used">Servizio DNS utilizzato:</string>
     <string name="settings_content_description">Impostazioni</string>
     <string name="wan_ipv4_label">IPv4: </string>
@@ -57,8 +57,8 @@
     <string name="url_rewrite_button">🔀 URL Rewrite</string>
     <string name="restore_dns_button">🔄 Ripristina i DNS iniziali</string>
     <string name="show_operator_dns">🇫🇷 Mostra i DNS operatori Francia (Orange/Bouygues/SFR/Free/OVH)</string>
-    <string name="show_standard_dns">📋 Mostra i DNS classici (non crittografato)</string>
-    <string name="show_profile_variants">📋 Mostra i diversi profili dei fornitori DNS</string>
+    <string name="show_standard_dns">Mostra i DNS classici (non crittografato)</string>
+    <string name="show_profile_variants">Mostra i diversi profili dei fornitori DNS</string>
     <string name="dns_dot_adb">📡 Mostra i DNS DoT tramite ADB</string>
     <string name="adb_warning">Il metodo ADB modifica le impostazioni di sistema. In caso di problemi di connettività, disattiva questa opzione e usa il metodo VPN.</string>
     <string name="disable_ipv6_label">Disattiva IPv6 / Forza IPv4</string>
@@ -425,7 +425,7 @@
     <string name="report_blocking_test_after">Dopo il DNS (attivo)</string>
 
     <!-- Strumenti di test (modulo unificato) -->
-    <string name="tools_section_label">3| Strumenti di test:</string>
+    <string name="tools_section_label">3. Mostra strumenti di test:</string>
     <string name="generate_report_button">▶ Genera rapporto</string>
     <string name="quick_dns_test_button">🔍 Tester di domini</string>
     <string name="quick_dns_test_running">Test DNS in corso...</string>
@@ -529,6 +529,13 @@
     <string name="domain_tester_dns_all">Tutti</string>
     <string name="domain_tester_dns_select">DNS da testare:</string>
     <string name="internet_speedtest_button">Test di velocità</string>
-    <string name="internet_speedtest_advanced">Test di velocità (avanzato)</string>
+    <string name="internet_speedtest_advanced">⚡ Test velocità Internet</string>
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+
+    <!-- Theme -->
+    <string name="theme_label">🎨 Tema</string>
+    <string name="theme_system">Automatico (sistema)</string>
+    <string name="theme_light">☀️ Chiaro</string>
+    <string name="theme_dark">🌙 Scuro</string>
+    <string name="theme_choose_title">Scegli tema</string>
 </resources>

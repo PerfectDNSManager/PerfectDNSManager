@@ -25,9 +25,9 @@
     <string name="firestick_warning_title">Предупреждение Firestick</string>
     <string name="firestick_warning_message">Использование метода ADB на устройствах Firestick может привести к потере интернет-соединения. Рекомендуется использовать метод VPN.</string>
     <string name="continue_anyway">Продолжить</string>
-    <string name="dns_provider_label">1| Выбор провайдера DNS:</string>
+    <string name="dns_provider_label">1. Выбор провайдера DNS:</string>
     <string name="dns_select_button">👉 Выбор провайдера DNS 👈</string>
-    <string name="activation_label">2| Активация:</string>
+    <string name="activation_label">2. Активация:</string>
     <string name="dns_service_used">Используемый DNS-сервис:</string>
     <string name="settings_content_description">Настройки</string>
     <string name="wan_ipv4_label">IPv4: </string>
@@ -57,8 +57,8 @@
     <string name="url_rewrite_button">🔀 URL Rewrite</string>
     <string name="restore_dns_button">🔄 Восстановить исходные DNS</string>
     <string name="show_operator_dns">🇫🇷 Показать DNS французских операторов (Orange/Bouygues/SFR/Free/OVH)</string>
-    <string name="show_standard_dns">📋 Показать классические DNS (нешифрованные)</string>
-    <string name="show_profile_variants">📋 Показать варианты профилей провайдеров DNS</string>
+    <string name="show_standard_dns">Показать классические DNS (нешифрованные)</string>
+    <string name="show_profile_variants">Показать варианты профилей провайдеров DNS</string>
     <string name="dns_dot_adb">📡 Показать DNS DoT через ADB</string>
     <string name="adb_warning">Метод ADB изменяет системные настройки. В случае проблем с подключением отключите эту опцию и используйте метод VPN.</string>
     <string name="disable_ipv6_label">Отключить IPv6 / Принудительно IPv4</string>
@@ -425,7 +425,7 @@
     <string name="report_blocking_test_after">После DNS (активный)</string>
 
     <!-- Инструменты тестирования (единый модуль) -->
-    <string name="tools_section_label">3| Инструменты тестирования:</string>
+    <string name="tools_section_label">3. Показать инструменты тестирования:</string>
     <string name="generate_report_button">▶ Создать отчёт</string>
     <string name="quick_dns_test_button">🔍 Тестер доменов</string>
     <string name="quick_dns_test_running">Тест DNS выполняется...</string>
@@ -529,6 +529,13 @@
     <string name="domain_tester_dns_all">Все</string>
     <string name="domain_tester_dns_select">DNS для теста:</string>
     <string name="internet_speedtest_button">Тест скорости</string>
-    <string name="internet_speedtest_advanced">Тест скорости (расширенный)</string>
+    <string name="internet_speedtest_advanced">⚡ Тест скорости Интернета</string>
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+
+    <!-- Theme -->
+    <string name="theme_label">🎨 Тема</string>
+    <string name="theme_system">Авто (система)</string>
+    <string name="theme_light">☀️ Светлая</string>
+    <string name="theme_dark">🌙 Тёмная</string>
+    <string name="theme_choose_title">Выбрать тему</string>
 </resources>

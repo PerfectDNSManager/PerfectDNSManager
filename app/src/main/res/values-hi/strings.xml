@@ -25,9 +25,9 @@
     <string name="firestick_warning_title">Firestick चेतावनी</string>
     <string name="firestick_warning_message">Firestick उपकरणों पर ADB विधि का उपयोग करने से इंटरनेट कनेक्टिविटी खो सकती है। VPN विधि का उपयोग करने की सिफारिश की जाती है।</string>
     <string name="continue_anyway">जारी रखें</string>
-    <string name="dns_provider_label">1| DNS प्रदाता का चयन:</string>
+    <string name="dns_provider_label">1. DNS प्रदाता का चयन:</string>
     <string name="dns_select_button">👉 DNS प्रदाता चुनें 👈</string>
-    <string name="activation_label">2| सक्रियण:</string>
+    <string name="activation_label">2. सक्रियण:</string>
     <string name="dns_service_used">उपयोग में DNS सेवा:</string>
     <string name="settings_content_description">सेटिंग्स</string>
     <string name="wan_ipv4_label">IPv4 : </string>
@@ -57,8 +57,8 @@
     <string name="url_rewrite_button">🔀 URL Rewrite</string>
     <string name="restore_dns_button">🔄 प्रारंभिक DNS पुनर्स्थापित करें</string>
     <string name="show_operator_dns">🇫🇷 फ़्रांस ऑपरेटर DNS दिखाएँ (Orange/Bouygues/SFR/Free/OVH)</string>
-    <string name="show_standard_dns">📋 क्लासिक DNS दिखाएँ (अनएन्क्रिप्टेड)</string>
-    <string name="show_profile_variants">📋 DNS प्रदाताओं की विभिन्न प्रोफ़ाइल दिखाएँ</string>
+    <string name="show_standard_dns">क्लासिक DNS दिखाएँ (अनएन्क्रिप्टेड)</string>
+    <string name="show_profile_variants">DNS प्रदाताओं की विभिन्न प्रोफ़ाइल दिखाएँ</string>
     <string name="dns_dot_adb">📡 ADB के माध्यम से DNS DoT दिखाएँ</string>
     <string name="adb_warning">ADB विधि सिस्टम सेटिंग्स को बदलती है। कनेक्टिविटी समस्या होने पर, इस विकल्प को अक्षम करें और VPN विधि का उपयोग करें।</string>
     <string name="disable_ipv6_label">IPv6 अक्षम करें / IPv4 बाध्य करें</string>
@@ -425,7 +425,7 @@
     <string name="report_blocking_test_after">DNS के बाद (सक्रिय)</string>
 
     <!-- परीक्षण उपकरण (एकीकृत मॉड्यूल) -->
-    <string name="tools_section_label">3| परीक्षण उपकरण:</string>
+    <string name="tools_section_label">3. परीक्षण उपकरण दिखाएँ:</string>
     <string name="generate_report_button">▶ रिपोर्ट बनाएं</string>
     <string name="quick_dns_test_button">🔍 डोमेन टेस्टर</string>
     <string name="quick_dns_test_running">DNS परीक्षण चल रहा है...</string>
@@ -529,6 +529,13 @@
     <string name="domain_tester_dns_all">सभी</string>
     <string name="domain_tester_dns_select">परीक्षण के लिए DNS:</string>
     <string name="internet_speedtest_button">स्पीड टेस्ट</string>
-    <string name="internet_speedtest_advanced">स्पीड टेस्ट (उन्नत)</string>
+    <string name="internet_speedtest_advanced">⚡ इंटरनेट स्पीड टेस्ट</string>
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+
+    <!-- Theme -->
+    <string name="theme_label">🎨 थीम</string>
+    <string name="theme_system">स्वचालित (सिस्टम)</string>
+    <string name="theme_light">☀️ हल्का</string>
+    <string name="theme_dark">🌙 गहरा</string>
+    <string name="theme_choose_title">थीम चुनें</string>
 </resources>

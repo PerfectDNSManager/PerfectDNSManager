@@ -25,9 +25,9 @@
     <string name="firestick_warning_title">Firestick Warning</string>
     <string name="firestick_warning_message">Using the ADB method on Firestick devices may cause loss of internet connectivity. It is recommended to use the VPN method.</string>
     <string name="continue_anyway">Continue</string>
-    <string name="dns_provider_label">1| Choose DNS Provider:</string>
+    <string name="dns_provider_label">1. Choose DNS Provider:</string>
     <string name="dns_select_button">👉 Choose DNS provider 👈</string>
-    <string name="activation_label">2| Activation:</string>
+    <string name="activation_label">2. Activation:</string>
     <string name="dns_service_used">Active DNS service:</string>
     <string name="settings_content_description">Settings</string>
     <string name="wan_ipv4_label">IPv4: </string>
@@ -60,8 +60,8 @@
     <string name="url_rewrite_button">🔀 URL Rewrite</string>
     <string name="restore_dns_button">🔄 Restore initial DNS</string>
     <string name="show_operator_dns">🇫🇷 Show French ISP DNS (Orange/Bouygues/SFR/Free/OVH)</string>
-    <string name="show_standard_dns">📋 Show classic DNS (unencrypted)</string>
-    <string name="show_profile_variants">📋 Show DNS provider profiles</string>
+    <string name="show_standard_dns">Show classic DNS (unencrypted)</string>
+    <string name="show_profile_variants">Show DNS provider profiles</string>
     <string name="dns_dot_adb">📡 Show DNS DoT via ADB</string>
     <string name="adb_warning">The ADB method modifies system settings. If you experience connectivity issues, disable this option and use the VPN method.</string>
     <string name="disable_ipv6_label">Disable IPv6 / Force IPv4</string>
@@ -430,7 +430,7 @@
     <string name="report_blocking_test_after">After DNS (active)</string>
 
     <!-- Test tools (unified module) -->
-    <string name="tools_section_label">3| Test Tools:</string>
+    <string name="tools_section_label">3. Show test tools:</string>
     <string name="generate_report_button">▶ Generate report</string>
     <string name="quick_dns_test_button">🔍 Domain Tester</string>
     <string name="quick_dns_test_running">DNS test in progress...</string>
@@ -541,6 +541,79 @@
     <string name="domain_tester_dns_all">All</string>
     <string name="domain_tester_dns_select">DNS to test:</string>
     <string name="internet_speedtest_button">Speed tester</string>
-    <string name="internet_speedtest_advanced">Speed test (advanced)</string>
+    <string name="internet_speedtest_advanced">⚡ Internet speed test</string>
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+
+    <!-- Theme -->
+    <string name="theme_label">🎨 Theme</string>
+    <string name="theme_system">Automatic (system)</string>
+    <string name="theme_light">☀️ Light</string>
+    <string name="theme_dark">🌙 Dark</string>
+    <string name="theme_choose_title">Choose theme</string>
+
+    <!-- Speedtest Internet (advanced) -->
+    <string name="speedtest_adv_title">Advanced speed test</string>
+    <string name="speedtest_server_loading">🌐  Server: loading…</string>
+    <string name="speedtest_server_fmt">🌐  Server: %1$s</string>
+    <string name="speedtest_server_none">🌐  Server: none</string>
+    <string name="speedtest_start">Start test</string>
+    <string name="speedtest_stop">Stop test</string>
+    <string name="speedtest_log">Test log</string>
+    <string name="speedtest_waiting">Waiting…
+</string>
+    <string name="speedtest_backend_cf">Backend: Cloudflare (speed.cloudflare.com)</string>
+    <string name="speedtest_backend_ookla">Backend: Ookla</string>
+    <string name="speedtest_backend_netflix">Backend: Netflix / Fast.com (upload not supported)</string>
+    <string name="speedtest_start_msg">=== Starting %1$s test ===</string>
+    <string name="speedtest_done_msg">=== Test complete ===</string>
+    <string name="speedtest_stopping_msg">Stopping test…</string>
+    <string name="speedtest_interrupted">Test interrupted.</string>
+    <string name="speedtest_error_fmt">Error: %1$s</string>
+    <string name="speedtest_ookla_loading">Loading Ookla server list…</string>
+    <string name="speedtest_ookla_latency">Testing Ookla server latency…</string>
+    <string name="speedtest_ookla_loaded_fmt">%1$d Ookla server(s) loaded.</string>
+    <string name="speedtest_ookla_err_code_fmt">Ookla server error: %1$d</string>
+    <string name="speedtest_ookla_err_load_fmt">Ookla load error: %1$s</string>
+    <string name="speedtest_ookla_none">No Ookla servers available.</string>
+    <string name="speedtest_ookla_not_selected">No Ookla server selected.</string>
+    <string name="speedtest_ping_section_fmt">
+--- Ping %1$s (%2$d requests) ---</string>
+    <string name="speedtest_ping_attempt_fmt">  #%1$d: %2$.1f ms</string>
+    <string name="speedtest_ping_fail_fmt">  #%1$d: failed</string>
+    <string name="speedtest_ping_avg_fmt">  Avg: %1$.1f ms | Jitter: %2$.1f ms</string>
+    <string name="speedtest_dl_section_fmt">
+--- Download %1$s (%2$d conn., %3$ds) ---</string>
+    <string name="speedtest_ul_section_fmt">
+--- Upload %1$s (%2$d conn., %3$ds) ---</string>
+    <string name="speedtest_mbps_fmt">  %1$.2f Mbps (%2$.1f MB / %3$.1fs)</string>
+    <string name="speedtest_upload_na">Upload not supported (N/A)</string>
+    <string name="speedtest_ip_none">IP: --</string>
+    <string name="speedtest_ip_fmt">IP: %1$s</string>
+    <string name="speedtest_netflix_title">Netflix / Fast.com</string>
+    <string name="speedtest_cloudflare_title">Cloudflare</string>
+    <string name="speedtest_ookla_title">Ookla</string>
+
+
+    <!-- Network panel (Home) -->
+    <string name="report_conn_fmt">Connection: %1$s</string>
+    <string name="report_carrier_fmt">Carrier: %1$s</string>
+    <string name="report_isp_fmt">ISP: %1$s</string>
+    <string name="report_ipv4_fmt">IPv4: %1$s</string>
+    <string name="report_ipv6_fmt">IPv6: %1$s</string>
+    <string name="report_local_ip_fmt">Local IP: %1$s</string>
+    <string name="report_profile_fmt">Profile: %1$s - %2$s</string>
+    <string name="dns_active_vpn_fmt">Active DNS: VPN (%1$s)</string>
+    <string name="dns_active_vpn">Active DNS: VPN</string>
+    <string name="dns_active_dot_fmt">Active DNS: DoT (%1$s)</string>
+    <string name="dns_active_dot_host_fmt">Active DNS: DoT (%1$s)</string>
+    <string name="dns_active_dot">Active DNS: DoT</string>
+    <string name="report_vpn_active_fmt">VPN active (%1$s)</string>
+
+
+    <!-- Domain Tester status -->
+    <string name="dt_vpn_active_fmt">🟢 VPN active (%1$s)</string>
+    <string name="dt_vpn_active">🟢 VPN active</string>
+    <string name="dt_dot_active">🟢 Private DNS active</string>
+    <string name="dt_no_dns">🔴 No active DNS (ISP resolution)</string>
+
 </resources>

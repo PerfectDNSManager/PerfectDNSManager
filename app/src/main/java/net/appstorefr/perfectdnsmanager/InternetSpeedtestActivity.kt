@@ -203,7 +203,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         header.addView(btnBack)
 
         val tvTitle = TextView(this).apply {
-            text = "Testeur de d\u00e9bit avanc\u00e9"
+            text = getString(R.string.speedtest_adv_title)
             setTextColor(COLOR_WHITE)
             textSize = 20f
             setTypeface(typeface, Typeface.BOLD)
@@ -259,7 +259,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         }
 
         btnServerPicker = Button(this).apply {
-            text = "\uD83C\uDF10  Serveur : chargement..."
+            text = getString(R.string.speedtest_server_loading)
             setTextColor(COLOR_WHITE)
             textSize = 14f
             background = chipBackground(dp(12), COLOR_CYAN, false)
@@ -275,7 +275,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
         // ── Start / Stop button ──────────────────────────────────────────
         btnStartStop = Button(this).apply {
-            text = "D\u00e9marrer le test"
+            text = getString(R.string.speedtest_start)
             setTextColor(COLOR_GREEN)
             textSize = 16f
             setTypeface(typeface, Typeface.BOLD)
@@ -352,7 +352,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
         // Client IP
         tvClientIp = TextView(this).apply {
-            text = "IP : --"; setTextColor(COLOR_LIGHT_GREY); textSize = 13f
+            text = getString(R.string.speedtest_ip_none); setTextColor(COLOR_LIGHT_GREY); textSize = 13f
             gravity = Gravity.CENTER
         }
         resultsCard.addView(tvClientIp)
@@ -360,7 +360,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
         // ── Console ──────────────────────────────────────────────────────
         tvConsoleLabel = TextView(this).apply {
-            text = "Journal du test"; setTextColor(COLOR_DIM); textSize = 12f
+            text = getString(R.string.speedtest_log); setTextColor(COLOR_DIM); textSize = 12f
             layoutParams = lp(matchParent, wrapContent).apply { bottomMargin = dp(4) }
         }
         mainColumn.addView(tvConsoleLabel)
@@ -374,7 +374,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         tvConsole = TextView(this).apply {
             setTextColor(COLOR_LIGHT_GREY); textSize = 11f
             setPadding(dp(8), dp(8), dp(8), dp(8))
-            text = "En attente...\n"
+            text = getString(R.string.speedtest_waiting)
         }
         scrollConsole.addView(tvConsole)
         mainColumn.addView(scrollConsole)
@@ -476,8 +476,8 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 scrollConsole.visibility = View.VISIBLE
                 rootScroll.visibility = View.VISIBLE
                 resetResults()
-                tvConsole.text = "En attente...\n"
-                logConsole("Backend : Cloudflare (speed.cloudflare.com)")
+                tvConsole.text = getString(R.string.speedtest_waiting)
+                logConsole(getString(R.string.speedtest_backend_cf))
             }
             SpeedBackend.OOKLA -> {
                 serverPickerRow.visibility = View.VISIBLE
@@ -487,7 +487,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 scrollConsole.visibility = View.VISIBLE
                 rootScroll.visibility = View.VISIBLE
                 resetResults()
-                tvConsole.text = "En attente...\n"
+                tvConsole.text = getString(R.string.speedtest_waiting)
                 loadOoklaServerList()
             }
             SpeedBackend.NETFLIX -> {
@@ -499,8 +499,8 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 rootScroll.visibility = View.VISIBLE
                 resetResults()
                 tvUpload.text = "N/A"
-                tvConsole.text = "En attente...\n"
-                logConsole("Backend : Netflix / Fast.com (upload non support\u00e9)")
+                tvConsole.text = getString(R.string.speedtest_waiting)
+                logConsole(getString(R.string.speedtest_backend_netflix))
             }
         }
     }
@@ -510,8 +510,8 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     // ═════════════════════════════════════════════════════════════════════════
 
     private fun loadOoklaServerList() {
-        btnServerPicker.text = "\uD83C\uDF10  Serveur : chargement..."
-        logConsole("Chargement de la liste des serveurs Ookla...")
+        btnServerPicker.text = getString(R.string.speedtest_server_loading)
+        logConsole(getString(R.string.speedtest_ookla_loading))
         Thread {
             val fetched = mutableListOf<OoklaServer>()
             try {
@@ -530,17 +530,17 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 } else {
                     val code = resp.code
                     resp.close()
-                    ui { logConsole("Erreur serveur Ookla : $code") }
+                    ui { logConsole(getString(R.string.speedtest_ookla_err_code_fmt, code)) }
                 }
                 shutdown(client)
             } catch (e: Exception) {
                 Log.w(TAG, "Ookla server list fetch failed", e)
-                ui { logConsole("Erreur chargement Ookla : ${e.message}") }
+                ui { logConsole(getString(R.string.speedtest_ookla_err_load_fmt, e.message ?: "")) }
             }
 
             // Ping top candidates to find fastest
             if (fetched.isNotEmpty()) {
-                ui { logConsole("Test de latence des serveurs Ookla...") }
+                ui { logConsole(getString(R.string.speedtest_ookla_latency)) }
                 val latencies = mutableListOf<Pair<OoklaServer, Double>>()
                 val candidates = fetched.take(OOKLA_LATENCY_CANDIDATES)
                 for (server in candidates) {
@@ -580,14 +580,14 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 ooklaServers.addAll(fetched)
 
                 if (ooklaServers.isEmpty()) {
-                    logConsole("Aucun serveur Ookla disponible.")
-                    btnServerPicker.text = "\uD83C\uDF10  Serveur : aucun"
+                    logConsole(getString(R.string.speedtest_ookla_none))
+                    btnServerPicker.text = getString(R.string.speedtest_server_none)
                     return@ui
                 }
-                logConsole("${ooklaServers.size} serveur(s) Ookla charg\u00e9(s).")
+                logConsole(getString(R.string.speedtest_ookla_loaded_fmt, ooklaServers.size))
 
                 selectedOoklaServer = ooklaServers[0]
-                btnServerPicker.text = "\uD83C\uDF10  ${ooklaServers[0].displayName}"
+                btnServerPicker.text = getString(R.string.speedtest_server_fmt, ooklaServers[0].displayName)
             }
         }.start()
     }
@@ -601,7 +601,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
     private fun showOoklaPickerDialog() {
         if (ooklaServers.isEmpty()) {
-            logConsole("Aucun serveur Ookla disponible.")
+            logConsole(getString(R.string.speedtest_ookla_none))
             return
         }
         val names = ooklaServers.map { it.displayName }.toTypedArray()
@@ -613,8 +613,8 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             currentIndex
         ) { which ->
             selectedOoklaServer = ooklaServers[which]
-            btnServerPicker.text = "\uD83C\uDF10  ${ooklaServers[which].displayName}"
-            logConsole("Serveur : ${ooklaServers[which].displayName}")
+            btnServerPicker.text = getString(R.string.speedtest_server_fmt, ooklaServers[which].displayName)
+            logConsole(getString(R.string.speedtest_server_fmt, ooklaServers[which].displayName))
         }
     }
 
@@ -639,7 +639,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     }
 
     private fun stopTest() {
-        logConsole("Arr\u00eat du test...")
+        logConsole(getString(R.string.speedtest_stopping_msg))
         cancelled.set(true)
         testThread?.interrupt()
     }
@@ -656,7 +656,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         tvPing.text = "-- ms"; tvJitter.text = "-- ms"
         tvDownload.text = "-- Mbps"
         tvUpload.text = if (currentBackend == SpeedBackend.NETFLIX) "N/A" else "-- Mbps"
-        tvClientIp.text = "IP : --"
+        tvClientIp.text = getString(R.string.speedtest_ip_none)
         pbDownload.progress = 0; pbUpload.progress = 0
         tvConsole.text = ""
     }
@@ -666,19 +666,19 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     // ═════════════════════════════════════════════════════════════════════════
 
     private fun startCloudflareTest() {
-        logConsole("=== D\u00e9but du test Cloudflare ===")
+        logConsole(getString(R.string.speedtest_start_msg, getString(R.string.speedtest_cloudflare_title)))
 
         testThread = Thread {
             try {
                 if (!cancelled.get()) runCloudflarePing()
                 if (!cancelled.get()) runCloudflareDownload()
                 if (!cancelled.get()) runCloudflareUpload()
-                if (!cancelled.get()) ui { logConsole("=== Test termin\u00e9 ===") }
+                if (!cancelled.get()) ui { logConsole(getString(R.string.speedtest_done_msg)) }
             } catch (_: InterruptedException) {
-                ui { logConsole("Test interrompu.") }
+                ui { logConsole(getString(R.string.speedtest_interrupted)) }
             } catch (e: Exception) {
                 Log.e(TAG, "Cloudflare test error", e)
-                ui { logConsole("Erreur : ${e.message}") }
+                ui { logConsole(getString(R.string.speedtest_error_fmt, e.message ?: "")) }
             } finally {
                 running.set(false)
                 ui { updateButton(false) }
@@ -687,7 +687,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     }
 
     private fun runCloudflarePing() {
-        ui { logConsole("\n--- Ping Cloudflare ($CF_PING_COUNT requ\u00eates) ---") }
+        ui { logConsole(getString(R.string.speedtest_ping_section_fmt, getString(R.string.speedtest_cloudflare_title), CF_PING_COUNT)) }
         val client = plainClient(5)
         val pings = mutableListOf<Double>()
 
@@ -704,10 +704,10 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 val ms = (System.nanoTime() - t0) / 1_000_000.0
                 resp.body?.close(); resp.close()
                 pings.add(ms)
-                ui { logConsole("  #$i : ${"%.1f".format(ms)} ms") }
+                ui { logConsole(getString(R.string.speedtest_ping_attempt_fmt, i, ms)) }
             } catch (e: Exception) {
                 if (cancelled.get()) break
-                ui { logConsole("  #$i : \u00e9chec") }
+                ui { logConsole(getString(R.string.speedtest_ping_fail_fmt, i)) }
             }
         }
         shutdown(client)
@@ -719,13 +719,13 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             ui {
                 tvPing.text = "${"%.1f".format(avg)} ms"
                 tvJitter.text = "${"%.1f".format(jitter)} ms"
-                logConsole("  Moy : ${"%.1f".format(avg)} ms | Jitter : ${"%.1f".format(jitter)} ms")
+                logConsole(getString(R.string.speedtest_ping_avg_fmt, avg, jitter))
             }
         }
     }
 
     private fun runCloudflareDownload() {
-        ui { logConsole("\n--- Download Cloudflare ($CF_DL_CONNECTIONS conn., ${CF_DL_DURATION_SEC}s) ---") }
+        ui { logConsole(getString(R.string.speedtest_dl_section_fmt, getString(R.string.speedtest_cloudflare_title), CF_DL_CONNECTIONS, CF_DL_DURATION_SEC)) }
 
         val totalBytes = AtomicLong(0)
         val t0 = System.nanoTime()
@@ -771,13 +771,13 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             val mbps = if (elapsed > 0) (bytes * 8.0) / (elapsed * 1e6) else 0.0
             ui {
                 tvDownload.text = "${"%.2f".format(mbps)} Mbps"; pbDownload.progress = 1000
-                logConsole("  ${"%.2f".format(mbps)} Mbps (${"%.1f".format(bytes / 1_048_576.0)} Mo / ${"%.1f".format(elapsed)}s)")
+                logConsole(getString(R.string.speedtest_mbps_fmt, mbps, bytes / 1_048_576.0, elapsed))
             }
         }
     }
 
     private fun runCloudflareUpload() {
-        ui { logConsole("\n--- Upload Cloudflare ($CF_UL_CONNECTIONS conn., ${CF_UL_DURATION_SEC}s) ---") }
+        ui { logConsole(getString(R.string.speedtest_ul_section_fmt, getString(R.string.speedtest_cloudflare_title), CF_UL_CONNECTIONS, CF_UL_DURATION_SEC)) }
 
         val totalBytes = AtomicLong(0)
         val t0 = System.nanoTime()
@@ -830,7 +830,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             val mbps = if (elapsed > 0) (bytes * 8.0) / (elapsed * 1e6) else 0.0
             ui {
                 tvUpload.text = "${"%.2f".format(mbps)} Mbps"; pbUpload.progress = 1000
-                logConsole("  ${"%.2f".format(mbps)} Mbps (${"%.1f".format(bytes / 1_048_576.0)} Mo / ${"%.1f".format(elapsed)}s)")
+                logConsole(getString(R.string.speedtest_mbps_fmt, mbps, bytes / 1_048_576.0, elapsed))
             }
         }
     }
@@ -841,24 +841,24 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
     private fun startOoklaTest() {
         val server = selectedOoklaServer ?: run {
-            logConsole("Aucun serveur Ookla s\u00e9lectionn\u00e9."); running.set(false); updateButton(false); return
+            logConsole(getString(R.string.speedtest_ookla_not_selected)); running.set(false); updateButton(false); return
         }
 
-        logConsole("=== D\u00e9but du test Ookla ===")
-        logConsole("Serveur : ${server.displayName}")
-        logConsole("URL : ${server.url}")
+        logConsole(getString(R.string.speedtest_start_msg, getString(R.string.speedtest_ookla_title)))
+        logConsole(getString(R.string.speedtest_server_fmt, server.displayName).removePrefix("🌐  "))
+        logConsole("URL: ${server.url}")
 
         testThread = Thread {
             try {
                 if (!cancelled.get()) runOoklaPing(server)
                 if (!cancelled.get()) runOoklaDownload(server)
                 if (!cancelled.get()) runOoklaUpload(server)
-                if (!cancelled.get()) ui { logConsole("=== Test termin\u00e9 ===") }
+                if (!cancelled.get()) ui { logConsole(getString(R.string.speedtest_done_msg)) }
             } catch (_: InterruptedException) {
-                ui { logConsole("Test interrompu.") }
+                ui { logConsole(getString(R.string.speedtest_interrupted)) }
             } catch (e: Exception) {
                 Log.e(TAG, "Ookla test error", e)
-                ui { logConsole("Erreur : ${e.message}") }
+                ui { logConsole(getString(R.string.speedtest_error_fmt, e.message ?: "")) }
             } finally {
                 running.set(false)
                 ui { updateButton(false) }
@@ -867,7 +867,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     }
 
     private fun runOoklaPing(server: OoklaServer) {
-        ui { logConsole("\n--- Ping Ookla ($OOKLA_PING_COUNT requ\u00eates) ---") }
+        ui { logConsole(getString(R.string.speedtest_ping_section_fmt, getString(R.string.speedtest_ookla_title), OOKLA_PING_COUNT)) }
         val client = plainClient(5)
         val baseUrl = ooklaBaseUrl(server.url)
         val pings = mutableListOf<Double>()
@@ -885,10 +885,10 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 val ms = (System.nanoTime() - t0) / 1_000_000.0
                 resp.body?.close(); resp.close()
                 pings.add(ms)
-                ui { logConsole("  #$i : ${"%.1f".format(ms)} ms") }
+                ui { logConsole(getString(R.string.speedtest_ping_attempt_fmt, i, ms)) }
             } catch (e: Exception) {
                 if (cancelled.get()) break
-                ui { logConsole("  #$i : \u00e9chec") }
+                ui { logConsole(getString(R.string.speedtest_ping_fail_fmt, i)) }
             }
         }
         shutdown(client)
@@ -900,13 +900,13 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             ui {
                 tvPing.text = "${"%.1f".format(avg)} ms"
                 tvJitter.text = "${"%.1f".format(jitter)} ms"
-                logConsole("  Moy : ${"%.1f".format(avg)} ms | Jitter : ${"%.1f".format(jitter)} ms")
+                logConsole(getString(R.string.speedtest_ping_avg_fmt, avg, jitter))
             }
         }
     }
 
     private fun runOoklaDownload(server: OoklaServer) {
-        ui { logConsole("\n--- Download Ookla ($OOKLA_DL_CONNECTIONS conn., ${OOKLA_DL_DURATION_SEC}s) ---") }
+        ui { logConsole(getString(R.string.speedtest_dl_section_fmt, getString(R.string.speedtest_ookla_title), OOKLA_DL_CONNECTIONS, OOKLA_DL_DURATION_SEC)) }
 
         val baseUrl = ooklaBaseUrl(server.url)
         val totalBytes = AtomicLong(0)
@@ -954,13 +954,13 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             val mbps = if (elapsed > 0) (bytes * 8.0) / (elapsed * 1e6) else 0.0
             ui {
                 tvDownload.text = "${"%.2f".format(mbps)} Mbps"; pbDownload.progress = 1000
-                logConsole("  ${"%.2f".format(mbps)} Mbps (${"%.1f".format(bytes / 1_048_576.0)} Mo / ${"%.1f".format(elapsed)}s)")
+                logConsole(getString(R.string.speedtest_mbps_fmt, mbps, bytes / 1_048_576.0, elapsed))
             }
         }
     }
 
     private fun runOoklaUpload(server: OoklaServer) {
-        ui { logConsole("\n--- Upload Ookla ($OOKLA_UL_CONNECTIONS conn., ${OOKLA_UL_DURATION_SEC}s) ---") }
+        ui { logConsole(getString(R.string.speedtest_ul_section_fmt, getString(R.string.speedtest_ookla_title), OOKLA_UL_CONNECTIONS, OOKLA_UL_DURATION_SEC)) }
 
         val ulUrl = server.url  // server.url is already the upload.php endpoint
         val totalBytes = AtomicLong(0)
@@ -1015,7 +1015,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             val mbps = if (elapsed > 0) (bytes * 8.0) / (elapsed * 1e6) else 0.0
             ui {
                 tvUpload.text = "${"%.2f".format(mbps)} Mbps"; pbUpload.progress = 1000
-                logConsole("  ${"%.2f".format(mbps)} Mbps (${"%.1f".format(bytes / 1_048_576.0)} Mo / ${"%.1f".format(elapsed)}s)")
+                logConsole(getString(R.string.speedtest_mbps_fmt, mbps, bytes / 1_048_576.0, elapsed))
             }
         }
     }
@@ -1025,18 +1025,18 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     // ═════════════════════════════════════════════════════════════════════════
 
     private fun startNetflixTest() {
-        logConsole("=== D\u00e9but du test Netflix / Fast.com ===")
-        logConsole("Upload non support\u00e9 (N/A)")
+        logConsole(getString(R.string.speedtest_start_msg, getString(R.string.speedtest_netflix_title)))
+        logConsole(getString(R.string.speedtest_upload_na))
 
         testThread = Thread {
             try {
                 // Fetch test URLs from Fast.com API
                 val testUrls = fetchNetflixTestUrls()
                 if (testUrls.isEmpty()) {
-                    ui { logConsole("Erreur : impossible d'obtenir les URLs de test Fast.com") }
+                    ui { logConsole(getString(R.string.speedtest_error_fmt, "Fast.com URLs unavailable")) }
                     return@Thread
                 }
-                ui { logConsole("${testUrls.size} URL(s) de test obtenue(s).") }
+                ui { logConsole("${testUrls.size} test URL(s) loaded.") }
 
                 if (!cancelled.get()) runNetflixPing(testUrls)
                 if (!cancelled.get()) runNetflixDownload(testUrls)
@@ -1044,13 +1044,13 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                     tvUpload.text = "N/A"
                     pbUpload.progress = 1000
                     logConsole("\n--- Upload : non support\u00e9 (N/A) ---")
-                    logConsole("=== Test termin\u00e9 ===")
+                    logConsole(getString(R.string.speedtest_done_msg))
                 }
             } catch (_: InterruptedException) {
-                ui { logConsole("Test interrompu.") }
+                ui { logConsole(getString(R.string.speedtest_interrupted)) }
             } catch (e: Exception) {
                 Log.e(TAG, "Netflix test error", e)
-                ui { logConsole("Erreur : ${e.message}") }
+                ui { logConsole(getString(R.string.speedtest_error_fmt, e.message ?: "")) }
             } finally {
                 running.set(false)
                 ui { updateButton(false) }
@@ -1121,10 +1121,10 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 val ms = (System.nanoTime() - t0) / 1_000_000.0
                 resp.body?.close(); resp.close()
                 pings.add(ms)
-                ui { logConsole("  #$i : ${"%.1f".format(ms)} ms") }
+                ui { logConsole(getString(R.string.speedtest_ping_attempt_fmt, i, ms)) }
             } catch (e: Exception) {
                 if (cancelled.get()) break
-                ui { logConsole("  #$i : \u00e9chec") }
+                ui { logConsole(getString(R.string.speedtest_ping_fail_fmt, i)) }
             }
         }
         shutdown(client)
@@ -1136,7 +1136,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             ui {
                 tvPing.text = "${"%.1f".format(avg)} ms"
                 tvJitter.text = "${"%.1f".format(jitter)} ms"
-                logConsole("  Moy : ${"%.1f".format(avg)} ms | Jitter : ${"%.1f".format(jitter)} ms")
+                logConsole(getString(R.string.speedtest_ping_avg_fmt, avg, jitter))
             }
         }
     }
@@ -1190,7 +1190,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             val mbps = if (elapsed > 0) (bytes * 8.0) / (elapsed * 1e6) else 0.0
             ui {
                 tvDownload.text = "${"%.2f".format(mbps)} Mbps"; pbDownload.progress = 1000
-                logConsole("  ${"%.2f".format(mbps)} Mbps (${"%.1f".format(bytes / 1_048_576.0)} Mo / ${"%.1f".format(elapsed)}s)")
+                logConsole(getString(R.string.speedtest_mbps_fmt, mbps, bytes / 1_048_576.0, elapsed))
             }
         }
     }

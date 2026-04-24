@@ -191,9 +191,6 @@ class MainActivity : AppCompatActivity() {
 
         // Vérification auto des mises à jour au lancement
         checkForAppUpdate()
-
-        // Récupère le message broadcast du Worker (pdm.appstorefr.net/api/message)
-        net.appstorefr.perfectdnsmanager.util.MessageManager.fetchAndShow(this)
     }
 
     private fun checkForAppUpdate() {
@@ -294,9 +291,9 @@ class MainActivity : AppCompatActivity() {
                 vpnRunning -> {
                     val profile = selectedProfile
                     dnsStatusText = if (profile != null) {
-                        "DNS actif: VPN (${profile.providerName})"
+                        getString(R.string.dns_active_vpn_fmt, profile.providerName)
                     } else {
-                        "DNS actif: VPN"
+                        getString(R.string.dns_active_vpn)
                     }
                     dnsActive = true
                 }
@@ -306,11 +303,11 @@ class MainActivity : AppCompatActivity() {
                     } catch (_: Exception) { "" }
                     val profile = selectedProfile
                     dnsStatusText = if (profile != null) {
-                        "DNS actif: DoT (${profile.providerName})"
+                        getString(R.string.dns_active_dot_fmt, profile.providerName)
                     } else if (host.isNotEmpty()) {
-                        "DNS actif: DoT ($host)"
+                        getString(R.string.dns_active_dot_host_fmt, host)
                     } else {
-                        "DNS actif: DoT"
+                        getString(R.string.dns_active_dot)
                     }
                     dnsActive = true
                 }
@@ -326,22 +323,24 @@ class MainActivity : AppCompatActivity() {
             lastCarrierName = carrierName.ifEmpty { null }
 
             val display = StringBuilder()
-            display.appendLine("\u2501\u2501\u2501 ${getString(R.string.share_toggle_network)} \u2501\u2501\u2501")
-            display.appendLine("Connexion : $connType")
+            // Titre simple sans d\u00e9corations terminal (anciennement \u00ab \u2501\u2501\u2501 \u2026 \u2501\u2501\u2501 \u00bb).
+            display.appendLine(getString(R.string.share_toggle_network))
+            display.appendLine()
+            display.appendLine(getString(R.string.report_conn_fmt, connType))
             if (carrierName.isNotEmpty()) {
-                display.appendLine("Op\u00e9rateur : $carrierName")
+                display.appendLine(getString(R.string.report_carrier_fmt, carrierName))
             }
             if (ispInfo.isNotEmpty()) {
-                display.appendLine("FAI : $ispInfo")
+                display.appendLine(getString(R.string.report_isp_fmt, ispInfo))
             }
-            display.appendLine("${getString(R.string.md_local_ip)} : $localIp")
-            display.appendLine("IPv4 : ${ipv4 ?: getString(R.string.wan_ip_error)}")
+            display.appendLine(getString(R.string.report_local_ip_fmt, localIp))
+            display.appendLine(getString(R.string.report_ipv4_fmt, ipv4 ?: getString(R.string.wan_ip_error)))
             val ipv6Display = ipv6 ?: getString(R.string.wan_ipv6_blocked)
-            display.appendLine("IPv6 : $ipv6Display")
+            display.appendLine(getString(R.string.report_ipv6_fmt, ipv6Display))
             display.appendLine()
             display.appendLine(dnsStatusText)
             selectedProfile?.let {
-                display.appendLine("${getString(R.string.report_label_profile)} : ${it.providerName} - ${it.name}")
+                display.appendLine(getString(R.string.report_profile_fmt, it.providerName, it.name))
             }
 
             runOnUiThread {
@@ -422,6 +421,17 @@ class MainActivity : AppCompatActivity() {
         btnSpeedtest = findViewById(R.id.btnSpeedtest)
         btnGenerateReport = findViewById(R.id.btnGenerateReport)
         tvReportContent = findViewById(R.id.tvReportContent)
+        // Collapse initial du panel droit : tant qu'aucun rapport, on laisse
+        // toute la place au panel réseau (poids 2 vs 1).
+        applyReportPanelWeights(reportPopulated = false)
+        tvReportContent.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                val placeholder = getString(R.string.no_report_yet)
+                applyReportPanelWeights(reportPopulated = (s?.toString() ?: "") != placeholder)
+            }
+        })
         btnShareReport = findViewById(R.id.btnShareReport)
 
         // Toggle outils de test
@@ -1156,6 +1166,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Répartit la place entre le panel gauche (info réseau) et droit (rapport) :
+     * tant que le rapport n'est pas généré, le panel gauche prend 2 parts.
+     * Dès qu'un rapport apparaît, on repasse à 1/1.
+     */
+    private fun applyReportPanelWeights(reportPopulated: Boolean) {
+        val scrollStatus = findViewById<View>(R.id.scrollStatus) ?: return
+        val scrollReport = findViewById<View>(R.id.scrollReport) ?: return
+        val leftW = if (reportPopulated) 1f else 2f
+        val rightW = 1f
+        (scrollStatus.layoutParams as? LinearLayout.LayoutParams)?.let {
+            it.weight = leftW; scrollStatus.layoutParams = it
+        }
+        (scrollReport.layoutParams as? LinearLayout.LayoutParams)?.let {
+            it.weight = rightW; scrollReport.layoutParams = it
+        }
+    }
+
     private fun updateLanguageButton() {
         val lang = prefs.getString("language", "fr") ?: "fr"
         val flag = when (lang) {
@@ -1173,7 +1201,8 @@ class MainActivity : AppCompatActivity() {
             "de" -> "\uD83C\uDDE9\uD83C\uDDEA"
             else -> "\uD83C\uDDEC\uD83C\uDDE7"
         }
-        btnLanguage.text = flag
+        // Chevron ▾ signale que c'est un dropdown de langue (sinon le flag seul est ambigu)
+        btnLanguage.text = "$flag ▾"
     }
 
     private fun checkVersionMigration() {

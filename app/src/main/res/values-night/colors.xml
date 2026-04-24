@@ -38,4 +38,7 @@
     <color name="pdm_accent_gold">#FFD54F</color>
     <color name="pdm_accent_purple">#CE93D8</color>
     <color name="pdm_accent_purple_deep">#AB47BC</color>
+
+    <!-- Dark mode : on garde la teinte system par défaut (suffisamment visible sur fond noir) -->
+    <color name="pdm_toggle_off">#6B6F78</color>
 </resources>

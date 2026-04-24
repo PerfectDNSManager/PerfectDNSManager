@@ -128,6 +128,12 @@ class ShizukuManager(private val context: Context) {
     // ─── Commandes DNS ──────────────────────────────────────────────────────
 
     fun enablePrivateDns(hostname: String): Boolean {
+        // Defense in depth : même si AdbDnsManager valide déjà, on re-check ici
+        // pour bloquer toute injection shell en cas d'appel direct à ShizukuManager.
+        if (!AdbDnsManager.isValidHostname(hostname)) {
+            Log.w(TAG, "Hostname rejeté (invalide) : $hostname")
+            return false
+        }
         Log.i(TAG, "=== Shizuku: ACTIVATION DNS: $hostname ===")
         try {
             // 1. Accorder WRITE_SECURE_SETTINGS (persiste, Method 1 marchera ensuite)

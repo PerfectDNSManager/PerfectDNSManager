@@ -25,9 +25,9 @@
     <string name="firestick_warning_title">Firestick に関する警告</string>
     <string name="firestick_warning_message">Firestick デバイスで ADB メソッドを使用すると、インターネット接続が失われる可能性があります。VPN メソッドの使用を推奨します。</string>
     <string name="continue_anyway">続行</string>
-    <string name="dns_provider_label">1| DNS プロバイダーの選択：</string>
+    <string name="dns_provider_label">1. DNS プロバイダーの選択：</string>
     <string name="dns_select_button">👉 DNS プロバイダーを選択 👈</string>
-    <string name="activation_label">2| 有効化：</string>
+    <string name="activation_label">2. 有効化：</string>
     <string name="dns_service_used">使用中の DNS サービス：</string>
     <string name="settings_content_description">設定</string>
     <string name="wan_ipv4_label">IPv4 : </string>
@@ -57,8 +57,8 @@
     <string name="url_rewrite_button">🔀 URL リライト</string>
     <string name="restore_dns_button">🔄 初期 DNS を復元</string>
     <string name="show_operator_dns">🇫🇷 フランスのキャリア DNS を表示（Orange/Bouygues/SFR/Free/OVH）</string>
-    <string name="show_standard_dns">📋 クラシック DNS（暗号化なし）を表示</string>
-    <string name="show_profile_variants">📋 DNS プロバイダーの各種プロファイルを表示</string>
+    <string name="show_standard_dns">クラシック DNS（暗号化なし）を表示</string>
+    <string name="show_profile_variants">DNS プロバイダーの各種プロファイルを表示</string>
     <string name="dns_dot_adb">📡 ADB 経由の DNS DoT を表示</string>
     <string name="adb_warning">ADB メソッドはシステム設定を変更します。接続に問題が発生した場合は、このオプションを無効にして VPN メソッドを使用してください。</string>
     <string name="disable_ipv6_label">IPv6 を無効にする / IPv4 を強制</string>
@@ -425,7 +425,7 @@
     <string name="report_blocking_test_after">DNS後（アクティブ）</string>
 
     <!-- テストツール（統合モジュール） -->
-    <string name="tools_section_label">3| テストツール：</string>
+    <string name="tools_section_label">3. テストツールを表示:</string>
     <string name="generate_report_button">▶ レポート生成</string>
     <string name="quick_dns_test_button">🔍 ドメインテスター</string>
     <string name="quick_dns_test_running">DNSテスト実行中...</string>
@@ -529,6 +529,13 @@
     <string name="domain_tester_dns_all">すべて</string>
     <string name="domain_tester_dns_select">テストするDNS：</string>
     <string name="internet_speedtest_button">速度テスト</string>
-    <string name="internet_speedtest_advanced">速度テスト (詳細)</string>
+    <string name="internet_speedtest_advanced">⚡ インターネット速度テスト</string>
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+
+    <!-- Theme -->
+    <string name="theme_label">🎨 テーマ</string>
+    <string name="theme_system">自動（システム）</string>
+    <string name="theme_light">☀️ ライト</string>
+    <string name="theme_dark">🌙 ダーク</string>
+    <string name="theme_choose_title">テーマを選択</string>
 </resources>

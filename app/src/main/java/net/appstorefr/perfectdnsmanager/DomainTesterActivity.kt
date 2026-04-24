@@ -124,14 +124,13 @@ class DomainTesterActivity : AppCompatActivity() {
                         profile.providerName
                     } else null
                 } catch (_: Exception) { null }
-                val label = if (providerLabel != null) "\uD83D\uDFE2 VPN actif ($providerLabel)" else "\uD83D\uDFE2 VPN actif"
-                text = label
+                text = if (providerLabel != null) getString(R.string.dt_vpn_active_fmt, providerLabel) else getString(R.string.dt_vpn_active)
                 setTextColor(pdmAccent())
             } else if (isDotActive) {
-                text = "\uD83D\uDFE2 DNS priv\u00E9 actif"
+                text = getString(R.string.dt_dot_active)
                 setTextColor(pdmAccent())
             } else {
-                text = "\uD83D\uDD34 Aucun DNS actif (r\u00E9solution FAI)"
+                text = getString(R.string.dt_no_dns)
                 setTextColor(pdmDanger())
             }
         }

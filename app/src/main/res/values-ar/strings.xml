@@ -25,9 +25,9 @@
     <string name="firestick_warning_title">تحذير Firestick</string>
     <string name="firestick_warning_message">استخدام طريقة ADB على أجهزة Firestick قد يؤدي إلى فقدان الاتصال بالإنترنت. يُنصح باستخدام طريقة VPN.</string>
     <string name="continue_anyway">متابعة</string>
-    <string name="dns_provider_label">1| اختيار مزود DNS:</string>
+    <string name="dns_provider_label">1. اختيار مزود DNS:</string>
     <string name="dns_select_button">👉 اختيار مزود DNS 👈</string>
-    <string name="activation_label">2| التفعيل:</string>
+    <string name="activation_label">2. التفعيل:</string>
     <string name="dns_service_used">خدمة DNS المستخدمة:</string>
     <string name="settings_content_description">الإعدادات</string>
     <string name="wan_ipv4_label">IPv4: </string>
@@ -57,8 +57,8 @@
     <string name="url_rewrite_button">🔀 URL Rewrite</string>
     <string name="restore_dns_button">🔄 استعادة DNS الأولي</string>
     <string name="show_operator_dns">🇫🇷 عرض DNS المشغّلين الفرنسيين (Orange/Bouygues/SFR/Free/OVH)</string>
-    <string name="show_standard_dns">📋 عرض DNS الكلاسيكي (غير مشفر)</string>
-    <string name="show_profile_variants">📋 عرض ملفات مزودي DNS المختلفة</string>
+    <string name="show_standard_dns">عرض DNS الكلاسيكي (غير مشفر)</string>
+    <string name="show_profile_variants">عرض ملفات مزودي DNS المختلفة</string>
     <string name="dns_dot_adb">📡 عرض DNS DoT عبر ADB</string>
     <string name="adb_warning">طريقة ADB تعدّل إعدادات النظام. في حال وجود مشاكل في الاتصال، قم بتعطيل هذا الخيار واستخدم طريقة VPN.</string>
     <string name="disable_ipv6_label">تعطيل IPv6 / فرض IPv4</string>
@@ -425,7 +425,7 @@
     <string name="report_blocking_test_after">بعد DNS (نشط)</string>
 
     <!-- أدوات الاختبار (وحدة موحدة) -->
-    <string name="tools_section_label">3| أدوات الاختبار:</string>
+    <string name="tools_section_label">3. إظهار أدوات الاختبار:</string>
     <string name="generate_report_button">▶ إنشاء تقرير</string>
     <string name="quick_dns_test_button">🔍 اختبار النطاقات</string>
     <string name="quick_dns_test_running">جاري اختبار DNS...</string>
@@ -529,6 +529,13 @@
     <string name="domain_tester_dns_all">الكل</string>
     <string name="domain_tester_dns_select">DNS للاختبار:</string>
     <string name="internet_speedtest_button">اختبار السرعة</string>
-    <string name="internet_speedtest_advanced">اختبار السرعة (متقدم)</string>
+    <string name="internet_speedtest_advanced">⚡ اختبار سرعة الإنترنت</string>
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+
+    <!-- Theme -->
+    <string name="theme_label">🎨 السمة</string>
+    <string name="theme_system">تلقائي (النظام)</string>
+    <string name="theme_light">☀️ فاتح</string>
+    <string name="theme_dark">🌙 داكن</string>
+    <string name="theme_choose_title">اختر السمة</string>
 </resources>

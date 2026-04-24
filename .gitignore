@@ -21,3 +21,6 @@ dns_providers.txt
 signing/
 *.jks
 *.keystore
+
+# audit artifacts (local only)
+audit-screenshots/

@@ -28,6 +28,14 @@ class AdbDnsManager(private val context: Context) {
         private const val PREF_LAST_ADB_PORT = "last_adb_port"
         private const val PUBLIC_KEY_NAME = "public.key"
         private const val PRIVATE_KEY_NAME = "private.key"
+
+        // Validation stricte du hostname avant toute commande shell (sh -c / ADB).
+        // Format RFC 1035 : 1..253 chars, segments alnum/hyphen séparés par points.
+        // Bloque les métachars shell (;, |, $, `, \, espaces, etc.).
+        private val HOSTNAME_RE = Regex("^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+
+        fun isValidHostname(h: String): Boolean =
+            h.isNotBlank() && h.length <= 253 && HOSTNAME_RE.matches(h)
     }
 
     // Dernier message d'erreur pour feedback utilisateur
@@ -48,6 +56,14 @@ class AdbDnsManager(private val context: Context) {
         Log.i(TAG, "=== ACTIVATION DNS: $hostname ===")
         lastError = ""
         lastMethod = ""
+
+        // Durcissement : refuser tout hostname non-RFC1035 avant shell/ADB.
+        // Empêche l'injection de commande via métachars (;, `, $, |, \n…).
+        if (!isValidHostname(hostname)) {
+            lastError = "Hostname invalide : $hostname"
+            Log.w(TAG, lastError)
+            return false
+        }
 
         // Méthode 1 : Settings.Global directe (si permission déjà accordée)
         if (trySettingsEnable(hostname)) {
