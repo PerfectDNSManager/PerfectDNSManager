@@ -138,13 +138,20 @@
         android:nextFocusUp="@id/layoutSelectDns"
         android:nextFocusDown="@id/swToolsToggle" />
 
-    <!-- 3| Outils de test + toggle -->
+    <!-- 3| Outils de test + toggle (row focusable, Switch non focusable seul) -->
     <LinearLayout
+        android:id="@+id/rowToolsToggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="4dp">
+        android:padding="4dp"
+        android:foreground="@drawable/btn_focus_foreground"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_marginBottom="4dp"
+        android:nextFocusUp="@id/btnToggle"
+        android:nextFocusDown="@id/btnDomainTester">
 
         <TextView
             android:id="@+id/tvToolsLabel"
@@ -158,9 +165,8 @@
             android:id="@+id/swToolsToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:focusable="true"
-            android:nextFocusUp="@id/btnToggle"
-            android:nextFocusDown="@id/btnDomainTester" />
+            android:focusable="false"
+            android:clickable="false" />
     </LinearLayout>
 
     <!-- Module outils -->
@@ -263,6 +269,7 @@
                 android:layout_marginEnd="4dp"
                 android:fillViewport="true"
                 android:background="@drawable/pdm_card_bg"
+                android:foreground="@drawable/btn_focus_foreground"
                 android:focusable="true"
                 android:nextFocusUp="@id/btnSpeedtest"
                 android:nextFocusRight="@id/scrollReport">
@@ -287,6 +294,7 @@
                 android:layout_marginStart="4dp"
                 android:fillViewport="true"
                 android:background="@drawable/pdm_card_bg"
+                android:foreground="@drawable/btn_focus_foreground"
                 android:focusable="true"
                 android:nextFocusUp="@id/btnShareReport"
                 android:nextFocusLeft="@id/scrollStatus">

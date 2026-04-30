@@ -45,8 +45,10 @@
         android:minHeight="48dp"
         android:backgroundTint="@color/pdm_border"
         android:foreground="@drawable/btn_focus_foreground"
+        android:textColor="@color/pdm_text_primary"
         android:layout_gravity="start"
         android:layout_marginTop="16dp"
-        android:focusable="true"/>
+        android:focusable="true"
+        android:nextFocusUp="@id/btnAddRule"/>
 
 </LinearLayout>

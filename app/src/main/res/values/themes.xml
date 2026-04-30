@@ -88,7 +88,7 @@
     </style>
 
     <style name="PDMButton.Ghost">
-        <item name="android:background">@android:color/transparent</item>
+        <item name="android:background">@drawable/pdm_btn_ghost</item>
         <item name="android:textColor">@color/pdm_text_secondary</item>
     </style>
 

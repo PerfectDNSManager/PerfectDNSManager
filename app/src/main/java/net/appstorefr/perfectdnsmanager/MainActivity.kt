@@ -434,9 +434,10 @@ class MainActivity : AppCompatActivity() {
         })
         btnShareReport = findViewById(R.id.btnShareReport)
 
-        // Toggle outils de test
+        // Toggle outils de test : focus sur le row, pas sur le Switch (Android TV)
         val layoutToolsPanel: LinearLayout = findViewById(R.id.layoutToolsPanel)
         val swToolsToggle: Switch = findViewById(R.id.swToolsToggle)
+        val rowToolsToggle: LinearLayout = findViewById(R.id.rowToolsToggle)
         val toolsVisible = prefs.getBoolean("tools_panel_visible", true)
         swToolsToggle.isChecked = toolsVisible
         layoutToolsPanel.visibility = if (toolsVisible) View.VISIBLE else View.GONE
@@ -444,6 +445,7 @@ class MainActivity : AppCompatActivity() {
             layoutToolsPanel.visibility = if (isChecked) View.VISIBLE else View.GONE
             prefs.edit().putBoolean("tools_panel_visible", isChecked).apply()
         }
+        rowToolsToggle.setOnClickListener { swToolsToggle.toggle() }
 
         btnDomainTester.setOnClickListener {
             startActivity(Intent(this, DomainTesterActivity::class.java))

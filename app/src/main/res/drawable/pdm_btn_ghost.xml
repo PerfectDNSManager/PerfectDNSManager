@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Bouton "ghost" pour actions footer (Soutenir, À propos) : pas de remplissage,
-  bordure discrète, sert de navigation/méta. Garde un focus ring via
-  btn_focus_foreground sur la View.
+  Bouton "ghost" pour actions footer (Soutenir, À propos, btnLanguage) :
+  pas de remplissage en repos, bordure discrète, focus visible (border accent).
+  Sans state_focused l'item devient invisible une fois sélectionné en D-pad.
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
             <corners android:radius="6dp" />
             <solid android:color="@color/pdm_surface_pressed" />
+            <stroke android:width="2dp" android:color="@color/pdm_accent" />
+        </shape>
+    </item>
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="6dp" />
+            <solid android:color="@android:color/transparent" />
+            <stroke android:width="3dp" android:color="@color/pdm_accent" />
         </shape>
     </item>
     <item>

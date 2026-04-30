@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Selector texte pour items focusables (RETOUR, langues, btnCancel/btnSave, etc.).
+  focusable_item_background garde un solid pdm_surface en focus (pas pdm_accent),
+  donc le texte doit rester CLAIR en dark mode. pdm_text_on_accent (~#0E0F12)
+  sur pdm_surface (~#17191E) rendait le texte invisible une fois focus.
+-->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true" android:color="@color/pdm_text_on_accent" />
-    <item android:state_pressed="true" android:color="@color/pdm_text_on_accent" />
+    <item android:state_focused="true" android:color="@color/pdm_text_primary" />
+    <item android:state_pressed="true" android:color="@color/pdm_text_primary" />
     <item android:color="@color/pdm_text_primary" />
 </selector>
