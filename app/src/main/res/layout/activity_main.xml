@@ -251,12 +251,15 @@
                 android:nextFocusDown="@id/scrollReport" />
         </LinearLayout>
 
-        <!-- Zone résultats split en 2 -->
+        <!-- Zone résultats split en 2 (50/50 strict, weightSum + baselineAligned=false
+             pour éviter qu'un long contenu wrap_content bouffe la moitié de l'autre) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal"
+            android:weightSum="2"
+            android:baselineAligned="false"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="4dp">
 

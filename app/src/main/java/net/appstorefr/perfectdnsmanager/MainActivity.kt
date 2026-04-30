@@ -71,6 +71,10 @@ class MainActivity : AppCompatActivity() {
     private var pendingVpnProfile: DnsProfile? = null
     private var isActive = false
     private var isActivating = false
+    // Garde anti-race : checkStatus() peut voir DnsVpnService.isVpnRunning encore true
+    // pendant ~1-2s après stopService → ré-active à tort le bouton juste après un disable
+    // manuel. Tant que ce timestamp est récent, checkStatus reste sur "Activer".
+    private var lastManualDisableMs = 0L
     private var isGenerating = false
     private var generatingThread: Thread? = null
     private var lastSpeedResult: SpeedTester.SpeedResult? = null
@@ -1099,6 +1103,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkStatus() {
+        // Guard : juste après un disable manuel, ignorer l'état système le temps que
+        // le service VPN s'arrête vraiment et que les prefs soient à jour.
+        if (System.currentTimeMillis() - lastManualDisableMs < 5000L) {
+            setInactiveStatus()
+            return
+        }
         val adbMode = adbManager.getCurrentPrivateDnsMode()
         if (adbMode?.contains("hostname") == true) {
             val host = adbManager.getCurrentPrivateDnsHost()
@@ -1324,6 +1334,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun disableDnsQuiet(onDone: () -> Unit) {
+        lastManualDisableMs = System.currentTimeMillis()
         val adbIsActive = adbManager.getCurrentPrivateDnsMode()?.contains("hostname") == true
         val vpnIsActive = DnsVpnService.isVpnRunning || prefs.getBoolean("vpn_active", false)
         // Stopper le VPN si actif
