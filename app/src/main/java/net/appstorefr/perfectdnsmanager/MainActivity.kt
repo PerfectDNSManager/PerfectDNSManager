@@ -52,7 +52,9 @@ class MainActivity : AppCompatActivity() {
         super.attachBaseContext(LocaleHelper.applyLocale(newBase))
     }
 
-    private lateinit var btnToggle: Button
+    private lateinit var btnToggle: LinearLayout
+    private lateinit var swActivationToggle: Switch
+    private lateinit var tvActivationStatus: TextView
     private lateinit var btnLanguage: Button
     private lateinit var layoutSelectDns: LinearLayout
     private lateinit var ivSelectedDnsIcon: ImageView
@@ -104,11 +106,14 @@ class MainActivity : AppCompatActivity() {
         } else if (profile != null) {
             isActivating = false
             btnToggle.isEnabled = true
+            // Permission VPN refusée → on reset le Switch sur OFF + état Activer
+            setInactiveStatus()
             btnToggle.requestFocus()
             Toast.makeText(this, getString(R.string.vpn_permission_denied), Toast.LENGTH_SHORT).show()
         } else {
             isActivating = false
             btnToggle.isEnabled = true
+            setInactiveStatus()
             btnToggle.requestFocus()
         }
         pendingVpnProfile = null
@@ -414,7 +419,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        btnToggle = findViewById(R.id.btnToggle)
+        btnToggle = findViewById(R.id.rowActivationToggle)
+        swActivationToggle = findViewById(R.id.swActivationToggle)
+        tvActivationStatus = findViewById(R.id.tvActivationStatus)
         btnLanguage = findViewById(R.id.btnLanguage)
         layoutSelectDns = findViewById(R.id.layoutSelectDns)
         ivSelectedDnsIcon = findViewById(R.id.ivSelectedDnsIcon)
@@ -425,17 +432,6 @@ class MainActivity : AppCompatActivity() {
         btnSpeedtest = findViewById(R.id.btnSpeedtest)
         btnGenerateReport = findViewById(R.id.btnGenerateReport)
         tvReportContent = findViewById(R.id.tvReportContent)
-        // Collapse initial du panel droit : tant qu'aucun rapport, on laisse
-        // toute la place au panel réseau (poids 2 vs 1).
-        applyReportPanelWeights(reportPopulated = false)
-        tvReportContent.addTextChangedListener(object : android.text.TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: android.text.Editable?) {
-                val placeholder = getString(R.string.no_report_yet)
-                applyReportPanelWeights(reportPopulated = (s?.toString() ?: "") != placeholder)
-            }
-        })
         btnShareReport = findViewById(R.id.btnShareReport)
 
         // Toggle outils de test : focus sur le row, pas sur le Switch (Android TV)
@@ -462,42 +458,6 @@ class MainActivity : AppCompatActivity() {
 
         // Focus initial sur le CTA principal pour navigation D-pad prévisible
         btnToggle.post { btnToggle.requestFocus() }
-
-        // Report scroll zone - click to enter, back to exit
-        val scrollReport: ScrollView = findViewById(R.id.scrollReport)
-        scrollReport.setOnKeyListener { _, keyCode, event ->
-            if (event.action == android.view.KeyEvent.ACTION_DOWN &&
-                (keyCode == android.view.KeyEvent.KEYCODE_DPAD_CENTER || keyCode == android.view.KeyEvent.KEYCODE_ENTER)) {
-                tvReportContent.isFocusable = true
-                tvReportContent.requestFocus()
-                true
-            } else false
-        }
-        tvReportContent.setOnKeyListener { _, keyCode, event ->
-            if (event.action == android.view.KeyEvent.ACTION_DOWN && keyCode == android.view.KeyEvent.KEYCODE_BACK) {
-                tvReportContent.isFocusable = false
-                scrollReport.requestFocus()
-                true
-            } else false
-        }
-
-        // Status scroll zone - click to enter, back to exit
-        val scrollStatus: ScrollView = findViewById(R.id.scrollStatus)
-        scrollStatus.setOnKeyListener { _, keyCode, event ->
-            if (event.action == android.view.KeyEvent.ACTION_DOWN &&
-                (keyCode == android.view.KeyEvent.KEYCODE_DPAD_CENTER || keyCode == android.view.KeyEvent.KEYCODE_ENTER)) {
-                tvStatusInfo.isFocusable = true
-                tvStatusInfo.requestFocus()
-                true
-            } else false
-        }
-        tvStatusInfo.setOnKeyListener { _, keyCode, event ->
-            if (event.action == android.view.KeyEvent.ACTION_DOWN && keyCode == android.view.KeyEvent.KEYCODE_BACK) {
-                tvStatusInfo.isFocusable = false
-                scrollStatus.requestFocus()
-                true
-            } else false
-        }
     }
 
     /** Charge la liste des domaines de test activés depuis les prefs */
@@ -1157,10 +1117,13 @@ class MainActivity : AppCompatActivity() {
     private fun setupUI() {
         layoutSelectDns.requestFocus()
 
+        // Click sur le row → toggle le Switch (qui appellera applyDns/disableDns
+        // via le listener (re)posé par setActiveStatus / setInactiveStatus).
         btnToggle.setOnClickListener {
             if (isActivating) return@setOnClickListener
-            if (isActive) disableDns() else applyDns()
+            swActivationToggle.toggle()
         }
+        rebindActivationListener()
 
         layoutSelectDns.setOnClickListener {
             dnsSelectionLauncher.launch(Intent(this, DnsSelectionActivity::class.java))
@@ -1175,24 +1138,6 @@ class MainActivity : AppCompatActivity() {
         btnLanguage.setOnClickListener {
             startActivity(Intent(this, LanguageSelectionActivity::class.java)
                 .putExtra("FORCE_SHOW", true))
-        }
-    }
-
-    /**
-     * Répartit la place entre le panel gauche (info réseau) et droit (rapport) :
-     * tant que le rapport n'est pas généré, le panel gauche prend 2 parts.
-     * Dès qu'un rapport apparaît, on repasse à 1/1.
-     */
-    private fun applyReportPanelWeights(reportPopulated: Boolean) {
-        val scrollStatus = findViewById<View>(R.id.scrollStatus) ?: return
-        val scrollReport = findViewById<View>(R.id.scrollReport) ?: return
-        val leftW = if (reportPopulated) 1f else 2f
-        val rightW = 1f
-        (scrollStatus.layoutParams as? LinearLayout.LayoutParams)?.let {
-            it.weight = leftW; scrollStatus.layoutParams = it
-        }
-        (scrollReport.layoutParams as? LinearLayout.LayoutParams)?.let {
-            it.weight = rightW; scrollReport.layoutParams = it
         }
     }
 
@@ -1288,7 +1233,7 @@ class MainActivity : AppCompatActivity() {
             Thread { adbManager.disablePrivateDns() }.start()
         }
         isActivating = true
-        btnToggle.text = "\u23F3"
+        tvActivationStatus.text = "\u23F3"
         btnToggle.isEnabled = false
         pendingVpnProfile = profile
         val intent = VpnService.prepare(this)
@@ -1364,20 +1309,32 @@ class MainActivity : AppCompatActivity() {
 
     private fun setActiveStatus(active: Boolean, statusText: String) {
         isActive = active
-        btnToggle.text = getString(R.string.deactivate)
-        btnToggle.setTextColor(pdmDanger()) // DÉSACTIVER = action destructrice = rouge
-        btnToggle.setBackgroundResource(R.drawable.btn_activate_background)
-        btnToggle.requestFocus()
+        // Switch sans listener pour éviter rebond — on est ici parce qu'on vient
+        // soit d'activer manuellement, soit checkStatus a détecté un VPN/ADB déjà ON.
+        swActivationToggle.setOnCheckedChangeListener(null)
+        swActivationToggle.isChecked = true
+        rebindActivationListener()
+        tvActivationStatus.text = getString(R.string.deactivate)
+        tvActivationStatus.setTextColor(pdmDanger())
         refreshIpDisplay()
     }
 
     private fun setInactiveStatus() {
         isActive = false
-        btnToggle.text = getString(R.string.activate)
-        btnToggle.setTextColor(pdmAccent()) // ACTIVER = action positive = vert
-        btnToggle.setBackgroundResource(R.drawable.btn_deactivate_background)
-        btnToggle.requestFocus()
+        swActivationToggle.setOnCheckedChangeListener(null)
+        swActivationToggle.isChecked = false
+        rebindActivationListener()
+        tvActivationStatus.text = getString(R.string.activate)
+        tvActivationStatus.setTextColor(pdmAccent())
         refreshIpDisplay()
+    }
+
+    /** (Re)pose le listener du Switch d'activation après un changement programmatique. */
+    private fun rebindActivationListener() {
+        swActivationToggle.setOnCheckedChangeListener { _, _ ->
+            if (isActivating) return@setOnCheckedChangeListener
+            if (isActive) disableDns() else applyDns()
+        }
     }
 
     private fun showDnsReport() {

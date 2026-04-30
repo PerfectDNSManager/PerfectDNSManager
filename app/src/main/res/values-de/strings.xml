@@ -188,7 +188,6 @@
     <string name="about_community_text">🚫 Keine Werbung\n📊 Keine Datenerfassung\n🆓 Frei nutzbar und teilbar\n💜 Für die Community gemacht ❤️</string>
     <string name="check_for_updates">Nach Updates suchen</string>
     <string name="checking_for_updates">Suche nach Updates…</string>
-    <string name="credits">Danksagungen</string>
     <string name="appstorefr">AppstoreFR</string>
     <string name="contact_email">contact@appstorefr.net</string>
     <string name="support_about_button">❤️ Unterstützen Sie mich</string>
@@ -399,7 +398,6 @@
     <string name="dns_rewrite_screen_title">DNS-Umschreibung (Rewriting)</string>
     <string name="show_doq_dns">DNS over QUIC (DoQ) anzeigen</string>
     <string name="gpl_license_text">Heute frei. Morgen frei. Man kann eine Straße blockieren, nicht die Freiheit!\nDer Quellcode ist offen, jede Weiterverteilung muss Open Source bleiben.\nGPL v3 Lizenz\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
-    <string name="credits_text">cut.appstorefr.net — URL-Kürzungsdienst für verschlüsselte Berichte\n\nvault.appstorefr.net — Sicherer Datei-Hosting für Konfigurationsexport</string>
 
     <!-- Speedtest Internet -->
     <string name="speedtest_button">🌐 Internet Speedtest</string>

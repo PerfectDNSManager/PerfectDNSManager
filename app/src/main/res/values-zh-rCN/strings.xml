@@ -188,7 +188,6 @@
     <string name="about_community_text">🚫 无广告\n📊 无数据收集\n🆓 免费使用和分享\n💜 为社区而做 ❤️</string>
     <string name="check_for_updates">检查更新</string>
     <string name="checking_for_updates">正在检查更新…</string>
-    <string name="credits">致谢</string>
     <string name="appstorefr">AppstoreFR</string>
     <string name="contact_email">contact@appstorefr.net</string>
     <string name="support_about_button">❤️ 支持我</string>
@@ -399,7 +398,6 @@
     <string name="dns_rewrite_screen_title">DNS 重写（Rewriting）</string>
     <string name="show_doq_dns">显示 DNS over QUIC (DoQ)</string>
     <string name="gpl_license_text">今天自由。明天自由。可以封路，但不能封自由！\n源代码开放，任何再发布必须保持开源。\nGPL v3 许可证\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
-    <string name="credits_text">cut.appstorefr.net — 用于分享加密报告的网址缩短服务\n\nvault.appstorefr.net — 用于配置导出的安全文件托管</string>
 
     <!-- Speedtest Internet -->
     <string name="speedtest_button">🌐 网络测速</string>

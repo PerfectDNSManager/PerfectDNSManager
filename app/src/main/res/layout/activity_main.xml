@@ -85,7 +85,7 @@
         android:focusable="true"
         android:clickable="true"
         android:nextFocusUp="@id/btnLanguage"
-        android:nextFocusDown="@id/btnToggle">
+        android:nextFocusDown="@id/rowActivationToggle">
 
         <ImageView
             android:id="@+id/ivSelectedDnsIcon"
@@ -125,18 +125,43 @@
         android:text="@string/activation_label"
         android:layout_marginBottom="4dp" />
 
-    <Button
-        android:id="@+id/btnToggle"
-        style="@style/PDMButton.Primary"
+    <!-- Toggle activation : row focusable + Switch (Android TV friendly).
+         Le row capte le focus, le Switch lui-même n'est pas focusable seul. -->
+    <LinearLayout
+        android:id="@+id/rowActivationToggle"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:text="@string/activate"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@drawable/pdm_btn_secondary"
+        android:foreground="@drawable/btn_focus_foreground"
         android:focusable="true"
+        android:clickable="true"
         android:layout_marginBottom="8dp"
         android:nextFocusUp="@id/layoutSelectDns"
-        android:nextFocusDown="@id/swToolsToggle" />
+        android:nextFocusDown="@id/swToolsToggle">
+
+        <TextView
+            android:id="@+id/tvActivationStatus"
+            style="@style/PDMText.Body"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/activate"
+            android:textColor="@color/pdm_accent"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAllCaps="false" />
+
+        <Switch
+            android:id="@+id/swActivationToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:clickable="false" />
+    </LinearLayout>
 
     <!-- 3| Outils de test + toggle (row focusable, Switch non focusable seul) -->
     <LinearLayout
@@ -150,7 +175,7 @@
         android:focusable="true"
         android:clickable="true"
         android:layout_marginBottom="4dp"
-        android:nextFocusUp="@id/btnToggle"
+        android:nextFocusUp="@id/rowActivationToggle"
         android:nextFocusDown="@id/btnDomainTester">
 
         <TextView
@@ -196,7 +221,7 @@
                 android:text="@string/quick_dns_test_button"
                 android:textSize="12sp"
                 android:focusable="true"
-                android:nextFocusUp="@id/btnToggle"
+                android:nextFocusUp="@id/rowActivationToggle"
                 android:nextFocusRight="@id/btnGenerateReport"
                 android:nextFocusDown="@id/btnSpeedtest" />
 
@@ -210,7 +235,7 @@
                 android:text="@string/generate_report_button"
                 android:textSize="12sp"
                 android:focusable="true"
-                android:nextFocusUp="@id/btnToggle"
+                android:nextFocusUp="@id/rowActivationToggle"
                 android:nextFocusLeft="@id/btnDomainTester"
                 android:nextFocusDown="@id/btnShareReport" />
         </LinearLayout>

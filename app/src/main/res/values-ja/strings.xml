@@ -188,7 +188,6 @@
     <string name="about_community_text">🚫 広告なし\n📊 データ収集なし\n🆓 自由に使用・共有可能\n💜 コミュニティのために作られました ❤️</string>
     <string name="check_for_updates">アップデートを確認</string>
     <string name="checking_for_updates">アップデートを確認中…</string>
-    <string name="credits">クレジット</string>
     <string name="appstorefr">AppstoreFR</string>
     <string name="contact_email">contact@appstorefr.net</string>
     <string name="support_about_button">❤️ 開発者を支援</string>
@@ -399,7 +398,6 @@
     <string name="dns_rewrite_screen_title">DNS リライト（Rewriting）</string>
     <string name="show_doq_dns">DNS over QUIC (DoQ) を表示</string>
     <string name="gpl_license_text">今日も自由。明日も自由。道は塞げても、自由は塞げない！\nソースコードは公開されており、再配布はオープンソースのままでなければなりません。\nGPL v3 ライセンス\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
-    <string name="credits_text">cut.appstorefr.net — 暗号化レポート共有用のURL短縮サービス\n\nvault.appstorefr.net — 設定エクスポート用のセキュアファイルホスティング</string>
 
     <!-- Speedtest Internet -->
     <string name="speedtest_button">🌐 インターネット速度テスト</string>

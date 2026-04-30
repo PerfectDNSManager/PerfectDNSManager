@@ -99,29 +99,5 @@
             android:autoLink="web"
             android:linksClickable="true"/>
 
-        <!-- Credits -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Credits"
-            android:textColor="@color/pdm_warning"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="4dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/credits_text"
-            android:textColor="@color/pdm_text_secondary"
-            android:textSize="13sp"
-            android:gravity="center"
-            android:lineSpacingExtra="4dp"
-            android:background="@color/pdm_tint_neutral"
-            android:padding="16dp"
-            android:layout_marginBottom="12dp"/>
-
     </LinearLayout>
 </ScrollView>
