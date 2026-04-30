@@ -25,6 +25,7 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -456,8 +457,43 @@ class MainActivity : AppCompatActivity() {
         btnGenerateReport.setOnClickListener { generateReport() }
         btnShareReport.setOnClickListener { shareReport() }
 
+        // D-pad scroll des panneaux Status/Report (wrapper focusable, ScrollView non focusable)
+        val wrapStatus: FrameLayout = findViewById(R.id.wrapStatus)
+        val wrapReport: FrameLayout = findViewById(R.id.wrapReport)
+        val scrollStatus: ScrollView = findViewById(R.id.scrollStatus)
+        val scrollReport: ScrollView = findViewById(R.id.scrollReport)
+        attachDpadScroll(wrapStatus, scrollStatus)
+        attachDpadScroll(wrapReport, scrollReport)
+
         // Focus initial sur le CTA principal pour navigation D-pad prévisible
         btnToggle.post { btnToggle.requestFocus() }
+    }
+
+    /**
+     * Permet le scroll D-pad sur un panneau wrapper : UP/DOWN scrollent le contenu interne
+     * tant qu'il y a de quoi scroller, sinon laissent la nav D-pad opérer (nextFocusUp/Down).
+     */
+    private fun attachDpadScroll(wrapper: View, sv: ScrollView) {
+        wrapper.setOnKeyListener { _, keyCode, event ->
+            if (event.action != android.view.KeyEvent.ACTION_DOWN) return@setOnKeyListener false
+            val step = (sv.height * 0.85f).toInt().coerceAtLeast(80)
+            when (keyCode) {
+                android.view.KeyEvent.KEYCODE_DPAD_DOWN -> {
+                    val maxScroll = (sv.getChildAt(0)?.height ?: 0) - sv.height
+                    if (sv.scrollY < maxScroll) {
+                        sv.smoothScrollBy(0, step)
+                        true
+                    } else false
+                }
+                android.view.KeyEvent.KEYCODE_DPAD_UP -> {
+                    if (sv.scrollY > 0) {
+                        sv.smoothScrollBy(0, -step)
+                        true
+                    } else false
+                }
+                else -> false
+            }
+        }
     }
 
     /** Charge la liste des domaines de test activés depuis les prefs */
