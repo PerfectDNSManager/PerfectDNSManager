@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         super.attachBaseContext(LocaleHelper.applyLocale(newBase))
     }
 
-    private lateinit var btnToggle: LinearLayout
+    private lateinit var btnToggle: FrameLayout
     private lateinit var swActivationToggle: Switch
     private lateinit var tvActivationStatus: TextView
     private lateinit var btnLanguage: Button
