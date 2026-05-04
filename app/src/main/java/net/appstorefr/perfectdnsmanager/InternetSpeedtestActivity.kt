@@ -233,7 +233,9 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 textSize = 13f
                 setTypeface(typeface, Typeface.BOLD)
                 isFocusable = true
-                foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+                // Pas de foreground btn_focus_foreground : le bord vert se mélange
+                // avec le cyan de la sélection. À la place on swap le background
+                // sur focus pour un cadre jaune/vif visible quel que soit l'état.
                 background = chipBackground(dp(20), COLOR_CYAN, false)
                 setPadding(dp(16), dp(8), dp(16), dp(8))
                 layoutParams = LinearLayout.LayoutParams(wrapContent, wrapContent).apply {
@@ -244,6 +246,17 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                         switchBackend(backend)
                     }
                 }
+            }
+            // Focus visuel fort : jaune épais + agrandissement léger.
+            chipBtn.setOnFocusChangeListener { v, hasFocus ->
+                val active = backendButtons.entries.firstOrNull { it.value === v }?.key == currentBackend
+                v.background = if (hasFocus) {
+                    chipFocusedBackground(dp(20), if (active) COLOR_CYAN else pdmBorder())
+                } else {
+                    chipBackground(dp(20), COLOR_CYAN, active)
+                }
+                v.scaleX = if (hasFocus) 1.06f else 1f
+                v.scaleY = if (hasFocus) 1.06f else 1f
             }
             backendButtons[backend] = chipBtn
             backendButtonsLayout.addView(chipBtn)
@@ -438,6 +451,16 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         GradientDrawable().apply {
             setColor(pdmSurface())
             setStroke(dp(if (active) 2 else 1), if (active) accentColor else pdmBorder())
+            cornerRadius = r.toFloat()
+        }
+
+    /** Background pour chip focusé : cadre jaune épais visible quel que soit
+     *  l'état actif/inactif (le focus_foreground vert se confondait sinon
+     *  avec le cyan de la sélection). */
+    private fun chipFocusedBackground(r: Int, baseColor: Int): GradientDrawable =
+        GradientDrawable().apply {
+            setColor(pdmSurface())
+            setStroke(dp(3), 0xFFFFD740.toInt()) // amber 400 — fort contraste
             cornerRadius = r.toFloat()
         }
 

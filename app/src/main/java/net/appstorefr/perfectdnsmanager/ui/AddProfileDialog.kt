@@ -38,7 +38,21 @@ class AddProfileDialog(
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.dialog_add_profile)
-        window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        window?.apply {
+            setLayout(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT
+            )
+            // Background opaque pour que le dialog soit un vrai modal — sans ça
+            // le contenu de l'activité derrière transparaît à travers le dialog
+            // (constaté visuellement : "Choisir un serveur DNS" + Mullvad row
+            // visibles à travers la zone Nom du profil / Type de DNS).
+            setBackgroundDrawable(
+                android.graphics.drawable.ColorDrawable(
+                    context.getColor(R.color.pdm_surface)
+                )
+            )
+        }
 
         initViews()
         setupTypeSelection()
