@@ -333,8 +333,11 @@ class MainActivity : AppCompatActivity() {
             lastCarrierName = carrierName.ifEmpty { null }
 
             val display = StringBuilder()
-            // Titre simple sans d\u00e9corations terminal (anciennement \u00ab \u2501\u2501\u2501 \u2026 \u2501\u2501\u2501 \u00bb).
-            display.appendLine(getString(R.string.share_toggle_network))
+            // DNS status en premier (mis en \u00e9vidence + coloris\u00e9 en aval).
+            display.appendLine(dnsStatusText)
+            selectedProfile?.let {
+                display.appendLine(getString(R.string.report_profile_fmt, it.providerName, it.name))
+            }
             display.appendLine()
             display.appendLine(getString(R.string.report_conn_fmt, connType))
             if (carrierName.isNotEmpty()) {
@@ -346,12 +349,7 @@ class MainActivity : AppCompatActivity() {
             display.appendLine(getString(R.string.report_local_ip_fmt, localIp))
             display.appendLine(getString(R.string.report_ipv4_fmt, ipv4 ?: getString(R.string.wan_ip_error)))
             val ipv6Display = ipv6 ?: getString(R.string.wan_ipv6_blocked)
-            display.appendLine(getString(R.string.report_ipv6_fmt, ipv6Display))
-            display.appendLine()
-            display.appendLine(dnsStatusText)
-            selectedProfile?.let {
-                display.appendLine(getString(R.string.report_profile_fmt, it.providerName, it.name))
-            }
+            display.append(getString(R.string.report_ipv6_fmt, ipv6Display))
 
             runOnUiThread {
                 val spannable = android.text.SpannableStringBuilder(display.toString().trimEnd())
