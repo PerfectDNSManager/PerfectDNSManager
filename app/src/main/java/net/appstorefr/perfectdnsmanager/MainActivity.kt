@@ -1302,6 +1302,16 @@ class MainActivity : AppCompatActivity() {
             btnToggle.isEnabled = true
             btnToggle.requestFocus()
         }, 500)
+
+        // Race : DnsVpnService.isVpnRunning ne passe à true qu'après l'init du
+        // tunnel TUN (~1-3s), donc le refreshIpDisplay() de setActiveStatus()
+        // ci-dessus voit encore "false" et affiche "Aucun DNS actif". On
+        // re-refresh à 1s/3s/6s pour catcher dès que le service est prêt,
+        // sinon le panneau peut rester sur "Aucun DNS actif" pendant des
+        // minutes (jusqu'au prochain onResume) — symétrique au path ADB.
+        for (delay in listOf(1000L, 3000L, 6000L)) {
+            btnToggle.postDelayed({ refreshIpDisplay() }, delay)
+        }
     }
 
     private fun disableDnsQuiet(onDone: () -> Unit) {
