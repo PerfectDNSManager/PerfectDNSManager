@@ -692,7 +692,6 @@ class MainActivity : AppCompatActivity() {
             }
             val appVer = try { packageManager.getPackageInfo(packageName, 0).versionName ?: "?" } catch (_: Exception) { "?" }
             display.appendLine("\u2501\u2501\u2501 ${getString(R.string.share_toggle_device)} \u2501\u2501\u2501")
-            display.appendLine("${getString(R.string.md_device_name)} : ${android.os.Build.DEVICE}")
             display.appendLine("${getString(R.string.md_device_model)} : ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
             display.appendLine("${getString(R.string.md_device_type)} : $deviceType")
             display.appendLine("Android : ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})")
@@ -988,7 +987,6 @@ class MainActivity : AppCompatActivity() {
                         appendLine()
                         appendLine("| ${getString(R.string.md_field)} | ${getString(R.string.md_value)} |")
                         appendLine("|-------|--------|")
-                        appendLine("| **${getString(R.string.md_device_name)}** | ${android.os.Build.DEVICE} |")
                         appendLine("| **${getString(R.string.md_device_model)}** | ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL} |")
                         appendLine("| **${getString(R.string.md_device_type)}** | $devType |")
                         appendLine("| **${getString(R.string.md_android_version)}** | ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT}) |")

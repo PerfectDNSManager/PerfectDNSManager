@@ -126,13 +126,13 @@
         android:layout_marginBottom="4dp" />
 
     <!-- Toggle activation : row focusable + Switch (Android TV friendly).
-         Le row capte le focus, le Switch lui-même n'est pas focusable seul. -->
-    <LinearLayout
+         Le row capte le focus, le Switch lui-même n'est pas focusable seul.
+         FrameLayout pour que le texte soit centré au milieu de la row,
+         le Switch superposé à droite sans déplacer le texte. -->
+    <FrameLayout
         android:id="@+id/rowActivationToggle"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:background="@drawable/pdm_btn_secondary"
@@ -141,14 +141,15 @@
         android:clickable="true"
         android:layout_marginBottom="8dp"
         android:nextFocusUp="@id/layoutSelectDns"
-        android:nextFocusDown="@id/btnDomainTester">
+        android:nextFocusDown="@id/btnGenerateReport">
 
         <TextView
             android:id="@+id/tvActivationStatus"
             style="@style/PDMText.Body"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:text="@string/activate"
             android:textColor="@color/pdm_accent"
             android:textSize="16sp"
@@ -159,9 +160,10 @@
             android:id="@+id/swActivationToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
             android:focusable="false"
             android:clickable="false" />
-    </LinearLayout>
+    </FrameLayout>
 
     <!-- Module outils (toujours visible — anciennement gated par swToolsToggle) -->
     <LinearLayout
@@ -173,26 +175,12 @@
         android:background="@drawable/pdm_card_bg"
         android:padding="10dp">
 
-        <!-- Boutons Testeur domaine + Générer rapport côte à côte -->
+        <!-- Boutons rapport (gauche) + Testeur domaine (droite) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="4dp">
-
-            <Button
-                android:id="@+id/btnDomainTester"
-                style="@style/PDMButton"
-                android:layout_width="0dp"
-                android:layout_height="38dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="4dp"
-                android:text="@string/quick_dns_test_button"
-                android:textSize="12sp"
-                android:focusable="true"
-                android:nextFocusUp="@id/rowActivationToggle"
-                android:nextFocusRight="@id/btnGenerateReport"
-                android:nextFocusDown="@id/btnSpeedtest" />
 
             <Button
                 android:id="@+id/btnGenerateReport"
@@ -200,16 +188,30 @@
                 android:layout_width="0dp"
                 android:layout_height="38dp"
                 android:layout_weight="1"
-                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
                 android:text="@string/generate_report_button"
                 android:textSize="12sp"
                 android:focusable="true"
                 android:nextFocusUp="@id/rowActivationToggle"
-                android:nextFocusLeft="@id/btnDomainTester"
+                android:nextFocusRight="@id/btnDomainTester"
                 android:nextFocusDown="@id/btnShareReport" />
+
+            <Button
+                android:id="@+id/btnDomainTester"
+                style="@style/PDMButton"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:text="@string/quick_dns_test_button"
+                android:textSize="12sp"
+                android:focusable="true"
+                android:nextFocusUp="@id/rowActivationToggle"
+                android:nextFocusLeft="@id/btnGenerateReport"
+                android:nextFocusDown="@id/btnSpeedtest" />
         </LinearLayout>
 
-        <!-- Boutons Speedtest + Partager cote a cote -->
+        <!-- Boutons Partager (gauche) + Speedtest (droite) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -217,31 +219,31 @@
             android:layout_marginTop="4dp">
 
             <Button
-                android:id="@+id/btnSpeedtest"
-                style="@style/PDMButton"
-                android:layout_width="0dp"
-                android:layout_height="38dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="4dp"
-                android:text="@string/internet_speedtest_advanced"
-                android:textSize="12sp"
-                android:focusable="true"
-                android:nextFocusUp="@id/btnDomainTester"
-                android:nextFocusRight="@id/btnShareReport"
-                android:nextFocusDown="@id/wrapReport" />
-
-            <Button
                 android:id="@+id/btnShareReport"
                 style="@style/PDMButton.Primary"
                 android:layout_width="0dp"
                 android:layout_height="38dp"
                 android:layout_weight="1"
-                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
                 android:text="@string/share_report_button"
                 android:textSize="12sp"
                 android:focusable="true"
                 android:nextFocusUp="@id/btnGenerateReport"
-                android:nextFocusLeft="@id/btnSpeedtest"
+                android:nextFocusRight="@id/btnSpeedtest"
+                android:nextFocusDown="@id/wrapReport" />
+
+            <Button
+                android:id="@+id/btnSpeedtest"
+                style="@style/PDMButton"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:text="@string/internet_speedtest_advanced"
+                android:textSize="12sp"
+                android:focusable="true"
+                android:nextFocusUp="@id/btnDomainTester"
+                android:nextFocusLeft="@id/btnShareReport"
                 android:nextFocusDown="@id/wrapReport" />
         </LinearLayout>
 
@@ -257,43 +259,13 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="4dp">
 
-            <!-- Left: Status info — non focusable, contenu fit sans scroll
-                 (DNS d'abord + suppression du toggle Outils a libéré la place).
-                 Si jamais le contenu déborde, le ScrollView interne fonctionne
-                 toujours mais sans D-pad — c'est un fallback, pas le cas nominal. -->
-            <FrameLayout
-                android:id="@+id/wrapStatus"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_marginEnd="4dp"
-                android:background="@drawable/pdm_card_bg">
-                <ScrollView
-                    android:id="@+id/scrollStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fillViewport="true"
-                    android:focusable="false">
-                    <TextView
-                        android:id="@+id/tvStatusInfo"
-                        style="@style/PDMText.Body"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/no_active_dns"
-                        android:textSize="13sp"
-                        android:lineSpacingExtra="2dp"
-                        android:textColor="@color/pdm_text_secondary"
-                        android:padding="10dp" />
-                </ScrollView>
-            </FrameLayout>
-
-            <!-- Right: Report — même structure -->
+            <!-- Left: Report (focusable, scrollable au D-pad) -->
             <FrameLayout
                 android:id="@+id/wrapReport"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
                 android:background="@drawable/pdm_card_bg"
                 android:foreground="@drawable/btn_focus_foreground"
                 android:foregroundGravity="fill"
@@ -312,6 +284,36 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/no_report_yet"
+                        android:textSize="13sp"
+                        android:lineSpacingExtra="2dp"
+                        android:textColor="@color/pdm_text_secondary"
+                        android:padding="10dp" />
+                </ScrollView>
+            </FrameLayout>
+
+            <!-- Right: Status info — non focusable, contenu fit sans scroll
+                 (DNS d'abord + suppression du toggle Outils a libéré la place).
+                 Si jamais le contenu déborde, le ScrollView interne fonctionne
+                 toujours mais sans D-pad — c'est un fallback, pas le cas nominal. -->
+            <FrameLayout
+                android:id="@+id/wrapStatus"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/pdm_card_bg">
+                <ScrollView
+                    android:id="@+id/scrollStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="true"
+                    android:focusable="false">
+                    <TextView
+                        android:id="@+id/tvStatusInfo"
+                        style="@style/PDMText.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_active_dns"
                         android:textSize="13sp"
                         android:lineSpacingExtra="2dp"
                         android:textColor="@color/pdm_text_secondary"
