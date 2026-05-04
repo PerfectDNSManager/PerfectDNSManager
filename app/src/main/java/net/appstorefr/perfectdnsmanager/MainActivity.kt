@@ -310,7 +310,9 @@ class MainActivity : AppCompatActivity() {
                 vpnRunning -> {
                     val profile = selectedProfile
                     dnsStatusText = if (profile != null) {
-                        getString(R.string.dns_active_vpn_fmt, profile.providerName)
+                        // Affiche le protocole réel (DoH/DoQ/Standard) plutôt que
+                        // juste "VPN" — symétrique au cas DoT.
+                        getString(R.string.dns_active_vpn_fmt, typeLabelFor(profile.type), profile.providerName)
                     } else {
                         getString(R.string.dns_active_vpn)
                     }

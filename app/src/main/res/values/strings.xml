@@ -597,7 +597,7 @@
     <string name="report_ipv6_fmt">IPv6 : %1$s</string>
     <string name="report_local_ip_fmt">IP locale : %1$s</string>
     <string name="report_profile_fmt">Profil : %1$s - %2$s</string>
-    <string name="dns_active_vpn_fmt">DNS actif : VPN (%1$s)</string>
+    <string name="dns_active_vpn_fmt">DNS actif : %1$s (%2$s)</string>
     <string name="dns_active_vpn">DNS actif : VPN</string>
     <string name="dns_active_dot_fmt">DNS actif : DoT (%1$s)</string>
     <string name="dns_active_dot_host_fmt">DNS actif : DoT (%1$s)</string>
