@@ -227,6 +227,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
         for (backend in SpeedBackend.entries) {
             val chipBtn = Button(this).apply {
+                id = View.generateViewId()
                 text = backend.label
                 setTextColor(COLOR_WHITE)
                 textSize = 13f
@@ -246,6 +247,15 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             }
             backendButtons[backend] = chipBtn
             backendButtonsLayout.addView(chipBtn)
+        }
+
+        // Chaîne D-pad horizontale entre les chips (LEFT/RIGHT). Sans ça,
+        // dans un HorizontalScrollView le focus search default ne traverse
+        // pas systématiquement les frères.
+        val chips = backendButtons.values.toList()
+        chips.forEachIndexed { idx, chip ->
+            chip.nextFocusLeftId = chips.getOrNull(idx - 1)?.id ?: chip.id
+            chip.nextFocusRightId = chips.getOrNull(idx + 1)?.id ?: chip.id
         }
 
         backendSelectorRow.addView(backendButtonsLayout)
@@ -275,6 +285,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
         // ── Start / Stop button ──────────────────────────────────────────
         btnStartStop = Button(this).apply {
+            id = View.generateViewId()
             text = getString(R.string.speedtest_start)
             setTextColor(COLOR_GREEN)
             textSize = 16f
@@ -285,6 +296,15 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             setPadding(dp(24), dp(14), dp(24), dp(14))
             layoutParams = lp(matchParent, wrapContent).apply { bottomMargin = dp(8) }
             setOnClickListener { toggleTest() }
+        }
+        // UP depuis Start → premier chip (CLOUDFLARE par défaut). Le default
+        // focus search ne traversait pas le HorizontalScrollView correctement.
+        val firstChipId = backendButtons.values.firstOrNull()?.id
+        if (firstChipId != null) {
+            btnStartStop.nextFocusUpId = firstChipId
+            backendButtons.values.forEach { chip ->
+                chip.nextFocusDownId = btnStartStop.id
+            }
         }
         mainColumn.addView(btnStartStop)
 
