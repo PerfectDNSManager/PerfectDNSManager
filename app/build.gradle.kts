@@ -49,6 +49,29 @@ android {
         aidl = true
     }
 
+    // Conflit BouncyCastle : bcpkix/bcprov/bcutil shippent chacun
+    // META-INF/versions/9/OSGI-INF/MANIFEST.MF (signed JAR multi-release).
+    // Idem pour leurs LICENSE/NOTICE — on pickFirst pour éviter les
+    // DuplicateRelativeFileException au mergeJavaResource.
+    packaging {
+        resources {
+            pickFirsts += listOf(
+                "META-INF/versions/9/OSGI-INF/MANIFEST.MF",
+                "META-INF/INDEX.LIST",
+            )
+            excludes += listOf(
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/LICENSE.md",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt",
+                "META-INF/NOTICE.md",
+                "META-INF/DEPENDENCIES",
+                "META-INF/*.kotlin_module",
+            )
+        }
+    }
+
     signingConfigs {
         create("release") {
             val ksPath = System.getenv("KEYSTORE_FILE")
