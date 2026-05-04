@@ -1302,11 +1302,6 @@ class MainActivity : AppCompatActivity() {
             btnToggle.isEnabled = true
             btnToggle.requestFocus()
         }, 500)
-
-        // Auto-generate report after VPN activation (3s delay for stabilization)
-        btnToggle.postDelayed({
-            if (!isGenerating) generateReport()
-        }, 3000)
     }
 
     private fun disableDnsQuiet(onDone: () -> Unit) {

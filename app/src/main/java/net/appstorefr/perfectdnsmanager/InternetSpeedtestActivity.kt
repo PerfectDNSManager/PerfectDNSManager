@@ -365,15 +365,18 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         }
         mainColumn.addView(tvConsoleLabel)
 
+        // Console réduite (60dp au lieu de 120dp) pour que tout tienne sans
+        // défilement sur l'écran 1080p Android TV. C'est un log de diagnostic,
+        // pas l'élément principal — 4-5 lignes suffisent pour le user moyen.
         scrollConsole = ScrollView(this).apply {
-            layoutParams = lp(matchParent, dp(120))
+            layoutParams = lp(matchParent, dp(60))
             background = GradientDrawable().apply {
                 setColor(pdmSurfaceInput()); cornerRadius = dp(8).toFloat()
             }
         }
         tvConsole = TextView(this).apply {
             setTextColor(COLOR_LIGHT_GREY); textSize = 11f
-            setPadding(dp(8), dp(8), dp(8), dp(8))
+            setPadding(dp(8), dp(6), dp(8), dp(6))
             text = getString(R.string.speedtest_waiting)
         }
         scrollConsole.addView(tvConsole)

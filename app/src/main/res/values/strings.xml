@@ -547,7 +547,7 @@
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
 
     <!-- Speedtest Internet (avancé) -->
-    <string name="speedtest_adv_title">Testeur de débit avancé</string>
+    <string name="speedtest_adv_title">Test débit Internet</string>
     <string name="speedtest_server_loading">🌐  Serveur : chargement…</string>
     <string name="speedtest_server_fmt">🌐  Serveur : %1$s</string>
     <string name="speedtest_server_none">🌐  Serveur : aucun</string>

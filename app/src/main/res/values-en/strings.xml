@@ -551,7 +551,7 @@
     <string name="theme_choose_title">Choose theme</string>
 
     <!-- Speedtest Internet (advanced) -->
-    <string name="speedtest_adv_title">Advanced speed test</string>
+    <string name="speedtest_adv_title">Internet speed test</string>
     <string name="speedtest_server_loading">🌐  Server: loading…</string>
     <string name="speedtest_server_fmt">🌐  Server: %1$s</string>
     <string name="speedtest_server_none">🌐  Server: none</string>
