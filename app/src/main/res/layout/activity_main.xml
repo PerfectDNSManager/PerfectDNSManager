@@ -141,7 +141,7 @@
         android:clickable="true"
         android:layout_marginBottom="8dp"
         android:nextFocusUp="@id/layoutSelectDns"
-        android:nextFocusDown="@id/swToolsToggle">
+        android:nextFocusDown="@id/btnDomainTester">
 
         <TextView
             android:id="@+id/tvActivationStatus"
@@ -163,38 +163,7 @@
             android:clickable="false" />
     </LinearLayout>
 
-    <!-- 3| Outils de test + toggle (row focusable, Switch non focusable seul) -->
-    <LinearLayout
-        android:id="@+id/rowToolsToggle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="4dp"
-        android:foreground="@drawable/btn_focus_foreground"
-        android:focusable="true"
-        android:clickable="true"
-        android:layout_marginBottom="4dp"
-        android:nextFocusUp="@id/rowActivationToggle"
-        android:nextFocusDown="@id/btnDomainTester">
-
-        <TextView
-            android:id="@+id/tvToolsLabel"
-            style="@style/PDMText.Caption"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/tools_section_label" />
-
-        <Switch
-            android:id="@+id/swToolsToggle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:clickable="false" />
-    </LinearLayout>
-
-    <!-- Module outils -->
+    <!-- Module outils (toujours visible — anciennement gated par swToolsToggle) -->
     <LinearLayout
         android:id="@+id/layoutToolsPanel"
         android:layout_width="match_parent"
@@ -259,7 +228,7 @@
                 android:focusable="true"
                 android:nextFocusUp="@id/btnDomainTester"
                 android:nextFocusRight="@id/btnShareReport"
-                android:nextFocusDown="@id/wrapStatus" />
+                android:nextFocusDown="@id/wrapReport" />
 
             <Button
                 android:id="@+id/btnShareReport"
@@ -288,21 +257,17 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="4dp">
 
-            <!-- Left: Status info — wrapper FrameLayout porte bg + focus border (taille fixe),
-                 ScrollView dedans en match_parent pour scroller proprement sans déborder du focus. -->
+            <!-- Left: Status info — non focusable, contenu fit sans scroll
+                 (DNS d'abord + suppression du toggle Outils a libéré la place).
+                 Si jamais le contenu déborde, le ScrollView interne fonctionne
+                 toujours mais sans D-pad — c'est un fallback, pas le cas nominal. -->
             <FrameLayout
                 android:id="@+id/wrapStatus"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp"
-                android:background="@drawable/pdm_card_bg"
-                android:foreground="@drawable/btn_focus_foreground"
-                android:foregroundGravity="fill"
-                android:focusable="true"
-                android:descendantFocusability="blocksDescendants"
-                android:nextFocusUp="@id/btnSpeedtest"
-                android:nextFocusRight="@id/wrapReport">
+                android:background="@drawable/pdm_card_bg">
                 <ScrollView
                     android:id="@+id/scrollStatus"
                     android:layout_width="match_parent"
@@ -334,8 +299,7 @@
                 android:foregroundGravity="fill"
                 android:focusable="true"
                 android:descendantFocusability="blocksDescendants"
-                android:nextFocusUp="@id/btnShareReport"
-                android:nextFocusLeft="@id/wrapStatus">
+                android:nextFocusUp="@id/btnShareReport">
                 <ScrollView
                     android:id="@+id/scrollReport"
                     android:layout_width="match_parent"

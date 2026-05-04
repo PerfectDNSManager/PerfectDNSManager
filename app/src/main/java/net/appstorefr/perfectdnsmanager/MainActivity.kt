@@ -139,6 +139,15 @@ class MainActivity : AppCompatActivity() {
 
                     // D'abord, stopper l'ancienne méthode proprement
                     if (adbWasActive) {
+                        // L'utilisateur peut voir une demande d'autorisation ADB ici si
+                        // WRITE_SECURE_SETTINGS n'est pas accordé (ex: après réinstall).
+                        // Toast pour expliquer que c'est pour nettoyer le DoT précédent,
+                        // pas pour appliquer le nouveau profil.
+                        Toast.makeText(
+                            this@MainActivity,
+                            getString(R.string.switching_disabling_dot),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         Thread {
                             adbManager.disablePrivateDns()
                             runOnUiThread { setInactiveStatus(); applyDns() }
@@ -312,12 +321,16 @@ class MainActivity : AppCompatActivity() {
                         android.provider.Settings.Global.getString(contentResolver, "private_dns_specifier") ?: ""
                     } catch (_: Exception) { "" }
                     val profile = selectedProfile
-                    dnsStatusText = if (profile != null) {
-                        getString(R.string.dns_active_dot_fmt, profile.providerName)
-                    } else if (host.isNotEmpty()) {
-                        getString(R.string.dns_active_dot_host_fmt, host)
-                    } else {
-                        getString(R.string.dns_active_dot)
+                    // N'afficher le nom du profil que si le host système correspond.
+                    // Sinon le DoT vient d'ailleurs (résidu d'une session précédente,
+                    // outil tiers, etc.) — fallback sur le host pour rester honnête.
+                    val profileMatchesHost = profile != null &&
+                        host.isNotEmpty() &&
+                        host.equals(profile.primary, ignoreCase = true)
+                    dnsStatusText = when {
+                        profileMatchesHost -> getString(R.string.dns_active_dot_fmt, profile!!.providerName)
+                        host.isNotEmpty() -> getString(R.string.dns_active_dot_host_fmt, host)
+                        else -> getString(R.string.dns_active_dot)
                     }
                     dnsActive = true
                 }
@@ -408,8 +421,7 @@ class MainActivity : AppCompatActivity() {
         val gold = pdmAccentGold()
         val tvProvider: TextView = findViewById(R.id.tvDnsProviderLabel)
         val tvActivation: TextView = findViewById(R.id.tvActivationLabel)
-        val tvTools: TextView = findViewById(R.id.tvToolsLabel)
-        for (tv in listOf(tvProvider, tvActivation, tvTools)) {
+        for (tv in listOf(tvProvider, tvActivation)) {
             val text = tv.text.toString()
             val span = SpannableString(text)
             span.setSpan(ForegroundColorSpan(gold), 0, 2, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -433,19 +445,6 @@ class MainActivity : AppCompatActivity() {
         tvReportContent = findViewById(R.id.tvReportContent)
         btnShareReport = findViewById(R.id.btnShareReport)
 
-        // Toggle outils de test : focus sur le row, pas sur le Switch (Android TV)
-        val layoutToolsPanel: LinearLayout = findViewById(R.id.layoutToolsPanel)
-        val swToolsToggle: Switch = findViewById(R.id.swToolsToggle)
-        val rowToolsToggle: LinearLayout = findViewById(R.id.rowToolsToggle)
-        val toolsVisible = prefs.getBoolean("tools_panel_visible", true)
-        swToolsToggle.isChecked = toolsVisible
-        layoutToolsPanel.visibility = if (toolsVisible) View.VISIBLE else View.GONE
-        swToolsToggle.setOnCheckedChangeListener { _, isChecked ->
-            layoutToolsPanel.visibility = if (isChecked) View.VISIBLE else View.GONE
-            prefs.edit().putBoolean("tools_panel_visible", isChecked).apply()
-        }
-        rowToolsToggle.setOnClickListener { swToolsToggle.toggle() }
-
         btnDomainTester.setOnClickListener {
             startActivity(Intent(this, DomainTesterActivity::class.java))
         }
@@ -455,12 +454,10 @@ class MainActivity : AppCompatActivity() {
         btnGenerateReport.setOnClickListener { generateReport() }
         btnShareReport.setOnClickListener { shareReport() }
 
-        // D-pad scroll des panneaux Status/Report (wrapper focusable, ScrollView non focusable)
-        val wrapStatus: FrameLayout = findViewById(R.id.wrapStatus)
+        // D-pad scroll du panneau Report uniquement (wrapStatus n'est plus focusable
+        // depuis qu'on a viré le toggle Outils — son contenu fit sans scroll).
         val wrapReport: FrameLayout = findViewById(R.id.wrapReport)
-        val scrollStatus: ScrollView = findViewById(R.id.scrollStatus)
         val scrollReport: ScrollView = findViewById(R.id.scrollReport)
-        attachDpadScroll(wrapStatus, scrollStatus)
         attachDpadScroll(wrapReport, scrollReport)
 
         // Focus initial sur le CTA principal pour navigation D-pad prévisible

@@ -22,6 +22,7 @@
     <string name="vpn_permission_denied">Permissão VPN negada</string>
     <string name="vpn_activated">VPN ativado: %1$s</string>
     <string name="dns_disabled">DNS desativado</string>
+    <string name="switching_disabling_dot">Desativando DoT anterior…</string>
     <string name="firestick_warning_title">Aviso Firestick</string>
     <string name="firestick_warning_message">O uso do método ADB em dispositivos Firestick pode causar perda de conectividade com a Internet. Recomenda-se usar o método VPN.</string>
     <string name="continue_anyway">Continuar</string>

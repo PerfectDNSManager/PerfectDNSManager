@@ -22,6 +22,7 @@
     <string name="vpn_permission_denied">VPN の権限が拒否されました</string>
     <string name="vpn_activated">VPN を有効にしました: %1$s</string>
     <string name="dns_disabled">DNS を無効にしました</string>
+    <string name="switching_disabling_dot">前回の DoT を無効化中…</string>
     <string name="firestick_warning_title">Firestick に関する警告</string>
     <string name="firestick_warning_message">Firestick デバイスで ADB メソッドを使用すると、インターネット接続が失われる可能性があります。VPN メソッドの使用を推奨します。</string>
     <string name="continue_anyway">続行</string>

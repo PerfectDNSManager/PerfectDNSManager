@@ -22,6 +22,7 @@
     <string name="vpn_permission_denied">تم رفض إذن VPN</string>
     <string name="vpn_activated">تم تفعيل VPN: %1$s</string>
     <string name="dns_disabled">تم تعطيل DNS</string>
+    <string name="switching_disabling_dot">جارٍ تعطيل DoT السابق…</string>
     <string name="firestick_warning_title">تحذير Firestick</string>
     <string name="firestick_warning_message">استخدام طريقة ADB على أجهزة Firestick قد يؤدي إلى فقدان الاتصال بالإنترنت. يُنصح باستخدام طريقة VPN.</string>
     <string name="continue_anyway">متابعة</string>

@@ -22,6 +22,7 @@
     <string name="vpn_permission_denied">VPN अनुमति अस्वीकृत</string>
     <string name="vpn_activated">VPN सक्रिय: %1$s</string>
     <string name="dns_disabled">DNS निष्क्रिय किया गया</string>
+    <string name="switching_disabling_dot">पिछला DoT निष्क्रिय किया जा रहा है…</string>
     <string name="firestick_warning_title">Firestick चेतावनी</string>
     <string name="firestick_warning_message">Firestick उपकरणों पर ADB विधि का उपयोग करने से इंटरनेट कनेक्टिविटी खो सकती है। VPN विधि का उपयोग करने की सिफारिश की जाती है।</string>
     <string name="continue_anyway">जारी रखें</string>

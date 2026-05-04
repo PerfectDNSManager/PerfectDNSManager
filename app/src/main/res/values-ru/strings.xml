@@ -22,6 +22,7 @@
     <string name="vpn_permission_denied">Разрешение VPN отклонено</string>
     <string name="vpn_activated">VPN включён: %1$s</string>
     <string name="dns_disabled">DNS отключён</string>
+    <string name="switching_disabling_dot">Отключение предыдущего DoT…</string>
     <string name="firestick_warning_title">Предупреждение Firestick</string>
     <string name="firestick_warning_message">Использование метода ADB на устройствах Firestick может привести к потере интернет-соединения. Рекомендуется использовать метод VPN.</string>
     <string name="continue_anyway">Продолжить</string>

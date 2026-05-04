@@ -22,6 +22,7 @@
     <string name="vpn_permission_denied">VPN permission denied</string>
     <string name="vpn_activated">VPN enabled: %1$s</string>
     <string name="dns_disabled">DNS disabled</string>
+    <string name="switching_disabling_dot">Disabling previous DoT…</string>
     <string name="firestick_warning_title">Firestick Warning</string>
     <string name="firestick_warning_message">Using the ADB method on Firestick devices may cause loss of internet connectivity. It is recommended to use the VPN method.</string>
     <string name="continue_anyway">Continue</string>

@@ -362,8 +362,11 @@ class AdbDnsManager(private val context: Context) {
                     return@Thread
                 }
 
-                // Auto-grant WRITE_SECURE_SETTINGS à la première connexion réussie
-                if (!prefs.getBoolean(PREF_PERMISSION_GRANTED, false)) {
+                // Auto-grant WRITE_SECURE_SETTINGS si pas (ou plus) accordée.
+                // Le flag SharedPref survit à une réinstallation alors que la
+                // permission elle est révoquée à chaque install — donc on
+                // checke la vraie permission, pas le flag stocké.
+                if (!isPermissionGranted()) {
                     Log.i(TAG, "Auto-grant WRITE_SECURE_SETTINGS...")
                     val grantResult = execShellCommand(
                         connection,

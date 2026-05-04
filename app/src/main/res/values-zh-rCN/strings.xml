@@ -22,6 +22,7 @@
     <string name="vpn_permission_denied">VPN 权限被拒绝</string>
     <string name="vpn_activated">VPN 已启用：%1$s</string>
     <string name="dns_disabled">DNS 已停用</string>
+    <string name="switching_disabling_dot">正在停用先前的 DoT…</string>
     <string name="firestick_warning_title">Firestick 警告</string>
     <string name="firestick_warning_message">在 Firestick 设备上使用 ADB 方式可能导致网络连接中断。建议使用 VPN 方式。</string>
     <string name="continue_anyway">继续</string>
