@@ -343,26 +343,15 @@
     <string name="self_grant_step_connecting">连接 ADB…</string>
     <string name="self_grant_step_port">尝试端口 %1$s…</string>
     <string name="self_grant_step_granting">授予权限…</string>
-    <string name="self_grant_success">权限授予成功！私有 DNS 现在无需 Shizuku 即可工作。</string>
+    <string name="self_grant_success">权限授予成功！私有 DNS 现在无需 ADB pairing 即可工作。</string>
     <string name="self_grant_adb_unreachable">ADB 不可达。请启用 ADB 调试。</string>
     <string name="self_grant_failed">权限授予失败。</string>
     <string name="self_grant_not_effective">命令执行成功但权限未生效。请重启设备。</string>
     <string name="self_grant_error">错误：%1$s</string>
     <string name="self_grant_help_title">帮助 — ADB 不可达</string>
     <string name="self_grant_help_firetv">在 Fire TV / Fire Stick 上：\n\n1. 前往 设置 → 我的 Fire TV → 开发者选项\n2. 启用「ADB 调试」\n3. 启用「来自未知来源的应用」\n4. 返回此处点击「自动授权」\n\n如果开发者菜单未出现，请前往 设置 → 我的 Fire TV → 关于 → 点击「序列号」7 次。</string>
-    <string name="self_grant_help_phone">在 Android 手机/平板上：\n\n1. 前往 设置 → 关于手机 → 点击「版本号」7 次\n2. 在开发者选项中启用「USB 调试」\n3. 启用「无线调试」（Android 11+）\n4. 返回此处点击「自动授权」\n\n注意：在部分手机上，自动授权可能无法使用。请使用 Shizuku 或电脑通过 ADB 操作。</string>
+    <string name="self_grant_help_phone">在 Android 手机/平板上：\n\n1. 前往 设置 → 关于手机 → 点击「版本号」7 次\n2. 在开发者选项中启用「USB 调试」\n3. 启用「无线调试」（Android 11+）\n4. 返回此处点击「自动授权」\n\n注意：在部分手机上，自动授权可能无法使用。请使用 ADB pairing 或电脑通过 ADB 操作。</string>
 
-    <!-- Shizuku -->
-    <string name="shizuku_section_title">Shizuku（Android 11+）</string>
-    <string name="shizuku_section_desc">Shizuku 允许在不使用有线 ADB 连接的情况下修改 Private DNS。适用于需要 TLS 配对的 Android 11+ 无线 ADB。</string>
-    <string name="shizuku_not_installed">未安装</string>
-    <string name="shizuku_not_running">已安装但未运行</string>
-    <string name="shizuku_no_permission">权限未授予</string>
-    <string name="shizuku_ready">就绪</string>
-    <string name="shizuku_install">安装 Shizuku</string>
-    <string name="shizuku_open">打开 Shizuku</string>
-    <string name="shizuku_grant_permission">授予权限</string>
-    <string name="shizuku_permission_granted">Shizuku 权限已授予！</string>
 
     <!-- DNS Ratings -->
     <string name="speed_label">速度</string>
@@ -392,8 +381,6 @@
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">VPN 已重连（IPv6 已更改）</string>
 
-    <!-- Shizuku hardcoded fix -->
-    <string name="shizuku_cannot_open">无法打开 Shizuku</string>
 
     <!-- DNS Rewrite screen -->
     <string name="dns_rewrite_screen_title">DNS 重写（Rewriting）</string>

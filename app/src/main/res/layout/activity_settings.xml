@@ -520,53 +520,6 @@
                         android:focusable="true" />
                 </LinearLayout>
 
-                <!-- Section Shizuku (Android 11+) -->
-                <LinearLayout
-                    android:id="@+id/layoutShizukuSection"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/pdm_tint_info"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/shizuku_section_title"
-                        android:textColor="@color/pdm_accent_purple"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="4dp"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/shizuku_section_desc"
-                        android:textColor="@color/pdm_text_secondary"
-                        android:textSize="11sp"
-                        android:layout_marginBottom="8dp"/>
-
-                    <TextView
-                        android:id="@+id/tvShizukuStatus"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp"/>
-
-                    <Button
-                        android:id="@+id/btnShizukuAction"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:background="@drawable/pdm_btn_primary"
-                        android:foreground="@drawable/btn_focus_foreground"
-                        android:textColor="@color/pdm_text_primary"
-                        android:textSize="12sp"
-                        android:focusable="true" />
-                </LinearLayout>
-
             </LinearLayout>
 
             <!-- URL Rewrite warning -->

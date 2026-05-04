@@ -358,26 +358,28 @@
     <string name="self_grant_step_connecting">Connexion ADB…</string>
     <string name="self_grant_step_port">Tentative port %1$s…</string>
     <string name="self_grant_step_granting">Attribution de la permission…</string>
-    <string name="self_grant_success">Permission accordée avec succès ! Le DNS privé fonctionne maintenant sans Shizuku.</string>
+    <string name="self_grant_success">Permission accordée avec succès ! Le DNS privé fonctionne maintenant sans ADB.</string>
+
+    <!-- ADB pairing Wireless Debugging (Android 11+ phone, no PC needed) -->
+    <string name="adb_pair_wireless">Coupler ADB sans fil (Android 11+)</string>
+    <string name="adb_pair_wireless_instructions">Sur ce téléphone :\n1. Options développeur → Débogage sans fil → ON\n2. Coupler avec un code → notez le code 6 chiffres\n\nEntrez le code ici :</string>
+    <string name="adb_pair_submit">Coupler</string>
+    <string name="adb_pair_invalid_code">Code invalide (6 chiffres requis)</string>
+    <string name="adb_pair_in_progress">Couplage ADB en cours…</string>
+    <string name="adb_pair_step_discovering">Recherche du port ADB via mDNS…</string>
+    <string name="adb_pair_step_pairing">Couplage TLS-PSK…</string>
+    <string name="adb_pair_step_connecting">Connexion ADB chiffrée…</string>
+    <string name="adb_pair_step_granting">Accord WRITE_SECURE_SETTINGS…</string>
+    <string name="adb_pair_success">Couplage réussi ! Permission accordée à vie.</string>
+    <string name="adb_pair_failed">Échec du couplage : %1$s</string>
     <string name="self_grant_adb_unreachable">ADB non accessible. Activez le débogage ADB.</string>
     <string name="self_grant_failed">Échec de l\'attribution de la permission.</string>
     <string name="self_grant_not_effective">La commande a réussi mais la permission n\'est pas effective. Redémarrez l\'appareil.</string>
     <string name="self_grant_error">Erreur : %1$s</string>
     <string name="self_grant_help_title">Aide — ADB non accessible</string>
     <string name="self_grant_help_firetv">Sur Fire TV / Fire Stick :\n\n1. Allez dans Paramètres → Ma Fire TV → Options pour les développeurs\n2. Activez \"Débogage ADB\"\n3. Activez \"Applications de sources inconnues\"\n4. Revenez ici et appuyez sur \"Accorder automatiquement\"\n\nSi le menu développeur n\'apparaît pas, allez dans Paramètres → Ma Fire TV → À propos → cliquez 7 fois sur \"Numéro de série\".</string>
-    <string name="self_grant_help_phone">Sur téléphone/tablette Android :\n\n1. Allez dans Paramètres → À propos → cliquez 7 fois sur \"Numéro de build\"\n2. Activez le \"Débogage USB\" dans les Options pour les développeurs\n3. Activez le \"Débogage sans fil\" (Android 11+)\n4. Revenez ici et appuyez sur \"Accorder automatiquement\"\n\nNote : Sur certains téléphones, l\'auto-permission ne fonctionne pas. Utilisez Shizuku ou un PC avec ADB.</string>
+    <string name="self_grant_help_phone">Sur téléphone/tablette Android :\n\n1. Allez dans Paramètres → À propos → cliquez 7 fois sur \"Numéro de build\"\n2. Activez le \"Débogage sans fil\" (Android 11+) dans les Options développeur\n3. Tapez \"Coupler avec un code\" — notez le code 6 chiffres\n4. Revenez ici et utilisez \"Coupler ADB sans fil\"\n\nAlternative : un PC avec ADB filaire reste possible.</string>
 
-    <!-- Shizuku -->
-    <string name="shizuku_section_title">Shizuku (Android 11+)</string>
-    <string name="shizuku_section_desc">Shizuku permet de modifier le DNS privé sans connexion ADB filaire. Idéal pour Android 11+ où l\'ADB sans fil nécessite un appairage TLS.</string>
-    <string name="shizuku_not_installed">Non installé</string>
-    <string name="shizuku_not_running">Installé mais non démarré</string>
-    <string name="shizuku_no_permission">Permission non accordée</string>
-    <string name="shizuku_ready">Prêt</string>
-    <string name="shizuku_install">Installer Shizuku</string>
-    <string name="shizuku_open">Ouvrir Shizuku</string>
-    <string name="shizuku_grant_permission">Accorder la permission</string>
-    <string name="shizuku_permission_granted">Permission Shizuku accordée !</string>
 
     <!-- DNS Ratings -->
     <string name="speed_label">Vitesse</string>
@@ -407,8 +409,6 @@
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">VPN reconnecté (IPv6 modifié)</string>
 
-    <!-- Shizuku hardcoded fix -->
-    <string name="shizuku_cannot_open">Impossible d\'ouvrir Shizuku</string>
 
     <!-- DNS Rewrite screen -->
     <string name="dns_rewrite_screen_title">Réécriture DNS (Rewriting)</string>

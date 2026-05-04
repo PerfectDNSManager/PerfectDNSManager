@@ -1,0 +1,32 @@
+PerfectDNSManager
+Copyright 2024 appstorefr
+
+This product includes software developed by RikkaApps:
+
+  Shizuku
+  https://github.com/RikkaApps/Shizuku
+  Copyright RikkaApps
+  Licensed under the Apache License, Version 2.0
+
+The following files in this repository are vendored or derived from Shizuku
+v13.6.0 and remain under Apache 2.0 :
+
+  app/src/main/java/moe/shizuku/manager/adb/AdbClient.kt
+  app/src/main/java/moe/shizuku/manager/adb/AdbException.kt
+  app/src/main/java/moe/shizuku/manager/adb/AdbKey.kt
+  app/src/main/java/moe/shizuku/manager/adb/AdbMdns.kt
+  app/src/main/java/moe/shizuku/manager/adb/AdbMessage.kt
+  app/src/main/java/moe/shizuku/manager/adb/AdbPairingClient.kt
+  app/src/main/java/moe/shizuku/manager/adb/AdbProtocol.kt
+
+  app/src/main/jniLibs/arm64-v8a/libadb.so
+  app/src/main/jniLibs/armeabi-v7a/libadb.so
+  app/src/main/jniLibs/x86/libadb.so
+  app/src/main/jniLibs/x86_64/libadb.so
+
+These files implement the Android 11+ Wireless Debugging pairing protocol
+(SPAKE2 + AES-GCM over TLS) used to bootstrap WRITE_SECURE_SETTINGS without
+a separate Shizuku installation or PC.
+
+A full copy of the Apache 2.0 license can be found at LICENSE-APACHE-2.0
+or at http://www.apache.org/licenses/LICENSE-2.0

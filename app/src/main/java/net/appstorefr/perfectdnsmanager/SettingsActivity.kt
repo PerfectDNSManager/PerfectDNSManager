@@ -33,11 +33,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import net.appstorefr.perfectdnsmanager.data.ProfileManager
 import net.appstorefr.perfectdnsmanager.service.AdbDnsManager
-import net.appstorefr.perfectdnsmanager.service.ShizukuManager
 import net.appstorefr.perfectdnsmanager.util.LocaleHelper
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.asRequestBody
-import rikka.shizuku.Shizuku
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -47,23 +45,8 @@ class SettingsActivity : AppCompatActivity() {
 
     private lateinit var prefs: SharedPreferences
     private lateinit var adbDnsManager: AdbDnsManager
-    private var shizukuManager: ShizukuManager? = null
-    private var layoutShizukuSection: LinearLayout? = null
-    private var tvShizukuStatus: TextView? = null
-    private var btnShizukuAction: Button? = null
     private var tvPermissionStatus: TextView? = null
     private var btnSelfGrant: Button? = null
-
-    private val binderReceivedListener = Shizuku.OnBinderReceivedListener { updateShizukuUI() }
-    private val binderDeadListener = Shizuku.OnBinderDeadListener { updateShizukuUI() }
-    private val permissionResultListener = Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
-        if (requestCode == ShizukuManager.SHIZUKU_PERMISSION_REQUEST_CODE) {
-            if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, getString(R.string.shizuku_permission_granted), Toast.LENGTH_SHORT).show()
-            }
-            updateShizukuUI()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -270,42 +253,6 @@ class SettingsActivity : AppCompatActivity() {
                 val adbNow = Settings.Global.getInt(contentResolver, Settings.Global.ADB_ENABLED, 0) == 1
                 tvAdbStatus.text = if (adbNow) getString(R.string.adb_status_active) else getString(R.string.adb_status_inactive)
                 tvAdbStatus.setTextColor(if (adbNow) getColor(android.R.color.holo_green_light) else getColor(android.R.color.holo_red_light))
-            }
-        }
-
-        // ── Shizuku (Android 11+) ──
-        layoutShizukuSection = findViewById(R.id.layoutShizukuSection)
-        tvShizukuStatus = findViewById(R.id.tvShizukuStatus)
-        btnShizukuAction = findViewById(R.id.btnShizukuAction)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            shizukuManager = ShizukuManager(this)
-            layoutShizukuSection?.visibility = View.VISIBLE
-
-            shizukuManager?.addBinderReceivedListener(binderReceivedListener)
-            shizukuManager?.addBinderDeadListener(binderDeadListener)
-            shizukuManager?.addPermissionResultListener(permissionResultListener)
-
-            updateShizukuUI()
-
-            btnShizukuAction?.setOnClickListener {
-                val mgr = shizukuManager ?: return@setOnClickListener
-                when {
-                    !mgr.isShizukuInstalled() -> {
-                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/RikkaApps/Shizuku/releases/latest")))
-                    }
-                    !mgr.isShizukuRunning() -> {
-                        val launchIntent = packageManager.getLaunchIntentForPackage("moe.shizuku.privileged.api")
-                        if (launchIntent != null) startActivity(launchIntent)
-                        else Toast.makeText(this, getString(R.string.shizuku_cannot_open), Toast.LENGTH_SHORT).show()
-                    }
-                    !mgr.isShizukuPermissionGranted() -> {
-                        mgr.requestPermission()
-                    }
-                    else -> {
-                        Toast.makeText(this, getString(R.string.shizuku_ready), Toast.LENGTH_SHORT).show()
-                    }
-                }
             }
         }
 
@@ -1378,48 +1325,9 @@ class SettingsActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun updateShizukuUI() {
-        val mgr = shizukuManager ?: return
-        val tv = tvShizukuStatus ?: return
-        val btn = btnShizukuAction ?: return
-
-        runOnUiThread {
-            when (mgr.getStatusString()) {
-                "not_installed" -> {
-                    tv.text = getString(R.string.shizuku_not_installed)
-                    tv.setTextColor(getColor(android.R.color.holo_red_light))
-                    btn.text = getString(R.string.shizuku_install)
-                }
-                "not_running" -> {
-                    tv.text = getString(R.string.shizuku_not_running)
-                    tv.setTextColor(pdmAccentSupport())
-                    btn.text = getString(R.string.shizuku_open)
-                }
-                "no_permission" -> {
-                    tv.text = getString(R.string.shizuku_no_permission)
-                    tv.setTextColor(pdmAccentSupport())
-                    btn.text = getString(R.string.shizuku_grant_permission)
-                }
-                "ready" -> {
-                    tv.text = getString(R.string.shizuku_ready)
-                    tv.setTextColor(getColor(android.R.color.holo_green_light))
-                    btn.text = getString(R.string.shizuku_ready)
-                }
-            }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         updatePermissionUI()
-        updateShizukuUI()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        shizukuManager?.removeBinderReceivedListener(binderReceivedListener)
-        shizukuManager?.removeBinderDeadListener(binderDeadListener)
-        shizukuManager?.removePermissionResultListener(permissionResultListener)
     }
 
     private fun showImportResult(result: net.appstorefr.perfectdnsmanager.data.ConfigManager.ImportResult) {

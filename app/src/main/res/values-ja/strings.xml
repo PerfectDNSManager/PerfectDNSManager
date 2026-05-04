@@ -343,26 +343,15 @@
     <string name="self_grant_step_connecting">ADB に接続中…</string>
     <string name="self_grant_step_port">ポート %1$s を試行中…</string>
     <string name="self_grant_step_granting">権限を付与中…</string>
-    <string name="self_grant_success">権限が正常に付与されました！プライベート DNS は Shizuku なしで動作します。</string>
+    <string name="self_grant_success">権限が正常に付与されました！プライベート DNS は ADB pairing なしで動作します。</string>
     <string name="self_grant_adb_unreachable">ADB に接続できません。ADB デバッグを有効にしてください。</string>
     <string name="self_grant_failed">権限の付与に失敗しました。</string>
     <string name="self_grant_not_effective">コマンドは成功しましたが権限が有効になっていません。デバイスを再起動してください。</string>
     <string name="self_grant_error">エラー: %1$s</string>
     <string name="self_grant_help_title">ヘルプ — ADB に接続できません</string>
     <string name="self_grant_help_firetv">Fire TV / Fire Stick の場合:\n\n1. 設定 → マイ Fire TV → 開発者オプション に移動\n2. 「ADB デバッグ」を有効にする\n3. 「不明なソースからのアプリ」を有効にする\n4. ここに戻って「自動で権限を付与」をタップ\n\n開発者メニューが表示されない場合、設定 → マイ Fire TV → バージョン情報 → 「シリアルナンバー」を 7 回タップ。</string>
-    <string name="self_grant_help_phone">Android スマートフォン/タブレットの場合:\n\n1. 設定 → 端末情報 → 「ビルド番号」を 7 回タップ\n2. 開発者オプションで「USB デバッグ」を有効にする\n3. 「ワイヤレスデバッグ」を有効にする（Android 11+）\n4. ここに戻って「自動で権限を付与」をタップ\n\n注: 一部のスマートフォンでは自動権限が機能しない場合があります。Shizuku または PC の ADB を使用してください。</string>
+    <string name="self_grant_help_phone">Android スマートフォン/タブレットの場合:\n\n1. 設定 → 端末情報 → 「ビルド番号」を 7 回タップ\n2. 開発者オプションで「USB デバッグ」を有効にする\n3. 「ワイヤレスデバッグ」を有効にする（Android 11+）\n4. ここに戻って「自動で権限を付与」をタップ\n\n注: 一部のスマートフォンでは自動権限が機能しない場合があります。ADB pairing または PC の ADB を使用してください。</string>
 
-    <!-- Shizuku -->
-    <string name="shizuku_section_title">Shizuku（Android 11 以上）</string>
-    <string name="shizuku_section_desc">Shizuku を使用すると、有線 ADB 接続なしでプライベート DNS を変更できます。ワイヤレス ADB で TLS ペアリングが必要な Android 11 以上に最適です。</string>
-    <string name="shizuku_not_installed">未インストール</string>
-    <string name="shizuku_not_running">インストール済みですが未起動</string>
-    <string name="shizuku_no_permission">権限が付与されていません</string>
-    <string name="shizuku_ready">準備完了</string>
-    <string name="shizuku_install">Shizuku をインストール</string>
-    <string name="shizuku_open">Shizuku を開く</string>
-    <string name="shizuku_grant_permission">権限を付与</string>
-    <string name="shizuku_permission_granted">Shizuku の権限が付与されました！</string>
 
     <!-- DNS Ratings -->
     <string name="speed_label">速度</string>
@@ -392,8 +381,6 @@
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">VPN を再接続しました（IPv6 変更）</string>
 
-    <!-- Shizuku hardcoded fix -->
-    <string name="shizuku_cannot_open">Shizuku を開けません</string>
 
     <!-- DNS Rewrite screen -->
     <string name="dns_rewrite_screen_title">DNS リライト（Rewriting）</string>

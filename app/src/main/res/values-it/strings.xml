@@ -343,26 +343,15 @@
     <string name="self_grant_step_connecting">Connessione ADB…</string>
     <string name="self_grant_step_port">Tentativo porta %1$s…</string>
     <string name="self_grant_step_granting">Concessione permesso…</string>
-    <string name="self_grant_success">Permesso concesso con successo! Il DNS privato ora funziona senza Shizuku.</string>
+    <string name="self_grant_success">Permesso concesso con successo! Il DNS privato ora funziona senza ADB pairing.</string>
     <string name="self_grant_adb_unreachable">ADB non raggiungibile. Attiva il debug ADB.</string>
     <string name="self_grant_failed">Concessione del permesso fallita.</string>
     <string name="self_grant_not_effective">Il comando è riuscito ma il permesso non è effettivo. Riavvia il dispositivo.</string>
     <string name="self_grant_error">Errore: %1$s</string>
     <string name="self_grant_help_title">Aiuto — ADB non raggiungibile</string>
     <string name="self_grant_help_firetv">Su Fire TV / Fire Stick:\n\n1. Vai su Impostazioni → La mia Fire TV → Opzioni sviluppatore\n2. Attiva "Debug ADB"\n3. Attiva "App da origini sconosciute"\n4. Torna qui e premi "Concedi automaticamente"\n\nSe il menu sviluppatore non appare, vai su Impostazioni → La mia Fire TV → Info → tocca 7 volte "Numero di serie".</string>
-    <string name="self_grant_help_phone">Su telefono/tablet Android:\n\n1. Vai su Impostazioni → Info → tocca 7 volte "Numero build"\n2. Attiva "Debug USB" nelle Opzioni sviluppatore\n3. Attiva "Debug wireless" (Android 11+)\n4. Torna qui e premi "Concedi automaticamente"\n\nNota: Su alcuni telefoni, il permesso automatico potrebbe non funzionare. Usa Shizuku o un PC con ADB.</string>
+    <string name="self_grant_help_phone">Su telefono/tablet Android:\n\n1. Vai su Impostazioni → Info → tocca 7 volte "Numero build"\n2. Attiva "Debug USB" nelle Opzioni sviluppatore\n3. Attiva "Debug wireless" (Android 11+)\n4. Torna qui e premi "Concedi automaticamente"\n\nNota: Su alcuni telefoni, il permesso automatico potrebbe non funzionare. Usa ADB pairing o un PC con ADB.</string>
 
-    <!-- Shizuku -->
-    <string name="shizuku_section_title">Shizuku (Android 11+)</string>
-    <string name="shizuku_section_desc">Shizuku permette di modificare il DNS privato senza connessione ADB via cavo. Ideale per Android 11+ dove l\'ADB wireless richiede l\'accoppiamento TLS.</string>
-    <string name="shizuku_not_installed">Non installato</string>
-    <string name="shizuku_not_running">Installato ma non avviato</string>
-    <string name="shizuku_no_permission">Permesso non concesso</string>
-    <string name="shizuku_ready">Pronto</string>
-    <string name="shizuku_install">Installa Shizuku</string>
-    <string name="shizuku_open">Apri Shizuku</string>
-    <string name="shizuku_grant_permission">Concedi permesso</string>
-    <string name="shizuku_permission_granted">Permesso Shizuku concesso!</string>
 
     <!-- DNS Ratings -->
     <string name="speed_label">Velocità</string>
@@ -392,8 +381,6 @@
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">VPN riconnesso (IPv6 modificato)</string>
 
-    <!-- Shizuku hardcoded fix -->
-    <string name="shizuku_cannot_open">Impossibile aprire Shizuku</string>
 
     <!-- DNS Rewrite screen -->
     <string name="dns_rewrite_screen_title">Riscrittura DNS (Rewriting)</string>

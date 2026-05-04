@@ -343,26 +343,15 @@
     <string name="self_grant_step_connecting">Verbindung mit ADB…</string>
     <string name="self_grant_step_port">Versuche Port %1$s…</string>
     <string name="self_grant_step_granting">Berechtigung wird erteilt…</string>
-    <string name="self_grant_success">Berechtigung erfolgreich erteilt! Private DNS funktioniert jetzt ohne Shizuku.</string>
+    <string name="self_grant_success">Berechtigung erfolgreich erteilt! Private DNS funktioniert jetzt ohne ADB pairing.</string>
     <string name="self_grant_adb_unreachable">ADB nicht erreichbar. Aktivieren Sie ADB-Debugging.</string>
     <string name="self_grant_failed">Berechtigung konnte nicht erteilt werden.</string>
     <string name="self_grant_not_effective">Der Befehl war erfolgreich, aber die Berechtigung ist nicht wirksam. Starten Sie das Gerät neu.</string>
     <string name="self_grant_error">Fehler: %1$s</string>
     <string name="self_grant_help_title">Hilfe — ADB nicht erreichbar</string>
     <string name="self_grant_help_firetv">Auf Fire TV / Fire Stick:\n\n1. Gehen Sie zu Einstellungen → Mein Fire TV → Entwickleroptionen\n2. Aktivieren Sie „ADB-Debugging"\n3. Aktivieren Sie „Apps aus unbekannten Quellen"\n4. Kehren Sie hierher zurück und tippen Sie auf „Automatisch erteilen"\n\nWenn das Entwicklermenü nicht erscheint, gehen Sie zu Einstellungen → Mein Fire TV → Info → tippen Sie 7 Mal auf „Seriennummer".</string>
-    <string name="self_grant_help_phone">Auf Android-Telefon/Tablet:\n\n1. Gehen Sie zu Einstellungen → Info → tippen Sie 7 Mal auf „Build-Nummer"\n2. Aktivieren Sie „USB-Debugging" in den Entwickleroptionen\n3. Aktivieren Sie „Kabelloses Debugging" (Android 11+)\n4. Kehren Sie hierher zurück und tippen Sie auf „Automatisch erteilen"\n\nHinweis: Auf einigen Telefonen funktioniert die Auto-Berechtigung möglicherweise nicht. Verwenden Sie Shizuku oder einen PC mit ADB.</string>
+    <string name="self_grant_help_phone">Auf Android-Telefon/Tablet:\n\n1. Gehen Sie zu Einstellungen → Info → tippen Sie 7 Mal auf „Build-Nummer"\n2. Aktivieren Sie „USB-Debugging" in den Entwickleroptionen\n3. Aktivieren Sie „Kabelloses Debugging" (Android 11+)\n4. Kehren Sie hierher zurück und tippen Sie auf „Automatisch erteilen"\n\nHinweis: Auf einigen Telefonen funktioniert die Auto-Berechtigung möglicherweise nicht. Verwenden Sie ADB pairing oder einen PC mit ADB.</string>
 
-    <!-- Shizuku -->
-    <string name="shizuku_section_title">Shizuku (Android 11+)</string>
-    <string name="shizuku_section_desc">Shizuku ermöglicht die Änderung von Private DNS ohne kabelgebundene ADB-Verbindung. Ideal für Android 11+, wo kabelloses ADB TLS-Kopplung erfordert.</string>
-    <string name="shizuku_not_installed">Nicht installiert</string>
-    <string name="shizuku_not_running">Installiert, aber nicht gestartet</string>
-    <string name="shizuku_no_permission">Berechtigung nicht erteilt</string>
-    <string name="shizuku_ready">Bereit</string>
-    <string name="shizuku_install">Shizuku installieren</string>
-    <string name="shizuku_open">Shizuku öffnen</string>
-    <string name="shizuku_grant_permission">Berechtigung erteilen</string>
-    <string name="shizuku_permission_granted">Shizuku-Berechtigung erteilt!</string>
 
     <!-- DNS Ratings -->
     <string name="speed_label">Geschwindigkeit</string>
@@ -392,8 +381,6 @@
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">VPN neu verbunden (IPv6 geändert)</string>
 
-    <!-- Shizuku hardcoded fix -->
-    <string name="shizuku_cannot_open">Shizuku kann nicht geöffnet werden</string>
 
     <!-- DNS Rewrite screen -->
     <string name="dns_rewrite_screen_title">DNS-Umschreibung (Rewriting)</string>

@@ -352,26 +352,28 @@
     <string name="self_grant_step_connecting">Connecting to ADB…</string>
     <string name="self_grant_step_port">Trying port %1$s…</string>
     <string name="self_grant_step_granting">Granting permission…</string>
-    <string name="self_grant_success">Permission granted successfully! Private DNS now works without Shizuku.</string>
+    <string name="self_grant_success">Permission granted successfully! Private DNS now works without ADB.</string>
+
+    <!-- ADB pairing Wireless Debugging (Android 11+ phone, no PC needed) -->
+    <string name="adb_pair_wireless">Pair ADB wireless (Android 11+)</string>
+    <string name="adb_pair_wireless_instructions">On this phone:\n1. Developer options → Wireless debugging → ON\n2. Pair with a code → note the 6-digit code\n\nEnter the code here:</string>
+    <string name="adb_pair_submit">Pair</string>
+    <string name="adb_pair_invalid_code">Invalid code (6 digits required)</string>
+    <string name="adb_pair_in_progress">ADB pairing in progress…</string>
+    <string name="adb_pair_step_discovering">Discovering ADB port via mDNS…</string>
+    <string name="adb_pair_step_pairing">TLS-PSK pairing…</string>
+    <string name="adb_pair_step_connecting">Encrypted ADB connect…</string>
+    <string name="adb_pair_step_granting">Granting WRITE_SECURE_SETTINGS…</string>
+    <string name="adb_pair_success">Pairing succeeded! Permission granted for life.</string>
+    <string name="adb_pair_failed">Pairing failed: %1$s</string>
     <string name="self_grant_adb_unreachable">ADB not reachable. Enable ADB debugging.</string>
     <string name="self_grant_failed">Permission grant failed.</string>
     <string name="self_grant_not_effective">Command succeeded but permission is not effective. Restart the device.</string>
     <string name="self_grant_error">Error: %1$s</string>
     <string name="self_grant_help_title">Help — ADB not reachable</string>
     <string name="self_grant_help_firetv">On Fire TV / Fire Stick:\n\n1. Go to Settings → My Fire TV → Developer Options\n2. Enable "ADB Debugging"\n3. Enable "Apps from Unknown Sources"\n4. Come back here and tap "Grant automatically"\n\nIf the developer menu doesn\'t appear, go to Settings → My Fire TV → About → click "Serial Number" 7 times.</string>
-    <string name="self_grant_help_phone">On Android phone/tablet:\n\n1. Go to Settings → About → tap "Build Number" 7 times\n2. Enable "USB Debugging" in Developer Options\n3. Enable "Wireless Debugging" (Android 11+)\n4. Come back here and tap "Grant automatically"\n\nNote: On some phones, auto-permission may not work. Use Shizuku or a PC with ADB.</string>
+    <string name="self_grant_help_phone">On Android phone/tablet:\n\n1. Go to Settings → About → tap "Build Number" 7 times\n2. Enable "USB Debugging" in Developer Options\n3. Enable "Wireless Debugging" (Android 11+)\n4. Come back here and tap "Grant automatically"\n\nNote: On some phones, auto-permission may not work. Use ADB pairing or a PC with ADB.</string>
 
-    <!-- Shizuku -->
-    <string name="shizuku_section_title">Shizuku (Android 11+)</string>
-    <string name="shizuku_section_desc">Shizuku allows modifying Private DNS without a wired ADB connection. Ideal for Android 11+ where wireless ADB requires TLS pairing.</string>
-    <string name="shizuku_not_installed">Not installed</string>
-    <string name="shizuku_not_running">Installed but not running</string>
-    <string name="shizuku_no_permission">Permission not granted</string>
-    <string name="shizuku_ready">Ready</string>
-    <string name="shizuku_install">Install Shizuku</string>
-    <string name="shizuku_open">Open Shizuku</string>
-    <string name="shizuku_grant_permission">Grant permission</string>
-    <string name="shizuku_permission_granted">Shizuku permission granted!</string>
 
     <!-- DNS Ratings -->
     <string name="speed_label">Speed</string>
@@ -404,8 +406,6 @@
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">VPN reconnected (IPv6 changed)</string>
 
-    <!-- Shizuku hardcoded fix -->
-    <string name="shizuku_cannot_open">Unable to open Shizuku</string>
 
     <!-- DNS Rewrite screen -->
     <string name="dns_rewrite_screen_title">DNS Rewriting</string>

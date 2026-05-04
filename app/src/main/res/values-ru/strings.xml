@@ -343,26 +343,15 @@
     <string name="self_grant_step_connecting">Подключение к ADB…</string>
     <string name="self_grant_step_port">Проба порта %1$s…</string>
     <string name="self_grant_step_granting">Предоставление разрешения…</string>
-    <string name="self_grant_success">Разрешение успешно получено! Приватный DNS теперь работает без Shizuku.</string>
+    <string name="self_grant_success">Разрешение успешно получено! Приватный DNS теперь работает без ADB pairing.</string>
     <string name="self_grant_adb_unreachable">ADB недоступен. Включите отладку ADB.</string>
     <string name="self_grant_failed">Не удалось получить разрешение.</string>
     <string name="self_grant_not_effective">Команда выполнена, но разрешение не действует. Перезагрузите устройство.</string>
     <string name="self_grant_error">Ошибка: %1$s</string>
     <string name="self_grant_help_title">Помощь — ADB недоступен</string>
     <string name="self_grant_help_firetv">На Fire TV / Fire Stick:\n\n1. Перейдите в Настройки → Мой Fire TV → Параметры разработчика\n2. Включите «Отладка ADB»\n3. Включите «Приложения из неизвестных источников»\n4. Вернитесь сюда и нажмите «Получить автоматически»\n\nЕсли меню разработчика не появляется, перейдите в Настройки → Мой Fire TV → О системе → нажмите 7 раз на «Серийный номер».</string>
-    <string name="self_grant_help_phone">На телефоне/планшете Android:\n\n1. Перейдите в Настройки → О телефоне → нажмите 7 раз на «Номер сборки»\n2. Включите «Отладка по USB» в Параметрах разработчика\n3. Включите «Беспроводная отладка» (Android 11+)\n4. Вернитесь сюда и нажмите «Получить автоматически»\n\nПримечание: На некоторых телефонах авто-разрешение может не работать. Используйте Shizuku или ПК с ADB.</string>
+    <string name="self_grant_help_phone">На телефоне/планшете Android:\n\n1. Перейдите в Настройки → О телефоне → нажмите 7 раз на «Номер сборки»\n2. Включите «Отладка по USB» в Параметрах разработчика\n3. Включите «Беспроводная отладка» (Android 11+)\n4. Вернитесь сюда и нажмите «Получить автоматически»\n\nПримечание: На некоторых телефонах авто-разрешение может не работать. Используйте ADB pairing или ПК с ADB.</string>
 
-    <!-- Shizuku -->
-    <string name="shizuku_section_title">Shizuku (Android 11+)</string>
-    <string name="shizuku_section_desc">Shizuku позволяет изменять Private DNS без проводного подключения ADB. Идеально для Android 11+, где беспроводной ADB требует TLS-сопряжения.</string>
-    <string name="shizuku_not_installed">Не установлен</string>
-    <string name="shizuku_not_running">Установлен, но не запущен</string>
-    <string name="shizuku_no_permission">Разрешение не предоставлено</string>
-    <string name="shizuku_ready">Готов</string>
-    <string name="shizuku_install">Установить Shizuku</string>
-    <string name="shizuku_open">Открыть Shizuku</string>
-    <string name="shizuku_grant_permission">Предоставить разрешение</string>
-    <string name="shizuku_permission_granted">Разрешение Shizuku предоставлено!</string>
 
     <!-- DNS Ratings -->
     <string name="speed_label">Скорость</string>
@@ -392,8 +381,6 @@
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">VPN переподключён (IPv6 изменён)</string>
 
-    <!-- Shizuku hardcoded fix -->
-    <string name="shizuku_cannot_open">Невозможно открыть Shizuku</string>
 
     <!-- DNS Rewrite screen -->
     <string name="dns_rewrite_screen_title">Перезапись DNS (Rewriting)</string>

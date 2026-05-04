@@ -3,10 +3,17 @@ package net.appstorefr.perfectdnsmanager
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
+import org.conscrypt.Conscrypt
+import java.security.Security
 
 class PdmApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        // Conscrypt en provider TLS par défaut. Requis pour
+        // exportKeyingMaterial() utilisé par le pairing ADB Android 11+
+        // (SPAKE2 dérive son secret depuis le code 6-chiffres + keying
+        // material du handshake TLS).
+        try { Security.insertProviderAt(Conscrypt.newProvider(), 1) } catch (_: Throwable) {}
         try {
             val prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE)
             // Première installation : forcer dark. Les utilisateurs existants (avec

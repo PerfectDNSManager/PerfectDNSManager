@@ -1401,37 +1401,82 @@ class MainActivity : AppCompatActivity() {
                 adbManager.resetAdbKeys(); Toast.makeText(this, getString(R.string.adb_keys_reset), Toast.LENGTH_LONG).show()
             }
 
-        // Sur Android 11+, proposer d'installer/ouvrir/autoriser Shizuku
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R &&
-            !adbManager.shizuku.isShizukuAvailable()) {
-            val mgr = adbManager.shizuku
-            val shizukuLabel = when {
-                !mgr.isShizukuInstalled() -> getString(R.string.shizuku_install)
-                !mgr.isShizukuRunning() -> getString(R.string.shizuku_open)
-                !mgr.isShizukuPermissionGranted() -> getString(R.string.shizuku_grant_permission)
-                else -> getString(R.string.shizuku_open)
-            }
-            builder.setNegativeButton(shizukuLabel) { _, _ ->
-                when {
-                    !mgr.isShizukuInstalled() -> {
-                        startActivity(android.content.Intent(
-                            android.content.Intent.ACTION_VIEW,
-                            android.net.Uri.parse("https://github.com/RikkaApps/Shizuku/releases/latest")
-                        ))
-                    }
-                    !mgr.isShizukuRunning() -> {
-                        val launchIntent = packageManager.getLaunchIntentForPackage("moe.shizuku.privileged.api")
-                        if (launchIntent != null) startActivity(launchIntent)
-                        else Toast.makeText(this, getString(R.string.shizuku_cannot_open), Toast.LENGTH_SHORT).show()
-                    }
-                    !mgr.isShizukuPermissionGranted() -> {
-                        mgr.requestPermission()
-                    }
-                }
+        // Sur Android 11+ phone (où le port ADB 5555 est fermé par défaut),
+        // proposer le pairing Wireless Debugging avec code 6 chiffres — bootstrap
+        // no-PC qui remplace l'ancienne dépendance externe Shizuku.
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            builder.setNegativeButton(getString(R.string.adb_pair_wireless)) { _, _ ->
+                showWirelessPairingDialog()
             }
         }
 
         builder.show()
+    }
+
+    /**
+     * Dialog Android 11+ : demande à l'user d'activer Wireless Debugging +
+     * "Coupler avec un code", puis saisit le code 6 chiffres pour bootstrap
+     * WRITE_SECURE_SETTINGS via le pairing ADB embarqué (lib Shizuku vendored).
+     */
+    @androidx.annotation.RequiresApi(android.os.Build.VERSION_CODES.R)
+    private fun showWirelessPairingDialog() {
+        val input = android.widget.EditText(this).apply {
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            hint = "123456"
+            setPadding(40, 30, 40, 30)
+        }
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.adb_pair_wireless))
+            .setMessage(getString(R.string.adb_pair_wireless_instructions))
+            .setView(input)
+            .setPositiveButton(getString(R.string.adb_pair_submit)) { _, _ ->
+                val code = input.text.toString().trim()
+                if (code.length != 6) {
+                    Toast.makeText(this, getString(R.string.adb_pair_invalid_code), Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+                runWirelessPairing(code)
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .show()
+    }
+
+    @androidx.annotation.RequiresApi(android.os.Build.VERSION_CODES.R)
+    private fun runWirelessPairing(code: String) {
+        val progress = AlertDialog.Builder(this)
+            .setTitle(getString(R.string.adb_pair_in_progress))
+            .setMessage(getString(R.string.adb_pair_step_discovering))
+            .setCancelable(false)
+            .show()
+        Thread {
+            val mgr = net.appstorefr.perfectdnsmanager.service.AdbPairingManager(this)
+            mgr.pairAndGrant(code, object : net.appstorefr.perfectdnsmanager.service.AdbPairingManager.Callback {
+                override fun onProgress(step: String) {
+                    runOnUiThread {
+                        val txt = when (step) {
+                            "DISCOVERING_PAIR_PORT" -> R.string.adb_pair_step_discovering
+                            "PAIRING" -> R.string.adb_pair_step_pairing
+                            "DISCOVERING_CONNECT_PORT" -> R.string.adb_pair_step_connecting
+                            "GRANTING" -> R.string.adb_pair_step_granting
+                            else -> R.string.adb_pair_step_discovering
+                        }
+                        progress.setMessage(getString(txt))
+                    }
+                }
+                override fun onSuccess() {
+                    runOnUiThread {
+                        progress.dismiss()
+                        Toast.makeText(this@MainActivity, getString(R.string.adb_pair_success), Toast.LENGTH_LONG).show()
+                    }
+                }
+                override fun onError(error: String) {
+                    runOnUiThread {
+                        progress.dismiss()
+                        Toast.makeText(this@MainActivity, getString(R.string.adb_pair_failed, error), Toast.LENGTH_LONG).show()
+                    }
+                }
+            })
+        }.start()
     }
 
 }

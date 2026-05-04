@@ -343,26 +343,15 @@
     <string name="self_grant_step_connecting">الاتصال بـ ADB…</string>
     <string name="self_grant_step_port">محاولة المنفذ %1$s…</string>
     <string name="self_grant_step_granting">منح الإذن…</string>
-    <string name="self_grant_success">تم منح الإذن بنجاح! DNS الخاص يعمل الآن بدون Shizuku.</string>
+    <string name="self_grant_success">تم منح الإذن بنجاح! DNS الخاص يعمل الآن بدون ADB pairing.</string>
     <string name="self_grant_adb_unreachable">ADB غير متاح. قم بتفعيل تصحيح أخطاء ADB.</string>
     <string name="self_grant_failed">فشل منح الإذن.</string>
     <string name="self_grant_not_effective">نجح الأمر لكن الإذن غير فعال. أعد تشغيل الجهاز.</string>
     <string name="self_grant_error">خطأ: %1$s</string>
     <string name="self_grant_help_title">مساعدة — ADB غير متاح</string>
     <string name="self_grant_help_firetv">على Fire TV / Fire Stick:\n\n1. اذهب إلى الإعدادات ← My Fire TV ← خيارات المطور\n2. فعّل \"تصحيح أخطاء ADB\"\n3. فعّل \"التطبيقات من مصادر غير معروفة\"\n4. ارجع هنا واضغط \"منح تلقائيًا\"\n\nإذا لم تظهر قائمة المطور، اذهب إلى الإعدادات ← My Fire TV ← حول ← اضغط 7 مرات على \"الرقم التسلسلي\".</string>
-    <string name="self_grant_help_phone">على هاتف/جهاز لوحي Android:\n\n1. اذهب إلى الإعدادات ← حول الهاتف ← اضغط 7 مرات على \"رقم الإصدار\"\n2. فعّل \"تصحيح أخطاء USB\" في خيارات المطور\n3. فعّل \"التصحيح اللاسلكي\" (Android 11+)\n4. ارجع هنا واضغط \"منح تلقائيًا\"\n\nملاحظة: على بعض الهواتف، قد لا يعمل المنح التلقائي. استخدم Shizuku أو حاسوب مع ADB.</string>
+    <string name="self_grant_help_phone">على هاتف/جهاز لوحي Android:\n\n1. اذهب إلى الإعدادات ← حول الهاتف ← اضغط 7 مرات على \"رقم الإصدار\"\n2. فعّل \"تصحيح أخطاء USB\" في خيارات المطور\n3. فعّل \"التصحيح اللاسلكي\" (Android 11+)\n4. ارجع هنا واضغط \"منح تلقائيًا\"\n\nملاحظة: على بعض الهواتف، قد لا يعمل المنح التلقائي. استخدم ADB pairing أو حاسوب مع ADB.</string>
 
-    <!-- Shizuku -->
-    <string name="shizuku_section_title">Shizuku (Android 11+)</string>
-    <string name="shizuku_section_desc">Shizuku يسمح بتعديل Private DNS بدون اتصال ADB سلكي. مثالي لـ Android 11+ حيث يتطلب ADB اللاسلكي إقران TLS.</string>
-    <string name="shizuku_not_installed">غير مثبّت</string>
-    <string name="shizuku_not_running">مثبّت لكن غير مشغّل</string>
-    <string name="shizuku_no_permission">لم يتم منح الإذن</string>
-    <string name="shizuku_ready">جاهز</string>
-    <string name="shizuku_install">تثبيت Shizuku</string>
-    <string name="shizuku_open">فتح Shizuku</string>
-    <string name="shizuku_grant_permission">منح الإذن</string>
-    <string name="shizuku_permission_granted">تم منح إذن Shizuku!</string>
 
     <!-- DNS Ratings -->
     <string name="speed_label">السرعة</string>
@@ -392,8 +381,6 @@
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">تمت إعادة اتصال VPN (تم تغيير IPv6)</string>
 
-    <!-- Shizuku hardcoded fix -->
-    <string name="shizuku_cannot_open">تعذّر فتح Shizuku</string>
 
     <!-- DNS Rewrite screen -->
     <string name="dns_rewrite_screen_title">إعادة كتابة DNS (Rewriting)</string>

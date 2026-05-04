@@ -46,11 +46,19 @@ class AdbDnsManager(private val context: Context) {
     var lastMethod: String = ""
         private set
 
-    // Shizuku manager (Méthode 2)
-    private val shizukuManager = ShizukuManager(context)
-    val shizuku: ShizukuManager get() = shizukuManager
-
     // ─── API publiques ────────────────────────────────────────────────────────
+    //
+    // Stratégie d'activation (en cascade) :
+    //   1. Settings.Global directe — si WRITE_SECURE_SETTINGS déjà accordée
+    //      (perm persiste à vie tant que l'app n'est pas désinstallée)
+    //   2. ADB TCP localhost — Android TV (port 5555 ouvert nativement),
+    //      auto-grant via cgutman/adblib, puis Settings API prend le relais
+    //   3. (UI dialog) Pairing Wireless Debugging Android 11+ — phones,
+    //      via AdbPairingManager (libadb.so vendored Shizuku) → cf MainActivity
+    //
+    // L'ancienne méthode "Shizuku externe (app moe.shizuku.privileged.api)"
+    // a été retirée — son rôle (no-PC ADB pairing) est maintenant assuré
+    // par la lib vendored, sans dépendance externe.
 
     fun enablePrivateDns(hostname: String): Boolean {
         Log.i(TAG, "=== ACTIVATION DNS: $hostname ===")
@@ -71,22 +79,7 @@ class AdbDnsManager(private val context: Context) {
             return true
         }
 
-        // Méthode 2 : Shizuku (Android 11+ — si installé, démarré et permission accordée)
-        if (shizukuManager.isShizukuAvailable()) {
-            Log.i(TAG, "Tentative via Shizuku...")
-            try {
-                if (shizukuManager.enablePrivateDns(hostname)) {
-                    lastMethod = "Shizuku"
-                    // pm grant a été exécuté, retenter Settings API pour les prochains appels
-                    trySettingsEnable(hostname)
-                    return true
-                }
-            } catch (e: Exception) {
-                Log.w(TAG, "Shizuku échoué: ${e.message}")
-            }
-        }
-
-        // Méthode 3 : ADB TCP localhost (TV boxes, appareils avec ADB réseau)
+        // Méthode 2 : ADB TCP localhost (TV boxes, appareils avec ADB réseau)
         val adbResult = runCommandsViaAdb(listOf(
             "settings put global $KEY_DNS_MODE hostname",
             "settings put global $KEY_DNS_SPECIFIER $hostname"
@@ -106,20 +99,7 @@ class AdbDnsManager(private val context: Context) {
             return true
         }
 
-        // Méthode 2 : Shizuku
-        if (shizukuManager.isShizukuAvailable()) {
-            Log.i(TAG, "Désactivation via Shizuku...")
-            try {
-                if (shizukuManager.disablePrivateDns()) {
-                    lastMethod = "Shizuku"
-                    return true
-                }
-            } catch (e: Exception) {
-                Log.w(TAG, "Shizuku désactivation échouée: ${e.message}")
-            }
-        }
-
-        // Méthode 3 : ADB TCP localhost
+        // Méthode 2 : ADB TCP localhost
         val adbResult = runCommandsViaAdb(listOf(
             "settings put global $KEY_DNS_MODE off",
             "settings delete global $KEY_DNS_SPECIFIER"

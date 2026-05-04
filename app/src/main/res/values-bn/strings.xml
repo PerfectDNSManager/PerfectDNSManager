@@ -343,26 +343,15 @@
     <string name="self_grant_step_connecting">ADB-তে সংযোগ হচ্ছে…</string>
     <string name="self_grant_step_port">পোর্ট %1$s চেষ্টা করছে…</string>
     <string name="self_grant_step_granting">অনুমতি দেওয়া হচ্ছে…</string>
-    <string name="self_grant_success">অনুমতি সফলভাবে দেওয়া হয়েছে! প্রাইভেট DNS এখন Shizuku ছাড়াই কাজ করে।</string>
+    <string name="self_grant_success">অনুমতি সফলভাবে দেওয়া হয়েছে! প্রাইভেট DNS এখন ADB pairing ছাড়াই কাজ করে।</string>
     <string name="self_grant_adb_unreachable">ADB অ্যাক্সেসযোগ্য নয়। ADB ডিবাগিং সক্ষম করুন।</string>
     <string name="self_grant_failed">অনুমতি দেওয়া ব্যর্থ।</string>
     <string name="self_grant_not_effective">কমান্ড সফল কিন্তু অনুমতি কার্যকর নয়। ডিভাইস পুনরায় চালু করুন।</string>
     <string name="self_grant_error">ত্রুটি: %1$s</string>
     <string name="self_grant_help_title">সাহায্য — ADB অ্যাক্সেসযোগ্য নয়</string>
     <string name="self_grant_help_firetv">Fire TV / Fire Stick-এ:\n\n1. সেটিংস → My Fire TV → ডেভেলপার অপশন-এ যান\n2. \"ADB ডিবাগিং\" সক্ষম করুন\n3. \"অজানা উৎস থেকে অ্যাপ\" সক্ষম করুন\n4. এখানে ফিরে আসুন এবং \"স্বয়ংক্রিয়ভাবে দিন\" টিপুন\n\nডেভেলপার মেনু না দেখালে, সেটিংস → My Fire TV → সম্পর্কে → \"সিরিয়াল নম্বর\" ৭ বার টিপুন।</string>
-    <string name="self_grant_help_phone">Android ফোন/ট্যাবলেটে:\n\n1. সেটিংস → সম্পর্কে → \"বিল্ড নম্বর\" ৭ বার টিপুন\n2. ডেভেলপার অপশনে \"USB ডিবাগিং\" সক্ষম করুন\n3. \"ওয়্যারলেস ডিবাগিং\" সক্ষম করুন (Android 11+)\n4. এখানে ফিরে আসুন এবং \"স্বয়ংক্রিয়ভাবে দিন\" টিপুন\n\nদ্রষ্টব্য: কিছু ফোনে স্বয়ংক্রিয় অনুমতি কাজ নাও করতে পারে। Shizuku বা ADB সহ PC ব্যবহার করুন।</string>
+    <string name="self_grant_help_phone">Android ফোন/ট্যাবলেটে:\n\n1. সেটিংস → সম্পর্কে → \"বিল্ড নম্বর\" ৭ বার টিপুন\n2. ডেভেলপার অপশনে \"USB ডিবাগিং\" সক্ষম করুন\n3. \"ওয়্যারলেস ডিবাগিং\" সক্ষম করুন (Android 11+)\n4. এখানে ফিরে আসুন এবং \"স্বয়ংক্রিয়ভাবে দিন\" টিপুন\n\nদ্রষ্টব্য: কিছু ফোনে স্বয়ংক্রিয় অনুমতি কাজ নাও করতে পারে। ADB pairing বা ADB সহ PC ব্যবহার করুন।</string>
 
-    <!-- Shizuku -->
-    <string name="shizuku_section_title">Shizuku (Android 11+)</string>
-    <string name="shizuku_section_desc">Shizuku তারযুক্ত ADB সংযোগ ছাড়াই প্রাইভেট DNS পরিবর্তন করতে দেয়। Android 11+ এর জন্য আদর্শ যেখানে ওয়্যারলেস ADB এর জন্য TLS পেয়ারিং প্রয়োজন।</string>
-    <string name="shizuku_not_installed">ইনস্টল করা নেই</string>
-    <string name="shizuku_not_running">ইনস্টল করা আছে কিন্তু চালু নেই</string>
-    <string name="shizuku_no_permission">অনুমতি দেওয়া হয়নি</string>
-    <string name="shizuku_ready">প্রস্তুত</string>
-    <string name="shizuku_install">Shizuku ইনস্টল করুন</string>
-    <string name="shizuku_open">Shizuku খুলুন</string>
-    <string name="shizuku_grant_permission">অনুমতি দিন</string>
-    <string name="shizuku_permission_granted">Shizuku অনুমতি দেওয়া হয়েছে!</string>
 
     <!-- DNS Ratings -->
     <string name="speed_label">গতি</string>
@@ -392,8 +381,6 @@
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">VPN পুনরায় সংযুক্ত (IPv6 পরিবর্তিত)</string>
 
-    <!-- Shizuku hardcoded fix -->
-    <string name="shizuku_cannot_open">Shizuku খোলা সম্ভব হচ্ছে না</string>
 
     <!-- DNS Rewrite screen -->
     <string name="dns_rewrite_screen_title">DNS পুনর্লিখন (Rewriting)</string>
