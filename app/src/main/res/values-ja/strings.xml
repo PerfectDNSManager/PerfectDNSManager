@@ -483,4 +483,6 @@
     <string name="dt_vpn_active">🟢 VPN 有効</string>
     <string name="dt_dot_active">🟢 プライベート DNS 有効</string>
     <string name="dt_no_dns">🔴 アクティブな DNS なし (ISP の解決)</string>
+    <string name="current_version_fmt">現在のバージョン: %1$s</string>
+
 </resources>

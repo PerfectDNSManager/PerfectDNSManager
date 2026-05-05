@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Switch
 import android.widget.TextView
@@ -472,7 +473,7 @@ class SettingsActivity : AppCompatActivity() {
         btnHowTo.setOnClickListener { startActivity(Intent(this, HowToActivity::class.java)) }
 
         // ── Section À propos (collapsible — contient maj bêta + check + support) ──
-        val rowAbout = findViewById<LinearLayout>(R.id.rowAbout)
+        val rowAbout = findViewById<FrameLayout>(R.id.rowAbout)
         val layoutAbout = findViewById<LinearLayout>(R.id.layoutAboutContent)
         val tvAboutArrow = findViewById<TextView>(R.id.tvAboutArrow)
         rowAbout.setOnClickListener {
@@ -486,9 +487,11 @@ class SettingsActivity : AppCompatActivity() {
         }
         val updateManager = net.appstorefr.perfectdnsmanager.service.UpdateManager(this)
         val btnCheck = findViewById<Button>(R.id.btnCheckForUpdate)
-        // Le numéro de version courant est intégré directement dans le label
-        // du bouton — pas d'élément version séparé qui faisait moche.
-        btnCheck.text = "${getString(R.string.check_for_updates)}  ·  v${BuildConfig.VERSION_NAME}"
+        // Bouton 2 lignes : action en haut, "Version actuelle : X.Y.Z" en bas.
+        // current_version_fmt est traduit dans toutes les locales (12) — pas
+        // de hardcode FR.
+        btnCheck.text = "${getString(R.string.check_for_updates)}\n" +
+            getString(R.string.current_version_fmt, BuildConfig.VERSION_NAME)
         btnCheck.setOnClickListener {
             Toast.makeText(this, getString(R.string.checking_for_updates), Toast.LENGTH_SHORT).show()
             updateManager.checkForUpdateGitHub("appstorefr/PerfectDNSManager", BuildConfig.VERSION_NAME)
@@ -510,7 +513,7 @@ class SettingsActivity : AppCompatActivity() {
         val rowImportExport = findViewById<LinearLayout>(R.id.rowImportExport)
         val btnSplitTunnel = findViewById<Button>(R.id.btnSplitTunnel)
         val btnResetApp = findViewById<Button>(R.id.btnResetApp)
-        val rowAbout = findViewById<LinearLayout>(R.id.rowAbout)
+        val rowAbout = findViewById<FrameLayout>(R.id.rowAbout)
 
         val advancedOpen = layoutAdvanced.visibility == View.VISIBLE
         val importOpen = findViewById<LinearLayout>(R.id.layoutImportExportContent)

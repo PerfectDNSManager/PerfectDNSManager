@@ -603,33 +603,34 @@
         android:padding="12dp"
         android:layout_marginBottom="16dp">
 
-        <LinearLayout
+        <!-- FrameLayout pour superposer titre centré et flèche à droite —
+             impossible avec un LinearLayout horizontal sans spacer artificiel. -->
+        <FrameLayout
             android:id="@+id/rowAbout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
             android:background="@drawable/focusable_item_background"
             android:foreground="@drawable/btn_focus_foreground"
             android:focusable="true"
             android:clickable="true"
-            android:padding="4dp">
+            android:padding="8dp">
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/about_title"
                 android:textColor="@color/pdm_text_primary"
                 android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:gravity="center"/>
             <TextView
                 android:id="@+id/tvAboutArrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
                 android:text="▶"
                 android:textColor="@color/pdm_text_primary"
                 android:textSize="16sp"/>
-        </LinearLayout>
+        </FrameLayout>
 
         <LinearLayout
             android:id="@+id/layoutAboutContent"
@@ -638,19 +639,6 @@
             android:orientation="vertical"
             android:visibility="gone"
             android:layout_marginTop="10dp">
-
-            <!-- "Aucune pub etc." en tête, juste sous le header À propos. -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/about_community_text"
-                android:textColor="@color/pdm_text_secondary"
-                android:textSize="13sp"
-                android:gravity="center"
-                android:lineSpacingExtra="2dp"
-                android:background="@color/pdm_tint_neutral"
-                android:padding="10dp"
-                android:layout_marginBottom="10dp"/>
 
             <!-- Toggle de réception des mises à jour bêta. -->
             <LinearLayout
@@ -697,16 +685,34 @@
             <Button
                 android:id="@+id/btnCheckForUpdate"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
+                android:minHeight="64dp"
                 android:text="@string/check_for_updates"
                 android:background="@drawable/pdm_btn_info"
                 android:foreground="@drawable/btn_focus_foreground"
                 android:textColor="@color/pdm_accent_alt"
                 android:textSize="14sp"
                 android:textStyle="bold"
+                android:lineSpacingExtra="2dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:focusable="true"/>
+
+            <!-- Encart "Aucune pub etc." sous le bloc maj — accent communautaire
+                 placé après l'action plutôt qu'en tête. -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_community_text"
+                android:textColor="@color/pdm_text_secondary"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:lineSpacingExtra="2dp"
+                android:background="@color/pdm_tint_neutral"
+                android:padding="10dp"
+                android:layout_marginBottom="10dp"/>
 
             <!-- Bouton "Me soutenir" plein-largeur. -->
             <Button

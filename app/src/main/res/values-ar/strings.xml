@@ -483,4 +483,6 @@
     <string name="dt_vpn_active">🟢 VPN نشط</string>
     <string name="dt_dot_active">🟢 DNS الخاص نشط</string>
     <string name="dt_no_dns">🔴 لا يوجد DNS نشط (دقة من المزود)</string>
+    <string name="current_version_fmt">الإصدار الحالي: %1$s</string>
+
 </resources>

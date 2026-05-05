@@ -483,4 +483,6 @@
     <string name="dt_vpn_active">🟢 VPN activo</string>
     <string name="dt_dot_active">🟢 DNS privado activo</string>
     <string name="dt_no_dns">🔴 Sin DNS activo (resolución ISP)</string>
+    <string name="current_version_fmt">Versión actual: %1$s</string>
+
 </resources>
