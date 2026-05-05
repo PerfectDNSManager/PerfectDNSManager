@@ -523,7 +523,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
             holder.tvAddress.text = profile.primary
             holder.tvAddress.visibility = View.VISIBLE
 
-            val desc = profile.displayDescription(this@DnsProviderDetailActivity)
+            val desc = profile.displayDescription(holder.itemView.context)
             holder.tvDescription.text = desc
             holder.tvDescription.visibility = if (desc.isNullOrBlank()) View.GONE else View.VISIBLE
 
