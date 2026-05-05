@@ -87,16 +87,6 @@ android {
 
     buildTypes {
         release {
-            // R8 désactivé volontairement — projet open source, lisibilité du
-            // bytecode > économie de ~30 % de taille APK. La conf proguard-rules.pro
-            // reste référencée pour rester prête si on la réactive un jour, mais
-            // sans isMinifyEnabled elle n'a aucun effet.
-            isMinifyEnabled = false
-            isShrinkResources = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
             val ksPath = System.getenv("KEYSTORE_FILE")
                 ?: rootProject.file("signing/release-keystore.jks").takeIf { it.exists() }?.absolutePath
             if (ksPath != null) {
