@@ -165,3 +165,22 @@ jobs:
             https://github.com/appstorefr/PerfectDNSManager/releases/download/latest-beta/PerfectDNSManager-latest-beta.apk
             ```
           files: ${{ steps.beta_apk.outputs.path }}
+
+      # Purge des bêtas précédentes : on ne garde que la nouvelle (TAG_NAME) et
+      # le pointeur rolling `latest-beta`. Pas d'historique — chaque bêta
+      # remplace la précédente. Les stables (non-prerelease) sont préservées.
+      - name: Prune old beta releases
+        if: steps.meta.outputs.prerelease == 'true' && github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          KEEP_TAG: ${{ steps.meta.outputs.tag_name }}
+        run: |
+          gh release list --repo "$GITHUB_REPOSITORY" --limit 100 \
+            --json tagName,isPrerelease,isLatest \
+            -q '.[] | select(.isPrerelease == true and .isLatest == false) | .tagName' \
+            | while read -r tag; do
+                [ "$tag" = "$KEEP_TAG" ] && continue
+                [ "$tag" = "latest-beta" ] && continue
+                echo "→ delete $tag"
+                gh release delete --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes "$tag" || true
+              done
