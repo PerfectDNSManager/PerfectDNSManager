@@ -340,34 +340,7 @@
                     android:focusable="false"/>
             </LinearLayout>
 
-            <!-- 3. Sous-toggle DNS DoT via ADB -->
-            <LinearLayout
-                android:id="@+id/rowAdbDot"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@drawable/focusable_item_background"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:layout_marginBottom="8dp"
-                android:focusable="true" >
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/dns_dot_adb"
-                    android:textColor="@color/pdm_text_secondary"
-                    android:textSize="14sp"/>
-                <Switch
-                    android:id="@+id/switchAdbDot"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:focusable="false"/>
-            </LinearLayout>
-
-            <!-- 4. Sous-toggle DNS Standard -->
+            <!-- 3. Sous-toggle DNS Standard -->
             <LinearLayout
                 android:id="@+id/rowStandardDns"
                 android:layout_width="match_parent"
@@ -401,7 +374,7 @@
                     android:focusable="false"/>
             </LinearLayout>
 
-            <!-- 5. Sous-toggle DNS opérateur -->
+            <!-- 4. Sous-toggle DNS opérateur -->
             <LinearLayout
                 android:id="@+id/rowOperatorDns"
                 android:layout_width="match_parent"
@@ -422,6 +395,34 @@
                     android:textSize="14sp"/>
                 <Switch
                     android:id="@+id/switchOperatorDns"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"/>
+            </LinearLayout>
+
+            <!-- 5. Sous-toggle DNS DoT via ADB — placé en dernier car l'encart
+                 ADB juste en dessous se déploie quand on l'active. -->
+            <LinearLayout
+                android:id="@+id/rowAdbDot"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/focusable_item_background"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="8dp"
+                android:focusable="true" >
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/dns_dot_adb"
+                    android:textColor="@color/pdm_text_secondary"
+                    android:textSize="14sp"/>
+                <Switch
+                    android:id="@+id/switchAdbDot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="false"
