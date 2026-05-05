@@ -471,15 +471,25 @@ class SettingsActivity : AppCompatActivity() {
         btnBack.setOnClickListener { finish() }
         btnHowTo.setOnClickListener { startActivity(Intent(this, HowToActivity::class.java)) }
 
-        // ── Section À propos inlinée (anciennement AboutActivity) ──
-        // Version dynamique via BuildConfig — cohérente avec le titre MainActivity.
-        findViewById<TextView>(R.id.tvVersion).text =
-            getString(R.string.version, BuildConfig.VERSION_NAME)
+        // ── Section À propos (collapsible — contient maj bêta + check + support) ──
+        val rowAbout = findViewById<LinearLayout>(R.id.rowAbout)
+        val layoutAbout = findViewById<LinearLayout>(R.id.layoutAboutContent)
+        val tvAboutArrow = findViewById<TextView>(R.id.tvAboutArrow)
+        rowAbout.setOnClickListener {
+            val expanded = layoutAbout.visibility == View.VISIBLE
+            layoutAbout.visibility = if (expanded) View.GONE else View.VISIBLE
+            tvAboutArrow.text = if (expanded) "▶" else "▼"
+        }
+
         findViewById<Button>(R.id.btnSupportAbout).setOnClickListener {
             startActivity(Intent(this, SupportActivity::class.java))
         }
         val updateManager = net.appstorefr.perfectdnsmanager.service.UpdateManager(this)
-        findViewById<Button>(R.id.btnCheckForUpdate).setOnClickListener {
+        val btnCheck = findViewById<Button>(R.id.btnCheckForUpdate)
+        // Le numéro de version courant est intégré directement dans le label
+        // du bouton — pas d'élément version séparé qui faisait moche.
+        btnCheck.text = "${getString(R.string.check_for_updates)}  ·  v${BuildConfig.VERSION_NAME}"
+        btnCheck.setOnClickListener {
             Toast.makeText(this, getString(R.string.checking_for_updates), Toast.LENGTH_SHORT).show()
             updateManager.checkForUpdateGitHub("appstorefr/PerfectDNSManager", BuildConfig.VERSION_NAME)
         }
@@ -495,24 +505,27 @@ class SettingsActivity : AppCompatActivity() {
      */
     private fun updateFocusChain() {
         val rowAdvanced = findViewById<LinearLayout>(R.id.rowAdvanced)
-        // rowBetaUpdates est désormais en dehors de layoutAdvancedSection
-        // (sa propre card sous Fichier de configuration), donc plus dans le
-        // focus interne de la section avancée. Premier row interne = profile variants.
         val rowProfileVariants = findViewById<LinearLayout>(R.id.rowProfileVariants)
         val layoutAdvanced = findViewById<LinearLayout>(R.id.layoutAdvancedSection)
         val rowImportExport = findViewById<LinearLayout>(R.id.rowImportExport)
-        val layoutImportExport = findViewById<LinearLayout>(R.id.layoutImportExportContent)
         val btnSplitTunnel = findViewById<Button>(R.id.btnSplitTunnel)
+        val btnResetApp = findViewById<Button>(R.id.btnResetApp)
+        val rowAbout = findViewById<LinearLayout>(R.id.rowAbout)
 
         val advancedOpen = layoutAdvanced.visibility == View.VISIBLE
+        val importOpen = findViewById<LinearLayout>(R.id.layoutImportExportContent)
+            .visibility == View.VISIBLE
 
-        // rowAdvanced → vers premier row avancé ou directement Import si fermé
         rowAdvanced.nextFocusDownId =
             if (advancedOpen) rowProfileVariants.id else rowImportExport.id
-        // Dernier bouton visible section avancée → Import
         btnSplitTunnel.nextFocusDownId = rowImportExport.id
         rowImportExport.nextFocusUpId =
             if (advancedOpen) btnSplitTunnel.id else rowAdvanced.id
+        // rowImportExport ouvert : dernier bouton (btnResetApp) → rowAbout.
+        // Fermé : rowImportExport → rowAbout. rowAbout up → varie selon état.
+        rowImportExport.nextFocusDownId = if (importOpen) btnResetApp.id else rowAbout.id
+        btnResetApp.nextFocusDownId = rowAbout.id
+        rowAbout.nextFocusUpId = if (importOpen) btnResetApp.id else rowImportExport.id
     }
 
     // ── Split tunneling (bypass VPN per-app) ─────────────────────

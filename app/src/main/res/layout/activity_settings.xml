@@ -592,6 +592,9 @@
     </LinearLayout>
 
     <!-- Mises à jour bêta — sa propre card, sortie de la section avancée -->
+    <!-- À propos (collapsible — header cliquable, contenu plié par défaut.
+         Inclut désormais l'intégralité de la section mises à jour bêta :
+         tout ce qui décrit ou pilote l'app vit ici, plus de card séparée. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -599,139 +602,141 @@
         android:background="@drawable/pdm_section_card"
         android:padding="12dp"
         android:layout_marginBottom="16dp">
+
         <LinearLayout
-            android:id="@+id/rowBetaUpdates"
+            android:id="@+id/rowAbout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:background="@drawable/focusable_item_background"
             android:foreground="@drawable/btn_focus_foreground"
-            android:padding="8dp"
             android:focusable="true"
-            android:clickable="true">
-            <LinearLayout
+            android:clickable="true"
+            android:padding="4dp">
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/beta_updates_label"
-                    android:textColor="@color/pdm_text_primary"
-                    android:textSize="15sp"/>
-                <TextView
-                    android:id="@+id/tvBetaUpdatesDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/beta_updates_description"
-                    android:textColor="@color/pdm_text_secondary"
-                    android:textSize="12sp"
-                    android:layout_marginTop="2dp"/>
-            </LinearLayout>
-            <Switch
-                android:id="@+id/switchBetaUpdates"
+                android:text="@string/about_title"
+                android:textColor="@color/pdm_text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/tvAboutArrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="false"
-                android:clickable="false" />
+                android:text="▶"
+                android:textColor="@color/pdm_text_primary"
+                android:textSize="16sp"/>
         </LinearLayout>
 
-        <!-- Version courante + bouton de vérification manuelle. Logiquement
-             rattachés à la card "mises à jour" plutôt qu'à la card À propos.
-             Mise en ligne : version à gauche, bouton à droite. -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#22FFFFFF"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-
         <LinearLayout
+            android:id="@+id/layoutAboutContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="10dp">
 
+            <!-- "Aucune pub etc." en tête, juste sous le header À propos. -->
             <TextView
-                android:id="@+id/tvVersion"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/pdm_text_disabled"
-                android:textSize="13sp"/>
+                android:text="@string/about_community_text"
+                android:textColor="@color/pdm_text_secondary"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:lineSpacingExtra="2dp"
+                android:background="@color/pdm_tint_neutral"
+                android:padding="10dp"
+                android:layout_marginBottom="10dp"/>
 
+            <!-- Toggle de réception des mises à jour bêta. -->
+            <LinearLayout
+                android:id="@+id/rowBetaUpdates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/focusable_item_background"
+                android:foreground="@drawable/btn_focus_foreground"
+                android:padding="8dp"
+                android:focusable="true"
+                android:clickable="true">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/beta_updates_label"
+                        android:textColor="@color/pdm_text_primary"
+                        android:textSize="15sp"/>
+                    <TextView
+                        android:id="@+id/tvBetaUpdatesDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/beta_updates_description"
+                        android:textColor="@color/pdm_text_secondary"
+                        android:textSize="12sp"
+                        android:layout_marginTop="2dp"/>
+                </LinearLayout>
+                <Switch
+                    android:id="@+id/switchBetaUpdates"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:clickable="false" />
+            </LinearLayout>
+
+            <!-- Bouton "Vérifier les mises à jour" plein-largeur. Le numéro de
+                 version courant est concaténé au runtime dans SettingsActivity. -->
             <Button
                 android:id="@+id/btnCheckForUpdate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
                 android:text="@string/check_for_updates"
                 android:background="@drawable/pdm_btn_info"
                 android:foreground="@drawable/btn_focus_foreground"
                 android:textColor="@color/pdm_accent_alt"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:focusable="true"/>
+
+            <!-- Bouton "Me soutenir" plein-largeur. -->
+            <Button
+                android:id="@+id/btnSupportAbout"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/support_about_button"
+                android:background="@drawable/pdm_btn_support"
+                android:foreground="@drawable/btn_focus_foreground"
+                android:textColor="@color/pdm_accent_support"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:layout_marginBottom="10dp"
+                android:focusable="true"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/gpl_license_text"
+                android:textColor="@color/pdm_accent"
+                android:textSize="11sp"
+                android:gravity="center"
+                android:lineSpacingExtra="2dp"
+                android:background="@color/pdm_tint_accent"
+                android:padding="8dp"
+                android:autoLink="web"
+                android:linksClickable="true"/>
         </LinearLayout>
-    </LinearLayout>
-
-    <!-- À propos (intégré ici en bas plutôt qu'une page séparée) -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/pdm_section_card"
-        android:padding="12dp"
-        android:gravity="center_horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/about_title"
-            android:textColor="@color/pdm_text_primary"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="6dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/about_community_text"
-            android:textColor="@color/pdm_text_secondary"
-            android:textSize="13sp"
-            android:gravity="center"
-            android:lineSpacingExtra="2dp"
-            android:background="@color/pdm_tint_neutral"
-            android:padding="10dp"
-            android:layout_marginBottom="6dp"/>
-
-        <Button
-            android:id="@+id/btnSupportAbout"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="@string/support_about_button"
-            android:background="@drawable/pdm_btn_support"
-            android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="@color/pdm_accent_support"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingStart="32dp"
-            android:paddingEnd="32dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="10dp"
-            android:focusable="true"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/gpl_license_text"
-            android:textColor="@color/pdm_accent"
-            android:textSize="11sp"
-            android:gravity="center"
-            android:lineSpacingExtra="2dp"
-            android:background="@color/pdm_tint_accent"
-            android:padding="8dp"
-            android:autoLink="web"
-            android:linksClickable="true"/>
     </LinearLayout>
 </LinearLayout>
 </ScrollView>
