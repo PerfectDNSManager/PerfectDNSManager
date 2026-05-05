@@ -69,9 +69,10 @@
         android:id="@+id/ivQrCode"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:background="#FFFFFF"
+        android:background="@android:color/white"
         android:padding="8dp"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="12dp"
+        android:contentDescription="@string/support_qr_content_description"/>
 
     <!-- Adresse -->
     <TextView

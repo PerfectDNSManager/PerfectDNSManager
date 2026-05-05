@@ -485,6 +485,8 @@
     <string name="dt_no_dns">🔴 アクティブな DNS なし (ISP の解決)</string>
     <string name="current_version_fmt">現在のバージョン: %1$s</string>
     <string name="cancelling">キャンセル中…</string>
+    <string name="support_qr_content_description">寄付アドレスの QR コード</string>
+
 
 
 </resources>

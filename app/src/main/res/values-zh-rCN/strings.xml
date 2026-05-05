@@ -485,6 +485,8 @@
     <string name="dt_no_dns">🔴 没有活动 DNS (ISP 解析)</string>
     <string name="current_version_fmt">当前版本: %1$s</string>
     <string name="cancelling">正在取消…</string>
+    <string name="support_qr_content_description">捐赠地址二维码</string>
+
 
 
 </resources>

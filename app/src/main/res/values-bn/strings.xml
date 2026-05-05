@@ -485,6 +485,8 @@
     <string name="dt_no_dns">🔴 সক্রিয় DNS নেই (ISP রিসোলিউশন)</string>
     <string name="current_version_fmt">বর্তমান সংস্করণ: %1$s</string>
     <string name="cancelling">বাতিল হচ্ছে…</string>
+    <string name="support_qr_content_description">দানের ঠিকানার QR কোড</string>
+
 
 
 </resources>

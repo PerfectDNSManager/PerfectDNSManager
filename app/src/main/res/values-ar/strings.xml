@@ -485,6 +485,8 @@
     <string name="dt_no_dns">🔴 لا يوجد DNS نشط (دقة من المزود)</string>
     <string name="current_version_fmt">الإصدار الحالي: %1$s</string>
     <string name="cancelling">جاري الإلغاء…</string>
+    <string name="support_qr_content_description">رمز QR لعنوان التبرع</string>
+
 
 
 </resources>

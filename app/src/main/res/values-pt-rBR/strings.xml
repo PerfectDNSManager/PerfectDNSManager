@@ -485,6 +485,8 @@
     <string name="dt_no_dns">🔴 Sem DNS ativo (resolução ISP)</string>
     <string name="current_version_fmt">Versão atual: %1$s</string>
     <string name="cancelling">Cancelando…</string>
+    <string name="support_qr_content_description">Código QR do endereço de doação</string>
+
 
 
 </resources>
