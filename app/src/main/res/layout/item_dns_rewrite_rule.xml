@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -19,7 +20,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/pdm_text_primary"
             android:textSize="16sp"
-            android:text="ygg.re"/>
+            tools:text="ygg.re"/>
 
         <TextView
             android:id="@+id/tvToDomain"
@@ -27,7 +28,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/pdm_text_secondary"
             android:textSize="14sp"
-            android:text="→ google.fr"/>
+            tools:text="→ google.fr"/>
 
     </LinearLayout>
 

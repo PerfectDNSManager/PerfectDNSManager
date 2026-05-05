@@ -273,10 +273,11 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         }
 
         // Warning note for Standard DNS (visible only when Standard is selected)
-        val warningText = "\u26a0\ufe0f DNS classique : liez votre IP sur https://my.nextdns.io pour activer votre profil personnalis\u00e9."
+        val nextDnsUrl = "https://my.nextdns.io"
+        val warningText = getString(R.string.dns_standard_warning_fmt, nextDnsUrl)
         val spannableWarning = SpannableString(warningText)
-        val urlStart = warningText.indexOf("https://my.nextdns.io")
-        val urlEnd = urlStart + "https://my.nextdns.io".length
+        val urlStart = warningText.indexOf(nextDnsUrl)
+        val urlEnd = urlStart + nextDnsUrl.length
         spannableWarning.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://my.nextdns.io")))

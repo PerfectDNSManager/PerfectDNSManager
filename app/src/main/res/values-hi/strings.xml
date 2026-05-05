@@ -139,7 +139,6 @@
 
     <!-- AboutActivity -->
     <string name="about_title">Perfect DNS Manager के बारे में</string>
-    <string name="version">संस्करण %1$s</string>
     <string name="about_community_text">🚫 कोई विज्ञापन नहीं\n📊 कोई डेटा संग्रह नहीं\n🆓 उपयोग और साझा करने के लिए मुफ़्त\n💜 समुदाय के लिए बनाया गया ❤️</string>
     <string name="check_for_updates">अपडेट जाँचें</string>
     <string name="checking_for_updates">अपडेट की जाँच हो रही है…</string>
@@ -165,16 +164,6 @@
     <!-- DNS Test -->
 
     <!-- VPN Report -->
-    <string name="dns_report_title">DNS रिपोर्ट</string>
-    <string name="report_private_dns_header">── Private DNS (ADB) ──</string>
-    <string name="report_vpn_header">── VPN DNS ──</string>
-    <string name="report_vpn_active">स्थिति: सक्रिय</string>
-    <string name="report_vpn_inactive">स्थिति: निष्क्रिय</string>
-    <string name="report_vpn_server">सर्वर: %1$s</string>
-    <string name="report_selected_header">── चयनित प्रोफ़ाइल ──</string>
-    <string name="report_method">विधि: %1$s</string>
-    <string name="report_primary">प्राथमिक: %1$s</string>
-    <string name="report_secondary">द्वितीयक: %1$s</string>
 
     <!-- ADB Error -->
     <string name="adb_error_title">ADB / अनुमति त्रुटि</string>
@@ -490,13 +479,6 @@
 
 
     <string name="dns_desc_custom">कस्टम प्रोफ़ाइल</string>
-    <string name="dns_desc_privacy_doq">गोपनीयता (DoQ)</string>
-    <string name="dns_desc_privacy_doh">गोपनीयता (DoH)</string>
-    <string name="dns_desc_privacy_dot">गोपनीयता (DoT)</string>
-    <string name="dns_desc_fast_private_doh">तेज़ और निजी (DoH)</string>
-    <string name="dns_desc_fast_private">तेज़ और निजी</string>
-    <string name="dns_desc_fast_private_dot">तेज़ और निजी (DoT)</string>
-    <string name="dns_desc_security">उन्नत सुरक्षा</string>
     <string name="dns_desc_isp_fmt">ISP DNS — %1$s</string>
     <string name="es_err_password_required">पासवर्ड चाहिए</string>
     <string name="es_err_download_failed_fmt">डाउनलोड विफल (%1$d)</string>
@@ -538,4 +520,5 @@
     <string name="adb_err_generic_fmt">ADB त्रुटि: %1$s: %2$s</string>
     <string name="adb_err_interrupted">ADB कनेक्शन बाधित</string>
     <string name="adb_err_invalid_hostname_fmt">अमान्य होस्टनाम: %1$s</string>
+    <string name="dns_standard_warning_fmt">⚠️ क्लासिक DNS: अपना कस्टम प्रोफ़ाइल सक्रिय करने के लिए %1$s पर अपना IP लिंक करें।</string>
 </resources>

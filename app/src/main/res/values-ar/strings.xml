@@ -139,7 +139,6 @@
 
     <!-- AboutActivity -->
     <string name="about_title">حول Perfect DNS Manager</string>
-    <string name="version">الإصدار %1$s</string>
     <string name="about_community_text">🚫 بدون إعلانات\n📊 بدون جمع بيانات\n🆓 مجاني للاستخدام والمشاركة\n💜 صُنع للمجتمع ❤️</string>
     <string name="check_for_updates">التحقق من التحديثات</string>
     <string name="checking_for_updates">جارٍ التحقق من التحديثات…</string>
@@ -165,16 +164,6 @@
     <!-- DNS Test -->
 
     <!-- VPN Report -->
-    <string name="dns_report_title">تقرير DNS</string>
-    <string name="report_private_dns_header">── Private DNS (ADB) ──</string>
-    <string name="report_vpn_header">── VPN DNS ──</string>
-    <string name="report_vpn_active">الحالة: نشط</string>
-    <string name="report_vpn_inactive">الحالة: غير نشط</string>
-    <string name="report_vpn_server">الخادم: %1$s</string>
-    <string name="report_selected_header">── الملف المحدد ──</string>
-    <string name="report_method">الطريقة: %1$s</string>
-    <string name="report_primary">الرئيسي: %1$s</string>
-    <string name="report_secondary">الثانوي: %1$s</string>
 
     <!-- ADB Error -->
     <string name="adb_error_title">خطأ ADB / إذن</string>
@@ -490,13 +479,6 @@
 
 
     <string name="dns_desc_custom">ملف مخصص</string>
-    <string name="dns_desc_privacy_doq">الخصوصية (DoQ)</string>
-    <string name="dns_desc_privacy_doh">الخصوصية (DoH)</string>
-    <string name="dns_desc_privacy_dot">الخصوصية (DoT)</string>
-    <string name="dns_desc_fast_private_doh">سريع وخاص (DoH)</string>
-    <string name="dns_desc_fast_private">سريع وخاص</string>
-    <string name="dns_desc_fast_private_dot">سريع وخاص (DoT)</string>
-    <string name="dns_desc_security">أمان معزز</string>
     <string name="dns_desc_isp_fmt">DNS المزود — %1$s</string>
     <string name="es_err_password_required">كلمة المرور مطلوبة</string>
     <string name="es_err_download_failed_fmt">فشل التنزيل (%1$d)</string>
@@ -538,4 +520,5 @@
     <string name="adb_err_generic_fmt">خطأ ADB: %1$s: %2$s</string>
     <string name="adb_err_interrupted">تم قطع اتصال ADB</string>
     <string name="adb_err_invalid_hostname_fmt">اسم مضيف غير صالح: %1$s</string>
+    <string name="dns_standard_warning_fmt">⚠️ DNS الكلاسيكي: اربط عنوان IP الخاص بك على %1$s لتفعيل ملفك المخصص.</string>
 </resources>

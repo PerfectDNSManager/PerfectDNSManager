@@ -139,7 +139,6 @@
 
     <!-- AboutActivity -->
     <string name="about_title">Perfect DNS Manager について</string>
-    <string name="version">バージョン %1$s</string>
     <string name="about_community_text">🚫 広告なし\n📊 データ収集なし\n🆓 自由に使用・共有可能\n💜 コミュニティのために作られました ❤️</string>
     <string name="check_for_updates">アップデートを確認</string>
     <string name="checking_for_updates">アップデートを確認中…</string>
@@ -165,16 +164,6 @@
     <!-- DNS Test -->
 
     <!-- VPN Report -->
-    <string name="dns_report_title">DNS レポート</string>
-    <string name="report_private_dns_header">── プライベート DNS (ADB) ──</string>
-    <string name="report_vpn_header">── VPN DNS ──</string>
-    <string name="report_vpn_active">状態: 有効</string>
-    <string name="report_vpn_inactive">状態: 無効</string>
-    <string name="report_vpn_server">サーバー: %1$s</string>
-    <string name="report_selected_header">── 選択されたプロファイル ──</string>
-    <string name="report_method">メソッド: %1$s</string>
-    <string name="report_primary">プライマリ: %1$s</string>
-    <string name="report_secondary">セカンダリ: %1$s</string>
 
     <!-- ADB Error -->
     <string name="adb_error_title">ADB エラー / 権限</string>
@@ -490,13 +479,6 @@
 
 
     <string name="dns_desc_custom">カスタムプロファイル</string>
-    <string name="dns_desc_privacy_doq">プライバシー (DoQ)</string>
-    <string name="dns_desc_privacy_doh">プライバシー (DoH)</string>
-    <string name="dns_desc_privacy_dot">プライバシー (DoT)</string>
-    <string name="dns_desc_fast_private_doh">高速 &amp; プライベート (DoH)</string>
-    <string name="dns_desc_fast_private">高速 &amp; プライベート</string>
-    <string name="dns_desc_fast_private_dot">高速 &amp; プライベート (DoT)</string>
-    <string name="dns_desc_security">強化されたセキュリティ</string>
     <string name="dns_desc_isp_fmt">プロバイダー DNS — %1$s</string>
     <string name="es_err_password_required">パスワードが必要</string>
     <string name="es_err_download_failed_fmt">ダウンロード失敗 (%1$d)</string>
@@ -538,4 +520,5 @@
     <string name="adb_err_generic_fmt">ADBエラー: %1$s: %2$s</string>
     <string name="adb_err_interrupted">ADB接続が中断されました</string>
     <string name="adb_err_invalid_hostname_fmt">無効なホスト名: %1$s</string>
+    <string name="dns_standard_warning_fmt">⚠️ 標準DNS: %1$s でIPを紐付けてカスタムプロファイルを有効化してください。</string>
 </resources>

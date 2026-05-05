@@ -139,7 +139,6 @@
 
     <!-- AboutActivity -->
     <string name="about_title">关于 Perfect DNS Manager</string>
-    <string name="version">版本 %1$s</string>
     <string name="about_community_text">🚫 无广告\n📊 无数据收集\n🆓 免费使用和分享\n💜 为社区而做 ❤️</string>
     <string name="check_for_updates">检查更新</string>
     <string name="checking_for_updates">正在检查更新…</string>
@@ -165,16 +164,6 @@
     <!-- DNS Test -->
 
     <!-- VPN Report -->
-    <string name="dns_report_title">DNS 报告</string>
-    <string name="report_private_dns_header">── Private DNS (ADB) ──</string>
-    <string name="report_vpn_header">── VPN DNS ──</string>
-    <string name="report_vpn_active">状态：活动</string>
-    <string name="report_vpn_inactive">状态：未活动</string>
-    <string name="report_vpn_server">服务器：%1$s</string>
-    <string name="report_selected_header">── 已选配置 ──</string>
-    <string name="report_method">方式：%1$s</string>
-    <string name="report_primary">主 DNS：%1$s</string>
-    <string name="report_secondary">备用 DNS：%1$s</string>
 
     <!-- ADB Error -->
     <string name="adb_error_title">ADB 错误 / 权限</string>
@@ -490,13 +479,6 @@
 
 
     <string name="dns_desc_custom">自定义配置</string>
-    <string name="dns_desc_privacy_doq">隐私 (DoQ)</string>
-    <string name="dns_desc_privacy_doh">隐私 (DoH)</string>
-    <string name="dns_desc_privacy_dot">隐私 (DoT)</string>
-    <string name="dns_desc_fast_private_doh">快速私密 (DoH)</string>
-    <string name="dns_desc_fast_private">快速私密</string>
-    <string name="dns_desc_fast_private_dot">快速私密 (DoT)</string>
-    <string name="dns_desc_security">增强安全</string>
     <string name="dns_desc_isp_fmt">运营商 DNS — %1$s</string>
     <string name="es_err_password_required">需要密码</string>
     <string name="es_err_download_failed_fmt">下载失败 (%1$d)</string>
@@ -538,4 +520,5 @@
     <string name="adb_err_generic_fmt">ADB 错误: %1$s: %2$s</string>
     <string name="adb_err_interrupted">ADB 连接已中断</string>
     <string name="adb_err_invalid_hostname_fmt">无效的主机名: %1$s</string>
+    <string name="dns_standard_warning_fmt">⚠️ 标准DNS：在 %1$s 上绑定您的 IP 以激活您的自定义配置。</string>
 </resources>

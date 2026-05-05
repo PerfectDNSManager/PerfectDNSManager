@@ -139,7 +139,6 @@
 
     <!-- AboutActivity -->
     <string name="about_title">About Perfect DNS Manager</string>
-    <string name="version">Version %1$s</string>
     <string name="about_community_text">🚫 No ads\n📊 No data collection\n🆓 Free to use and share\n💜 Made for the community ❤️</string>
     <string name="check_for_updates">Check for updates</string>
     <string name="checking_for_updates">Checking for updates…</string>
@@ -172,16 +171,6 @@
     <!-- DNS Test -->
 
     <!-- VPN Report -->
-    <string name="dns_report_title">DNS Report</string>
-    <string name="report_private_dns_header">── Private DNS (ADB) ──</string>
-    <string name="report_vpn_header">── VPN DNS ──</string>
-    <string name="report_vpn_active">Status: Active</string>
-    <string name="report_vpn_inactive">Status: Inactive</string>
-    <string name="report_vpn_server">Server: %1$s</string>
-    <string name="report_selected_header">── Selected profile ──</string>
-    <string name="report_method">Method: %1$s</string>
-    <string name="report_primary">Primary: %1$s</string>
-    <string name="report_secondary">Secondary: %1$s</string>
 
     <!-- ADB Error -->
     <string name="adb_error_title">ADB Error / Permission</string>
@@ -509,13 +498,6 @@
 
 
     <string name="dns_desc_custom">Custom profile</string>
-    <string name="dns_desc_privacy_doq">Privacy (DoQ)</string>
-    <string name="dns_desc_privacy_doh">Privacy (DoH)</string>
-    <string name="dns_desc_privacy_dot">Privacy (DoT)</string>
-    <string name="dns_desc_fast_private_doh">Fast &amp; private (DoH)</string>
-    <string name="dns_desc_fast_private">Fast &amp; private</string>
-    <string name="dns_desc_fast_private_dot">Fast &amp; private (DoT)</string>
-    <string name="dns_desc_security">Enhanced security</string>
     <string name="dns_desc_isp_fmt">ISP DNS — %1$s</string>
     <string name="es_err_password_required">Password required</string>
     <string name="es_err_download_failed_fmt">Download failed (%1$d)</string>
@@ -557,4 +539,5 @@
     <string name="adb_err_generic_fmt">ADB error: %1$s: %2$s</string>
     <string name="adb_err_interrupted">ADB connection interrupted</string>
     <string name="adb_err_invalid_hostname_fmt">Invalid hostname: %1$s</string>
+    <string name="dns_standard_warning_fmt">⚠️ Classic DNS: link your IP on %1$s to activate your custom profile.</string>
 </resources>

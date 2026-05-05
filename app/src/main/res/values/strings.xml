@@ -144,7 +144,6 @@
 
     <!-- AboutActivity -->
     <string name="about_title">À propos de Perfect DNS Manager</string>
-    <string name="version">Version %1$s</string>
     <string name="about_community_text">🚫 Aucune pub\n📊 Aucune collecte de données\n🆓 Libre d\'utilisation et de partage\n💜 Faite pour la communauté ❤️</string>
     <string name="check_for_updates">Vérifier les mises à jour</string>
     <string name="checking_for_updates">Vérification des mises à jour…</string>
@@ -177,16 +176,6 @@
     <!-- DNS Test -->
 
     <!-- VPN Report -->
-    <string name="dns_report_title">Rapport DNS</string>
-    <string name="report_private_dns_header">── Private DNS (ADB) ──</string>
-    <string name="report_vpn_header">── VPN DNS ──</string>
-    <string name="report_vpn_active">État: Actif</string>
-    <string name="report_vpn_inactive">État: Inactif</string>
-    <string name="report_vpn_server">Serveur: %1$s</string>
-    <string name="report_selected_header">── Profil sélectionné ──</string>
-    <string name="report_method">Méthode: %1$s</string>
-    <string name="report_primary">Primaire: %1$s</string>
-    <string name="report_secondary">Secondaire: %1$s</string>
 
     <!-- ADB Error -->
     <string name="adb_error_title">Erreur ADB / Permission</string>
@@ -505,13 +494,6 @@
 
 
     <string name="dns_desc_custom">Profil personnalisé</string>
-    <string name="dns_desc_privacy_doq">Confidentialité (DoQ)</string>
-    <string name="dns_desc_privacy_doh">Confidentialité (DoH)</string>
-    <string name="dns_desc_privacy_dot">Confidentialité (DoT)</string>
-    <string name="dns_desc_fast_private_doh">Rapide et privé (DoH)</string>
-    <string name="dns_desc_fast_private">Rapide et privé</string>
-    <string name="dns_desc_fast_private_dot">Rapide et privé (DoT)</string>
-    <string name="dns_desc_security">Sécurité renforcée</string>
     <string name="dns_desc_isp_fmt">DNS opérateur %1$s</string>
     <string name="es_err_password_required">Mot de passe requis</string>
     <string name="es_err_download_failed_fmt">Téléchargement échoué (%1$d)</string>
@@ -553,4 +535,5 @@
     <string name="adb_err_generic_fmt">Erreur ADB : %1$s : %2$s</string>
     <string name="adb_err_interrupted">Connexion ADB interrompue</string>
     <string name="adb_err_invalid_hostname_fmt">Nom d\'hôte invalide : %1$s</string>
+    <string name="dns_standard_warning_fmt">⚠️ DNS classique : liez votre IP sur %1$s pour activer votre profil personnalisé.</string>
 </resources>

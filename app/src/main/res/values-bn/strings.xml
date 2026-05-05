@@ -139,7 +139,6 @@
 
     <!-- AboutActivity -->
     <string name="about_title">Perfect DNS Manager সম্পর্কে</string>
-    <string name="version">সংস্করণ %1$s</string>
     <string name="about_community_text">🚫 কোনো বিজ্ঞাপন নেই\n📊 কোনো ডেটা সংগ্রহ নেই\n🆓 ব্যবহার ও শেয়ার করতে মুক্ত\n💜 কমিউনিটির জন্য তৈরি ❤️</string>
     <string name="check_for_updates">আপডেট পরীক্ষা করুন</string>
     <string name="checking_for_updates">আপডেট পরীক্ষা করা হচ্ছে…</string>
@@ -165,16 +164,6 @@
     <!-- DNS Test -->
 
     <!-- VPN Report -->
-    <string name="dns_report_title">DNS রিপোর্ট</string>
-    <string name="report_private_dns_header">── Private DNS (ADB) ──</string>
-    <string name="report_vpn_header">── VPN DNS ──</string>
-    <string name="report_vpn_active">অবস্থা: সক্রিয়</string>
-    <string name="report_vpn_inactive">অবস্থা: নিষ্ক্রিয়</string>
-    <string name="report_vpn_server">সার্ভার: %1$s</string>
-    <string name="report_selected_header">── নির্বাচিত প্রোফাইল ──</string>
-    <string name="report_method">পদ্ধতি: %1$s</string>
-    <string name="report_primary">প্রাথমিক: %1$s</string>
-    <string name="report_secondary">মাধ্যমিক: %1$s</string>
 
     <!-- ADB Error -->
     <string name="adb_error_title">ADB / অনুমতি ত্রুটি</string>
@@ -490,13 +479,6 @@
 
 
     <string name="dns_desc_custom">কাস্টম প্রোফাইল</string>
-    <string name="dns_desc_privacy_doq">গোপনীয়তা (DoQ)</string>
-    <string name="dns_desc_privacy_doh">গোপনীয়তা (DoH)</string>
-    <string name="dns_desc_privacy_dot">গোপনীয়তা (DoT)</string>
-    <string name="dns_desc_fast_private_doh">দ্রুত ও গোপনীয় (DoH)</string>
-    <string name="dns_desc_fast_private">দ্রুত ও গোপনীয়</string>
-    <string name="dns_desc_fast_private_dot">দ্রুত ও গোপনীয় (DoT)</string>
-    <string name="dns_desc_security">উন্নত নিরাপত্তা</string>
     <string name="dns_desc_isp_fmt">ISP DNS — %1$s</string>
     <string name="es_err_password_required">পাসওয়ার্ড প্রয়োজন</string>
     <string name="es_err_download_failed_fmt">ডাউনলোড ব্যর্থ (%1$d)</string>
@@ -538,4 +520,5 @@
     <string name="adb_err_generic_fmt">ADB ত্রুটি: %1$s: %2$s</string>
     <string name="adb_err_interrupted">ADB সংযোগ বিচ্ছিন্ন</string>
     <string name="adb_err_invalid_hostname_fmt">অবৈধ হোস্টনাম: %1$s</string>
+    <string name="dns_standard_warning_fmt">⚠️ ক্লাসিক DNS: আপনার কাস্টম প্রোফাইল সক্রিয় করতে %1$s এ আপনার IP লিঙ্ক করুন।</string>
 </resources>
