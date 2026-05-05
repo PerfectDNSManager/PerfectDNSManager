@@ -493,9 +493,9 @@
     <string name="dns_desc_privacy_doq">プライバシー (DoQ)</string>
     <string name="dns_desc_privacy_doh">プライバシー (DoH)</string>
     <string name="dns_desc_privacy_dot">プライバシー (DoT)</string>
-    <string name="dns_desc_fast_private_doh">高速 & プライベート (DoH)</string>
-    <string name="dns_desc_fast_private">高速 & プライベート</string>
-    <string name="dns_desc_fast_private_dot">高速 & プライベート (DoT)</string>
+    <string name="dns_desc_fast_private_doh">高速 &amp; プライベート (DoH)</string>
+    <string name="dns_desc_fast_private">高速 &amp; プライベート</string>
+    <string name="dns_desc_fast_private_dot">高速 &amp; プライベート (DoT)</string>
     <string name="dns_desc_security">強化されたセキュリティ</string>
     <string name="dns_desc_isp_fmt">プロバイダー DNS — %1$s</string>
     <string name="es_err_password_required">パスワードが必要</string>
@@ -520,7 +520,7 @@
     <string name="dns_desc_no_logs">ログなし</string>
     <string name="dns_desc_family_protection">家族向け保護</string>
     <string name="dns_desc_fast">高速</string>
-    <string name="dns_desc_fast_private2">高速 & プライベート</string>
+    <string name="dns_desc_fast_private2">高速 &amp; プライベート</string>
     <string name="dns_desc_unfiltered">フィルタなし</string>
     <string name="dns_desc_no_custom_profile">カスタムプロファイルなし</string>
     <string name="dns_desc_enhanced_security">強化されたセキュリティ</string>
