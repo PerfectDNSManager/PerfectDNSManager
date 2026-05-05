@@ -895,7 +895,7 @@ class SettingsActivity : AppCompatActivity() {
                 }.take(30)
                 if (results.isEmpty()) {
                     searchHint.visibility = View.VISIBLE
-                    searchHint.text = "Aucun r\u00e9sultat pour \"$query\""
+                    searchHint.text = getString(R.string.no_search_results_fmt, query)
                 } else {
                     for (item in results) {
                         resultsContainer.addView(makeAppRow(item))
@@ -1192,9 +1192,9 @@ class SettingsActivity : AppCompatActivity() {
                 )
                 runOnUiThread {
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("PDM Share", "${result.fullUrl}\nMot de passe : ${result.password}"))
+                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("PDM Share", "${result.fullUrl}\n${getString(R.string.share_clip_password_fmt, result.password)}"))
                     val msg = android.text.SpannableString(
-                        "Lien (chiffré de bout en bout) :\n${result.fullUrl}\n\nMot de passe :\n${result.password}\n\nCopié au presse-papier. Partagez lien + mot de passe séparément. La clé n'est jamais envoyée au serveur."
+                        getString(R.string.share_text_format, result.fullUrl, result.password, expiresIn)
                     )
                     val linkColor = pdmAccentAlt()
                     val accentColor = pdmAccent()
@@ -1228,12 +1228,12 @@ class SettingsActivity : AppCompatActivity() {
             setPadding(60, 40, 60, 20)
         }
         val tvExplain = TextView(this).apply {
-            text = "Lien court (ou code 8 caractères) :"
+            text = getString(R.string.import_link_label)
             setTextColor(pdmTextSecondary()); textSize = 13f
         }
         layout.addView(tvExplain)
         val editCode = android.widget.EditText(this).apply {
-            hint = "pdm.appstorefr.net/d/… ou abcd1234"
+            hint = getString(R.string.import_link_hint)
             setTextColor(pdmTextPrimary()); setHintTextColor(pdmTextDisabled())
             setBackgroundColor(pdmSurfaceInput()); setPadding(20, 15, 20, 15)
             isSingleLine = true
@@ -1241,7 +1241,7 @@ class SettingsActivity : AppCompatActivity() {
         layout.addView(editCode)
 
         val tvPwdLabel = TextView(this).apply {
-            text = "Mot de passe (6 caractères) :"
+            text = getString(R.string.import_password_label)
             setTextColor(pdmTextSecondary()); textSize = 13f
             setPadding(0, 16, 0, 0)
         }

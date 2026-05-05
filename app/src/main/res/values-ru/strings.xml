@@ -527,4 +527,15 @@
     <string name="dns_desc_adult_blocking">Блокировка контента для взрослых</string>
     <string name="dns_desc_nextdns_custom">Пользовательский профиль NextDNS</string>
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
+    <string name="import_link_label">Короткая ссылка (или 8-значный код):</string>
+    <string name="import_link_hint">pdm.appstorefr.net/d/…</string>
+    <string name="import_password_label">Пароль (6 символов):</string>
+    <string name="no_search_results_fmt">Нет результатов для "%1$s"</string>
+    <string name="result_error">Ошибка</string>
+    <string name="speedtest_fast_api_error_fmt">Ошибка API Fast.com: %1$s</string>
+    <string name="speedtest_fast_error_fmt">Ошибка Fast.com: %1$s</string>
+    <string name="adb_err_connection_fmt">Ошибка подключения ADB: %1$s</string>
+    <string name="adb_err_generic_fmt">Ошибка ADB: %1$s: %2$s</string>
+    <string name="adb_err_interrupted">Подключение ADB прервано</string>
+    <string name="adb_err_invalid_hostname_fmt">Неверное имя хоста: %1$s</string>
 </resources>

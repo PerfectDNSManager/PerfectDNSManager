@@ -527,4 +527,15 @@
     <string name="dns_desc_adult_blocking">वयस्क सामग्री ब्लॉक</string>
     <string name="dns_desc_nextdns_custom">NextDNS कस्टम प्रोफ़ाइल</string>
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
+    <string name="import_link_label">छोटा लिंक (या 8-वर्ण कोड):</string>
+    <string name="import_link_hint">pdm.appstorefr.net/d/…</string>
+    <string name="import_password_label">पासवर्ड (6 वर्ण):</string>
+    <string name="no_search_results_fmt">"%1$s" के लिए कोई परिणाम नहीं</string>
+    <string name="result_error">त्रुटि</string>
+    <string name="speedtest_fast_api_error_fmt">Fast.com API त्रुटि: %1$s</string>
+    <string name="speedtest_fast_error_fmt">Fast.com त्रुटि: %1$s</string>
+    <string name="adb_err_connection_fmt">ADB कनेक्शन त्रुटि: %1$s</string>
+    <string name="adb_err_generic_fmt">ADB त्रुटि: %1$s: %2$s</string>
+    <string name="adb_err_interrupted">ADB कनेक्शन बाधित</string>
+    <string name="adb_err_invalid_hostname_fmt">अमान्य होस्टनाम: %1$s</string>
 </resources>

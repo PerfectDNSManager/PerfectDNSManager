@@ -296,7 +296,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
             appendToBuf(rankingBuf, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500", COLOR_CYAN)
 
             for ((i, r) in sorted.withIndex()) {
-                val latencyStr = if (r.latency != null) "${r.latency} ms" else "Erreur"
+                val latencyStr = if (r.latency != null) "${r.latency} ms" else getString(R.string.result_error)
                 val color = if (r.latency != null) {
                     when {
                         r.latency < 50 -> COLOR_GREEN
@@ -460,7 +460,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
                             LinearLayout.LayoutParams.WRAP_CONTENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
                         )
-                        text = if (r.latency != null) "${r.latency} ms" else "Erreur"
+                        text = if (r.latency != null) "${r.latency} ms" else getString(R.string.result_error)
                         setTextColor(latencyColor)
                         textSize = 11f
                         typeface = Typeface.MONOSPACE

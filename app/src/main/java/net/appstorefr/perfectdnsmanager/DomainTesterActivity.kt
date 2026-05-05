@@ -523,7 +523,7 @@ class DomainTesterActivity : AppCompatActivity() {
                             }
                         } else {
                             icon = "\u26A0\uFE0F"
-                            resultIp = "Erreur"
+                            resultIp = getString(R.string.result_error)
                         }
                         val padded = dnsOpt.label.padEnd(12)
                         sb.appendLine("  $padded: $icon $resultIp")

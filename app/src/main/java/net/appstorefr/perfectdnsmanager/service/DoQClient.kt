@@ -72,7 +72,7 @@ class DoQClient(private val vpnService: VpnService) {
             // Lire la réponse
             val response = readFully(stream)
             if (response == null || response.size < 14) {
-                Log.w(T, "DoQ: réponse trop courte (${response?.size ?: 0} bytes)")
+                Log.w(T, "DoQ: response too short (${response?.size ?: 0} bytes)")
                 return null
             }
 

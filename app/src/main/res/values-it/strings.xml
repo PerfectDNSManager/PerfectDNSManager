@@ -527,4 +527,15 @@
     <string name="dns_desc_adult_blocking">Blocco contenuti per adulti</string>
     <string name="dns_desc_nextdns_custom">Profilo personalizzato NextDNS</string>
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
+    <string name="import_link_label">Link breve (o codice di 8 caratteri):</string>
+    <string name="import_link_hint">pdm.appstorefr.net/d/…</string>
+    <string name="import_password_label">Password (6 caratteri):</string>
+    <string name="no_search_results_fmt">Nessun risultato per "%1$s"</string>
+    <string name="result_error">Errore</string>
+    <string name="speedtest_fast_api_error_fmt">Errore API Fast.com: %1$s</string>
+    <string name="speedtest_fast_error_fmt">Errore Fast.com: %1$s</string>
+    <string name="adb_err_connection_fmt">Errore connessione ADB: %1$s</string>
+    <string name="adb_err_generic_fmt">Errore ADB: %1$s: %2$s</string>
+    <string name="adb_err_interrupted">Connessione ADB interrotta</string>
+    <string name="adb_err_invalid_hostname_fmt">Hostname non valido: %1$s</string>
 </resources>

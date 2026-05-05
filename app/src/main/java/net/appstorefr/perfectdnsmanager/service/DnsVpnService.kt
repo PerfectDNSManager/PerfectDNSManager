@@ -339,7 +339,7 @@ class DnsVpnService : VpnService() {
         var originalQnameEncoded: ByteArray? = null
         val (qname, modifiedQuery) = getQNameAndApplyRewrite(query)
         if (modifiedQuery != null) {
-            Log.i(T, "DNS Rewrite: '$qname' → règle trouvée")
+            Log.i(T, "DNS Rewrite: '$qname' → rule matched")
             originalQnameEncoded = encodeQName(qname)
             query = modifiedQuery
             wasRewritten = true

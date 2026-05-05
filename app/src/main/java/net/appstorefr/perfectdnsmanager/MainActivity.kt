@@ -1017,8 +1017,8 @@ class MainActivity : AppCompatActivity() {
                     val url1 = result.fullUrl
                     val pwd = result.password
                     // Clipboard : URL + mot de passe formaté pour un partage complet en 1 collage.
-                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("PDM Share", "$url1\nMot de passe : $pwd"))
-                    val text = "Lien (chiffré de bout en bout) :\n$url1\n\nMot de passe :\n$pwd\n\nCopié au presse-papier. Partagez lien + mot de passe séparément. La clé n'est jamais envoyée au serveur.\n\nExpire dans $expiresIn."
+                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("PDM Share", "$url1\n${getString(R.string.share_clip_password_fmt, pwd)}"))
+                    val text = getString(R.string.share_text_format, url1, pwd, expiresIn)
                     val msg = android.text.SpannableString(text)
                     val linkColor = pdmAccentAlt()
                     val accentColor = pdmAccent()

@@ -70,7 +70,7 @@ class AdbDnsManager(private val context: Context) {
         // Durcissement : refuser tout hostname non-RFC1035 avant shell/ADB.
         // Empêche l'injection de commande via métachars (;, `, $, |, \n…).
         if (!isValidHostname(hostname)) {
-            lastError = "Hostname invalide : $hostname"
+            lastError = context.getString(R.string.adb_err_invalid_hostname_fmt, hostname)
             Log.w(TAG, lastError)
             return false
         }
@@ -117,7 +117,7 @@ class AdbDnsManager(private val context: Context) {
         File(dir, PRIVATE_KEY_NAME).delete()
         context.getSharedPreferences("adb_prefs", Context.MODE_PRIVATE)
             .edit().remove(PREF_PERMISSION_GRANTED).apply()
-        Log.i(TAG, "Clés ADB et permission réinitialisées")
+        Log.i(TAG, "ADB keys and permission reset")
     }
 
     // ─── Vérification permission ─────────────────────────────────────────────
@@ -183,7 +183,7 @@ class AdbDnsManager(private val context: Context) {
 
                     connection = AdbConnection.create(socket, crypto)
                     connection.connect()
-                    Log.i(TAG, "Self-grant: connecté sur port $port")
+                    Log.i(TAG, "Self-grant: connected on port $port")
                     prefs.edit().putInt(PREF_LAST_ADB_PORT, port).apply()
                     connected = true
                     break
@@ -220,7 +220,7 @@ class AdbDnsManager(private val context: Context) {
             Thread.sleep(500)
             if (isPermissionGranted()) {
                 prefs.edit().putBoolean(PREF_PERMISSION_GRANTED, true).apply()
-                Log.i(TAG, "Self-grant: permission accordée avec succès !")
+                Log.i(TAG, "Self-grant: permission granted successfully")
                 callback.onSuccess()
             } else {
                 // La commande n'a pas retourné d'erreur mais la permission n'est pas là
@@ -262,7 +262,7 @@ class AdbDnsManager(private val context: Context) {
             Log.i(TAG, "Settings API enable -> mode=$mode ok=$ok")
             ok
         } catch (e: SecurityException) {
-            Log.w(TAG, "Settings API: permission refusée")
+            Log.w(TAG, "Settings API: permission denied")
             false
         } catch (e: Exception) {
             Log.w(TAG, "Settings API: ${e.message}")
@@ -279,7 +279,7 @@ class AdbDnsManager(private val context: Context) {
             Log.i(TAG, "Settings API disable -> mode=$mode ok=$ok")
             ok
         } catch (e: SecurityException) {
-            Log.w(TAG, "Settings API: permission refusée")
+            Log.w(TAG, "Settings API: permission denied")
             false
         } catch (e: Exception) {
             Log.w(TAG, "Settings API: ${e.message}")
@@ -321,7 +321,7 @@ class AdbDnsManager(private val context: Context) {
 
                         connection = AdbConnection.create(socket, crypto)
                         connection.connect()
-                        Log.i(TAG, "Connexion ADB établie sur port $port")
+                        Log.i(TAG, "ADB connection established on port $port")
                         prefs.edit().putInt(PREF_LAST_ADB_PORT, port).apply()
                         connected = true
                         break
@@ -375,7 +375,7 @@ class AdbDnsManager(private val context: Context) {
                         if (hostname.isNotEmpty()) trySettingsEnable(hostname) else false
                     }
                     if (apiOk) {
-                        Log.i(TAG, "Settings API réussie après grant")
+                        Log.i(TAG, "Settings API succeeded after grant")
                         success = true
                         return@Thread
                     }
@@ -390,18 +390,18 @@ class AdbDnsManager(private val context: Context) {
                 }
                 success = true
                 lastError = ""
-                Log.i(TAG, "Commandes ADB envoyées avec succès")
+                Log.i(TAG, "ADB commands sent successfully")
 
             } catch (e: IOException) {
-                lastError = "Erreur connexion ADB: ${e.message}"
+                lastError = context.getString(R.string.adb_err_connection_fmt, e.message ?: "")
                 Log.e(TAG, "ADB IOException: ${e.message}")
                 context.getSharedPreferences("adb_prefs", Context.MODE_PRIVATE)
                     .edit().remove(PREF_PERMISSION_GRANTED).apply()
             } catch (e: InterruptedException) {
-                lastError = "Connexion ADB interrompue"
+                lastError = context.getString(R.string.adb_err_interrupted)
                 Log.e(TAG, "ADB InterruptedException: ${e.message}")
             } catch (e: Exception) {
-                lastError = "Erreur ADB: ${e.javaClass.simpleName}: ${e.message}"
+                lastError = context.getString(R.string.adb_err_generic_fmt, e.javaClass.simpleName, e.message ?: "")
                 Log.e(TAG, lastError)
             } finally {
                 try { shellStream?.close() } catch (_: Exception) {}
@@ -444,17 +444,17 @@ class AdbDnsManager(private val context: Context) {
         val privFile = File(dir, PRIVATE_KEY_NAME)
         return try {
             if (pubFile.exists() && privFile.exists()) {
-                Log.i(TAG, "Chargement clés ADB existantes")
+                Log.i(TAG, "Loading existing ADB keys")
                 AdbCrypto.loadAdbKeyPair(AndroidBase64(), privFile, pubFile)
             } else {
-                Log.i(TAG, "Génération nouvelle paire de clés ADB...")
+                Log.i(TAG, "Generating new ADB key pair...")
                 val crypto = AdbCrypto.generateAdbKeyPair(AndroidBase64())
                 crypto.saveAdbKeyPair(privFile, pubFile)
-                Log.i(TAG, "Clés ADB générées et sauvegardées")
+                Log.i(TAG, "ADB keys generated and saved")
                 crypto
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Erreur crypto: ${e.message}")
+            Log.e(TAG, "Crypto error: ${e.message}")
             null
         }
     }

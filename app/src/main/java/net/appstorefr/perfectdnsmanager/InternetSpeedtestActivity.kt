@@ -1140,12 +1140,12 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             } else {
                 val code = resp.code
                 resp.close()
-                ui { logConsole("Erreur Fast.com API : $code") }
+                ui { logConsole(getString(R.string.speedtest_fast_api_error_fmt, code.toString())) }
                 emptyList()
             }
         } catch (e: Exception) {
             Log.w(TAG, "Netflix API fetch failed", e)
-            ui { logConsole("Erreur Fast.com : ${e.message}") }
+            ui { logConsole(getString(R.string.speedtest_fast_error_fmt, e.message ?: "")) }
             emptyList()
         } finally {
             shutdown(client)

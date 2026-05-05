@@ -527,4 +527,15 @@
     <string name="dns_desc_adult_blocking">প্রাপ্তবয়স্ক বিষয়বস্তু ব্লক</string>
     <string name="dns_desc_nextdns_custom">NextDNS কাস্টম প্রোফাইল</string>
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
+    <string name="import_link_label">সংক্ষিপ্ত লিঙ্ক (বা ৮-অক্ষরের কোড):</string>
+    <string name="import_link_hint">pdm.appstorefr.net/d/…</string>
+    <string name="import_password_label">পাসওয়ার্ড (৬ অক্ষর):</string>
+    <string name="no_search_results_fmt">"%1$s" এর জন্য কোনো ফলাফল নেই</string>
+    <string name="result_error">ত্রুটি</string>
+    <string name="speedtest_fast_api_error_fmt">Fast.com API ত্রুটি: %1$s</string>
+    <string name="speedtest_fast_error_fmt">Fast.com ত্রুটি: %1$s</string>
+    <string name="adb_err_connection_fmt">ADB সংযোগ ত্রুটি: %1$s</string>
+    <string name="adb_err_generic_fmt">ADB ত্রুটি: %1$s: %2$s</string>
+    <string name="adb_err_interrupted">ADB সংযোগ বিচ্ছিন্ন</string>
+    <string name="adb_err_invalid_hostname_fmt">অবৈধ হোস্টনাম: %1$s</string>
 </resources>

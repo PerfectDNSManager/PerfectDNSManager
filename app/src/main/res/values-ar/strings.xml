@@ -527,4 +527,15 @@
     <string name="dns_desc_adult_blocking">حظر محتوى البالغين</string>
     <string name="dns_desc_nextdns_custom">ملف NextDNS مخصص</string>
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
+    <string name="import_link_label">رابط قصير (أو رمز من 8 أحرف):</string>
+    <string name="import_link_hint">pdm.appstorefr.net/d/…</string>
+    <string name="import_password_label">كلمة المرور (6 أحرف):</string>
+    <string name="no_search_results_fmt">لا نتائج لـ "%1$s"</string>
+    <string name="result_error">خطأ</string>
+    <string name="speedtest_fast_api_error_fmt">خطأ Fast.com API: %1$s</string>
+    <string name="speedtest_fast_error_fmt">خطأ Fast.com: %1$s</string>
+    <string name="adb_err_connection_fmt">خطأ اتصال ADB: %1$s</string>
+    <string name="adb_err_generic_fmt">خطأ ADB: %1$s: %2$s</string>
+    <string name="adb_err_interrupted">تم قطع اتصال ADB</string>
+    <string name="adb_err_invalid_hostname_fmt">اسم مضيف غير صالح: %1$s</string>
 </resources>

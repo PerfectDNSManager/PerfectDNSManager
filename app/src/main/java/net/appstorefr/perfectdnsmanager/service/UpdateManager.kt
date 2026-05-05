@@ -152,7 +152,7 @@ class UpdateManager(private val context: Context) {
                             val (apkUrl, apkSize) = pickAsset(json.getJSONArray("assets"), preferredAsset)
                             if (apkUrl != null) callback(ReleaseInfo(version, apkUrl, apkSize)) else callback(null)
                         } catch (e: Exception) {
-                            Log.e(TAG, "Erreur parsing release", e)
+                            Log.e(TAG, "Release parsing error", e)
                             callback(null)
                         }
                     }
@@ -193,11 +193,11 @@ class UpdateManager(private val context: Context) {
         Fuel.download(apkUrl).fileDestination { _, _ -> destination }.response { _, _, result ->
             when (result) {
                 is Result.Success -> {
-                    Log.i(TAG, "Téléchargement terminé: ${destination.absolutePath}")
+                    Log.i(TAG, "Download complete: ${destination.absolutePath}")
                     installApk(destination)
                 }
                 is Result.Failure -> {
-                    Log.e(TAG, "Erreur téléchargement", result.getException())
+                    Log.e(TAG, "Download error", result.getException())
                     showToastOnMainThread(context.getString(R.string.update_download_error))
                 }
             }
@@ -214,7 +214,7 @@ class UpdateManager(private val context: Context) {
             }
             context.startActivity(intent)
         } catch (e: Exception) {
-            Log.e(TAG, "Erreur installation APK", e)
+            Log.e(TAG, "APK install error", e)
             showToastOnMainThread(context.getString(R.string.update_install_error))
         }
     }
