@@ -14,6 +14,9 @@ import net.appstorefr.perfectdnsmanager.util.pdmAccentGold
 import net.appstorefr.perfectdnsmanager.util.pdmAccentSupport
 import net.appstorefr.perfectdnsmanager.util.pdmDanger
 import net.appstorefr.perfectdnsmanager.util.pdmWarning
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 import android.content.Context
 import android.content.Intent
@@ -26,7 +29,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.Switch
+import androidx.appcompat.widget.SwitchCompat
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -55,9 +58,9 @@ class SettingsActivity : AppCompatActivity() {
         val btnBack: Button = findViewById(R.id.btnBack)
         val btnHowTo: Button = findViewById(R.id.btnHowTo)
         val tvAdbStatus: TextView = findViewById(R.id.tvAdbStatus)
-        val switchAutoStart: Switch = findViewById(R.id.switchAutoStart)
-        val switchAutoReconnect: Switch = findViewById(R.id.switchAutoReconnect)
-        val switchDisableIpv6: Switch = findViewById(R.id.switchDisableIpv6)
+        val switchAutoStart: SwitchCompat = findViewById(R.id.switchAutoStart)
+        val switchAutoReconnect: SwitchCompat = findViewById(R.id.switchAutoReconnect)
+        val switchDisableIpv6: SwitchCompat = findViewById(R.id.switchDisableIpv6)
         val rowAutoStart: LinearLayout = findViewById(R.id.rowAutoStart)
         val rowAutoReconnect: LinearLayout = findViewById(R.id.rowAutoReconnect)
         val rowDisableIpv6: LinearLayout = findViewById(R.id.rowDisableIpv6)
@@ -71,7 +74,7 @@ class SettingsActivity : AppCompatActivity() {
         // des mises à jour (UpdateManager ne verrait que les stables, donc
         // toujours antérieures à la version courante).
         val rowBetaUpdates: LinearLayout = findViewById(R.id.rowBetaUpdates)
-        val switchBetaUpdates: Switch = findViewById(R.id.switchBetaUpdates)
+        val switchBetaUpdates: SwitchCompat = findViewById(R.id.switchBetaUpdates)
         if (PdmApp.isBetaBuild()) {
             switchBetaUpdates.isChecked = true
             // Reste focusable (DPAD doit pouvoir s'arrêter dessus pour lire le
@@ -90,22 +93,22 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // ── Toggle fonctions avancées ──
-        val switchAdvanced: Switch = findViewById(R.id.switchAdvanced)
+        val switchAdvanced: SwitchCompat = findViewById(R.id.switchAdvanced)
         val layoutAdvanced: LinearLayout = findViewById(R.id.layoutAdvancedSection)
         val btnRestoreDns: Button = findViewById(R.id.btnRestoreDns)
         val btnUrlRewrite: Button = findViewById(R.id.btnUrlRewrite)
-        val switchOperatorDns: Switch = findViewById(R.id.switchOperatorDns)
+        val switchOperatorDns: SwitchCompat = findViewById(R.id.switchOperatorDns)
 
         // ── Toggles simplification profils DNS ──
-        val switchStandardDns: Switch = findViewById(R.id.switchStandardDns)
+        val switchStandardDns: SwitchCompat = findViewById(R.id.switchStandardDns)
         val rowStandardDns: LinearLayout = findViewById(R.id.rowStandardDns)
-        val switchProfileVariants: Switch = findViewById(R.id.switchProfileVariants)
+        val switchProfileVariants: SwitchCompat = findViewById(R.id.switchProfileVariants)
         val rowProfileVariants: LinearLayout = findViewById(R.id.rowProfileVariants)
-        val switchDoqDns: Switch = findViewById(R.id.switchDoqDns)
+        val switchDoqDns: SwitchCompat = findViewById(R.id.switchDoqDns)
         val rowDoqDns: LinearLayout = findViewById(R.id.rowDoqDns)
 
         // ── Toggle DNS DoT via ADB (dans la section avancée) ──
-        val switchAdbDot: Switch = findViewById(R.id.switchAdbDot)
+        val switchAdbDot: SwitchCompat = findViewById(R.id.switchAdbDot)
         val rowAdbDot: LinearLayout = findViewById(R.id.rowAdbDot)
         val layoutAdbDotSection: LinearLayout = findViewById(R.id.layoutAdbDotSection)
 
@@ -277,7 +280,7 @@ class SettingsActivity : AppCompatActivity() {
             tvPermissionStatus?.text = getString(R.string.self_grant_progress)
             tvPermissionStatus?.setTextColor(pdmAccentGold())
 
-            Thread {
+            lifecycleScope.launch(Dispatchers.IO) {
                 adbDnsManager.selfGrantPermission(object : AdbDnsManager.SelfGrantCallback {
                     override fun onProgress(step: String) {
                         runOnUiThread {
@@ -324,7 +327,7 @@ class SettingsActivity : AppCompatActivity() {
                         }
                     }
                 })
-            }.start()
+            }
         }
 
         // ── Fonctions avancées : toggle cache/montre la section ──
@@ -552,7 +555,7 @@ class SettingsActivity : AppCompatActivity() {
             .setCancelable(false)
             .show()
 
-        Thread {
+        lifecycleScope.launch(Dispatchers.IO) {
             val pm = packageManager
             val installedApps = pm.getInstalledApplications(PackageManager.GET_META_DATA)
                 .filter { it.packageName != packageName } // exclude ourselves
@@ -567,7 +570,7 @@ class SettingsActivity : AppCompatActivity() {
                 loadingDialog.dismiss()
                 showSplitTunnelListDialog(labels, packages, checked)
             }
-        }.start()
+        }
     }
 
     private fun showSplitTunnelListDialog(
@@ -1185,7 +1188,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun encryptAndUpload(content: String, expiresIn: String = "1h") {
         Toast.makeText(this, getString(R.string.uploading), Toast.LENGTH_SHORT).show()
-        Thread {
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val result = net.appstorefr.perfectdnsmanager.util.EncryptedSharer.encryptAndUpload(
                     this@SettingsActivity, content, "PerfectDNS-config.enc", expiresIn
@@ -1214,7 +1217,7 @@ class SettingsActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 runOnUiThread { Toast.makeText(this, getString(R.string.upload_error, e.message ?: ""), Toast.LENGTH_LONG).show() }
             }
-        }.start()
+        }
     }
 
     private fun showImportOptions() {
@@ -1272,7 +1275,7 @@ class SettingsActivity : AppCompatActivity() {
                     return@setPositiveButton
                 }
                 Toast.makeText(this, getString(R.string.downloading), Toast.LENGTH_SHORT).show()
-                Thread {
+                lifecycleScope.launch(Dispatchers.IO) {
                     try {
                         val json = net.appstorefr.perfectdnsmanager.util.EncryptedSharer.downloadAndDecrypt(this@SettingsActivity, code, pwd)
                         if (json.isNotBlank()) {
@@ -1287,7 +1290,7 @@ class SettingsActivity : AppCompatActivity() {
                             Toast.makeText(this, getString(R.string.read_error, e.message ?: ""), Toast.LENGTH_LONG).show()
                         }
                     }
-                }.start()
+                }
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .show()

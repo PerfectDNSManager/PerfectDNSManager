@@ -29,6 +29,9 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.abs
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * Ookla server data class.
@@ -563,7 +566,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     private fun loadOoklaServerList() {
         btnServerPicker.text = getString(R.string.speedtest_server_loading)
         logConsole(getString(R.string.speedtest_ookla_loading))
-        Thread {
+        lifecycleScope.launch(Dispatchers.IO) {
             val fetched = mutableListOf<OoklaServer>()
             try {
                 val client = plainClient(10)
@@ -640,7 +643,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 selectedOoklaServer = ooklaServers[0]
                 btnServerPicker.text = getString(R.string.speedtest_server_fmt, ooklaServers[0].displayName)
             }
-        }.start()
+        }
     }
 
     private fun showServerPickerDialog() {

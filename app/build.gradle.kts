@@ -87,7 +87,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -145,6 +146,10 @@ dependencies {
 
     // Argon2id KDF (JNI sur libargon2) — partage E2EE, remplace PBKDF2
     implementation("com.lambdapioneer.argon2kt:argon2kt:1.5.0")
+
+    // Coroutines + lifecycleScope pour Activity-bound IO (replaces Thread { }.start())
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
 
     // Core library desugaring (java.time.Duration requis par kwik, API 26+)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")

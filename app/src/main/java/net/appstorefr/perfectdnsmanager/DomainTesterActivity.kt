@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import com.google.gson.Gson
 import net.appstorefr.perfectdnsmanager.data.DnsProfile
 import net.appstorefr.perfectdnsmanager.data.DnsType
@@ -384,7 +385,7 @@ class DomainTesterActivity : AppCompatActivity() {
             }
             row.addView(tvDomain)
 
-            val sw = Switch(this).apply {
+            val sw = SwitchCompat(this).apply {
                 isChecked = entry.enabled
                 setOnCheckedChangeListener { _, isChecked ->
                     val list = loadEntries()

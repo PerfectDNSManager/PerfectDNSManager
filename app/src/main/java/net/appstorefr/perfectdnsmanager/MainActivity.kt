@@ -23,7 +23,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import android.widget.Switch
+import androidx.appcompat.widget.SwitchCompat
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -38,6 +38,9 @@ import net.appstorefr.perfectdnsmanager.util.LocaleHelper
 import net.appstorefr.perfectdnsmanager.util.SpeedTester
 import net.appstorefr.perfectdnsmanager.util.UrlBlockingTester
 import com.google.gson.Gson
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var btnToggle: FrameLayout
-    private lateinit var swActivationToggle: Switch
+    private lateinit var swActivationToggle: SwitchCompat
     private lateinit var tvActivationStatus: TextView
     private lateinit var btnLanguage: Button
     private lateinit var layoutSelectDns: LinearLayout
@@ -140,10 +143,10 @@ class MainActivity : AppCompatActivity() {
                             getString(R.string.switching_disabling_dot),
                             Toast.LENGTH_SHORT
                         ).show()
-                        Thread {
+                        lifecycleScope.launch(Dispatchers.IO) {
                             adbManager.disablePrivateDns()
                             runOnUiThread { setInactiveStatus(); applyDns() }
-                        }.start()
+                        }
                     } else if (vpnWasActive && newMethod == "ADB") {
                         // VPN→DoT : stopper le VPN, puis appliquer en ADB
                         startService(Intent(this@MainActivity, DnsVpnService::class.java).apply {
@@ -210,9 +213,9 @@ class MainActivity : AppCompatActivity() {
         } catch (_: Exception) { "1.0" }
         UpdateManager(this).checkOnLaunch(currentVersion)
         // Sync blocking authorities list in background
-        Thread {
+        lifecycleScope.launch(Dispatchers.IO) {
             net.appstorefr.perfectdnsmanager.util.BlockingAuthoritiesManager.syncFromRemote(this)
-        }.start()
+        }
     }
 
     /**
@@ -220,7 +223,7 @@ class MainActivity : AppCompatActivity() {
      * Contient : type connexion, opérateur, IP locale, IPv4, IPv6, ISP, statut DNS (vert/rouge).
      */
     private fun refreshIpDisplay() {
-        Thread {
+        lifecycleScope.launch(Dispatchers.IO) {
             val httpClient = okhttp3.OkHttpClient.Builder()
                 .connectTimeout(5, java.util.concurrent.TimeUnit.SECONDS)
                 .readTimeout(5, java.util.concurrent.TimeUnit.SECONDS)
@@ -396,7 +399,7 @@ class MainActivity : AppCompatActivity() {
                 tvStatusInfo.setTypeface(null, android.graphics.Typeface.NORMAL)
                 tvStatusInfo.text = spannable
             }
-        }.start()
+        }
     }
 
     override fun onResume() {
@@ -830,7 +833,7 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, getString(R.string.report_generating), Toast.LENGTH_SHORT).show()
         btnShareReport.isEnabled = false
         btnShareReport.setBackgroundResource(R.drawable.pdm_btn_danger)
-        Thread {
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val appVersion = try {
                     packageManager.getPackageInfo(packageName, 0).versionName ?: "?"
@@ -1046,7 +1049,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, getString(R.string.share_ip_error) + ": ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
-        }.start()
+        }
     }
 
     private fun restoreState() {
@@ -1247,7 +1250,7 @@ class MainActivity : AppCompatActivity() {
             startService(Intent(this, DnsVpnService::class.java).apply { action = DnsVpnService.ACTION_STOP })
             prefs.edit().putBoolean("vpn_active", false).putString("vpn_label", "").apply()
         }
-        Thread {
+        lifecycleScope.launch(Dispatchers.IO) {
             val success = adbManager.enablePrivateDns(profile.primary)
             runOnUiThread {
                 if (success) {
@@ -1258,14 +1261,14 @@ class MainActivity : AppCompatActivity() {
                     btnToggle.postDelayed({ refreshIpDisplay() }, 3000)
                 } else showAdbErrorDialog()
             }
-        }.start()
+        }
     }
 
     private fun applyDnsViaVpn(profile: DnsProfile) {
         // Stopper ADB/DoT s'il est actif avant d'activer VPN (évite conflit DoT+DoH)
         val adbIsActive = adbManager.getCurrentPrivateDnsMode()?.contains("hostname") == true
         if (adbIsActive) {
-            Thread { adbManager.disablePrivateDns() }.start()
+            lifecycleScope.launch(Dispatchers.IO) { adbManager.disablePrivateDns() }
         }
         isActivating = true
         tvActivationStatus.text = "\u23F3"
@@ -1329,10 +1332,10 @@ class MainActivity : AppCompatActivity() {
         }
         // Stopper ADB si actif
         if (adbIsActive) {
-            Thread {
+            lifecycleScope.launch(Dispatchers.IO) {
                 adbManager.disablePrivateDns()
                 runOnUiThread { setInactiveStatus(); onDone() }
-            }.start()
+            }
         } else {
             setInactiveStatus(); onDone()
         }
@@ -1444,7 +1447,7 @@ class MainActivity : AppCompatActivity() {
             .setMessage(getString(R.string.adb_pair_step_discovering))
             .setCancelable(false)
             .show()
-        Thread {
+        lifecycleScope.launch(Dispatchers.IO) {
             val mgr = net.appstorefr.perfectdnsmanager.service.AdbPairingManager(this)
             mgr.pairAndGrant(code, object : net.appstorefr.perfectdnsmanager.service.AdbPairingManager.Callback {
                 override fun onProgress(step: String) {
@@ -1472,7 +1475,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             })
-        }.start()
+        }
     }
 
 }

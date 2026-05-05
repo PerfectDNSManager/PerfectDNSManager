@@ -95,7 +95,7 @@
                 android:text="@string/auto_start_label"
                 android:textColor="@color/pdm_text_primary"
                 android:textSize="15sp"/>
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchAutoStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
                 android:text="@string/auto_reconnect_label"
                 android:textColor="@color/pdm_text_primary"
                 android:textSize="15sp"/>
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchAutoReconnect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -156,7 +156,7 @@
                 android:text="@string/disable_ipv6_label"
                 android:textColor="@color/pdm_text_primary"
                 android:textSize="15sp"/>
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchDisableIpv6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -194,7 +194,7 @@
                 android:textColor="@color/pdm_accent_support"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switchAdvanced"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -238,7 +238,7 @@
                     android:text="@string/show_profile_variants"
                     android:textColor="@color/pdm_text_secondary"
                     android:textSize="14sp"/>
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchProfileVariants"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -274,7 +274,7 @@
                     android:text="@string/show_doq_dns"
                     android:textColor="@color/pdm_text_secondary"
                     android:textSize="14sp"/>
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchDoqDns"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -308,7 +308,7 @@
                     android:text="@string/show_standard_dns"
                     android:textColor="@color/pdm_text_secondary"
                     android:textSize="14sp"/>
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchStandardDns"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -335,7 +335,7 @@
                     android:text="@string/show_operator_dns"
                     android:textColor="@color/pdm_text_secondary"
                     android:textSize="14sp"/>
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchOperatorDns"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -363,7 +363,7 @@
                     android:text="@string/dns_dot_adb"
                     android:textColor="@color/pdm_text_secondary"
                     android:textSize="14sp"/>
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchAdbDot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -676,7 +676,7 @@
                         android:textSize="12sp"
                         android:layout_marginTop="2dp"/>
                 </LinearLayout>
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchBetaUpdates"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
