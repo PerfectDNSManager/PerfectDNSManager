@@ -623,7 +623,7 @@ class MainActivity : AppCompatActivity() {
                 val leakComparison = DnsLeakTester.runLeakTestComparison(this@MainActivity)
                 lastLeakIspResult = leakComparison.ispResult
                 lastLeakResult = leakComparison.vpnResult
-                display.appendLine("\u2501\u2501\u2501 DNS Leak Test \u2501\u2501\u2501")
+                display.appendLine("\u2501\u2501\u2501 ${getString(R.string.share_toggle_leak)} \u2501\u2501\u2501")
 
                 // ISP DNS (sans VPN)
                 display.appendLine("  ${getString(R.string.dns_leak_isp_label)} :")
@@ -666,7 +666,7 @@ class MainActivity : AppCompatActivity() {
 
                 display.appendLine()
             } catch (e: Exception) {
-                display.appendLine("\u2501\u2501\u2501 DNS Leak Test \u2501\u2501\u2501")
+                display.appendLine("\u2501\u2501\u2501 ${getString(R.string.share_toggle_leak)} \u2501\u2501\u2501")
                 display.appendLine("\u274c ${e.message}")
                 display.appendLine()
             }
@@ -684,32 +684,21 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 lastSpeedResult = speed
-                display.appendLine("\u2501\u2501\u2501 Speedtest (basique) \u2501\u2501\u2501")
+                display.appendLine("\u2501\u2501\u2501 ${getString(R.string.share_toggle_speedtest)} \u2501\u2501\u2501")
                 if (speed.pingMs >= 0) display.appendLine("Ping : ${speed.pingMs} ms")
                 display.appendLine("\u2193 Download : ${String.format("%.1f", speed.downloadMbps)} Mbps")
                 display.appendLine("\u2191 Upload : ${String.format("%.1f", speed.uploadMbps)} Mbps")
                 display.appendLine()
             } catch (e: Exception) {
-                display.appendLine("\u2501\u2501\u2501 Speedtest (basique) \u2501\u2501\u2501")
+                display.appendLine("\u2501\u2501\u2501 ${getString(R.string.share_toggle_speedtest)} \u2501\u2501\u2501")
                 display.appendLine("\u274c ${e.message}")
                 display.appendLine()
             }
 
-            // === 4. Device / Hardware info (dernier) ===
-            val deviceType = if (packageManager.hasSystemFeature("android.software.leanback")) {
-                getString(R.string.device_type_tv)
-            } else if (resources.configuration.smallestScreenWidthDp >= 600) {
-                getString(R.string.device_type_tablet)
-            } else {
-                getString(R.string.device_type_phone)
-            }
-            val appVer = try { packageManager.getPackageInfo(packageName, 0).versionName ?: "?" } catch (_: Exception) { "?" }
-            display.appendLine("\u2501\u2501\u2501 ${getString(R.string.share_toggle_device)} \u2501\u2501\u2501")
-            display.appendLine("${getString(R.string.md_device_model)} : ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
-            display.appendLine("${getString(R.string.md_device_type)} : $deviceType")
-            display.appendLine("Android : ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})")
-            display.appendLine("${getString(R.string.md_app_version)} : $appVer")
-            display.appendLine()
+            // Note: section "Informations appareil" volontairement absente du rapport
+            // affich\u00e9 \u2014 d\u00e9j\u00e0 visible en permanence dans le panneau status (droite),
+            // ce qui faisait doublon. Le rapport markdown partag\u00e9 garde la section
+            // (cf shareReport()).
 
             if (t.isInterrupted) return@Thread
             reportGenerated = true
@@ -722,11 +711,39 @@ class MainActivity : AppCompatActivity() {
                 btnShareReport.isEnabled = true
                 btnShareReport.setBackgroundResource(R.drawable.pdm_btn_primary)
                 tvReportContent.setTextColor(pdmTextSecondary())
-                tvReportContent.text = display.toString().trimEnd()
+                tvReportContent.text = renderReportWithBoldTitles(display.toString().trimEnd())
                 Toast.makeText(this, getString(R.string.report_complete), Toast.LENGTH_SHORT).show()
             }
         }
         generatingThread!!.start()
+    }
+
+    /**
+     * Convertit "\u2501\u2501\u2501 TITLE \u2501\u2501\u2501" en TITLE bold.
+     * Les \u2500\u2500\u2500 rendaient mal sur \u00e9cran \u00e9troit (t\u00e9l\u00e9phone) ; on garde le contenu
+     * lisible en transformant uniquement \u00e0 l'affichage final.
+     */
+    private fun renderReportWithBoldTitles(raw: String): CharSequence {
+        val titlePattern = Regex("^\u2501\u2501\u2501 (.+?) \u2501\u2501\u2501$", RegexOption.MULTILINE)
+        // \u00c9tape 1 : remplacer la ligne par le titre seul
+        val replaced = titlePattern.replace(raw) { m -> m.groupValues[1] }
+        // \u00c9tape 2 : appliquer Bold sur chaque titre (re-scan dans le texte sans bordures)
+        val spannable = android.text.SpannableStringBuilder(replaced)
+        for (m in titlePattern.findAll(raw)) {
+            val title = m.groupValues[1]
+            // Trouver l'occurrence dans le texte transform\u00e9 \u2014 la premi\u00e8re apr\u00e8s
+            // la position correspondante (mapping na\u00eff, suffisant ici car titles uniques)
+            val idx = spannable.indexOf(title)
+            if (idx >= 0) {
+                spannable.setSpan(
+                    android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                    idx,
+                    idx + title.length,
+                    android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+        }
+        return spannable
     }
 
     private fun shareReport() {
