@@ -489,4 +489,42 @@
 
 
 
+    <string name="dns_desc_custom">Profilo personalizzato</string>
+    <string name="dns_desc_privacy_doq">Privacy (DoQ)</string>
+    <string name="dns_desc_privacy_doh">Privacy (DoH)</string>
+    <string name="dns_desc_privacy_dot">Privacy (DoT)</string>
+    <string name="dns_desc_fast_private_doh">Veloce e privato (DoH)</string>
+    <string name="dns_desc_fast_private">Veloce e privato</string>
+    <string name="dns_desc_fast_private_dot">Veloce e privato (DoT)</string>
+    <string name="dns_desc_security">Sicurezza rafforzata</string>
+    <string name="dns_desc_isp_fmt">DNS operatore %1$s</string>
+    <string name="es_err_password_required">Password richiesta</string>
+    <string name="es_err_download_failed_fmt">Download fallito (%1$d)</string>
+    <string name="es_err_format_unsupported">Formato non supportato (vecchio link?)</string>
+    <string name="es_err_content_too_short_fmt">Contenuto troppo breve (%1$d byte)</string>
+    <string name="es_err_wrong_password">Password errata o contenuto corrotto</string>
+    <string name="es_err_legacy_unsupported">Formato legacy non supportato</string>
+    <string name="es_err_invalid_code_fmt">Codice non valido: %1$s</string>
+    <string name="adb_err_key_creation_failed">Impossibile creare le chiavi ADB</string>
+    <string name="adb_err_key_load_failed">Impossibile caricare/creare la chiave ADB</string>
+    <string name="adb_err_check_setup_fmt">Verifica che:\n1. Il debug ADB sia attivato\n2. Il debug wireless sia attivato\n3. Riavvia il dispositivo se necessario\n\nPorte testate: %1$s</string>
+    <string name="adb_err_permission_denied_fmt">Permesso WRITE_SECURE_SETTINGS negato.\n\nRisultato: %1$s</string>
+    <string name="share_text_format">Link (crittografato end-to-end):\n%1$s\n\nPassword:\n%2$s\n\nCopiato negli appunti. Condividi link e password separatamente. La chiave non viene mai inviata al server.\n\nScade tra %3$s.</string>
+    <string name="share_clip_password_fmt">Password: %1$s</string>
+    <string name="dns_desc_anti_malware">Anti-Malware</string>
+    <string name="dns_desc_ad_blocker">Blocco pubblicità</string>
+    <string name="dns_desc_ad_malware_blocker">Blocco pubblicità + malware</string>
+    <string name="dns_desc_blocks_ads_trackers">Blocca pubblicità e tracker</string>
+    <string name="dns_desc_privacy">Privacy</string>
+    <string name="dns_desc_neutral_dnssec">DNS neutrale, no-profit, DNSSEC</string>
+    <string name="dns_desc_no_logs">Nessun log</string>
+    <string name="dns_desc_family_protection">Protezione famiglia</string>
+    <string name="dns_desc_fast">Veloce</string>
+    <string name="dns_desc_fast_private2">Veloce e privato</string>
+    <string name="dns_desc_unfiltered">Senza filtro</string>
+    <string name="dns_desc_no_custom_profile">Senza profilo personalizzato</string>
+    <string name="dns_desc_enhanced_security">Sicurezza rafforzata</string>
+    <string name="dns_desc_adult_blocking">Blocco contenuti per adulti</string>
+    <string name="dns_desc_nextdns_custom">Profilo personalizzato NextDNS</string>
+    <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
 </resources>

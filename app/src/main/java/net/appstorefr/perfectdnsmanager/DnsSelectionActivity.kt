@@ -164,18 +164,18 @@ class DnsSelectionActivity : AppCompatActivity() {
                     for (pid in savedIds.sorted()) {
                         customProfiles.add(DnsProfile(
                             providerName = "NextDNS", name = "Profil $pid", type = DnsType.DOH,
-                            primary = "https://dns.nextdns.io/$pid", description = "Profil personnalisé NextDNS",
+                            primary = "https://dns.nextdns.io/$pid", descResId = R.string.dns_desc_nextdns_custom,
                             isCustom = true, testUrl = "https://test.nextdns.io/"
                         ))
                         customProfiles.add(DnsProfile(
                             providerName = "NextDNS", name = "Profil $pid", type = DnsType.DOQ,
-                            primary = "quic://dns.nextdns.io/$pid", description = "Profil personnalisé NextDNS",
+                            primary = "quic://dns.nextdns.io/$pid", descResId = R.string.dns_desc_nextdns_custom,
                             isCustom = true, testUrl = "https://test.nextdns.io/"
                         ))
                         if (adbDotEnabled) {
                             customProfiles.add(DnsProfile(
                                 providerName = "NextDNS", name = "Profil $pid", type = DnsType.DOT,
-                                primary = "$pid.dns.nextdns.io", description = "Profil personnalisé NextDNS",
+                                primary = "$pid.dns.nextdns.io", descResId = R.string.dns_desc_nextdns_custom,
                                 isCustom = true, testUrl = "https://test.nextdns.io/"
                             ))
                         }

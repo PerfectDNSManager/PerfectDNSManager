@@ -1188,7 +1188,7 @@ class SettingsActivity : AppCompatActivity() {
         Thread {
             try {
                 val result = net.appstorefr.perfectdnsmanager.util.EncryptedSharer.encryptAndUpload(
-                    content, "PerfectDNS-config.enc", expiresIn
+                    this@SettingsActivity, content, "PerfectDNS-config.enc", expiresIn
                 )
                 runOnUiThread {
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
@@ -1274,7 +1274,7 @@ class SettingsActivity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.downloading), Toast.LENGTH_SHORT).show()
                 Thread {
                     try {
-                        val json = net.appstorefr.perfectdnsmanager.util.EncryptedSharer.downloadAndDecrypt(code, pwd)
+                        val json = net.appstorefr.perfectdnsmanager.util.EncryptedSharer.downloadAndDecrypt(this@SettingsActivity, code, pwd)
                         if (json.isNotBlank()) {
                             runOnUiThread { confirmAndImport(json) }
                         } else {

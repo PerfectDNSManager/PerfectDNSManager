@@ -523,8 +523,9 @@ class DnsProviderDetailActivity : AppCompatActivity() {
             holder.tvAddress.text = profile.primary
             holder.tvAddress.visibility = View.VISIBLE
 
-            holder.tvDescription.text = profile.description
-            holder.tvDescription.visibility = if (profile.description.isNullOrBlank()) View.GONE else View.VISIBLE
+            val desc = profile.displayDescription(this@DnsProviderDetailActivity)
+            holder.tvDescription.text = desc
+            holder.tvDescription.visibility = if (desc.isNullOrBlank()) View.GONE else View.VISIBLE
 
             // Reset background for profile items
             holder.itemView.setBackgroundResource(R.drawable.focusable_item_background)

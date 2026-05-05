@@ -489,4 +489,42 @@
 
 
 
+    <string name="dns_desc_custom">Perfil personalizado</string>
+    <string name="dns_desc_privacy_doq">Privacidad (DoQ)</string>
+    <string name="dns_desc_privacy_doh">Privacidad (DoH)</string>
+    <string name="dns_desc_privacy_dot">Privacidad (DoT)</string>
+    <string name="dns_desc_fast_private_doh">Rápido y privado (DoH)</string>
+    <string name="dns_desc_fast_private">Rápido y privado</string>
+    <string name="dns_desc_fast_private_dot">Rápido y privado (DoT)</string>
+    <string name="dns_desc_security">Seguridad reforzada</string>
+    <string name="dns_desc_isp_fmt">DNS del operador %1$s</string>
+    <string name="es_err_password_required">Se requiere contraseña</string>
+    <string name="es_err_download_failed_fmt">Descarga fallida (%1$d)</string>
+    <string name="es_err_format_unsupported">Formato no soportado (¿enlace antiguo?)</string>
+    <string name="es_err_content_too_short_fmt">Contenido demasiado corto (%1$d bytes)</string>
+    <string name="es_err_wrong_password">Contraseña incorrecta o contenido corrupto</string>
+    <string name="es_err_legacy_unsupported">Formato heredado no soportado</string>
+    <string name="es_err_invalid_code_fmt">Código inválido: %1$s</string>
+    <string name="adb_err_key_creation_failed">No se pudieron crear las claves ADB</string>
+    <string name="adb_err_key_load_failed">No se pudo cargar/crear la clave ADB</string>
+    <string name="adb_err_check_setup_fmt">Verifica que:\n1. La depuración ADB está activada\n2. La depuración inalámbrica está activada\n3. Reinicia el dispositivo si es necesario\n\nPuertos probados: %1$s</string>
+    <string name="adb_err_permission_denied_fmt">Permiso WRITE_SECURE_SETTINGS denegado.\n\nResultado: %1$s</string>
+    <string name="share_text_format">Enlace (cifrado de extremo a extremo):\n%1$s\n\nContraseña:\n%2$s\n\nCopiado al portapapeles. Comparte enlace y contraseña por separado. La clave nunca se envía al servidor.\n\nCaduca en %3$s.</string>
+    <string name="share_clip_password_fmt">Contraseña: %1$s</string>
+    <string name="dns_desc_anti_malware">Anti-Malware</string>
+    <string name="dns_desc_ad_blocker">Bloqueador de anuncios</string>
+    <string name="dns_desc_ad_malware_blocker">Bloqueador de anuncios + malware</string>
+    <string name="dns_desc_blocks_ads_trackers">Bloquea anuncios y rastreadores</string>
+    <string name="dns_desc_privacy">Privacidad</string>
+    <string name="dns_desc_neutral_dnssec">DNS neutral, sin ánimo de lucro, DNSSEC</string>
+    <string name="dns_desc_no_logs">Sin registros</string>
+    <string name="dns_desc_family_protection">Protección familiar</string>
+    <string name="dns_desc_fast">Rápido</string>
+    <string name="dns_desc_fast_private2">Rápido y privado</string>
+    <string name="dns_desc_unfiltered">Sin filtro</string>
+    <string name="dns_desc_no_custom_profile">Sin perfil personalizado</string>
+    <string name="dns_desc_enhanced_security">Seguridad reforzada</string>
+    <string name="dns_desc_adult_blocking">Bloqueo de contenido adulto</string>
+    <string name="dns_desc_nextdns_custom">Perfil personalizado NextDNS</string>
+    <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
 </resources>

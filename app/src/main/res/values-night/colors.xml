@@ -19,7 +19,7 @@
     <color name="pdm_accent">#2E7D32</color>
     <color name="pdm_accent_pressed">#1B5E20</color>
     <color name="pdm_accent_alt">#64B5F6</color>
-    <color name="pdm_danger">#E57373</color>
+    <color name="pdm_danger">#FF5252</color>
     <color name="pdm_warning">#FFCC00</color>
 
     <color name="pdm_focus_ring">#804CAF50</color>
@@ -30,7 +30,7 @@
     <color name="pdm_tint_accent">#1A4CAF50</color>
     <color name="pdm_tint_info">#1A64B5F6</color>
     <color name="pdm_tint_warning">#1AFFCC00</color>
-    <color name="pdm_tint_danger">#1AE57373</color>
+    <color name="pdm_tint_danger">#1AFF5252</color>
 
     <!-- Accents secondaires pour CTA différenciés -->
     <color name="pdm_accent_info">#64B5F6</color>

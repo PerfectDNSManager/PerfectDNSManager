@@ -489,4 +489,42 @@
 
 
 
+    <string name="dns_desc_custom">ملف مخصص</string>
+    <string name="dns_desc_privacy_doq">الخصوصية (DoQ)</string>
+    <string name="dns_desc_privacy_doh">الخصوصية (DoH)</string>
+    <string name="dns_desc_privacy_dot">الخصوصية (DoT)</string>
+    <string name="dns_desc_fast_private_doh">سريع وخاص (DoH)</string>
+    <string name="dns_desc_fast_private">سريع وخاص</string>
+    <string name="dns_desc_fast_private_dot">سريع وخاص (DoT)</string>
+    <string name="dns_desc_security">أمان معزز</string>
+    <string name="dns_desc_isp_fmt">DNS المزود — %1$s</string>
+    <string name="es_err_password_required">كلمة المرور مطلوبة</string>
+    <string name="es_err_download_failed_fmt">فشل التنزيل (%1$d)</string>
+    <string name="es_err_format_unsupported">تنسيق غير مدعوم (رابط قديم؟)</string>
+    <string name="es_err_content_too_short_fmt">المحتوى قصير جدًا (%1$d بايت)</string>
+    <string name="es_err_wrong_password">كلمة مرور خاطئة أو محتوى تالف</string>
+    <string name="es_err_legacy_unsupported">التنسيق القديم غير مدعوم</string>
+    <string name="es_err_invalid_code_fmt">رمز غير صالح: %1$s</string>
+    <string name="adb_err_key_creation_failed">فشل إنشاء مفاتيح ADB</string>
+    <string name="adb_err_key_load_failed">فشل تحميل/إنشاء مفتاح ADB</string>
+    <string name="adb_err_check_setup_fmt">تحقق من:\n1. تفعيل تصحيح ADB\n2. تفعيل التصحيح اللاسلكي\n3. إعادة تشغيل الجهاز إذا لزم الأمر\n\nالمنافذ المختبرة: %1$s</string>
+    <string name="adb_err_permission_denied_fmt">تم رفض إذن WRITE_SECURE_SETTINGS.\n\nالنتيجة: %1$s</string>
+    <string name="share_text_format">الرابط (مشفر بالكامل):\n%1$s\n\nكلمة المرور:\n%2$s\n\nنُسخ إلى الحافظة. شارك الرابط وكلمة المرور بشكل منفصل. لا يُرسل المفتاح إلى الخادم أبدًا.\n\nتنتهي صلاحيته خلال %3$s.</string>
+    <string name="share_clip_password_fmt">كلمة المرور: %1$s</string>
+    <string name="dns_desc_anti_malware">مكافحة البرمجيات الخبيثة</string>
+    <string name="dns_desc_ad_blocker">حاجب الإعلانات</string>
+    <string name="dns_desc_ad_malware_blocker">حاجب الإعلانات + البرمجيات الخبيثة</string>
+    <string name="dns_desc_blocks_ads_trackers">يحجب الإعلانات والمتعقبات</string>
+    <string name="dns_desc_privacy">الخصوصية</string>
+    <string name="dns_desc_neutral_dnssec">محايد، غير ربحي، DNSSEC</string>
+    <string name="dns_desc_no_logs">بدون سجلات</string>
+    <string name="dns_desc_family_protection">حماية العائلة</string>
+    <string name="dns_desc_fast">سريع</string>
+    <string name="dns_desc_fast_private2">سريع وخاص</string>
+    <string name="dns_desc_unfiltered">بدون تصفية</string>
+    <string name="dns_desc_no_custom_profile">بدون ملف مخصص</string>
+    <string name="dns_desc_enhanced_security">أمان معزز</string>
+    <string name="dns_desc_adult_blocking">حظر محتوى البالغين</string>
+    <string name="dns_desc_nextdns_custom">ملف NextDNS مخصص</string>
+    <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
 </resources>

@@ -489,4 +489,42 @@
 
 
 
+    <string name="dns_desc_custom">自定义配置</string>
+    <string name="dns_desc_privacy_doq">隐私 (DoQ)</string>
+    <string name="dns_desc_privacy_doh">隐私 (DoH)</string>
+    <string name="dns_desc_privacy_dot">隐私 (DoT)</string>
+    <string name="dns_desc_fast_private_doh">快速私密 (DoH)</string>
+    <string name="dns_desc_fast_private">快速私密</string>
+    <string name="dns_desc_fast_private_dot">快速私密 (DoT)</string>
+    <string name="dns_desc_security">增强安全</string>
+    <string name="dns_desc_isp_fmt">运营商 DNS — %1$s</string>
+    <string name="es_err_password_required">需要密码</string>
+    <string name="es_err_download_failed_fmt">下载失败 (%1$d)</string>
+    <string name="es_err_format_unsupported">不支持的格式 (旧链接?)</string>
+    <string name="es_err_content_too_short_fmt">内容过短 (%1$d 字节)</string>
+    <string name="es_err_wrong_password">密码错误或内容损坏</string>
+    <string name="es_err_legacy_unsupported">不支持旧版格式</string>
+    <string name="es_err_invalid_code_fmt">无效代码: %1$s</string>
+    <string name="adb_err_key_creation_failed">无法创建 ADB 密钥</string>
+    <string name="adb_err_key_load_failed">无法加载/创建 ADB 密钥</string>
+    <string name="adb_err_check_setup_fmt">请检查:\n1. ADB 调试已启用\n2. 无线调试已启用\n3. 如有必要请重启设备\n\n测试端口: %1$s</string>
+    <string name="adb_err_permission_denied_fmt">WRITE_SECURE_SETTINGS 权限被拒绝。\n\n结果: %1$s</string>
+    <string name="share_text_format">链接 (端到端加密):\n%1$s\n\n密码:\n%2$s\n\n已复制到剪贴板。请分别共享链接和密码。密钥从不发送至服务器。\n\n%3$s 后过期。</string>
+    <string name="share_clip_password_fmt">密码: %1$s</string>
+    <string name="dns_desc_anti_malware">反恶意软件</string>
+    <string name="dns_desc_ad_blocker">广告拦截器</string>
+    <string name="dns_desc_ad_malware_blocker">广告 + 恶意软件拦截</string>
+    <string name="dns_desc_blocks_ads_trackers">拦截广告与追踪器</string>
+    <string name="dns_desc_privacy">隐私</string>
+    <string name="dns_desc_neutral_dnssec">中立、非营利、DNSSEC</string>
+    <string name="dns_desc_no_logs">无日志</string>
+    <string name="dns_desc_family_protection">家庭保护</string>
+    <string name="dns_desc_fast">快速</string>
+    <string name="dns_desc_fast_private2">快速私密</string>
+    <string name="dns_desc_unfiltered">无过滤</string>
+    <string name="dns_desc_no_custom_profile">无自定义配置</string>
+    <string name="dns_desc_enhanced_security">增强安全</string>
+    <string name="dns_desc_adult_blocking">成人内容拦截</string>
+    <string name="dns_desc_nextdns_custom">NextDNS 自定义配置</string>
+    <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
 </resources>

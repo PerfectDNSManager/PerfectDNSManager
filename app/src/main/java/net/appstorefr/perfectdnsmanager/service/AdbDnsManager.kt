@@ -1,5 +1,7 @@
 package net.appstorefr.perfectdnsmanager.service
 
+import net.appstorefr.perfectdnsmanager.R
+
 import android.content.Context
 import android.content.pm.PackageManager
 import android.provider.Settings
@@ -156,7 +158,7 @@ class AdbDnsManager(private val context: Context) {
 
         val crypto = readOrCreateCrypto()
         if (crypto == null) {
-            callback.onError("Impossible de créer les clés ADB")
+            callback.onError(context.getString(R.string.adb_err_key_creation_failed))
             return
         }
 
@@ -299,7 +301,7 @@ class AdbDnsManager(private val context: Context) {
             try {
                 val crypto = readOrCreateCrypto()
                 if (crypto == null) {
-                    lastError = "Impossible de charger/créer la clé ADB"
+                    lastError = context.getString(R.string.adb_err_key_load_failed)
                     Log.e(TAG, lastError)
                     return@Thread
                 }
@@ -332,12 +334,10 @@ class AdbDnsManager(private val context: Context) {
                 }
 
                 if (!connected || connection == null) {
-                    lastError = "ADB non accessible.\n\n" +
-                        "Vérifiez que :\n" +
-                        "1. Le débogage ADB est activé\n" +
-                        "2. Le débogage réseau est activé\n" +
-                        "3. Redémarrez l'appareil si nécessaire\n\n" +
-                        "Ports testés: ${portsToTry.joinToString()}"
+                    lastError = context.getString(
+                        R.string.adb_err_check_setup_fmt,
+                        portsToTry.joinToString()
+                    )
                     Log.e(TAG, lastError)
                     return@Thread
                 }
@@ -358,9 +358,10 @@ class AdbDnsManager(private val context: Context) {
                     if (grantResult.contains("Exception", ignoreCase = true) ||
                         grantResult.contains("error", ignoreCase = true) ||
                         grantResult.contains("denied", ignoreCase = true)) {
-                        lastError = "Permission WRITE_SECURE_SETTINGS refusée.\n\n" +
-                            "Résultat: $grantResult\n\n" +
-                            "Essayez depuis un PC :\nadb shell pm grant ${context.packageName} android.permission.WRITE_SECURE_SETTINGS"
+                        lastError = context.getString(
+                            R.string.adb_err_permission_denied_fmt,
+                            grantResult
+                        ) + "\n\nadb shell pm grant ${context.packageName} android.permission.WRITE_SECURE_SETTINGS"
                         Log.e(TAG, lastError)
                         return@Thread
                     }

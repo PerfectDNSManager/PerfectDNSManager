@@ -489,4 +489,42 @@
 
 
 
+    <string name="dns_desc_custom">कस्टम प्रोफ़ाइल</string>
+    <string name="dns_desc_privacy_doq">गोपनीयता (DoQ)</string>
+    <string name="dns_desc_privacy_doh">गोपनीयता (DoH)</string>
+    <string name="dns_desc_privacy_dot">गोपनीयता (DoT)</string>
+    <string name="dns_desc_fast_private_doh">तेज़ और निजी (DoH)</string>
+    <string name="dns_desc_fast_private">तेज़ और निजी</string>
+    <string name="dns_desc_fast_private_dot">तेज़ और निजी (DoT)</string>
+    <string name="dns_desc_security">उन्नत सुरक्षा</string>
+    <string name="dns_desc_isp_fmt">ISP DNS — %1$s</string>
+    <string name="es_err_password_required">पासवर्ड चाहिए</string>
+    <string name="es_err_download_failed_fmt">डाउनलोड विफल (%1$d)</string>
+    <string name="es_err_format_unsupported">असमर्थित प्रारूप (पुराना लिंक?)</string>
+    <string name="es_err_content_too_short_fmt">सामग्री बहुत छोटी (%1$d बाइट)</string>
+    <string name="es_err_wrong_password">गलत पासवर्ड या भ्रष्ट सामग्री</string>
+    <string name="es_err_legacy_unsupported">लीगेसी प्रारूप समर्थित नहीं</string>
+    <string name="es_err_invalid_code_fmt">अमान्य कोड: %1$s</string>
+    <string name="adb_err_key_creation_failed">ADB कुंजियाँ नहीं बना सके</string>
+    <string name="adb_err_key_load_failed">ADB कुंजी लोड/बनाने में विफल</string>
+    <string name="adb_err_check_setup_fmt">जाँचें:\n1. ADB डिबगिंग चालू है\n2. वायरलेस डिबगिंग चालू है\n3. आवश्यक हो तो डिवाइस रीस्टार्ट करें\n\nपरीक्षित पोर्ट: %1$s</string>
+    <string name="adb_err_permission_denied_fmt">WRITE_SECURE_SETTINGS अनुमति अस्वीकृत।\n\nपरिणाम: %1$s</string>
+    <string name="share_text_format">लिंक (एंड-टू-एंड एन्क्रिप्टेड):\n%1$s\n\nपासवर्ड:\n%2$s\n\nक्लिपबोर्ड पर कॉपी हो गया। लिंक और पासवर्ड अलग से साझा करें। कुंजी कभी सर्वर को नहीं भेजी जाती।\n\n%3$s में समाप्त।</string>
+    <string name="share_clip_password_fmt">पासवर्ड: %1$s</string>
+    <string name="dns_desc_anti_malware">एंटी-मैलवेयर</string>
+    <string name="dns_desc_ad_blocker">विज्ञापन ब्लॉकर</string>
+    <string name="dns_desc_ad_malware_blocker">विज्ञापन + मैलवेयर ब्लॉकर</string>
+    <string name="dns_desc_blocks_ads_trackers">विज्ञापन और ट्रैकर्स ब्लॉक</string>
+    <string name="dns_desc_privacy">गोपनीयता</string>
+    <string name="dns_desc_neutral_dnssec">तटस्थ, गैर-लाभकारी, DNSSEC</string>
+    <string name="dns_desc_no_logs">कोई लॉग नहीं</string>
+    <string name="dns_desc_family_protection">पारिवारिक सुरक्षा</string>
+    <string name="dns_desc_fast">तेज़</string>
+    <string name="dns_desc_fast_private2">तेज़ और निजी</string>
+    <string name="dns_desc_unfiltered">बिना फ़िल्टर</string>
+    <string name="dns_desc_no_custom_profile">कोई कस्टम प्रोफ़ाइल नहीं</string>
+    <string name="dns_desc_enhanced_security">उन्नत सुरक्षा</string>
+    <string name="dns_desc_adult_blocking">वयस्क सामग्री ब्लॉक</string>
+    <string name="dns_desc_nextdns_custom">NextDNS कस्टम प्रोफ़ाइल</string>
+    <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
 </resources>

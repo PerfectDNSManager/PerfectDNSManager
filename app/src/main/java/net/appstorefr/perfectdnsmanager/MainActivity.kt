@@ -356,7 +356,21 @@ class MainActivity : AppCompatActivity() {
             display.appendLine(getString(R.string.report_local_ip_fmt, localIp))
             display.appendLine(getString(R.string.report_ipv4_fmt, ipv4 ?: getString(R.string.wan_ip_error)))
             val ipv6Display = ipv6 ?: getString(R.string.wan_ipv6_blocked)
-            display.append(getString(R.string.report_ipv6_fmt, ipv6Display))
+            display.appendLine(getString(R.string.report_ipv6_fmt, ipv6Display))
+
+            // Infos appareil — toujours visibles, pas besoin de générer un rapport
+            val devType = if (packageManager.hasSystemFeature("android.software.leanback")) {
+                getString(R.string.device_type_tv)
+            } else if (resources.configuration.smallestScreenWidthDp >= 600) {
+                getString(R.string.device_type_tablet)
+            } else {
+                getString(R.string.device_type_phone)
+            }
+            display.appendLine()
+            display.appendLine("${getString(R.string.md_device_model)}: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
+            display.appendLine("${getString(R.string.md_device_type)}: $devType")
+            display.appendLine("${getString(R.string.md_android_version)}: ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})")
+            display.append("${getString(R.string.md_app_version)}: ${BuildConfig.VERSION_NAME}")
 
             runOnUiThread {
                 val spannable = android.text.SpannableStringBuilder(display.toString().trimEnd())
@@ -994,7 +1008,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val result = net.appstorefr.perfectdnsmanager.util.EncryptedSharer.encryptAndUpload(
-                    content, "PerfectDNS-report.enc", expiresIn
+                    this@MainActivity, content, "PerfectDNS-report.enc", expiresIn
                 )
                 runOnUiThread {
                     btnShareReport.isEnabled = true
@@ -1342,6 +1356,7 @@ class MainActivity : AppCompatActivity() {
         rebindActivationListener()
         tvActivationStatus.text = getString(R.string.deactivate)
         tvActivationStatus.setTextColor(pdmDanger())
+        applyToggleTint(true)
         refreshIpDisplay()
     }
 
@@ -1352,7 +1367,16 @@ class MainActivity : AppCompatActivity() {
         rebindActivationListener()
         tvActivationStatus.text = getString(R.string.activate)
         tvActivationStatus.setTextColor(pdmAccent())
+        applyToggleTint(false)
         refreshIpDisplay()
+    }
+
+    /** Switch vert quand DNS ON, rouge quand DNS OFF. */
+    private fun applyToggleTint(on: Boolean) {
+        val color = if (on) pdmAccent() else pdmDanger()
+        val list = android.content.res.ColorStateList.valueOf(color)
+        swActivationToggle.thumbTintList = list
+        swActivationToggle.trackTintList = list
     }
 
     /** (Re)pose le listener du Switch d'activation après un changement programmatique. */

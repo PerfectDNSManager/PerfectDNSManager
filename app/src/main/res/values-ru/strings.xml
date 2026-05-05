@@ -489,4 +489,42 @@
 
 
 
+    <string name="dns_desc_custom">Пользовательский профиль</string>
+    <string name="dns_desc_privacy_doq">Приватность (DoQ)</string>
+    <string name="dns_desc_privacy_doh">Приватность (DoH)</string>
+    <string name="dns_desc_privacy_dot">Приватность (DoT)</string>
+    <string name="dns_desc_fast_private_doh">Быстрый и приватный (DoH)</string>
+    <string name="dns_desc_fast_private">Быстрый и приватный</string>
+    <string name="dns_desc_fast_private_dot">Быстрый и приватный (DoT)</string>
+    <string name="dns_desc_security">Повышенная безопасность</string>
+    <string name="dns_desc_isp_fmt">DNS провайдера %1$s</string>
+    <string name="es_err_password_required">Требуется пароль</string>
+    <string name="es_err_download_failed_fmt">Ошибка скачивания (%1$d)</string>
+    <string name="es_err_format_unsupported">Формат не поддерживается (старая ссылка?)</string>
+    <string name="es_err_content_too_short_fmt">Содержимое слишком короткое (%1$d байт)</string>
+    <string name="es_err_wrong_password">Неверный пароль или повреждённое содержимое</string>
+    <string name="es_err_legacy_unsupported">Устаревший формат не поддерживается</string>
+    <string name="es_err_invalid_code_fmt">Неверный код: %1$s</string>
+    <string name="adb_err_key_creation_failed">Не удалось создать ключи ADB</string>
+    <string name="adb_err_key_load_failed">Не удалось загрузить/создать ключ ADB</string>
+    <string name="adb_err_check_setup_fmt">Проверьте, что:\n1. Отладка ADB включена\n2. Отладка по Wi-Fi включена\n3. Перезагрузите устройство при необходимости\n\nПротестированы порты: %1$s</string>
+    <string name="adb_err_permission_denied_fmt">Разрешение WRITE_SECURE_SETTINGS отклонено.\n\nРезультат: %1$s</string>
+    <string name="share_text_format">Ссылка (E2E зашифровано):\n%1$s\n\nПароль:\n%2$s\n\nСкопировано в буфер. Передавайте ссылку и пароль отдельно. Ключ никогда не отправляется на сервер.\n\nИстекает через %3$s.</string>
+    <string name="share_clip_password_fmt">Пароль: %1$s</string>
+    <string name="dns_desc_anti_malware">Anti-Malware</string>
+    <string name="dns_desc_ad_blocker">Блокировщик рекламы</string>
+    <string name="dns_desc_ad_malware_blocker">Блок рекламы + вредоносного ПО</string>
+    <string name="dns_desc_blocks_ads_trackers">Блокирует рекламу и трекеры</string>
+    <string name="dns_desc_privacy">Приватность</string>
+    <string name="dns_desc_neutral_dnssec">Нейтральный DNS, некоммерческий, DNSSEC</string>
+    <string name="dns_desc_no_logs">Без логов</string>
+    <string name="dns_desc_family_protection">Семейная защита</string>
+    <string name="dns_desc_fast">Быстрый</string>
+    <string name="dns_desc_fast_private2">Быстрый и приватный</string>
+    <string name="dns_desc_unfiltered">Без фильтра</string>
+    <string name="dns_desc_no_custom_profile">Без пользовательского профиля</string>
+    <string name="dns_desc_enhanced_security">Повышенная безопасность</string>
+    <string name="dns_desc_adult_blocking">Блокировка контента для взрослых</string>
+    <string name="dns_desc_nextdns_custom">Пользовательский профиль NextDNS</string>
+    <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
 </resources>

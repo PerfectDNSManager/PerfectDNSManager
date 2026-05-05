@@ -489,4 +489,42 @@
 
 
 
+    <string name="dns_desc_custom">Benutzerprofil</string>
+    <string name="dns_desc_privacy_doq">Privatsphäre (DoQ)</string>
+    <string name="dns_desc_privacy_doh">Privatsphäre (DoH)</string>
+    <string name="dns_desc_privacy_dot">Privatsphäre (DoT)</string>
+    <string name="dns_desc_fast_private_doh">Schnell & privat (DoH)</string>
+    <string name="dns_desc_fast_private">Schnell & privat</string>
+    <string name="dns_desc_fast_private_dot">Schnell & privat (DoT)</string>
+    <string name="dns_desc_security">Erhöhte Sicherheit</string>
+    <string name="dns_desc_isp_fmt">Anbieter-DNS — %1$s</string>
+    <string name="es_err_password_required">Passwort erforderlich</string>
+    <string name="es_err_download_failed_fmt">Download fehlgeschlagen (%1$d)</string>
+    <string name="es_err_format_unsupported">Format nicht unterstützt (alter Link?)</string>
+    <string name="es_err_content_too_short_fmt">Inhalt zu kurz (%1$d Bytes)</string>
+    <string name="es_err_wrong_password">Falsches Passwort oder beschädigter Inhalt</string>
+    <string name="es_err_legacy_unsupported">Legacy-Format nicht unterstützt</string>
+    <string name="es_err_invalid_code_fmt">Ungültiger Code: %1$s</string>
+    <string name="adb_err_key_creation_failed">ADB-Schlüssel konnten nicht erstellt werden</string>
+    <string name="adb_err_key_load_failed">ADB-Schlüssel konnte nicht geladen/erstellt werden</string>
+    <string name="adb_err_check_setup_fmt">Prüfen Sie:\n1. ADB-Debugging ist aktiviert\n2. Drahtloses Debugging ist aktiviert\n3. Gerät bei Bedarf neu starten\n\nGetestete Ports: %1$s</string>
+    <string name="adb_err_permission_denied_fmt">Berechtigung WRITE_SECURE_SETTINGS verweigert.\n\nErgebnis: %1$s</string>
+    <string name="share_text_format">Link (Ende-zu-Ende verschlüsselt):\n%1$s\n\nPasswort:\n%2$s\n\nIn die Zwischenablage kopiert. Teilen Sie Link und Passwort getrennt. Der Schlüssel wird nie an den Server gesendet.\n\nLäuft ab in %3$s.</string>
+    <string name="share_clip_password_fmt">Passwort: %1$s</string>
+    <string name="dns_desc_anti_malware">Anti-Malware</string>
+    <string name="dns_desc_ad_blocker">Werbeblocker</string>
+    <string name="dns_desc_ad_malware_blocker">Werbe- + Malware-Blocker</string>
+    <string name="dns_desc_blocks_ads_trackers">Blockt Werbung & Tracker</string>
+    <string name="dns_desc_privacy">Privatsphäre</string>
+    <string name="dns_desc_neutral_dnssec">Neutraler DNS, gemeinnützig, DNSSEC</string>
+    <string name="dns_desc_no_logs">Keine Logs</string>
+    <string name="dns_desc_family_protection">Familienschutz</string>
+    <string name="dns_desc_fast">Schnell</string>
+    <string name="dns_desc_fast_private2">Schnell & privat</string>
+    <string name="dns_desc_unfiltered">Ungefiltert</string>
+    <string name="dns_desc_no_custom_profile">Ohne Benutzerprofil</string>
+    <string name="dns_desc_enhanced_security">Erhöhte Sicherheit</string>
+    <string name="dns_desc_adult_blocking">Erwachseneninhalte blockieren</string>
+    <string name="dns_desc_nextdns_custom">NextDNS Benutzerprofil</string>
+    <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
 </resources>

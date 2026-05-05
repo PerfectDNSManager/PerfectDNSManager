@@ -5,6 +5,7 @@ import android.util.Log
 import com.lambdapioneer.argon2kt.Argon2Kt
 import com.lambdapioneer.argon2kt.Argon2Mode
 import net.appstorefr.perfectdnsmanager.BuildConfig
+import net.appstorefr.perfectdnsmanager.R
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -61,7 +62,7 @@ class EncryptedSharer {
             val fileUrl: String
         )
 
-        fun encryptAndUpload(content: String, fileName: String = "data.enc", expiresIn: String = "1h"): UploadResult {
+        fun encryptAndUpload(context: android.content.Context, content: String, fileName: String = "data.enc", expiresIn: String = "1h"): UploadResult {
             val rng = SecureRandom()
 
             val password = generatePassword(rng, PASSWORD_LEN)
@@ -112,9 +113,9 @@ class EncryptedSharer {
             )
         }
 
-        fun downloadAndDecrypt(shortCodeOrUrl: String, password: String): String {
-            val slug = parseSlug(shortCodeOrUrl)
-            if (password.isBlank()) throw Exception("Mot de passe requis")
+        fun downloadAndDecrypt(context: android.content.Context, shortCodeOrUrl: String, password: String): String {
+            val slug = parseSlug(context, shortCodeOrUrl)
+            if (password.isBlank()) throw Exception(context.getString(R.string.es_err_password_required))
 
             val client = OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
@@ -124,17 +125,18 @@ class EncryptedSharer {
             val request = Request.Builder().url("$PDM_BASE_URL/r/$slug").build()
             val response = client.newCall(request).execute()
             if (!response.isSuccessful) {
+                val code = response.code
                 response.close()
-                throw Exception("Téléchargement échoué (${response.code})")
+                throw Exception(context.getString(R.string.es_err_download_failed_fmt, code))
             }
             val bytes = response.body?.bytes() ?: ByteArray(0)
             response.close()
 
             if (bytes.isEmpty() || bytes[0] != FORMAT_VERSION) {
-                throw Exception("Format non supporté (ancien lien ?)")
+                throw Exception(context.getString(R.string.es_err_format_unsupported))
             }
             if (bytes.size < 1 + SALT_SIZE + GCM_IV_SIZE + 16) {
-                throw Exception("Contenu trop court (${bytes.size} octets)")
+                throw Exception(context.getString(R.string.es_err_content_too_short_fmt, bytes.size))
             }
 
             val salt = bytes.copyOfRange(1, 1 + SALT_SIZE)
@@ -149,21 +151,21 @@ class EncryptedSharer {
             val decrypted = try {
                 cipher.doFinal(ct)
             } catch (e: Exception) {
-                throw Exception("Mot de passe incorrect ou contenu corrompu")
+                throw Exception(context.getString(R.string.es_err_wrong_password))
             }
             return String(decrypted, Charsets.UTF_8)
         }
 
         /** Accepte "abcd1234" (slug), "https://pdm.appstorefr.net/d/abcd1234", etc. */
-        private fun parseSlug(input: String): String {
+        private fun parseSlug(context: android.content.Context, input: String): String {
             val trimmed = input.trim()
             if (trimmed.contains("appstorefr.github.io", ignoreCase = true)) {
-                throw Exception("Format legacy non supporté")
+                throw Exception(context.getString(R.string.es_err_legacy_unsupported))
             }
             val base = if (trimmed.contains('#')) trimmed.substringBefore('#') else trimmed
             val raw = if (base.contains("/")) base.trimEnd('/').substringAfterLast('/') else base
             val clean = raw.substringBefore('?')
-            if (!clean.matches(SLUG_RE)) throw Exception("Code invalide : $clean")
+            if (!clean.matches(SLUG_RE)) throw Exception(context.getString(R.string.es_err_invalid_code_fmt, clean))
             return clean
         }
 

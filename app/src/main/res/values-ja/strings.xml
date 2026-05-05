@@ -489,4 +489,42 @@
 
 
 
+    <string name="dns_desc_custom">カスタムプロファイル</string>
+    <string name="dns_desc_privacy_doq">プライバシー (DoQ)</string>
+    <string name="dns_desc_privacy_doh">プライバシー (DoH)</string>
+    <string name="dns_desc_privacy_dot">プライバシー (DoT)</string>
+    <string name="dns_desc_fast_private_doh">高速 & プライベート (DoH)</string>
+    <string name="dns_desc_fast_private">高速 & プライベート</string>
+    <string name="dns_desc_fast_private_dot">高速 & プライベート (DoT)</string>
+    <string name="dns_desc_security">強化されたセキュリティ</string>
+    <string name="dns_desc_isp_fmt">プロバイダー DNS — %1$s</string>
+    <string name="es_err_password_required">パスワードが必要</string>
+    <string name="es_err_download_failed_fmt">ダウンロード失敗 (%1$d)</string>
+    <string name="es_err_format_unsupported">サポートされていない形式 (古いリンク?)</string>
+    <string name="es_err_content_too_short_fmt">コンテンツが短すぎる (%1$d バイト)</string>
+    <string name="es_err_wrong_password">パスワードが違うか、コンテンツが破損しています</string>
+    <string name="es_err_legacy_unsupported">レガシー形式は未対応</string>
+    <string name="es_err_invalid_code_fmt">無効なコード: %1$s</string>
+    <string name="adb_err_key_creation_failed">ADB キーの作成に失敗</string>
+    <string name="adb_err_key_load_failed">ADB キーの読み込み/作成に失敗</string>
+    <string name="adb_err_check_setup_fmt">確認してください:\n1. ADB デバッグが有効\n2. ワイヤレスデバッグが有効\n3. 必要なら端末を再起動\n\n試行したポート: %1$s</string>
+    <string name="adb_err_permission_denied_fmt">WRITE_SECURE_SETTINGS の権限が拒否されました。\n\n結果: %1$s</string>
+    <string name="share_text_format">リンク (E2E 暗号化):\n%1$s\n\nパスワード:\n%2$s\n\nクリップボードにコピーしました。リンクとパスワードを別々に共有してください。鍵はサーバーに送信されません。\n\n%3$s で有効期限切れ。</string>
+    <string name="share_clip_password_fmt">パスワード: %1$s</string>
+    <string name="dns_desc_anti_malware">アンチマルウェア</string>
+    <string name="dns_desc_ad_blocker">広告ブロッカー</string>
+    <string name="dns_desc_ad_malware_blocker">広告 + マルウェアブロッカー</string>
+    <string name="dns_desc_blocks_ads_trackers">広告とトラッカーをブロック</string>
+    <string name="dns_desc_privacy">プライバシー</string>
+    <string name="dns_desc_neutral_dnssec">中立的、非営利、DNSSEC</string>
+    <string name="dns_desc_no_logs">ログなし</string>
+    <string name="dns_desc_family_protection">家族向け保護</string>
+    <string name="dns_desc_fast">高速</string>
+    <string name="dns_desc_fast_private2">高速 & プライベート</string>
+    <string name="dns_desc_unfiltered">フィルタなし</string>
+    <string name="dns_desc_no_custom_profile">カスタムプロファイルなし</string>
+    <string name="dns_desc_enhanced_security">強化されたセキュリティ</string>
+    <string name="dns_desc_adult_blocking">アダルトコンテンツブロック</string>
+    <string name="dns_desc_nextdns_custom">NextDNS カスタムプロファイル</string>
+    <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
 </resources>

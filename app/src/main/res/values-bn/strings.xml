@@ -489,4 +489,42 @@
 
 
 
+    <string name="dns_desc_custom">কাস্টম প্রোফাইল</string>
+    <string name="dns_desc_privacy_doq">গোপনীয়তা (DoQ)</string>
+    <string name="dns_desc_privacy_doh">গোপনীয়তা (DoH)</string>
+    <string name="dns_desc_privacy_dot">গোপনীয়তা (DoT)</string>
+    <string name="dns_desc_fast_private_doh">দ্রুত ও গোপনীয় (DoH)</string>
+    <string name="dns_desc_fast_private">দ্রুত ও গোপনীয়</string>
+    <string name="dns_desc_fast_private_dot">দ্রুত ও গোপনীয় (DoT)</string>
+    <string name="dns_desc_security">উন্নত নিরাপত্তা</string>
+    <string name="dns_desc_isp_fmt">ISP DNS — %1$s</string>
+    <string name="es_err_password_required">পাসওয়ার্ড প্রয়োজন</string>
+    <string name="es_err_download_failed_fmt">ডাউনলোড ব্যর্থ (%1$d)</string>
+    <string name="es_err_format_unsupported">অসমর্থিত ফরম্যাট (পুরানো লিঙ্ক?)</string>
+    <string name="es_err_content_too_short_fmt">বিষয়বস্তু খুব ছোট (%1$d বাইট)</string>
+    <string name="es_err_wrong_password">ভুল পাসওয়ার্ড বা বিকৃত বিষয়বস্তু</string>
+    <string name="es_err_legacy_unsupported">লিগ্যাসি ফরম্যাট সমর্থিত নয়</string>
+    <string name="es_err_invalid_code_fmt">অবৈধ কোড: %1$s</string>
+    <string name="adb_err_key_creation_failed">ADB কী তৈরি করা যায়নি</string>
+    <string name="adb_err_key_load_failed">ADB কী লোড/তৈরি করা যায়নি</string>
+    <string name="adb_err_check_setup_fmt">যাচাই করুন:\n1. ADB ডিবাগিং চালু\n2. ওয়্যারলেস ডিবাগিং চালু\n3. প্রয়োজনে ডিভাইস রিস্টার্ট করুন\n\nচেক করা পোর্ট: %1$s</string>
+    <string name="adb_err_permission_denied_fmt">WRITE_SECURE_SETTINGS অনুমতি অস্বীকৃত।\n\nফলাফল: %1$s</string>
+    <string name="share_text_format">লিঙ্ক (এন্ড-টু-এন্ড এনক্রিপ্টেড):\n%1$s\n\nপাসওয়ার্ড:\n%2$s\n\nক্লিপবোর্ডে কপি হয়েছে। লিঙ্ক ও পাসওয়ার্ড আলাদাভাবে শেয়ার করুন। কী কখনই সার্ভারে পাঠানো হয় না।\n\n%3$s এ মেয়াদ শেষ।</string>
+    <string name="share_clip_password_fmt">পাসওয়ার্ড: %1$s</string>
+    <string name="dns_desc_anti_malware">অ্যান্টি-ম্যালওয়্যার</string>
+    <string name="dns_desc_ad_blocker">বিজ্ঞাপন ব্লকার</string>
+    <string name="dns_desc_ad_malware_blocker">বিজ্ঞাপন + ম্যালওয়্যার ব্লকার</string>
+    <string name="dns_desc_blocks_ads_trackers">বিজ্ঞাপন ও ট্র্যাকার ব্লক</string>
+    <string name="dns_desc_privacy">গোপনীয়তা</string>
+    <string name="dns_desc_neutral_dnssec">নিরপেক্ষ, অলাভজনক, DNSSEC</string>
+    <string name="dns_desc_no_logs">কোনো লগ নেই</string>
+    <string name="dns_desc_family_protection">পরিবারের সুরক্ষা</string>
+    <string name="dns_desc_fast">দ্রুত</string>
+    <string name="dns_desc_fast_private2">দ্রুত ও গোপনীয়</string>
+    <string name="dns_desc_unfiltered">ফিল্টারবিহীন</string>
+    <string name="dns_desc_no_custom_profile">কোনো কাস্টম প্রোফাইল নেই</string>
+    <string name="dns_desc_enhanced_security">উন্নত নিরাপত্তা</string>
+    <string name="dns_desc_adult_blocking">প্রাপ্তবয়স্ক বিষয়বস্তু ব্লক</string>
+    <string name="dns_desc_nextdns_custom">NextDNS কাস্টম প্রোফাইল</string>
+    <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
 </resources>

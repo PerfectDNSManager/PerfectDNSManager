@@ -134,7 +134,7 @@ class AddProfileDialog(
                     secondary = etSecondary.text.toString().trim().takeIf { it.isNotBlank() },
                     primaryV6 = etPrimaryV6.text.toString().trim().takeIf { it.isNotBlank() },
                     secondaryV6 = etSecondaryV6.text.toString().trim().takeIf { it.isNotBlank() },
-                    description = "Profil personnalisé",
+                    descResId = R.string.dns_desc_custom,
                     isCustom = true
                 )
                 onProfileCreated(profile)

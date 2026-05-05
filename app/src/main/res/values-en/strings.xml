@@ -508,4 +508,42 @@
 
 
 
+    <string name="dns_desc_custom">Custom profile</string>
+    <string name="dns_desc_privacy_doq">Privacy (DoQ)</string>
+    <string name="dns_desc_privacy_doh">Privacy (DoH)</string>
+    <string name="dns_desc_privacy_dot">Privacy (DoT)</string>
+    <string name="dns_desc_fast_private_doh">Fast & private (DoH)</string>
+    <string name="dns_desc_fast_private">Fast & private</string>
+    <string name="dns_desc_fast_private_dot">Fast & private (DoT)</string>
+    <string name="dns_desc_security">Enhanced security</string>
+    <string name="dns_desc_isp_fmt">ISP DNS — %1$s</string>
+    <string name="es_err_password_required">Password required</string>
+    <string name="es_err_download_failed_fmt">Download failed (%1$d)</string>
+    <string name="es_err_format_unsupported">Unsupported format (old link?)</string>
+    <string name="es_err_content_too_short_fmt">Content too short (%1$d bytes)</string>
+    <string name="es_err_wrong_password">Wrong password or corrupted content</string>
+    <string name="es_err_legacy_unsupported">Legacy format not supported</string>
+    <string name="es_err_invalid_code_fmt">Invalid code: %1$s</string>
+    <string name="adb_err_key_creation_failed">Failed to create ADB keys</string>
+    <string name="adb_err_key_load_failed">Failed to load/create ADB key</string>
+    <string name="adb_err_check_setup_fmt">Check that:\n1. ADB debugging is enabled\n2. Wireless debugging is enabled\n3. Reboot the device if needed\n\nPorts tried: %1$s</string>
+    <string name="adb_err_permission_denied_fmt">WRITE_SECURE_SETTINGS permission denied.\n\nResult: %1$s</string>
+    <string name="share_text_format">Link (end-to-end encrypted):\n%1$s\n\nPassword:\n%2$s\n\nCopied to clipboard. Share link + password separately. The key is never sent to the server.\n\nExpires in %3$s.</string>
+    <string name="share_clip_password_fmt">Password: %1$s</string>
+    <string name="dns_desc_anti_malware">Anti-Malware</string>
+    <string name="dns_desc_ad_blocker">Ad blocker</string>
+    <string name="dns_desc_ad_malware_blocker">Ad + malware blocker</string>
+    <string name="dns_desc_blocks_ads_trackers">Blocks ads & trackers</string>
+    <string name="dns_desc_privacy">Privacy</string>
+    <string name="dns_desc_neutral_dnssec">Neutral, non-profit, DNSSEC</string>
+    <string name="dns_desc_no_logs">No logs</string>
+    <string name="dns_desc_family_protection">Family protection</string>
+    <string name="dns_desc_fast">Fast</string>
+    <string name="dns_desc_fast_private2">Fast & private</string>
+    <string name="dns_desc_unfiltered">Unfiltered</string>
+    <string name="dns_desc_no_custom_profile">No custom profile</string>
+    <string name="dns_desc_enhanced_security">Enhanced security</string>
+    <string name="dns_desc_adult_blocking">Adult content blocking</string>
+    <string name="dns_desc_nextdns_custom">NextDNS custom profile</string>
+    <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
 </resources>
