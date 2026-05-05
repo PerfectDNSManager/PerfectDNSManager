@@ -639,7 +639,8 @@
         </LinearLayout>
 
         <!-- Version courante + bouton de vérification manuelle. Logiquement
-             rattachés à la card "mises à jour" plutôt qu'à la card À propos. -->
+             rattachés à la card "mises à jour" plutôt qu'à la card À propos.
+             Mise en ligne : version à gauche, bouton à droite. -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -647,25 +648,30 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"/>
 
-        <TextView
-            android:id="@+id/tvVersion"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@color/pdm_text_disabled"
-            android:textSize="13sp"
-            android:layout_marginBottom="8dp"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <Button
-            android:id="@+id/btnCheckForUpdate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/check_for_updates"
-            android:background="@drawable/pdm_btn_info"
-            android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="@color/pdm_accent_alt"
-            android:focusable="true"/>
+            <TextView
+                android:id="@+id/tvVersion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/pdm_text_disabled"
+                android:textSize="13sp"/>
+
+            <Button
+                android:id="@+id/btnCheckForUpdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/check_for_updates"
+                android:background="@drawable/pdm_btn_info"
+                android:foreground="@drawable/btn_focus_foreground"
+                android:textColor="@color/pdm_accent_alt"
+                android:focusable="true"/>
+        </LinearLayout>
     </LinearLayout>
 
     <!-- À propos (intégré ici en bas plutôt qu'une page séparée) -->
@@ -700,13 +706,18 @@
 
         <Button
             android:id="@+id/btnSupportAbout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
             android:text="@string/support_about_button"
             android:background="@drawable/pdm_btn_support"
             android:foreground="@drawable/btn_focus_foreground"
             android:textColor="@color/pdm_accent_support"
-            android:layout_marginBottom="8dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="10dp"
             android:focusable="true"/>
 
         <TextView

@@ -77,8 +77,10 @@ class SettingsActivity : AppCompatActivity() {
         val switchBetaUpdates: Switch = findViewById(R.id.switchBetaUpdates)
         if (PdmApp.isBetaBuild()) {
             switchBetaUpdates.isChecked = true
+            // Reste focusable (DPAD doit pouvoir s'arrêter dessus pour lire le
+            // libellé) mais clickable=false → la rangée n'avale pas le clic et
+            // le toggle reste verrouillé sur ON.
             rowBetaUpdates.isClickable = false
-            rowBetaUpdates.isFocusable = false
             rowBetaUpdates.alpha = 0.7f
             findViewById<TextView>(R.id.tvBetaUpdatesDescription)
                 .setText(R.string.beta_updates_locked)
