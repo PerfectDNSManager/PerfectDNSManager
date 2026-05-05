@@ -3,25 +3,14 @@
 
     <!-- MainActivity -->
     <string name="dns_switcher">Perfect DNS Manager</string>
-    <string name="dns_profile">ملف DNS</string>
     <string name="add_new_profile">➕ ملف جديد</string>
-    <string name="application_method">طريقة التطبيق</string>
-    <string name="private_dns_adb">Private DNS (ADB)</string>
-    <string name="local_vpn_all_types">VPN محلي</string>
     <string name="activate">تفعيل</string>
     <string name="deactivate">إلغاء التفعيل</string>
     <string name="no_active_dns">لا يوجد DNS نشط</string>
-    <string name="about">حول</string>
     <string name="select_a_profile">اختر ملفًا</string>
-    <string name="click_to_select_dns">اضغط هنا لاختيار DNS</string>
-    <string name="profile_added">تمت إضافة الملف: %1$s</string>
     <string name="private_dns_supports_only_dot">Private DNS يدعم DoT فقط</string>
     <string name="adb_requires_root_or_pc">تعذّر تعديل الإعدادات.\n\nتأكد من منح الإذن عبر الكمبيوتر:\n\nadb shell pm grant %1$s android.permission.WRITE_SECURE_SETTINGS\n\n(أو أن جهازك يملك صلاحيات Root)</string>
-    <string name="error_activating_adb">خطأ في تفعيل ADB</string>
-    <string name="dns_activated_via_adb">تم تفعيل DNS عبر ADB</string>
     <string name="vpn_permission_denied">تم رفض إذن VPN</string>
-    <string name="vpn_activated">تم تفعيل VPN: %1$s</string>
-    <string name="dns_disabled">تم تعطيل DNS</string>
     <string name="switching_disabling_dot">جارٍ تعطيل DoT السابق…</string>
     <string name="firestick_warning_title">تحذير Firestick</string>
     <string name="firestick_warning_message">استخدام طريقة ADB على أجهزة Firestick قد يؤدي إلى فقدان الاتصال بالإنترنت. يُنصح باستخدام طريقة VPN.</string>
@@ -29,31 +18,21 @@
     <string name="dns_provider_label">1. اختيار مزود DNS:</string>
     <string name="dns_select_button">👉 اختيار مزود DNS 👈</string>
     <string name="activation_label">2. التفعيل:</string>
-    <string name="dns_service_used">خدمة DNS المستخدمة:</string>
     <string name="settings_content_description">الإعدادات</string>
-    <string name="wan_ipv4_label">IPv4: </string>
-    <string name="wan_ipv6_label">IPv6: </string>
-    <string name="wan_ip_loading">جارٍ التحميل…</string>
     <string name="wan_ip_error">غير متوفر</string>
     <string name="wan_ipv6_blocked">محظور ✓</string>
-    <string name="share_ip_button">📤 مشاركة التقرير</string>
-    <string name="share_ip_uploading">جارٍ رفع عناوين IP…</string>
     <string name="share_ip_success_title">تم مشاركة التقرير المشفر</string>
-    <string name="share_ip_success_message">الرمز: %1$s\n\nتم نسخ الرمز إلى الحافظة.\n\nالرابط: %2$s\n(ملف مشفر AES-256)</string>
     <string name="share_ip_error">خطأ أثناء مشاركة عناوين IP</string>
 
     <!-- Navigation -->
-    <string name="back">رجوع</string>
     <string name="back_arrow">← رجوع</string>
 
     <!-- Settings -->
     <string name="settings_title">الإعدادات</string>
-    <string name="language_select_button">اللغة / Language</string>
     <string name="how_to_adb">🛠 كيفية تفعيل ADB</string>
     <string name="adb_status_active">🟢 تصحيح ADB: نشط</string>
     <string name="adb_status_inactive">🔴 تصحيح ADB: غير نشط</string>
     <string name="advanced_features_title">⚙️ إعدادات DNS متقدمة</string>
-    <string name="advanced_features_desc">تفعيل الميزات: DNS DoT عبر ADB، URL Rewrite و DNS المشغّل.</string>
     <string name="url_rewrite_warning">URL Rewrite يعمل فقط مع DNS DoH أو القياسي (ليس DoT/ADB)</string>
     <string name="url_rewrite_button">🔀 URL Rewrite</string>
     <string name="restore_dns_button">🔄 استعادة DNS الأولي</string>
@@ -70,49 +49,24 @@
     <string name="beta_updates_locked">أنت تستخدم نسخة بيتا بالفعل — هذا الخيار مفعّل دائمًا.</string>
 
     <!-- Auto-start / Auto-reconnect -->
-    <string name="auto_settings_title">التشغيل التلقائي</string>
     <string name="auto_start_label">التشغيل عند بدء الجهاز</string>
-    <string name="auto_start_description">تشغيل التطبيق تلقائيًا عند بدء تشغيل الجهاز</string>
     <string name="auto_reconnect_label">الاتصال التلقائي بـ DNS</string>
-    <string name="auto_reconnect_description">إعادة الاتصال تلقائيًا بـ DNS الافتراضي أو آخر DNS مستخدم</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ لم يتم تكوين DNS</string>
     <string name="auto_reconnect_default_prefix">(افتراضي) </string>
 
     <!-- Import / Export -->
     <string name="import_export_title">💾 ملف التكوين</string>
-    <string name="import_export_desc">احفظ أو استعد تكوينك الكامل (الملفات، DNS الافتراضي، قواعد إعادة الكتابة، الإعدادات).</string>
     <string name="export_config_button">📤 تصدير الإعدادات المشفرة (AES-256-GCM)</string>
     <string name="import_config_button">📥 استيراد الإعدادات المشفرة</string>
-    <string name="config_exported_title">📤 تم تصدير التكوين</string>
-    <string name="config_exported_message">الملف: %1$s\n\nتم نسخ JSON أيضًا إلى الحافظة.\n\nيمكنك مشاركته أو حفظه.</string>
-    <string name="share_button">مشاركة</string>
-    <string name="upload_encrypted">🔒 إرسال مشفر</string>
     <string name="uploading">جارٍ التشفير والإرسال…</string>
     <string name="upload_success_title">🔒 تم إرسال الملف المشفر!</string>
-    <string name="upload_success_message_with_number">رمز الاستيراد: %1$s\n\nللاستيراد على جهاز آخر، أدخل هذا الرمز.\n\nالرابط الكامل:\n%2$s\n\nتم نسخ الرمز إلى الحافظة.\n\n🔒 تشفير AES-256 — المفتاح موجود في الرابط.</string>
     <string name="upload_error">خطأ في الرفع: %1$s</string>
-    <string name="share_config">مشاركة التكوين</string>
     <string name="export_error">خطأ في التصدير: %1$s</string>
-    <string name="import_from_clipboard">📋 لصق من الحافظة</string>
-    <string name="import_from_url">🌐 استيراد من URL</string>
-    <string name="import_from_file">📁 استيراد من ملف محلي</string>
-    <string name="import_from_code">🔒 من رمز مشفر</string>
     <string name="import_from_code_title">🔒 استيراد تكوين مشفر</string>
-    <string name="enter_share_code">أدخل الرمز:</string>
-    <string name="share_code_hint">123456</string>
     <string name="import_code_explain">قم بإنشاء هذا الرمز عبر التصدير في الإعدادات.\n\nسيتم تنزيل الملف وفك تشفيره تلقائيًا.\n\nالتحقق: https://appstorefr.github.io/PerfectDNSManager/decrypt.html</string>
-    <string name="choose_expiration">انتهاء صلاحية الملف:</string>
-    <string name="expiration_1h">ساعة واحدة</string>
-    <string name="expiration_12h">12 ساعة</string>
-    <string name="expiration_24h">24 ساعة</string>
-    <string name="expiration_72h">72 ساعة (3 أيام)</string>
-    <string name="clipboard_empty">الحافظة فارغة</string>
-    <string name="enter_config_url">أدخل URL لملف تكوين JSON:</string>
-    <string name="import_from_url_title">🌐 استيراد من URL</string>
     <string name="download_button">تنزيل</string>
     <string name="downloading">جارٍ التنزيل…</string>
-    <string name="no_file_found">لم يتم العثور على ملف: %1$s</string>
     <string name="read_error">خطأ في القراءة: %1$s</string>
     <string name="confirm_import_title">📥 تأكيد الاستيراد</string>
     <string name="confirm_import_message">محتوى التكوين:\n\n%1$s\n\nسيحل هذا محل تكوينك الحالي.</string>
@@ -178,7 +132,6 @@
     <string name="lang_deutsch">🇩🇪 Deutsch</string>
 
     <!-- Support -->
-    <string name="support_us_button">❤️ ادعمني</string>
     <string name="support_us_title">ادعمني ❤️</string>
     <string name="support_us_message">هل أعجبك التطبيق؟ هل ساعدك؟\nلا تتردد في تقديم بادرة صغيرة للمطوّر!</string>
     <string name="select_crypto_button">👉 اضغط هنا لاختيار العملة الرقمية للإرسال 👈</string>
@@ -190,15 +143,9 @@
     <string name="about_community_text">🚫 بدون إعلانات\n📊 بدون جمع بيانات\n🆓 مجاني للاستخدام والمشاركة\n💜 صُنع للمجتمع ❤️</string>
     <string name="check_for_updates">التحقق من التحديثات</string>
     <string name="checking_for_updates">جارٍ التحقق من التحديثات…</string>
-    <string name="appstorefr">AppstoreFR</string>
-    <string name="contact_email">contact@appstorefr.net</string>
     <string name="support_about_button">❤️ ادعمني</string>
 
     <!-- DNS Deletion -->
-    <string name="cannot_delete">لا يمكن الحذف</string>
-    <string name="cannot_delete_predefined">لا يمكنك حذف ملف مُعدّ مسبقًا.</string>
-    <string name="confirm_delete">تأكيد الحذف</string>
-    <string name="delete_profile_message">هل تريد حقًا حذف الملف &quot;%1$s&quot;؟</string>
     <string name="delete">حذف</string>
 
     <!-- AddProfileDialog -->
@@ -216,27 +163,6 @@
     <string name="primary_dns_required">DNS الرئيسي مطلوب</string>
 
     <!-- DNS Test -->
-    <string name="test_dns">🔍 اختبار DNS</string>
-    <string name="test_dns_title">اختبار DNS</string>
-    <string name="test_dns_running">جارٍ الاختبار…</string>
-    <string name="test_dns_success">✅ DNS يعمل!\n\nتم حل %1$s بنجاح.\nتغيير DNS نشط.</string>
-    <string name="test_dns_fail">❌ فشل حل DNS.\n\nتعذّر حل النطاق %1$s.\nتحقق من إعدادات DNS.</string>
-    <string name="test_dns_no_dns">قم بتفعيل DNS أولاً قبل الاختبار.</string>
-    <string name="test_domain_label">النطاق للاختبار:</string>
-    <string name="test_button">اختبار</string>
-    <string name="test_flushing">مسح ذاكرة DNS + جارٍ الاختبار…</string>
-    <string name="test_no_connection_title">❌ لا يوجد اتصال</string>
-    <string name="test_no_connection_msg">تعذّر حل أي شيء.\nتحقق من اتصالك بالإنترنت.</string>
-    <string name="test_blocked_title">🔒 النطاق محظور</string>
-    <string name="test_blocked_msg">%1$s → %2$s\n\nهذا العنوان IP هو عنوان حظر.\n%3$s</string>
-    <string name="test_blocked_dns_bad">DNS لا يعمل بشكل صحيح.</string>
-    <string name="test_blocked_activate">قم بتفعيل DNS بديل ثم أعد المحاولة!</string>
-    <string name="test_accessible_title">✅ النطاق متاح</string>
-    <string name="test_accessible_msg_active">%1$s → %2$s\n\nDNS يعمل!</string>
-    <string name="test_accessible_msg_inactive">%1$s → %2$s\n\nهذا النطاق متاح بدون DNS بديل.</string>
-    <string name="test_unresolved_title">❓ لم يتم الحل</string>
-    <string name="test_unresolved_msg_active">%1$s: %2$s\n\nقد لا يعرف خادم DNS هذا النطاق.</string>
-    <string name="test_unresolved_msg_inactive">%1$s: %2$s\n\nمن المحتمل أن مزود الخدمة يحظر هذا النطاق.</string>
 
     <!-- VPN Report -->
     <string name="dns_report_title">تقرير DNS</string>
@@ -249,7 +175,6 @@
     <string name="report_method">الطريقة: %1$s</string>
     <string name="report_primary">الرئيسي: %1$s</string>
     <string name="report_secondary">الثانوي: %1$s</string>
-    <string name="ok">موافق</string>
 
     <!-- ADB Error -->
     <string name="adb_error_title">خطأ ADB / إذن</string>
@@ -258,9 +183,6 @@
 
     <!-- DnsSelection -->
     <string name="choose_dns_server">اختر خادم DNS</string>
-    <string name="method_doh_vpn_dot_adb">DoH / قياسي → VPN   |   DoT → Private DNS (ADB)</string>
-    <string name="method_vpn_only">DNS عبر VPN — DoH وقياسي</string>
-    <string name="long_press_edit">(ضغط مطوّل = تعديل)</string>
     <string name="remove_default_dns">⭐ إزالة من DNS الافتراضي</string>
     <string name="set_default_dns">⭐ تعيين كـ DNS الافتراضي</string>
     <string name="default_dns_removed">تمت إزالة DNS الافتراضي</string>
@@ -278,9 +200,6 @@
 
     <!-- NextDNS -->
     <string name="add_nextdns_profile">➕ إضافة ملف NextDNS مخصص</string>
-    <string name="nextdns_explain">أدخل معرّف ملف NextDNS الخاص بك.\nhttps://my.nextdns.io/XXXXXX/setup</string>
-    <string name="nextdns_add_title">إضافة ملف NextDNS</string>
-    <string name="nextdns_add_select">إضافة واختيار (DoH)</string>
     <string name="nextdns_id_required">المعرّف مطلوب</string>
 
     <!-- HowTo -->
@@ -309,7 +228,6 @@
     <!-- UpdateManager -->
     <string name="update_available">تحديث متوفر: v%1$s</string>
     <string name="app_up_to_date">التطبيق محدّث ✓</string>
-    <string name="update_check_error">تعذّر التحقق من التحديثات</string>
     <string name="update_downloading">جارٍ التنزيل…</string>
     <string name="update_download_error">خطأ في التنزيل</string>
     <string name="update_install_error">خطأ في التثبيت</string>
@@ -361,10 +279,6 @@
     <!-- DNS Speedtest -->
     <string name="dns_speedtest_button">بدء الاختبار</string>
     <string name="dns_speedtest_title">⚡ DNS Speedtest</string>
-    <string name="dns_speedtest_running">جارٍ اختبار زمن استجابة DNS…</string>
-    <string name="dns_speedtest_result">%1$s (%2$s): %3$s</string>
-    <string name="dns_speedtest_error">خطأ</string>
-    <string name="dns_speedtest_ms">%1$d مللي ثانية</string>
 
     <!-- Export granulaire -->
     <string name="export_select_title">📤 ماذا تريد أن تصدّر؟</string>
@@ -375,9 +289,6 @@
     <string name="export_toggle_rewrite">قواعد URL Rewrite</string>
     <string name="export_toggle_settings">الإعدادات</string>
     <string name="export_button">تصدير</string>
-    <string name="export_choose_dest">تم إنشاء الملف: %1$s\n\nتم نسخ JSON إلى الحافظة.\n\nاختر الوجهة:</string>
-    <string name="export_save_local">💾 حفظ محلي</string>
-    <string name="export_saved_locally">💾 تم حفظ الملف:\n%1$s</string>
 
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">تمت إعادة اتصال VPN (تم تغيير IPv6)</string>
@@ -389,54 +300,31 @@
     <string name="gpl_license_text">حر اليوم. حر غداً. يمكن إغلاق طريق، لكن لا يمكن إغلاق الحرية!\nالشفرة المصدرية مفتوحة، أي إعادة توزيع يجب أن تبقى مفتوحة المصدر.\nرخصة GPL v3\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
-    <string name="speedtest_button">🌐 اختبار سرعة الإنترنت</string>
-    <string name="speedtest_title">اختبار سرعة الإنترنت</string>
-    <string name="speedtest_running">جاري اختبار السرعة…</string>
-    <string name="speedtest_result_ping">البنغ: %1$d مللي ثانية</string>
-    <string name="speedtest_result_download">التحميل: %1$s ميغابت/ثانية</string>
-    <string name="speedtest_result_upload">الرفع: %1$s ميغابت/ثانية</string>
-    <string name="speedtest_error">فشل اختبار السرعة</string>
 
     <!-- DNS Leak Test -->
-    <string name="dns_leak_button">🔒 اختبار تسرب DNS</string>
-    <string name="dns_leak_title">اختبار تسرب DNS</string>
-    <string name="dns_leak_running">جاري اختبار تسرب DNS…</string>
-    <string name="dns_leak_result_title">نتائج تسرب DNS</string>
-    <string name="dns_leak_no_leak">✅ لم يتم اكتشاف تسرب — DNS الخاص بك آمن!</string>
-    <string name="dns_leak_resolvers_found">تم العثور على %1$d محلل DNS:</string>
-    <string name="dns_leak_error">فشل اختبار تسرب DNS</string>
 
     <!-- Rapport enrichi -->
     <string name="report_generating">جاري إنشاء التقرير…</string>
-    <string name="report_blocking_test_before">قبل DNS (8.8.8.8)</string>
-    <string name="report_blocking_test_after">بعد DNS (نشط)</string>
 
     <!-- أدوات الاختبار (وحدة موحدة) -->
-    <string name="tools_section_label">3. إظهار أدوات الاختبار:</string>
     <string name="generate_report_button">▶ إنشاء تقرير</string>
     <string name="quick_dns_test_button">🔍 اختبار النطاقات</string>
-    <string name="quick_dns_test_running">جاري اختبار DNS...</string>
     <string name="no_report_yet">لم يتم إنشاء تقرير بعد.\nاضغط الزر أعلاه لتشغيل الاختبارات.</string>
     <string name="share_report_button">📤 مشاركة التقرير</string>
     <string name="share_toggle_network">معلومات الشبكة (IP, DNS)</string>
     <string name="share_toggle_speedtest">اختبار سرعة الإنترنت</string>
     <string name="share_toggle_leak">اختبار تسرب DNS</string>
     <string name="share_toggle_blocking">اختبار حجب URL</string>
-    <string name="report_progress_ip">⏳ جارٍ الحصول على IP…</string>
     <string name="report_progress_speedtest">⏳ جارٍ اختبار السرعة…</string>
     <string name="report_progress_leak">⏳ جارٍ اختبار تسرب DNS…</string>
     <string name="report_progress_blocking">⏳ جارٍ اختبار الحجب…</string>
     <string name="report_complete">✅ تم إنشاء التقرير</string>
     <string name="no_report_to_share">أنشئ تقريراً أولاً</string>
-    <string name="test_domains_button">اختبار النطاقات</string>
-    <string name="test_domains_add">إضافة نطاق</string>
-    <string name="test_domains_empty">لم يتم تكوين أي نطاق</string>
 
     <!-- Split tunneling -->
     <string name="split_tunnel_button">استبعاد التطبيقات</string>
     <string name="split_tunnel_title">استبعاد التطبيقات من VPN</string>
     <string name="split_tunnel_desc">التطبيقات المحددة لن تمر عبر VPN DNS. مفيد للتطبيقات التي لا تعمل مع VPN نشط.</string>
-    <string name="split_tunnel_no_apps">لا توجد تطبيقات مستبعدة</string>
     <string name="split_tunnel_apps_count">%d تطبيق(ات) مستبعدة</string>
     <string name="split_tunnel_loading">جارٍ تحميل التطبيقات…</string>
     <string name="split_tunnel_search">بحث…</string>
@@ -487,17 +375,13 @@
     <!-- Device info -->
     <string name="share_toggle_device">معلومات الجهاز</string>
     <string name="md_device_info">معلومات الجهاز</string>
-    <string name="md_device_name">الجهاز</string>
     <string name="md_device_type">النوع</string>
     <string name="md_device_model">الطراز</string>
-    <string name="md_device_manufacturer">الشركة المصنعة</string>
     <string name="md_android_version">إصدار Android</string>
-    <string name="md_api_level">مستوى API</string>
     <string name="md_app_version">إصدار التطبيق</string>
     <string name="device_type_tv">Android TV / جهاز بث</string>
     <string name="device_type_phone">هاتف</string>
     <string name="device_type_tablet">جهاز لوحي</string>
-    <string name="device_type_unknown">غير معروف</string>
 
     <!-- Reset app -->
     <string name="reset_app_button">⚠ إعادة تعيين التطبيق</string>
@@ -515,7 +399,6 @@
     <string name="domain_tester_no_enabled">لا يوجد نطاق مفعّل.</string>
     <string name="domain_tester_dns_all">الكل</string>
     <string name="domain_tester_dns_select">DNS للاختبار:</string>
-    <string name="internet_speedtest_button">اختبار السرعة</string>
     <string name="internet_speedtest_advanced">⚡ اختبار سرعة الإنترنت</string>
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
 
@@ -525,4 +408,79 @@
     <string name="theme_light">☀️ فاتح</string>
     <string name="theme_dark">🌙 داكن</string>
     <string name="theme_choose_title">اختر السمة</string>
+    <string name="uncheck_all">إلغاء تحديد الكل</string>
+    <string name="all_apps_unchecked">تم إلغاء تحديد جميع التطبيقات</string>
+    <string name="link_and_password_required">الرابط وكلمة المرور كلاهما مطلوبان</string>
+    <string name="dns_type_doh_label">DNS over HTTPS (DoH) — موصى به</string>
+    <string name="dns_type_dot_label">DNS over TLS (DoT)</string>
+    <string name="dns_type_doq_label">DNS over QUIC (DoQ)</string>
+    <string name="dns_type_standard_label">قياسي (UDP غير مشفر)</string>
+    <string name="primary_dns_v6_optional">DNS أساسي IPv6 (اختياري)</string>
+    <string name="secondary_dns_v6_hint">DNS ثانوي IPv6 (اختياري)</string>
+    <string name="primary_dns_v6_hint">ex: 2606:4700:4700::1111</string>
+    <string name="adb_pair_wireless">إقران ADB لاسلكيًا (Android 11+)</string>
+    <string name="adb_pair_wireless_instructions">على هذا الجهاز:\n1. خيارات المطور → تصحيح الأخطاء اللاسلكي → تشغيل\n2. الإقران باستخدام رمز → دوّن الرمز المكون من 6 أرقام\n\nأدخل الرمز هنا:</string>
+    <string name="adb_pair_submit">إقران</string>
+    <string name="adb_pair_invalid_code">رمز غير صالح (مطلوب 6 أرقام)</string>
+    <string name="adb_pair_in_progress">جاري إقران ADB…</string>
+    <string name="adb_pair_step_discovering">اكتشاف منفذ ADB عبر mDNS…</string>
+    <string name="adb_pair_step_pairing">إقران TLS-PSK…</string>
+    <string name="adb_pair_step_connecting">اتصال ADB مشفر…</string>
+    <string name="adb_pair_step_granting">منح WRITE_SECURE_SETTINGS…</string>
+    <string name="adb_pair_success">تم الإقران بنجاح! تم منح الإذن مدى الحياة.</string>
+    <string name="adb_pair_failed">فشل الإقران: %1$s</string>
+    <string name="share_expires_label">انتهاء صلاحية الرابط:</string>
+    <string name="share_exp_1h">1 h</string>
+    <string name="share_exp_6h">6 h</string>
+    <string name="share_exp_24h">24 h</string>
+    <string name="share_exp_72h">72 h</string>
+    <string name="speedtest_adv_title">اختبار سرعة الإنترنت</string>
+    <string name="speedtest_server_loading">🌐  الخادم: جارٍ التحميل…</string>
+    <string name="speedtest_server_fmt">🌐  الخادم: %1$s</string>
+    <string name="speedtest_server_none">🌐  الخادم: لا شيء</string>
+    <string name="speedtest_start">بدء الاختبار</string>
+    <string name="speedtest_log">سجل الاختبار</string>
+    <string name="speedtest_waiting">الانتظار… </string>
+    <string name="speedtest_backend_cf">الخلفية: Cloudflare (speed.cloudflare.com)</string>
+    <string name="speedtest_backend_netflix">الخلفية: Netflix / Fast.com (التحميل غير مدعوم)</string>
+    <string name="speedtest_start_msg">=== بدء الاختبار %1$s ===</string>
+    <string name="speedtest_done_msg">=== انتهى الاختبار ===</string>
+    <string name="speedtest_stopping_msg">إيقاف الاختبار…</string>
+    <string name="speedtest_interrupted">تم إيقاف الاختبار.</string>
+    <string name="speedtest_error_fmt">خطأ: %1$s</string>
+    <string name="speedtest_ookla_loading">جاري تحميل قائمة خوادم Ookla…</string>
+    <string name="speedtest_ookla_latency">اختبار زمن وصول خوادم Ookla…</string>
+    <string name="speedtest_ookla_loaded_fmt">تم تحميل %1$d خادم Ookla.</string>
+    <string name="speedtest_ookla_err_code_fmt">خطأ خادم Ookla: %1$d</string>
+    <string name="speedtest_ookla_err_load_fmt">خطأ تحميل Ookla: %1$s</string>
+    <string name="speedtest_ookla_none">لا يوجد خادم Ookla متاح.</string>
+    <string name="speedtest_ookla_not_selected">لم يتم اختيار خادم Ookla.</string>
+    <string name="speedtest_ping_section_fmt"> --- Ping %1$s (%2$d طلبات) ---</string>
+    <string name="speedtest_ping_attempt_fmt">  #%1$d : %2$.1f ms</string>
+    <string name="speedtest_ping_fail_fmt">  #%1$d: فشل</string>
+    <string name="speedtest_ping_avg_fmt">  متوسط: %1$.1f ms | تذبذب: %2$.1f ms</string>
+    <string name="speedtest_dl_section_fmt"> --- تنزيل %1$s (%2$d اتصالات, %3$d ث) ---</string>
+    <string name="speedtest_ul_section_fmt"> --- رفع %1$s (%2$d اتصالات, %3$d ث) ---</string>
+    <string name="speedtest_mbps_fmt">  %1$.2f ميجابت/ث (%2$.1f ميجابايت / %3$.1f ث)</string>
+    <string name="speedtest_upload_na">التحميل غير مدعوم (غير متاح)</string>
+    <string name="speedtest_ip_none">IP : --</string>
+    <string name="speedtest_netflix_title">Netflix / Fast.com</string>
+    <string name="speedtest_cloudflare_title">Cloudflare</string>
+    <string name="speedtest_ookla_title">Ookla</string>
+    <string name="report_conn_fmt">الاتصال: %1$s</string>
+    <string name="report_carrier_fmt">المشغل: %1$s</string>
+    <string name="report_isp_fmt">المزود: %1$s</string>
+    <string name="report_ipv4_fmt">IPv4 : %1$s</string>
+    <string name="report_ipv6_fmt">IPv6 : %1$s</string>
+    <string name="report_local_ip_fmt">IP محلي: %1$s</string>
+    <string name="report_profile_fmt">الملف الشخصي: %1$s - %2$s</string>
+    <string name="dns_active_vpn_fmt">DNS النشط: %1$s (%2$s)</string>
+    <string name="dns_active_vpn">DNS النشط: VPN</string>
+    <string name="dns_active_dot_fmt">DNS النشط: DoT (%1$s)</string>
+    <string name="dns_active_dot_host_fmt">DNS النشط: DoT (%1$s)</string>
+    <string name="dns_active_dot">DNS النشط: DoT</string>
+    <string name="dt_vpn_active_fmt">🟢 VPN نشط (%1$s)</string>
+    <string name="dt_vpn_active">🟢 VPN نشط</string>
+    <string name="dt_dot_active">🟢 DNS الخاص نشط</string>
+    <string name="dt_no_dns">🔴 لا يوجد DNS نشط (دقة من المزود)</string>
 </resources>

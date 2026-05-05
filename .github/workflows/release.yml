@@ -87,11 +87,26 @@ jobs:
             fi
           fi
 
+          # On reproduit ici le calcul de gradle (computedVersionName) pour
+          # que le body du release latest-beta annonce la MÊME version que
+          # celle baked dans BuildConfig.VERSION_NAME côté APK. Sinon, le tag
+          # dit "v1.1.0-beta.54" mais l'APK porte "1.1.54-beta.54", et la
+          # comparaison sémantique côté UpdateManager dit "no update".
+          M=$(grep '^VERSION_MAJOR=' app/version.properties | cut -d= -f2)
+          N=$(grep '^VERSION_MINOR=' app/version.properties | cut -d= -f2)
+          B=$(grep '^VERSION_BUILD=' app/version.properties | cut -d= -f2)
+          if [ -n "$SUFFIX" ]; then
+            VERSION_NAME="${M}.${N}.${B}-${SUFFIX}"
+          else
+            VERSION_NAME="${M}.${N}.${B}"
+          fi
+
           {
             echo "suffix=$SUFFIX"
             echo "prerelease=$IS_PRERELEASE"
             echo "tag_name=$TAG_NAME"
             echo "release_name=$RELEASE_NAME"
+            echo "version_name=$VERSION_NAME"
           } >> "$GITHUB_OUTPUT"
           cat app/version.properties
 
@@ -158,7 +173,7 @@ jobs:
           body: |
             Lien stable pointant toujours vers la dernière bêta publiée.
 
-            Build actuel : **${{ steps.meta.outputs.tag_name }}**
+            Build actuel : **v${{ steps.meta.outputs.version_name }}**
 
             Installation :
             ```

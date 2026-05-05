@@ -70,7 +70,7 @@
             android:textSize="12sp"
             android:fontFamily="monospace"
             android:maxLines="3"
-            android:text="DNS Speedtest"
+            android:text="@string/speedtest_waiting"
             android:background="@color/pdm_background"
             android:padding="8dp"/>
     </LinearLayout>

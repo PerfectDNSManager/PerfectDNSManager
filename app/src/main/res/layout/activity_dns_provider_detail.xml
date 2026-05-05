@@ -42,7 +42,8 @@
                 android:layout_height="32dp"
                 android:layout_marginEnd="8dp"
                 android:scaleType="fitCenter"
-                android:contentDescription="Provider icon"/>
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"/>
 
             <TextView
                 android:id="@+id/tvProviderName"

@@ -3,25 +3,14 @@
 
     <!-- MainActivity -->
     <string name="dns_switcher">Perfect DNS Manager</string>
-    <string name="dns_profile">Perfil DNS</string>
     <string name="add_new_profile">➕ NUEVO PERFIL</string>
-    <string name="application_method">Método de aplicación</string>
-    <string name="private_dns_adb">Private DNS (ADB)</string>
-    <string name="local_vpn_all_types">VPN local</string>
     <string name="activate">ACTIVAR</string>
     <string name="deactivate">DESACTIVAR</string>
     <string name="no_active_dns">Ningún DNS activo</string>
-    <string name="about">Acerca de</string>
     <string name="select_a_profile">Selecciona un perfil</string>
-    <string name="click_to_select_dns">Haz clic aquí para elegir un DNS</string>
-    <string name="profile_added">Perfil añadido: %1$s</string>
     <string name="private_dns_supports_only_dot">Private DNS solo soporta DoT</string>
     <string name="adb_requires_root_or_pc">No se pueden modificar los ajustes.\n\nAsegúrate de haber concedido el permiso desde un PC:\n\nadb shell pm grant %1$s android.permission.WRITE_SECURE_SETTINGS\n\n(O que tu dispositivo tenga Root)</string>
-    <string name="error_activating_adb">Error al activar ADB</string>
-    <string name="dns_activated_via_adb">DNS activado vía ADB</string>
     <string name="vpn_permission_denied">Permiso VPN denegado</string>
-    <string name="vpn_activated">VPN activado: %1$s</string>
-    <string name="dns_disabled">DNS desactivado</string>
     <string name="switching_disabling_dot">Desactivando DoT anterior…</string>
     <string name="firestick_warning_title">Advertencia Firestick</string>
     <string name="firestick_warning_message">El uso del método ADB en dispositivos Firestick puede causar pérdida de conectividad a Internet. Se recomienda usar el método VPN.</string>
@@ -29,31 +18,21 @@
     <string name="dns_provider_label">1. Elección del Proveedor DNS:</string>
     <string name="dns_select_button">👉 Elegir proveedor DNS 👈</string>
     <string name="activation_label">2. Activación:</string>
-    <string name="dns_service_used">Servicio DNS utilizado:</string>
     <string name="settings_content_description">Ajustes</string>
-    <string name="wan_ipv4_label">IPv4: </string>
-    <string name="wan_ipv6_label">IPv6: </string>
-    <string name="wan_ip_loading">cargando…</string>
     <string name="wan_ip_error">no disponible</string>
     <string name="wan_ipv6_blocked">bloqueado ✓</string>
-    <string name="share_ip_button">📤 Compartir informe</string>
-    <string name="share_ip_uploading">Subiendo IPs…</string>
     <string name="share_ip_success_title">Informe cifrado compartido</string>
-    <string name="share_ip_success_message">Código: %1$s\n\nEl código se ha copiado al portapapeles.\n\nEnlace: %2$s\n(Archivo cifrado AES-256)</string>
     <string name="share_ip_error">Error al compartir las IPs</string>
 
     <!-- Navigation -->
-    <string name="back">Volver</string>
     <string name="back_arrow">← Volver</string>
 
     <!-- Settings -->
     <string name="settings_title">Ajustes</string>
-    <string name="language_select_button">Idioma / Language</string>
     <string name="how_to_adb">🛠 Cómo activar ADB</string>
     <string name="adb_status_active">🟢 Depuración ADB: Activa</string>
     <string name="adb_status_inactive">🔴 Depuración ADB: Inactiva</string>
     <string name="advanced_features_title">⚙️ Ajustes DNS avanzados</string>
-    <string name="advanced_features_desc">Activa las funciones: DNS DoT vía ADB, URL Rewrite y DNS de operador.</string>
     <string name="url_rewrite_warning">URL Rewrite solo funciona con DNS DoH o Estándar (no con DoT/ADB)</string>
     <string name="url_rewrite_button">🔀 URL Rewrite</string>
     <string name="restore_dns_button">🔄 Restaurar los DNS iniciales</string>
@@ -70,49 +49,24 @@
     <string name="beta_updates_locked">Ya estás en una versión beta — esta opción está activada permanentemente.</string>
 
     <!-- Auto-start / Auto-reconnect -->
-    <string name="auto_settings_title">Inicio automático</string>
     <string name="auto_start_label">Iniciar al arrancar</string>
-    <string name="auto_start_description">Iniciar la aplicación automáticamente al encender el dispositivo</string>
     <string name="auto_reconnect_label">Conexión automática al DNS</string>
-    <string name="auto_reconnect_description">Reconectarse automáticamente al DNS predeterminado o al último utilizado</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ Ningún DNS configurado</string>
     <string name="auto_reconnect_default_prefix">(predeterminado) </string>
 
     <!-- Import / Export -->
     <string name="import_export_title">💾 Archivo de configuración</string>
-    <string name="import_export_desc">Guarda o restaura tu configuración completa (perfiles, DNS predeterminado, reglas rewrite, ajustes).</string>
     <string name="export_config_button">📤 Exportar configuración cifrada (AES-256-GCM)</string>
     <string name="import_config_button">📥 Importar configuración cifrada</string>
-    <string name="config_exported_title">📤 Configuración exportada</string>
-    <string name="config_exported_message">Archivo: %1$s\n\nEl JSON también se ha copiado al portapapeles.\n\nPuedes compartirlo o guardarlo.</string>
-    <string name="share_button">Compartir</string>
-    <string name="upload_encrypted">🔒 Enviar cifrado</string>
     <string name="uploading">Cifrando y enviando…</string>
     <string name="upload_success_title">🔒 ¡Archivo cifrado enviado!</string>
-    <string name="upload_success_message_with_number">Código de importación: %1$s\n\nPara importar en otro dispositivo, introduce este código.\n\nEnlace completo:\n%2$s\n\nCódigo copiado al portapapeles.\n\n🔒 Cifrado AES-256 — la clave está en el enlace.</string>
     <string name="upload_error">Error de envío: %1$s</string>
-    <string name="share_config">Compartir configuración</string>
     <string name="export_error">Error de exportación: %1$s</string>
-    <string name="import_from_clipboard">📋 Pegar desde el portapapeles</string>
-    <string name="import_from_url">🌐 Importar desde una URL</string>
-    <string name="import_from_file">📁 Importar desde un archivo local</string>
-    <string name="import_from_code">🔒 Desde un código cifrado</string>
     <string name="import_from_code_title">🔒 Importar una configuración cifrada</string>
-    <string name="enter_share_code">Introduce el código:</string>
-    <string name="share_code_hint">123456</string>
     <string name="import_code_explain">Genera este código mediante Exportar en los ajustes.\n\nEl archivo se descargará y descifrará automáticamente.\n\nVerificación: https://appstorefr.github.io/PerfectDNSManager/decrypt.html</string>
-    <string name="choose_expiration">Expiración del archivo:</string>
-    <string name="expiration_1h">1 hora</string>
-    <string name="expiration_12h">12 horas</string>
-    <string name="expiration_24h">24 horas</string>
-    <string name="expiration_72h">72 horas (3 días)</string>
-    <string name="clipboard_empty">Portapapeles vacío</string>
-    <string name="enter_config_url">Introduce la URL del archivo de configuración JSON:</string>
-    <string name="import_from_url_title">🌐 Importar desde URL</string>
     <string name="download_button">Descargar</string>
     <string name="downloading">Descargando…</string>
-    <string name="no_file_found">Archivo no encontrado: %1$s</string>
     <string name="read_error">Error de lectura: %1$s</string>
     <string name="confirm_import_title">📥 Confirmar importación</string>
     <string name="confirm_import_message">Contenido de la configuración:\n\n%1$s\n\nEsto reemplazará tu configuración actual.</string>
@@ -178,7 +132,6 @@
     <string name="lang_deutsch">🇩🇪 Deutsch</string>
 
     <!-- Support -->
-    <string name="support_us_button">❤️ Apóyame</string>
     <string name="support_us_title">Apóyame ❤️</string>
     <string name="support_us_message">¿Te gusta la aplicación? ¿Te ha ayudado?\n¡No dudes en hacer un pequeño gesto para el desarrollador!</string>
     <string name="select_crypto_button">👉 Haz clic aquí para elegir la crypto a enviar 👈</string>
@@ -190,15 +143,9 @@
     <string name="about_community_text">🚫 Sin anuncios\n📊 Sin recopilación de datos\n🆓 Libre de usar y compartir\n💜 Hecha para la comunidad ❤️</string>
     <string name="check_for_updates">Buscar actualizaciones</string>
     <string name="checking_for_updates">Buscando actualizaciones…</string>
-    <string name="appstorefr">AppstoreFR</string>
-    <string name="contact_email">contact@appstorefr.net</string>
     <string name="support_about_button">❤️ Apóyame</string>
 
     <!-- DNS Deletion -->
-    <string name="cannot_delete">No se puede eliminar</string>
-    <string name="cannot_delete_predefined">No puedes eliminar un perfil predefinido.</string>
-    <string name="confirm_delete">Confirmar eliminación</string>
-    <string name="delete_profile_message">¿Realmente deseas eliminar el perfil &quot;%1$s&quot;?</string>
     <string name="delete">Eliminar</string>
 
     <!-- AddProfileDialog -->
@@ -216,27 +163,6 @@
     <string name="primary_dns_required">DNS primario requerido</string>
 
     <!-- DNS Test -->
-    <string name="test_dns">🔍 Probar el DNS</string>
-    <string name="test_dns_title">Prueba DNS</string>
-    <string name="test_dns_running">Prueba en curso…</string>
-    <string name="test_dns_success">✅ ¡DNS funcional!\n\n%1$s resuelto con éxito.\nEl cambio de DNS está activo.</string>
-    <string name="test_dns_fail">❌ Fallo en la resolución DNS.\n\nEl dominio %1$s no pudo ser resuelto.\nVerifica tu configuración DNS.</string>
-    <string name="test_dns_no_dns">Activa primero un DNS antes de probar.</string>
-    <string name="test_domain_label">Dominio a probar:</string>
-    <string name="test_button">Probar</string>
-    <string name="test_flushing">Limpiando caché DNS + probando…</string>
-    <string name="test_no_connection_title">❌ Sin conexión</string>
-    <string name="test_no_connection_msg">No se puede resolver nada.\nVerifica tu conexión a Internet.</string>
-    <string name="test_blocked_title">🔒 Dominio BLOQUEADO</string>
-    <string name="test_blocked_msg">%1$s → %2$s\n\nEsta IP es una dirección de bloqueo.\n%3$s</string>
-    <string name="test_blocked_dns_bad">El DNS no funciona correctamente.</string>
-    <string name="test_blocked_activate">¡Activa un DNS alternativo y vuelve a probar!</string>
-    <string name="test_accessible_title">✅ Dominio ACCESIBLE</string>
-    <string name="test_accessible_msg_active">%1$s → %2$s\n\n¡El DNS funciona!</string>
-    <string name="test_accessible_msg_inactive">%1$s → %2$s\n\nEste dominio es accesible sin DNS alternativo.</string>
-    <string name="test_unresolved_title">❓ No resuelto</string>
-    <string name="test_unresolved_msg_active">%1$s: %2$s\n\nEl servidor DNS quizás no conoce este dominio.</string>
-    <string name="test_unresolved_msg_inactive">%1$s: %2$s\n\nTu operador probablemente bloquea este dominio.</string>
 
     <!-- VPN Report -->
     <string name="dns_report_title">Informe DNS</string>
@@ -249,7 +175,6 @@
     <string name="report_method">Método: %1$s</string>
     <string name="report_primary">Primario: %1$s</string>
     <string name="report_secondary">Secundario: %1$s</string>
-    <string name="ok">OK</string>
 
     <!-- ADB Error -->
     <string name="adb_error_title">Error ADB / Permiso</string>
@@ -258,9 +183,6 @@
 
     <!-- DnsSelection -->
     <string name="choose_dns_server">Elegir un servidor DNS</string>
-    <string name="method_doh_vpn_dot_adb">DoH / Estándar → VPN   |   DoT → Private DNS (ADB)</string>
-    <string name="method_vpn_only">DNS vía VPN — DoH y Estándar</string>
-    <string name="long_press_edit">(pulsación larga = editar)</string>
     <string name="remove_default_dns">⭐ Quitar del DNS predeterminado</string>
     <string name="set_default_dns">⭐ Definir como DNS predeterminado</string>
     <string name="default_dns_removed">DNS predeterminado eliminado</string>
@@ -278,9 +200,6 @@
 
     <!-- NextDNS -->
     <string name="add_nextdns_profile">➕ Añadir un perfil NextDNS personalizado</string>
-    <string name="nextdns_explain">Introduce el identificador de tu perfil NextDNS.\nhttps://my.nextdns.io/XXXXXX/setup</string>
-    <string name="nextdns_add_title">Añadir perfil NextDNS</string>
-    <string name="nextdns_add_select">Añadir y seleccionar (DoH)</string>
     <string name="nextdns_id_required">Identificador requerido</string>
 
     <!-- HowTo -->
@@ -309,7 +228,6 @@
     <!-- UpdateManager -->
     <string name="update_available">Actualización disponible: v%1$s</string>
     <string name="app_up_to_date">Aplicación actualizada ✓</string>
-    <string name="update_check_error">No se pueden verificar las actualizaciones</string>
     <string name="update_downloading">Descargando…</string>
     <string name="update_download_error">Error durante la descarga</string>
     <string name="update_install_error">Error durante la instalación</string>
@@ -361,10 +279,6 @@
     <!-- DNS Speedtest -->
     <string name="dns_speedtest_button">Iniciar prueba</string>
     <string name="dns_speedtest_title">⚡ DNS Speedtest</string>
-    <string name="dns_speedtest_running">Prueba de latencia DNS en curso…</string>
-    <string name="dns_speedtest_result">%1$s (%2$s): %3$s</string>
-    <string name="dns_speedtest_error">Error</string>
-    <string name="dns_speedtest_ms">%1$d ms</string>
 
     <!-- Export granulaire -->
     <string name="export_select_title">📤 ¿Qué deseas exportar?</string>
@@ -375,9 +289,6 @@
     <string name="export_toggle_rewrite">Reglas URL Rewrite</string>
     <string name="export_toggle_settings">Ajustes</string>
     <string name="export_button">Exportar</string>
-    <string name="export_choose_dest">Archivo generado: %1$s\n\nJSON copiado al portapapeles.\n\nElige el destino:</string>
-    <string name="export_save_local">💾 Guardar localmente</string>
-    <string name="export_saved_locally">💾 Archivo guardado:\n%1$s</string>
 
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">VPN reconectado (IPv6 modificado)</string>
@@ -389,54 +300,31 @@
     <string name="gpl_license_text">Libre hoy. Libre mañana. ¡Se puede bloquear un camino, no la libertad!\nEl código fuente es abierto, toda redistribución debe permanecer open source.\nLicencia GPL v3\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
-    <string name="speedtest_button">🌐 Speedtest Internet</string>
-    <string name="speedtest_title">Speedtest Internet</string>
-    <string name="speedtest_running">Speedtest en curso…</string>
-    <string name="speedtest_result_ping">Ping: %1$d ms</string>
-    <string name="speedtest_result_download">Descarga: %1$s Mbps</string>
-    <string name="speedtest_result_upload">Subida: %1$s Mbps</string>
-    <string name="speedtest_error">Speedtest fallido</string>
 
     <!-- DNS Leak Test -->
-    <string name="dns_leak_button">🔒 Prueba DNS Leak</string>
-    <string name="dns_leak_title">Prueba DNS Leak</string>
-    <string name="dns_leak_running">Prueba de fuga DNS en curso…</string>
-    <string name="dns_leak_result_title">Resultados DNS Leak</string>
-    <string name="dns_leak_no_leak">✅ Sin fuga detectada — ¡su DNS es seguro!</string>
-    <string name="dns_leak_resolvers_found">%1$d resolvedores DNS encontrados:</string>
-    <string name="dns_leak_error">Prueba DNS leak fallida</string>
 
     <!-- Rapport enrichi -->
     <string name="report_generating">Generando informe…</string>
-    <string name="report_blocking_test_before">Antes del DNS (8.8.8.8)</string>
-    <string name="report_blocking_test_after">Después del DNS (activo)</string>
 
     <!-- Herramientas de prueba (módulo unificado) -->
-    <string name="tools_section_label">3. Mostrar herramientas de prueba:</string>
     <string name="generate_report_button">▶ Generar informe</string>
     <string name="quick_dns_test_button">🔍 Probador de dominios</string>
-    <string name="quick_dns_test_running">Prueba DNS en curso...</string>
     <string name="no_report_yet">Ningún informe generado.\nPulsa el botón de arriba para ejecutar las pruebas.</string>
     <string name="share_report_button">📤 Compartir informe</string>
     <string name="share_toggle_network">Información de red (IP, DNS)</string>
     <string name="share_toggle_speedtest">Speedtest Internet</string>
     <string name="share_toggle_leak">DNS Leak Test</string>
     <string name="share_toggle_blocking">Test de bloqueo URL</string>
-    <string name="report_progress_ip">⏳ Obteniendo IPs…</string>
     <string name="report_progress_speedtest">⏳ Speedtest en curso…</string>
     <string name="report_progress_leak">⏳ Test DNS Leak en curso…</string>
     <string name="report_progress_blocking">⏳ Test de bloqueo en curso…</string>
     <string name="report_complete">✅ Informe generado</string>
     <string name="no_report_to_share">Genera primero un informe</string>
-    <string name="test_domains_button">Probar dominios</string>
-    <string name="test_domains_add">Agregar un dominio</string>
-    <string name="test_domains_empty">Ningún dominio configurado</string>
 
     <!-- Split tunneling -->
     <string name="split_tunnel_button">Excluir aplicaciones</string>
     <string name="split_tunnel_title">Excluir aplicaciones del VPN</string>
     <string name="split_tunnel_desc">Las aplicaciones seleccionadas no pasarán por el VPN DNS. Útil para apps que no funcionan con el VPN activo.</string>
-    <string name="split_tunnel_no_apps">Ninguna aplicación excluida</string>
     <string name="split_tunnel_apps_count">%d aplicación(es) excluida(s)</string>
     <string name="split_tunnel_loading">Cargando aplicaciones…</string>
     <string name="split_tunnel_search">Buscar…</string>
@@ -487,17 +375,13 @@
     <!-- Device info -->
     <string name="share_toggle_device">Información del dispositivo</string>
     <string name="md_device_info">Información del dispositivo</string>
-    <string name="md_device_name">Dispositivo</string>
     <string name="md_device_type">Tipo</string>
     <string name="md_device_model">Modelo</string>
-    <string name="md_device_manufacturer">Fabricante</string>
     <string name="md_android_version">Versión de Android</string>
-    <string name="md_api_level">Nivel de API</string>
     <string name="md_app_version">Versión de la app</string>
     <string name="device_type_tv">Android TV / Box</string>
     <string name="device_type_phone">Teléfono</string>
     <string name="device_type_tablet">Tableta</string>
-    <string name="device_type_unknown">Desconocido</string>
 
     <!-- Reset app -->
     <string name="reset_app_button">⚠ Reiniciar aplicación</string>
@@ -515,7 +399,6 @@
     <string name="domain_tester_no_enabled">Ningún dominio habilitado.</string>
     <string name="domain_tester_dns_all">Todos</string>
     <string name="domain_tester_dns_select">DNS a probar:</string>
-    <string name="internet_speedtest_button">Test de velocidad</string>
     <string name="internet_speedtest_advanced">⚡ Test de velocidad Internet</string>
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
 
@@ -525,4 +408,79 @@
     <string name="theme_light">☀️ Claro</string>
     <string name="theme_dark">🌙 Oscuro</string>
     <string name="theme_choose_title">Elegir tema</string>
+    <string name="uncheck_all">Desmarcar todo</string>
+    <string name="all_apps_unchecked">Todas las aplicaciones han sido desmarcadas</string>
+    <string name="link_and_password_required">Se requieren enlace Y contraseña</string>
+    <string name="dns_type_doh_label">DNS over HTTPS (DoH) — Recomendado</string>
+    <string name="dns_type_dot_label">DNS over TLS (DoT)</string>
+    <string name="dns_type_doq_label">DNS over QUIC (DoQ)</string>
+    <string name="dns_type_standard_label">Estándar (UDP sin cifrar)</string>
+    <string name="primary_dns_v6_optional">DNS primario IPv6 (opcional)</string>
+    <string name="secondary_dns_v6_hint">DNS secundario IPv6 (opcional)</string>
+    <string name="primary_dns_v6_hint">ex: 2606:4700:4700::1111</string>
+    <string name="adb_pair_wireless">Emparejar ADB inalámbrico (Android 11+)</string>
+    <string name="adb_pair_wireless_instructions">En este dispositivo:\n1. Opciones de desarrollador → Depuración inalámbrica → ON\n2. Emparejar con código → anota el código de 6 dígitos\n\nIntroduce el código aquí:</string>
+    <string name="adb_pair_submit">Emparejar</string>
+    <string name="adb_pair_invalid_code">Código inválido (se requieren 6 dígitos)</string>
+    <string name="adb_pair_in_progress">Emparejamiento ADB en curso…</string>
+    <string name="adb_pair_step_discovering">Descubriendo puerto ADB vía mDNS…</string>
+    <string name="adb_pair_step_pairing">Emparejamiento TLS-PSK…</string>
+    <string name="adb_pair_step_connecting">Conexión ADB cifrada…</string>
+    <string name="adb_pair_step_granting">Concediendo WRITE_SECURE_SETTINGS…</string>
+    <string name="adb_pair_success">¡Emparejamiento correcto! Permiso concedido de por vida.</string>
+    <string name="adb_pair_failed">Emparejamiento fallido: %1$s</string>
+    <string name="share_expires_label">Caducidad del enlace:</string>
+    <string name="share_exp_1h">1 h</string>
+    <string name="share_exp_6h">6 h</string>
+    <string name="share_exp_24h">24 h</string>
+    <string name="share_exp_72h">72 h</string>
+    <string name="speedtest_adv_title">Prueba de velocidad de Internet</string>
+    <string name="speedtest_server_loading">🌐  Servidor: cargando…</string>
+    <string name="speedtest_server_fmt">🌐  Servidor: %1$s</string>
+    <string name="speedtest_server_none">🌐  Servidor: ninguno</string>
+    <string name="speedtest_start">Iniciar prueba</string>
+    <string name="speedtest_log">Registro de prueba</string>
+    <string name="speedtest_waiting">Esperando… </string>
+    <string name="speedtest_backend_cf">Backend: Cloudflare (speed.cloudflare.com)</string>
+    <string name="speedtest_backend_netflix">Backend: Netflix / Fast.com (subida no soportada)</string>
+    <string name="speedtest_start_msg">=== Inicio de la prueba %1$s ===</string>
+    <string name="speedtest_done_msg">=== Prueba finalizada ===</string>
+    <string name="speedtest_stopping_msg">Deteniendo prueba…</string>
+    <string name="speedtest_interrupted">Prueba interrumpida.</string>
+    <string name="speedtest_error_fmt">Error: %1$s</string>
+    <string name="speedtest_ookla_loading">Cargando lista de servidores Ookla…</string>
+    <string name="speedtest_ookla_latency">Probando latencia de servidores Ookla…</string>
+    <string name="speedtest_ookla_loaded_fmt">%1$d servidor(es) Ookla cargado(s).</string>
+    <string name="speedtest_ookla_err_code_fmt">Error servidor Ookla: %1$d</string>
+    <string name="speedtest_ookla_err_load_fmt">Error de carga Ookla: %1$s</string>
+    <string name="speedtest_ookla_none">Ningún servidor Ookla disponible.</string>
+    <string name="speedtest_ookla_not_selected">Ningún servidor Ookla seleccionado.</string>
+    <string name="speedtest_ping_section_fmt"> --- Ping %1$s (%2$d peticiones) ---</string>
+    <string name="speedtest_ping_attempt_fmt">  #%1$d : %2$.1f ms</string>
+    <string name="speedtest_ping_fail_fmt">  #%1$d: fallo</string>
+    <string name="speedtest_ping_avg_fmt">  Prom: %1$.1f ms | Jitter: %2$.1f ms</string>
+    <string name="speedtest_dl_section_fmt"> --- Descarga %1$s (%2$d conex., %3$ds) ---</string>
+    <string name="speedtest_ul_section_fmt"> --- Subida %1$s (%2$d conex., %3$ds) ---</string>
+    <string name="speedtest_mbps_fmt">  %1$.2f Mbps (%2$.1f MB / %3$.1fs)</string>
+    <string name="speedtest_upload_na">Subida no soportada (N/D)</string>
+    <string name="speedtest_ip_none">IP : --</string>
+    <string name="speedtest_netflix_title">Netflix / Fast.com</string>
+    <string name="speedtest_cloudflare_title">Cloudflare</string>
+    <string name="speedtest_ookla_title">Ookla</string>
+    <string name="report_conn_fmt">Conexión: %1$s</string>
+    <string name="report_carrier_fmt">Operador: %1$s</string>
+    <string name="report_isp_fmt">ISP: %1$s</string>
+    <string name="report_ipv4_fmt">IPv4 : %1$s</string>
+    <string name="report_ipv6_fmt">IPv6 : %1$s</string>
+    <string name="report_local_ip_fmt">IP local: %1$s</string>
+    <string name="report_profile_fmt">Perfil: %1$s - %2$s</string>
+    <string name="dns_active_vpn_fmt">DNS activo: %1$s (%2$s)</string>
+    <string name="dns_active_vpn">DNS activo: VPN</string>
+    <string name="dns_active_dot_fmt">DNS activo: DoT (%1$s)</string>
+    <string name="dns_active_dot_host_fmt">DNS activo: DoT (%1$s)</string>
+    <string name="dns_active_dot">DNS activo: DoT</string>
+    <string name="dt_vpn_active_fmt">🟢 VPN activo (%1$s)</string>
+    <string name="dt_vpn_active">🟢 VPN activo</string>
+    <string name="dt_dot_active">🟢 DNS privado activo</string>
+    <string name="dt_no_dns">🔴 Sin DNS activo (resolución ISP)</string>
 </resources>

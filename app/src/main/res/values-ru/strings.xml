@@ -3,25 +3,14 @@
 
     <!-- MainActivity -->
     <string name="dns_switcher">Perfect DNS Manager</string>
-    <string name="dns_profile">Профиль DNS</string>
     <string name="add_new_profile">➕ НОВЫЙ ПРОФИЛЬ</string>
-    <string name="application_method">Метод применения</string>
-    <string name="private_dns_adb">Private DNS (ADB)</string>
-    <string name="local_vpn_all_types">Локальный VPN</string>
     <string name="activate">ВКЛЮЧИТЬ</string>
     <string name="deactivate">ОТКЛЮЧИТЬ</string>
     <string name="no_active_dns">Нет активного DNS</string>
-    <string name="about">О приложении</string>
     <string name="select_a_profile">Выберите профиль</string>
-    <string name="click_to_select_dns">Нажмите здесь, чтобы выбрать DNS</string>
-    <string name="profile_added">Профиль добавлен: %1$s</string>
     <string name="private_dns_supports_only_dot">Private DNS поддерживает только DoT</string>
     <string name="adb_requires_root_or_pc">Невозможно изменить настройки.\n\nУбедитесь, что вы предоставили разрешение через ПК:\n\nadb shell pm grant %1$s android.permission.WRITE_SECURE_SETTINGS\n\n(Или что ваше устройство имеет Root-доступ)</string>
-    <string name="error_activating_adb">Ошибка активации ADB</string>
-    <string name="dns_activated_via_adb">DNS активирован через ADB</string>
     <string name="vpn_permission_denied">Разрешение VPN отклонено</string>
-    <string name="vpn_activated">VPN включён: %1$s</string>
-    <string name="dns_disabled">DNS отключён</string>
     <string name="switching_disabling_dot">Отключение предыдущего DoT…</string>
     <string name="firestick_warning_title">Предупреждение Firestick</string>
     <string name="firestick_warning_message">Использование метода ADB на устройствах Firestick может привести к потере интернет-соединения. Рекомендуется использовать метод VPN.</string>
@@ -29,31 +18,21 @@
     <string name="dns_provider_label">1. Выбор провайдера DNS:</string>
     <string name="dns_select_button">👉 Выбор провайдера DNS 👈</string>
     <string name="activation_label">2. Активация:</string>
-    <string name="dns_service_used">Используемый DNS-сервис:</string>
     <string name="settings_content_description">Настройки</string>
-    <string name="wan_ipv4_label">IPv4: </string>
-    <string name="wan_ipv6_label">IPv6: </string>
-    <string name="wan_ip_loading">загрузка…</string>
     <string name="wan_ip_error">недоступен</string>
     <string name="wan_ipv6_blocked">заблокирован ✓</string>
-    <string name="share_ip_button">📤 Поделиться отчётом</string>
-    <string name="share_ip_uploading">Загрузка IP…</string>
     <string name="share_ip_success_title">Зашифрованный отчёт отправлен</string>
-    <string name="share_ip_success_message">Код: %1$s\n\nКод скопирован в буфер обмена.\n\nСсылка: %2$s\n(Файл зашифрован AES-256)</string>
     <string name="share_ip_error">Ошибка при отправке IP</string>
 
     <!-- Navigation -->
-    <string name="back">Назад</string>
     <string name="back_arrow">← Назад</string>
 
     <!-- Settings -->
     <string name="settings_title">Настройки</string>
-    <string name="language_select_button">Язык / Language</string>
     <string name="how_to_adb">🛠 Как включить ADB</string>
     <string name="adb_status_active">🟢 Отладка ADB: Активна</string>
     <string name="adb_status_inactive">🔴 Отладка ADB: Неактивна</string>
     <string name="advanced_features_title">⚙️ Расширенные настройки DNS</string>
-    <string name="advanced_features_desc">Включает функции: DNS DoT через ADB, URL Rewrite и операторский DNS.</string>
     <string name="url_rewrite_warning">URL Rewrite работает только с DNS DoH или Стандартным (не DoT/ADB)</string>
     <string name="url_rewrite_button">🔀 URL Rewrite</string>
     <string name="restore_dns_button">🔄 Восстановить исходные DNS</string>
@@ -70,49 +49,24 @@
     <string name="beta_updates_locked">Вы уже используете бета-версию — этот параметр всегда включён.</string>
 
     <!-- Auto-start / Auto-reconnect -->
-    <string name="auto_settings_title">Автозапуск</string>
     <string name="auto_start_label">Запуск при загрузке</string>
-    <string name="auto_start_description">Автоматически запускать приложение при включении устройства</string>
     <string name="auto_reconnect_label">Автоподключение к DNS</string>
-    <string name="auto_reconnect_description">Автоматически подключаться к DNS по умолчанию или последнему использованному</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ DNS не настроен</string>
     <string name="auto_reconnect_default_prefix">(по умолчанию) </string>
 
     <!-- Import / Export -->
     <string name="import_export_title">💾 Файл конфигурации</string>
-    <string name="import_export_desc">Сохраните или восстановите вашу полную конфигурацию (профили, DNS по умолчанию, правила перезаписи, настройки).</string>
     <string name="export_config_button">📤 Экспорт зашифрованной конфигурации (AES-256-GCM)</string>
     <string name="import_config_button">📥 Импорт зашифрованной конфигурации</string>
-    <string name="config_exported_title">📤 Конфигурация экспортирована</string>
-    <string name="config_exported_message">Файл: %1$s\n\nJSON также скопирован в буфер обмена.\n\nВы можете поделиться им или сохранить.</string>
-    <string name="share_button">Поделиться</string>
-    <string name="upload_encrypted">🔒 Отправить зашифрованно</string>
     <string name="uploading">Шифрование и отправка…</string>
     <string name="upload_success_title">🔒 Зашифрованный файл отправлен!</string>
-    <string name="upload_success_message_with_number">Код импорта: %1$s\n\nДля импорта на другом устройстве введите этот код.\n\nПолная ссылка:\n%2$s\n\nКод скопирован в буфер обмена.\n\n🔒 Шифрование AES-256 — ключ содержится в ссылке.</string>
     <string name="upload_error">Ошибка отправки: %1$s</string>
-    <string name="share_config">Поделиться конфигурацией</string>
     <string name="export_error">Ошибка экспорта: %1$s</string>
-    <string name="import_from_clipboard">📋 Вставить из буфера обмена</string>
-    <string name="import_from_url">🌐 Импорт по URL</string>
-    <string name="import_from_file">📁 Импорт из локального файла</string>
-    <string name="import_from_code">🔒 Из зашифрованного кода</string>
     <string name="import_from_code_title">🔒 Импорт зашифрованной конфигурации</string>
-    <string name="enter_share_code">Введите код:</string>
-    <string name="share_code_hint">123456</string>
     <string name="import_code_explain">Сгенерируйте этот код через Экспорт в настройках.\n\nФайл будет загружен и расшифрован автоматически.\n\nПроверка: https://appstorefr.github.io/PerfectDNSManager/decrypt.html</string>
-    <string name="choose_expiration">Срок действия файла:</string>
-    <string name="expiration_1h">1 час</string>
-    <string name="expiration_12h">12 часов</string>
-    <string name="expiration_24h">24 часа</string>
-    <string name="expiration_72h">72 часа (3 дня)</string>
-    <string name="clipboard_empty">Буфер обмена пуст</string>
-    <string name="enter_config_url">Введите URL файла конфигурации JSON:</string>
-    <string name="import_from_url_title">🌐 Импорт по URL</string>
     <string name="download_button">Скачать</string>
     <string name="downloading">Скачивание…</string>
-    <string name="no_file_found">Файл не найден: %1$s</string>
     <string name="read_error">Ошибка чтения: %1$s</string>
     <string name="confirm_import_title">📥 Подтвердить импорт</string>
     <string name="confirm_import_message">Содержимое конфигурации:\n\n%1$s\n\nЭто заменит вашу текущую конфигурацию.</string>
@@ -178,7 +132,6 @@
     <string name="lang_deutsch">🇩🇪 Deutsch</string>
 
     <!-- Support -->
-    <string name="support_us_button">❤️ Поддержать меня</string>
     <string name="support_us_title">Поддержать меня ❤️</string>
     <string name="support_us_message">Вам нравится приложение? Оно вам помогло?\nНе стесняйтесь сделать небольшой жест для разработчика!</string>
     <string name="select_crypto_button">👉 Нажмите здесь, чтобы выбрать криптовалюту для отправки 👈</string>
@@ -190,15 +143,9 @@
     <string name="about_community_text">🚫 Без рекламы\n📊 Без сбора данных\n🆓 Бесплатно для использования и распространения\n💜 Создано для сообщества ❤️</string>
     <string name="check_for_updates">Проверить обновления</string>
     <string name="checking_for_updates">Проверка обновлений…</string>
-    <string name="appstorefr">AppstoreFR</string>
-    <string name="contact_email">contact@appstorefr.net</string>
     <string name="support_about_button">❤️ Поддержать меня</string>
 
     <!-- DNS Deletion -->
-    <string name="cannot_delete">Удаление невозможно</string>
-    <string name="cannot_delete_predefined">Вы не можете удалить предустановленный профиль.</string>
-    <string name="confirm_delete">Подтвердить удаление</string>
-    <string name="delete_profile_message">Вы действительно хотите удалить профиль &quot;%1$s&quot;?</string>
     <string name="delete">Удалить</string>
 
     <!-- AddProfileDialog -->
@@ -216,27 +163,6 @@
     <string name="primary_dns_required">Требуется основной DNS</string>
 
     <!-- DNS Test -->
-    <string name="test_dns">🔍 Тест DNS</string>
-    <string name="test_dns_title">Тест DNS</string>
-    <string name="test_dns_running">Тестирование…</string>
-    <string name="test_dns_success">✅ DNS работает!\n\n%1$s успешно разрешён.\nИзменение DNS активно.</string>
-    <string name="test_dns_fail">❌ Ошибка разрешения DNS.\n\nДомен %1$s не удалось разрешить.\nПроверьте настройки DNS.</string>
-    <string name="test_dns_no_dns">Сначала включите DNS перед тестированием.</string>
-    <string name="test_domain_label">Домен для тестирования:</string>
-    <string name="test_button">Тест</string>
-    <string name="test_flushing">Очистка кэша DNS + тестирование…</string>
-    <string name="test_no_connection_title">❌ Нет соединения</string>
-    <string name="test_no_connection_msg">Невозможно разрешить что-либо.\nПроверьте подключение к Интернету.</string>
-    <string name="test_blocked_title">🔒 Домен ЗАБЛОКИРОВАН</string>
-    <string name="test_blocked_msg">%1$s → %2$s\n\nЭтот IP является адресом блокировки.\n%3$s</string>
-    <string name="test_blocked_dns_bad">DNS работает некорректно.</string>
-    <string name="test_blocked_activate">Включите альтернативный DNS и попробуйте снова!</string>
-    <string name="test_accessible_title">✅ Домен ДОСТУПЕН</string>
-    <string name="test_accessible_msg_active">%1$s → %2$s\n\nDNS работает!</string>
-    <string name="test_accessible_msg_inactive">%1$s → %2$s\n\nЭтот домен доступен без альтернативного DNS.</string>
-    <string name="test_unresolved_title">❓ Не разрешён</string>
-    <string name="test_unresolved_msg_active">%1$s: %2$s\n\nDNS-сервер, возможно, не знает этот домен.</string>
-    <string name="test_unresolved_msg_inactive">%1$s: %2$s\n\nВаш провайдер, вероятно, блокирует этот домен.</string>
 
     <!-- VPN Report -->
     <string name="dns_report_title">Отчёт DNS</string>
@@ -249,7 +175,6 @@
     <string name="report_method">Метод: %1$s</string>
     <string name="report_primary">Основной: %1$s</string>
     <string name="report_secondary">Вторичный: %1$s</string>
-    <string name="ok">OK</string>
 
     <!-- ADB Error -->
     <string name="adb_error_title">Ошибка ADB / Разрешение</string>
@@ -258,9 +183,6 @@
 
     <!-- DnsSelection -->
     <string name="choose_dns_server">Выбрать DNS-сервер</string>
-    <string name="method_doh_vpn_dot_adb">DoH / Стандартный → VPN   |   DoT → Private DNS (ADB)</string>
-    <string name="method_vpn_only">DNS через VPN — DoH и Стандартный</string>
-    <string name="long_press_edit">(долгое нажатие = редактировать)</string>
     <string name="remove_default_dns">⭐ Удалить из DNS по умолчанию</string>
     <string name="set_default_dns">⭐ Установить как DNS по умолчанию</string>
     <string name="default_dns_removed">DNS по умолчанию удалён</string>
@@ -278,9 +200,6 @@
 
     <!-- NextDNS -->
     <string name="add_nextdns_profile">➕ Добавить пользовательский профиль NextDNS</string>
-    <string name="nextdns_explain">Введите идентификатор вашего профиля NextDNS.\nhttps://my.nextdns.io/XXXXXX/setup</string>
-    <string name="nextdns_add_title">Добавить профиль NextDNS</string>
-    <string name="nextdns_add_select">Добавить и выбрать (DoH)</string>
     <string name="nextdns_id_required">Требуется идентификатор</string>
 
     <!-- HowTo -->
@@ -309,7 +228,6 @@
     <!-- UpdateManager -->
     <string name="update_available">Доступно обновление: v%1$s</string>
     <string name="app_up_to_date">Приложение обновлено ✓</string>
-    <string name="update_check_error">Не удалось проверить обновления</string>
     <string name="update_downloading">Скачивание…</string>
     <string name="update_download_error">Ошибка скачивания</string>
     <string name="update_install_error">Ошибка установки</string>
@@ -361,10 +279,6 @@
     <!-- DNS Speedtest -->
     <string name="dns_speedtest_button">Запустить тест</string>
     <string name="dns_speedtest_title">⚡ DNS Speedtest</string>
-    <string name="dns_speedtest_running">Тестирование задержки DNS…</string>
-    <string name="dns_speedtest_result">%1$s (%2$s): %3$s</string>
-    <string name="dns_speedtest_error">Ошибка</string>
-    <string name="dns_speedtest_ms">%1$d мс</string>
 
     <!-- Export granulaire -->
     <string name="export_select_title">📤 Что вы хотите экспортировать?</string>
@@ -375,9 +289,6 @@
     <string name="export_toggle_rewrite">Правила URL Rewrite</string>
     <string name="export_toggle_settings">Настройки</string>
     <string name="export_button">Экспорт</string>
-    <string name="export_choose_dest">Файл создан: %1$s\n\nJSON скопирован в буфер обмена.\n\nВыберите назначение:</string>
-    <string name="export_save_local">💾 Сохранить локально</string>
-    <string name="export_saved_locally">💾 Файл сохранён:\n%1$s</string>
 
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">VPN переподключён (IPv6 изменён)</string>
@@ -389,54 +300,31 @@
     <string name="gpl_license_text">Свободно сегодня. Свободно завтра. Можно заблокировать дорогу, но не свободу!\nИсходный код открыт, любое распространение должно оставаться open source.\nЛицензия GPL v3\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
-    <string name="speedtest_button">🌐 Speedtest интернета</string>
-    <string name="speedtest_title">Speedtest интернета</string>
-    <string name="speedtest_running">Speedtest выполняется…</string>
-    <string name="speedtest_result_ping">Пинг: %1$d мс</string>
-    <string name="speedtest_result_download">Загрузка: %1$s Мбит/с</string>
-    <string name="speedtest_result_upload">Отдача: %1$s Мбит/с</string>
-    <string name="speedtest_error">Speedtest не удался</string>
 
     <!-- DNS Leak Test -->
-    <string name="dns_leak_button">🔒 Тест DNS утечки</string>
-    <string name="dns_leak_title">Тест DNS утечки</string>
-    <string name="dns_leak_running">Тест DNS утечки выполняется…</string>
-    <string name="dns_leak_result_title">Результаты DNS утечки</string>
-    <string name="dns_leak_no_leak">✅ Утечка не обнаружена — ваш DNS защищён!</string>
-    <string name="dns_leak_resolvers_found">%1$d DNS-резолверов найдено:</string>
-    <string name="dns_leak_error">Тест DNS утечки не удался</string>
 
     <!-- Rapport enrichi -->
     <string name="report_generating">Создание отчёта…</string>
-    <string name="report_blocking_test_before">До DNS (8.8.8.8)</string>
-    <string name="report_blocking_test_after">После DNS (активный)</string>
 
     <!-- Инструменты тестирования (единый модуль) -->
-    <string name="tools_section_label">3. Показать инструменты тестирования:</string>
     <string name="generate_report_button">▶ Создать отчёт</string>
     <string name="quick_dns_test_button">🔍 Тестер доменов</string>
-    <string name="quick_dns_test_running">Тест DNS выполняется...</string>
     <string name="no_report_yet">Отчёт не создан.\nНажмите кнопку выше для запуска тестов.</string>
     <string name="share_report_button">📤 Поделиться отчётом</string>
     <string name="share_toggle_network">Сетевая информация (IP, DNS)</string>
     <string name="share_toggle_speedtest">Speedtest Интернет</string>
     <string name="share_toggle_leak">DNS Leak Test</string>
     <string name="share_toggle_blocking">Тест блокировки URL</string>
-    <string name="report_progress_ip">⏳ Получение IP…</string>
     <string name="report_progress_speedtest">⏳ Speedtest выполняется…</string>
     <string name="report_progress_leak">⏳ DNS Leak тест выполняется…</string>
     <string name="report_progress_blocking">⏳ Тест блокировки выполняется…</string>
     <string name="report_complete">✅ Отчёт создан</string>
     <string name="no_report_to_share">Сначала создайте отчёт</string>
-    <string name="test_domains_button">Тестировать домены</string>
-    <string name="test_domains_add">Добавить домен</string>
-    <string name="test_domains_empty">Нет настроенных доменов</string>
 
     <!-- Split tunneling -->
     <string name="split_tunnel_button">Исключить приложения</string>
     <string name="split_tunnel_title">Исключить приложения из VPN</string>
     <string name="split_tunnel_desc">Выбранные приложения не будут проходить через DNS VPN. Полезно для приложений, которые не работают с активным VPN.</string>
-    <string name="split_tunnel_no_apps">Нет исключённых приложений</string>
     <string name="split_tunnel_apps_count">Исключено приложений: %d</string>
     <string name="split_tunnel_loading">Загрузка приложений…</string>
     <string name="split_tunnel_search">Поиск…</string>
@@ -487,17 +375,13 @@
     <!-- Device info -->
     <string name="share_toggle_device">Информация об устройстве</string>
     <string name="md_device_info">Информация об устройстве</string>
-    <string name="md_device_name">Устройство</string>
     <string name="md_device_type">Тип</string>
     <string name="md_device_model">Модель</string>
-    <string name="md_device_manufacturer">Производитель</string>
     <string name="md_android_version">Версия Android</string>
-    <string name="md_api_level">Уровень API</string>
     <string name="md_app_version">Версия приложения</string>
     <string name="device_type_tv">Android TV / Приставка</string>
     <string name="device_type_phone">Телефон</string>
     <string name="device_type_tablet">Планшет</string>
-    <string name="device_type_unknown">Неизвестно</string>
 
     <!-- Reset app -->
     <string name="reset_app_button">⚠ Сбросить приложение</string>
@@ -515,7 +399,6 @@
     <string name="domain_tester_no_enabled">Нет активных доменов.</string>
     <string name="domain_tester_dns_all">Все</string>
     <string name="domain_tester_dns_select">DNS для теста:</string>
-    <string name="internet_speedtest_button">Тест скорости</string>
     <string name="internet_speedtest_advanced">⚡ Тест скорости Интернета</string>
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
 
@@ -525,4 +408,79 @@
     <string name="theme_light">☀️ Светлая</string>
     <string name="theme_dark">🌙 Тёмная</string>
     <string name="theme_choose_title">Выбрать тему</string>
+    <string name="uncheck_all">Снять все</string>
+    <string name="all_apps_unchecked">Все приложения сняты с выбора</string>
+    <string name="link_and_password_required">Нужны и ссылка, и пароль</string>
+    <string name="dns_type_doh_label">DNS over HTTPS (DoH) — Рекомендуется</string>
+    <string name="dns_type_dot_label">DNS over TLS (DoT)</string>
+    <string name="dns_type_doq_label">DNS over QUIC (DoQ)</string>
+    <string name="dns_type_standard_label">Стандартный (UDP без шифрования)</string>
+    <string name="primary_dns_v6_optional">Основной IPv6 DNS (необязательно)</string>
+    <string name="secondary_dns_v6_hint">Дополнительный IPv6 DNS (необязательно)</string>
+    <string name="primary_dns_v6_hint">ex: 2606:4700:4700::1111</string>
+    <string name="adb_pair_wireless">Сопрячь ADB по сети (Android 11+)</string>
+    <string name="adb_pair_wireless_instructions">На этом устройстве:\n1. Параметры разработчика → Отладка по Wi-Fi → ВКЛ\n2. Сопряжение с кодом → запомните 6-значный код\n\nВведите код здесь:</string>
+    <string name="adb_pair_submit">Сопрячь</string>
+    <string name="adb_pair_invalid_code">Неверный код (нужно 6 цифр)</string>
+    <string name="adb_pair_in_progress">Сопряжение ADB…</string>
+    <string name="adb_pair_step_discovering">Поиск порта ADB через mDNS…</string>
+    <string name="adb_pair_step_pairing">Сопряжение TLS-PSK…</string>
+    <string name="adb_pair_step_connecting">Защищённое подключение ADB…</string>
+    <string name="adb_pair_step_granting">Предоставление WRITE_SECURE_SETTINGS…</string>
+    <string name="adb_pair_success">Сопряжение успешно! Разрешение выдано навсегда.</string>
+    <string name="adb_pair_failed">Сбой сопряжения: %1$s</string>
+    <string name="share_expires_label">Срок действия ссылки:</string>
+    <string name="share_exp_1h">1 h</string>
+    <string name="share_exp_6h">6 h</string>
+    <string name="share_exp_24h">24 h</string>
+    <string name="share_exp_72h">72 h</string>
+    <string name="speedtest_adv_title">Тест скорости Интернета</string>
+    <string name="speedtest_server_loading">🌐  Сервер: загрузка…</string>
+    <string name="speedtest_server_fmt">🌐  Сервер: %1$s</string>
+    <string name="speedtest_server_none">🌐  Сервер: нет</string>
+    <string name="speedtest_start">Запустить тест</string>
+    <string name="speedtest_log">Журнал теста</string>
+    <string name="speedtest_waiting">Ожидание… </string>
+    <string name="speedtest_backend_cf">Бэкенд: Cloudflare (speed.cloudflare.com)</string>
+    <string name="speedtest_backend_netflix">Бэкенд: Netflix / Fast.com (загрузка не поддерживается)</string>
+    <string name="speedtest_start_msg">=== Начало теста %1$s ===</string>
+    <string name="speedtest_done_msg">=== Тест завершён ===</string>
+    <string name="speedtest_stopping_msg">Остановка теста…</string>
+    <string name="speedtest_interrupted">Тест прерван.</string>
+    <string name="speedtest_error_fmt">Ошибка: %1$s</string>
+    <string name="speedtest_ookla_loading">Загрузка списка серверов Ookla…</string>
+    <string name="speedtest_ookla_latency">Проверка задержки серверов Ookla…</string>
+    <string name="speedtest_ookla_loaded_fmt">Загружено серверов Ookla: %1$d</string>
+    <string name="speedtest_ookla_err_code_fmt">Ошибка сервера Ookla: %1$d</string>
+    <string name="speedtest_ookla_err_load_fmt">Ошибка загрузки Ookla: %1$s</string>
+    <string name="speedtest_ookla_none">Нет доступных серверов Ookla.</string>
+    <string name="speedtest_ookla_not_selected">Сервер Ookla не выбран.</string>
+    <string name="speedtest_ping_section_fmt"> --- Ping %1$s (%2$d запросов) ---</string>
+    <string name="speedtest_ping_attempt_fmt">  #%1$d : %2$.1f ms</string>
+    <string name="speedtest_ping_fail_fmt">  #%1$d: сбой</string>
+    <string name="speedtest_ping_avg_fmt">  Среднее: %1$.1f мс | Джиттер: %2$.1f мс</string>
+    <string name="speedtest_dl_section_fmt"> --- Скачивание %1$s (%2$d соед., %3$d с) ---</string>
+    <string name="speedtest_ul_section_fmt"> --- Загрузка %1$s (%2$d соед., %3$d с) ---</string>
+    <string name="speedtest_mbps_fmt">  %1$.2f Мбит/с (%2$.1f МБ / %3$.1f с)</string>
+    <string name="speedtest_upload_na">Загрузка не поддерживается (Н/Д)</string>
+    <string name="speedtest_ip_none">IP : --</string>
+    <string name="speedtest_netflix_title">Netflix / Fast.com</string>
+    <string name="speedtest_cloudflare_title">Cloudflare</string>
+    <string name="speedtest_ookla_title">Ookla</string>
+    <string name="report_conn_fmt">Соединение: %1$s</string>
+    <string name="report_carrier_fmt">Оператор: %1$s</string>
+    <string name="report_isp_fmt">Провайдер: %1$s</string>
+    <string name="report_ipv4_fmt">IPv4 : %1$s</string>
+    <string name="report_ipv6_fmt">IPv6 : %1$s</string>
+    <string name="report_local_ip_fmt">Локальный IP: %1$s</string>
+    <string name="report_profile_fmt">Профиль: %1$s - %2$s</string>
+    <string name="dns_active_vpn_fmt">Активный DNS: %1$s (%2$s)</string>
+    <string name="dns_active_vpn">Активный DNS: VPN</string>
+    <string name="dns_active_dot_fmt">Активный DNS: DoT (%1$s)</string>
+    <string name="dns_active_dot_host_fmt">Активный DNS: DoT (%1$s)</string>
+    <string name="dns_active_dot">Активный DNS: DoT</string>
+    <string name="dt_vpn_active_fmt">🟢 VPN активен (%1$s)</string>
+    <string name="dt_vpn_active">🟢 VPN активен</string>
+    <string name="dt_dot_active">🟢 Приватный DNS активен</string>
+    <string name="dt_no_dns">🔴 Нет активного DNS (резолвер провайдера)</string>
 </resources>

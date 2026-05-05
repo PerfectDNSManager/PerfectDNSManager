@@ -3,25 +3,14 @@
 
     <!-- MainActivity -->
     <string name="dns_switcher">Perfect DNS Manager</string>
-    <string name="dns_profile">DNS प्रोफ़ाइल</string>
     <string name="add_new_profile">➕ नई प्रोफ़ाइल</string>
-    <string name="application_method">लागू करने की विधि</string>
-    <string name="private_dns_adb">Private DNS (ADB)</string>
-    <string name="local_vpn_all_types">स्थानीय VPN</string>
     <string name="activate">सक्रिय करें</string>
     <string name="deactivate">निष्क्रिय करें</string>
     <string name="no_active_dns">कोई सक्रिय DNS नहीं</string>
-    <string name="about">परिचय</string>
     <string name="select_a_profile">एक प्रोफ़ाइल चुनें</string>
-    <string name="click_to_select_dns">DNS चुनने के लिए यहाँ क्लिक करें</string>
-    <string name="profile_added">प्रोफ़ाइल जोड़ी गई: %1$s</string>
     <string name="private_dns_supports_only_dot">Private DNS केवल DoT का समर्थन करता है</string>
     <string name="adb_requires_root_or_pc">सेटिंग्स बदलना संभव नहीं।\n\nसुनिश्चित करें कि आपने PC के माध्यम से अनुमति दी है:\n\nadb shell pm grant %1$s android.permission.WRITE_SECURE_SETTINGS\n\n(या आपका डिवाइस रूटेड है)</string>
-    <string name="error_activating_adb">ADB सक्रियण त्रुटि</string>
-    <string name="dns_activated_via_adb">ADB के माध्यम से DNS सक्रिय किया गया</string>
     <string name="vpn_permission_denied">VPN अनुमति अस्वीकृत</string>
-    <string name="vpn_activated">VPN सक्रिय: %1$s</string>
-    <string name="dns_disabled">DNS निष्क्रिय किया गया</string>
     <string name="switching_disabling_dot">पिछला DoT निष्क्रिय किया जा रहा है…</string>
     <string name="firestick_warning_title">Firestick चेतावनी</string>
     <string name="firestick_warning_message">Firestick उपकरणों पर ADB विधि का उपयोग करने से इंटरनेट कनेक्टिविटी खो सकती है। VPN विधि का उपयोग करने की सिफारिश की जाती है।</string>
@@ -29,31 +18,21 @@
     <string name="dns_provider_label">1. DNS प्रदाता का चयन:</string>
     <string name="dns_select_button">👉 DNS प्रदाता चुनें 👈</string>
     <string name="activation_label">2. सक्रियण:</string>
-    <string name="dns_service_used">उपयोग में DNS सेवा:</string>
     <string name="settings_content_description">सेटिंग्स</string>
-    <string name="wan_ipv4_label">IPv4 : </string>
-    <string name="wan_ipv6_label">IPv6 : </string>
-    <string name="wan_ip_loading">लोड हो रहा है…</string>
     <string name="wan_ip_error">अनुपलब्ध</string>
     <string name="wan_ipv6_blocked">अवरोधित ✓</string>
-    <string name="share_ip_button">📤 रिपोर्ट साझा करें</string>
-    <string name="share_ip_uploading">IP अपलोड हो रहे हैं…</string>
     <string name="share_ip_success_title">एन्क्रिप्टेड रिपोर्ट साझा की गई</string>
-    <string name="share_ip_success_message">कोड: %1$s\n\nकोड क्लिपबोर्ड पर कॉपी किया गया है।\n\nलिंक: %2$s\n(AES-256 एन्क्रिप्टेड फ़ाइल)</string>
     <string name="share_ip_error">IP साझा करने में त्रुटि</string>
 
     <!-- Navigation -->
-    <string name="back">वापस</string>
     <string name="back_arrow">← वापस</string>
 
     <!-- Settings -->
     <string name="settings_title">सेटिंग्स</string>
-    <string name="language_select_button">Langue / Language</string>
     <string name="how_to_adb">🛠 ADB कैसे सक्रिय करें</string>
     <string name="adb_status_active">🟢 ADB डीबगिंग: सक्रिय</string>
     <string name="adb_status_inactive">🔴 ADB डीबगिंग: निष्क्रिय</string>
     <string name="advanced_features_title">⚙️ उन्नत DNS सेटिंग्स</string>
-    <string name="advanced_features_desc">सुविधाएँ सक्रिय करें: ADB के माध्यम से DNS DoT, URL Rewrite और ऑपरेटर DNS।</string>
     <string name="url_rewrite_warning">URL Rewrite केवल DNS DoH या Standard में काम करता है (DoT/ADB में नहीं)</string>
     <string name="url_rewrite_button">🔀 URL Rewrite</string>
     <string name="restore_dns_button">🔄 प्रारंभिक DNS पुनर्स्थापित करें</string>
@@ -70,49 +49,24 @@
     <string name="beta_updates_locked">आप पहले से बीटा संस्करण उपयोग कर रहे हैं — यह विकल्प हमेशा सक्रिय।</string>
 
     <!-- Auto-start / Auto-reconnect -->
-    <string name="auto_settings_title">स्वचालित स्टार्टअप</string>
     <string name="auto_start_label">बूट पर लॉन्च</string>
-    <string name="auto_start_description">डिवाइस शुरू होने पर ऐप स्वचालित रूप से लॉन्च करें</string>
     <string name="auto_reconnect_label">DNS से स्वचालित कनेक्शन</string>
-    <string name="auto_reconnect_description">डिफ़ॉल्ट या अंतिम उपयोग किए गए DNS से स्वचालित रूप से पुनः कनेक्ट करें</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ कोई DNS कॉन्फ़िगर नहीं किया गया</string>
     <string name="auto_reconnect_default_prefix">(डिफ़ॉल्ट) </string>
 
     <!-- Import / Export -->
     <string name="import_export_title">💾 कॉन्फ़िगरेशन फ़ाइल</string>
-    <string name="import_export_desc">अपना पूरा कॉन्फ़िगरेशन सहेजें या पुनर्स्थापित करें (प्रोफ़ाइल, डिफ़ॉल्ट DNS, rewrite नियम, सेटिंग्स)।</string>
     <string name="export_config_button">📤 एन्क्रिप्टेड कॉन्फ़िगरेशन निर्यात करें (AES-256-GCM)</string>
     <string name="import_config_button">📥 एन्क्रिप्टेड कॉन्फ़िगरेशन आयात करें</string>
-    <string name="config_exported_title">📤 कॉन्फ़िगरेशन निर्यात किया गया</string>
-    <string name="config_exported_message">फ़ाइल: %1$s\n\nJSON क्लिपबोर्ड पर भी कॉपी किया गया है।\n\nआप इसे साझा या सहेज सकते हैं।</string>
-    <string name="share_button">साझा करें</string>
-    <string name="upload_encrypted">🔒 एन्क्रिप्टेड भेजें</string>
     <string name="uploading">एन्क्रिप्ट और भेजा जा रहा है…</string>
     <string name="upload_success_title">🔒 एन्क्रिप्टेड फ़ाइल भेजी गई!</string>
-    <string name="upload_success_message_with_number">आयात कोड: %1$s\n\nकिसी अन्य डिवाइस पर आयात करने के लिए, यह कोड दर्ज करें।\n\nपूरा लिंक:\n%2$s\n\nकोड क्लिपबोर्ड पर कॉपी किया गया।\n\n🔒 AES-256 एन्क्रिप्टेड — कुंजी लिंक में है।</string>
     <string name="upload_error">भेजने में त्रुटि: %1$s</string>
-    <string name="share_config">कॉन्फ़िगरेशन साझा करें</string>
     <string name="export_error">निर्यात त्रुटि: %1$s</string>
-    <string name="import_from_clipboard">📋 क्लिपबोर्ड से पेस्ट करें</string>
-    <string name="import_from_url">🌐 URL से आयात करें</string>
-    <string name="import_from_file">📁 स्थानीय फ़ाइल से आयात करें</string>
-    <string name="import_from_code">🔒 एन्क्रिप्टेड कोड से</string>
     <string name="import_from_code_title">🔒 एन्क्रिप्टेड कॉन्फ़िगरेशन आयात करें</string>
-    <string name="enter_share_code">कोड दर्ज करें:</string>
-    <string name="share_code_hint">123456</string>
     <string name="import_code_explain">सेटिंग्स में निर्यात के माध्यम से यह कोड जनरेट करें।\n\nफ़ाइल स्वचालित रूप से डाउनलोड और डिक्रिप्ट की जाएगी।\n\nसत्यापन: https://appstorefr.github.io/PerfectDNSManager/decrypt.html</string>
-    <string name="choose_expiration">फ़ाइल की समय सीमा:</string>
-    <string name="expiration_1h">1 घंटा</string>
-    <string name="expiration_12h">12 घंटे</string>
-    <string name="expiration_24h">24 घंटे</string>
-    <string name="expiration_72h">72 घंटे (3 दिन)</string>
-    <string name="clipboard_empty">क्लिपबोर्ड खाली है</string>
-    <string name="enter_config_url">कॉन्फ़िगरेशन JSON फ़ाइल का URL दर्ज करें:</string>
-    <string name="import_from_url_title">🌐 URL से आयात</string>
     <string name="download_button">डाउनलोड करें</string>
     <string name="downloading">डाउनलोड हो रहा है…</string>
-    <string name="no_file_found">कोई फ़ाइल नहीं मिली: %1$s</string>
     <string name="read_error">पढ़ने में त्रुटि: %1$s</string>
     <string name="confirm_import_title">📥 आयात की पुष्टि करें</string>
     <string name="confirm_import_message">कॉन्फ़िगरेशन की सामग्री:\n\n%1$s\n\nयह आपके वर्तमान कॉन्फ़िगरेशन को बदल देगा।</string>
@@ -178,7 +132,6 @@
     <string name="lang_deutsch">🇩🇪 Deutsch</string>
 
     <!-- Support -->
-    <string name="support_us_button">❤️ मुझे सहयोग दें</string>
     <string name="support_us_title">मुझे सहयोग दें ❤️</string>
     <string name="support_us_message">क्या आपको ऐप पसंद आया? क्या इससे आपको मदद मिली?\nडेवलपर के लिए एक छोटा सा योगदान देने में संकोच न करें!</string>
     <string name="select_crypto_button">👉 भेजने के लिए क्रिप्टो चुनने हेतु यहाँ क्लिक करें 👈</string>
@@ -190,15 +143,9 @@
     <string name="about_community_text">🚫 कोई विज्ञापन नहीं\n📊 कोई डेटा संग्रह नहीं\n🆓 उपयोग और साझा करने के लिए मुफ़्त\n💜 समुदाय के लिए बनाया गया ❤️</string>
     <string name="check_for_updates">अपडेट जाँचें</string>
     <string name="checking_for_updates">अपडेट की जाँच हो रही है…</string>
-    <string name="appstorefr">AppstoreFR</string>
-    <string name="contact_email">contact@appstorefr.net</string>
     <string name="support_about_button">❤️ मुझे सहयोग दें</string>
 
     <!-- DNS Deletion -->
-    <string name="cannot_delete">हटाना संभव नहीं</string>
-    <string name="cannot_delete_predefined">आप पूर्वनिर्धारित प्रोफ़ाइल नहीं हटा सकते।</string>
-    <string name="confirm_delete">हटाने की पुष्टि करें</string>
-    <string name="delete_profile_message">क्या आप वाकई &quot;%1$s&quot; प्रोफ़ाइल हटाना चाहते हैं?</string>
     <string name="delete">हटाएँ</string>
 
     <!-- AddProfileDialog -->
@@ -216,27 +163,6 @@
     <string name="primary_dns_required">प्राथमिक DNS आवश्यक है</string>
 
     <!-- DNS Test -->
-    <string name="test_dns">🔍 DNS परीक्षण</string>
-    <string name="test_dns_title">DNS परीक्षण</string>
-    <string name="test_dns_running">परीक्षण जारी है…</string>
-    <string name="test_dns_success">✅ DNS काम कर रहा है!\n\n%1$s सफलतापूर्वक हल किया गया।\nDNS परिवर्तन सक्रिय है।</string>
-    <string name="test_dns_fail">❌ DNS रिज़ॉल्यूशन विफल।\n\nडोमेन %1$s हल नहीं हो सका।\nअपना DNS कॉन्फ़िगरेशन जाँचें।</string>
-    <string name="test_dns_no_dns">परीक्षण करने से पहले एक DNS सक्रिय करें।</string>
-    <string name="test_domain_label">परीक्षण करने के लिए डोमेन:</string>
-    <string name="test_button">परीक्षण</string>
-    <string name="test_flushing">DNS कैश फ़्लश + परीक्षण जारी है…</string>
-    <string name="test_no_connection_title">❌ कनेक्शन नहीं है</string>
-    <string name="test_no_connection_msg">कुछ भी हल करना संभव नहीं।\nअपना इंटरनेट कनेक्शन जाँचें।</string>
-    <string name="test_blocked_title">🔒 डोमेन अवरोधित</string>
-    <string name="test_blocked_msg">%1$s → %2$s\n\nयह IP एक ब्लॉकिंग पता है।\n%3$s</string>
-    <string name="test_blocked_dns_bad">DNS ठीक से काम नहीं कर रहा है।</string>
-    <string name="test_blocked_activate">एक वैकल्पिक DNS सक्रिय करें फिर दोबारा परीक्षण करें!</string>
-    <string name="test_accessible_title">✅ डोमेन पहुँच योग्य</string>
-    <string name="test_accessible_msg_active">%1$s → %2$s\n\nDNS काम कर रहा है!</string>
-    <string name="test_accessible_msg_inactive">%1$s → %2$s\n\nयह डोमेन वैकल्पिक DNS के बिना पहुँच योग्य है।</string>
-    <string name="test_unresolved_title">❓ हल नहीं हुआ</string>
-    <string name="test_unresolved_msg_active">%1$s : %2$s\n\nDNS सर्वर शायद इस डोमेन को नहीं जानता।</string>
-    <string name="test_unresolved_msg_inactive">%1$s : %2$s\n\nआपका ISP शायद इस डोमेन को अवरोधित कर रहा है।</string>
 
     <!-- VPN Report -->
     <string name="dns_report_title">DNS रिपोर्ट</string>
@@ -249,7 +175,6 @@
     <string name="report_method">विधि: %1$s</string>
     <string name="report_primary">प्राथमिक: %1$s</string>
     <string name="report_secondary">द्वितीयक: %1$s</string>
-    <string name="ok">ठीक है</string>
 
     <!-- ADB Error -->
     <string name="adb_error_title">ADB / अनुमति त्रुटि</string>
@@ -258,9 +183,6 @@
 
     <!-- DnsSelection -->
     <string name="choose_dns_server">एक DNS सर्वर चुनें</string>
-    <string name="method_doh_vpn_dot_adb">DoH / Standard → VPN   |   DoT → Private DNS (ADB)</string>
-    <string name="method_vpn_only">VPN के माध्यम से DNS — DoH और Standard</string>
-    <string name="long_press_edit">(संपादित करने के लिए लंबा दबाएँ)</string>
     <string name="remove_default_dns">⭐ डिफ़ॉल्ट DNS से हटाएँ</string>
     <string name="set_default_dns">⭐ डिफ़ॉल्ट DNS के रूप में सेट करें</string>
     <string name="default_dns_removed">डिफ़ॉल्ट DNS हटाया गया</string>
@@ -278,9 +200,6 @@
 
     <!-- NextDNS -->
     <string name="add_nextdns_profile">➕ कस्टम NextDNS प्रोफ़ाइल जोड़ें</string>
-    <string name="nextdns_explain">अपना NextDNS प्रोफ़ाइल पहचानकर्ता दर्ज करें।\nhttps://my.nextdns.io/XXXXXX/setup</string>
-    <string name="nextdns_add_title">NextDNS प्रोफ़ाइल जोड़ें</string>
-    <string name="nextdns_add_select">जोड़ें और चुनें (DoH)</string>
     <string name="nextdns_id_required">पहचानकर्ता आवश्यक है</string>
 
     <!-- HowTo -->
@@ -309,7 +228,6 @@
     <!-- UpdateManager -->
     <string name="update_available">अपडेट उपलब्ध: v%1$s</string>
     <string name="app_up_to_date">ऐप अपडेट है ✓</string>
-    <string name="update_check_error">अपडेट की जाँच करना संभव नहीं</string>
     <string name="update_downloading">डाउनलोड हो रहा है…</string>
     <string name="update_download_error">डाउनलोड में त्रुटि</string>
     <string name="update_install_error">इंस्टॉलेशन में त्रुटि</string>
@@ -361,10 +279,6 @@
     <!-- DNS Speedtest -->
     <string name="dns_speedtest_button">टेस्ट शुरू करें</string>
     <string name="dns_speedtest_title">⚡ DNS स्पीडटेस्ट</string>
-    <string name="dns_speedtest_running">DNS विलंब परीक्षण जारी है…</string>
-    <string name="dns_speedtest_result">%1$s (%2$s) : %3$s</string>
-    <string name="dns_speedtest_error">त्रुटि</string>
-    <string name="dns_speedtest_ms">%1$d ms</string>
 
     <!-- Export granulaire -->
     <string name="export_select_title">📤 आप क्या निर्यात करना चाहते हैं?</string>
@@ -375,9 +289,6 @@
     <string name="export_toggle_rewrite">URL Rewrite नियम</string>
     <string name="export_toggle_settings">सेटिंग्स</string>
     <string name="export_button">निर्यात करें</string>
-    <string name="export_choose_dest">जनरेट की गई फ़ाइल: %1$s\n\nJSON क्लिपबोर्ड पर कॉपी किया गया।\n\nगंतव्य चुनें:</string>
-    <string name="export_save_local">💾 स्थानीय सहेजें</string>
-    <string name="export_saved_locally">💾 फ़ाइल सहेजी गई:\n%1$s</string>
 
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">VPN पुनः कनेक्ट किया गया (IPv6 बदला गया)</string>
@@ -389,54 +300,31 @@
     <string name="gpl_license_text">आज मुक्त। कल मुक्त। रास्ता रोक सकते हैं, स्वतंत्रता नहीं!\nस्रोत कोड खुला है, कोई भी पुनर्वितरण ओपन सोर्स रहना चाहिए।\nGPL v3 लाइसेंस\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
-    <string name="speedtest_button">🌐 इंटरनेट स्पीडटेस्ट</string>
-    <string name="speedtest_title">इंटरनेट स्पीडटेस्ट</string>
-    <string name="speedtest_running">स्पीडटेस्ट चल रहा है…</string>
-    <string name="speedtest_result_ping">पिंग: %1$d मि.से.</string>
-    <string name="speedtest_result_download">डाउनलोड: %1$s Mbps</string>
-    <string name="speedtest_result_upload">अपलोड: %1$s Mbps</string>
-    <string name="speedtest_error">स्पीडटेस्ट विफल</string>
 
     <!-- DNS Leak Test -->
-    <string name="dns_leak_button">🔒 DNS लीक टेस्ट</string>
-    <string name="dns_leak_title">DNS लीक टेस्ट</string>
-    <string name="dns_leak_running">DNS लीक टेस्ट चल रहा है…</string>
-    <string name="dns_leak_result_title">DNS लीक परिणाम</string>
-    <string name="dns_leak_no_leak">✅ कोई लीक नहीं मिला — आपका DNS सुरक्षित है!</string>
-    <string name="dns_leak_resolvers_found">%1$d DNS रिज़ॉल्वर मिले:</string>
-    <string name="dns_leak_error">DNS लीक टेस्ट विफल</string>
 
     <!-- Rapport enrichi -->
     <string name="report_generating">रिपोर्ट बनाई जा रही है…</string>
-    <string name="report_blocking_test_before">DNS से पहले (8.8.8.8)</string>
-    <string name="report_blocking_test_after">DNS के बाद (सक्रिय)</string>
 
     <!-- परीक्षण उपकरण (एकीकृत मॉड्यूल) -->
-    <string name="tools_section_label">3. परीक्षण उपकरण दिखाएँ:</string>
     <string name="generate_report_button">▶ रिपोर्ट बनाएं</string>
     <string name="quick_dns_test_button">🔍 डोमेन टेस्टर</string>
-    <string name="quick_dns_test_running">DNS परीक्षण चल रहा है...</string>
     <string name="no_report_yet">कोई रिपोर्ट नहीं बनाई गई।\nपरीक्षण चलाने के लिए ऊपर बटन दबाएं।</string>
     <string name="share_report_button">📤 रिपोर्ट साझा करें</string>
     <string name="share_toggle_network">नेटवर्क जानकारी (IP, DNS)</string>
     <string name="share_toggle_speedtest">इंटरनेट स्पीडटेस्ट</string>
     <string name="share_toggle_leak">DNS Leak Test</string>
     <string name="share_toggle_blocking">URL ब्लॉकिंग टेस्ट</string>
-    <string name="report_progress_ip">⏳ IP प्राप्त कर रहे हैं…</string>
     <string name="report_progress_speedtest">⏳ स्पीडटेस्ट चल रहा है…</string>
     <string name="report_progress_leak">⏳ DNS Leak टेस्ट चल रहा है…</string>
     <string name="report_progress_blocking">⏳ ब्लॉकिंग टेस्ट चल रहा है…</string>
     <string name="report_complete">✅ रिपोर्ट बनाई गई</string>
     <string name="no_report_to_share">पहले एक रिपोर्ट बनाएं</string>
-    <string name="test_domains_button">डोमेन टेस्ट करें</string>
-    <string name="test_domains_add">डोमेन जोड़ें</string>
-    <string name="test_domains_empty">कोई डोमेन कॉन्फ़िगर नहीं</string>
 
     <!-- Split tunneling -->
     <string name="split_tunnel_button">एप्लिकेशन बाहर करें</string>
     <string name="split_tunnel_title">VPN से एप्लिकेशन बाहर करें</string>
     <string name="split_tunnel_desc">चयनित ऐप्स DNS VPN से नहीं गुजरेंगे। उन ऐप्स के लिए उपयोगी जो VPN सक्रिय होने पर काम नहीं करते।</string>
-    <string name="split_tunnel_no_apps">कोई बहिष्कृत ऐप नहीं</string>
     <string name="split_tunnel_apps_count">%d बहिष्कृत ऐप</string>
     <string name="split_tunnel_loading">ऐप्स लोड हो रहे हैं…</string>
     <string name="split_tunnel_search">खोजें…</string>
@@ -487,17 +375,13 @@
     <!-- Device info -->
     <string name="share_toggle_device">डिवाइस जानकारी</string>
     <string name="md_device_info">डिवाइस जानकारी</string>
-    <string name="md_device_name">डिवाइस</string>
     <string name="md_device_type">प्रकार</string>
     <string name="md_device_model">मॉडल</string>
-    <string name="md_device_manufacturer">निर्माता</string>
     <string name="md_android_version">Android संस्करण</string>
-    <string name="md_api_level">API स्तर</string>
     <string name="md_app_version">ऐप संस्करण</string>
     <string name="device_type_tv">Android TV / बॉक्स</string>
     <string name="device_type_phone">फ़ोन</string>
     <string name="device_type_tablet">टैबलेट</string>
-    <string name="device_type_unknown">अज्ञात</string>
 
     <!-- Reset app -->
     <string name="reset_app_button">⚠ ऐप रीसेट करें</string>
@@ -515,7 +399,6 @@
     <string name="domain_tester_no_enabled">कोई डोमेन सक्षम नहीं।</string>
     <string name="domain_tester_dns_all">सभी</string>
     <string name="domain_tester_dns_select">परीक्षण के लिए DNS:</string>
-    <string name="internet_speedtest_button">स्पीड टेस्ट</string>
     <string name="internet_speedtest_advanced">⚡ इंटरनेट स्पीड टेस्ट</string>
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
 
@@ -525,4 +408,79 @@
     <string name="theme_light">☀️ हल्का</string>
     <string name="theme_dark">🌙 गहरा</string>
     <string name="theme_choose_title">थीम चुनें</string>
+    <string name="uncheck_all">सभी अनचेक करें</string>
+    <string name="all_apps_unchecked">सभी ऐप्स अनचेक कर दिए गए</string>
+    <string name="link_and_password_required">लिंक और पासवर्ड दोनों चाहिए</string>
+    <string name="dns_type_doh_label">DNS over HTTPS (DoH) — अनुशंसित</string>
+    <string name="dns_type_dot_label">DNS over TLS (DoT)</string>
+    <string name="dns_type_doq_label">DNS over QUIC (DoQ)</string>
+    <string name="dns_type_standard_label">स्टैंडर्ड (अनएन्क्रिप्टेड UDP)</string>
+    <string name="primary_dns_v6_optional">प्राथमिक IPv6 DNS (वैकल्पिक)</string>
+    <string name="secondary_dns_v6_hint">द्वितीयक IPv6 DNS (वैकल्पिक)</string>
+    <string name="primary_dns_v6_hint">ex: 2606:4700:4700::1111</string>
+    <string name="adb_pair_wireless">वायरलेस ADB जोड़ें (Android 11+)</string>
+    <string name="adb_pair_wireless_instructions">इस डिवाइस पर:\n1. डेवलपर विकल्प → वायरलेस डिबगिंग → चालू\n2. कोड से जोड़ें → 6 अंकों का कोड नोट करें\n\nयहां कोड डालें:</string>
+    <string name="adb_pair_submit">जोड़ें</string>
+    <string name="adb_pair_invalid_code">अमान्य कोड (6 अंक चाहिए)</string>
+    <string name="adb_pair_in_progress">ADB जोड़ा जा रहा है…</string>
+    <string name="adb_pair_step_discovering">mDNS के माध्यम से ADB पोर्ट खोज रहे हैं…</string>
+    <string name="adb_pair_step_pairing">TLS-PSK जोड़ा जा रहा है…</string>
+    <string name="adb_pair_step_connecting">एन्क्रिप्टेड ADB कनेक्शन…</string>
+    <string name="adb_pair_step_granting">WRITE_SECURE_SETTINGS दे रहे हैं…</string>
+    <string name="adb_pair_success">जोड़ी सफल! हमेशा के लिए अनुमति दे दी गई।</string>
+    <string name="adb_pair_failed">जोड़ी विफल: %1$s</string>
+    <string name="share_expires_label">लिंक की समाप्ति:</string>
+    <string name="share_exp_1h">1 h</string>
+    <string name="share_exp_6h">6 h</string>
+    <string name="share_exp_24h">24 h</string>
+    <string name="share_exp_72h">72 h</string>
+    <string name="speedtest_adv_title">इंटरनेट स्पीड टेस्ट</string>
+    <string name="speedtest_server_loading">🌐  सर्वर: लोड हो रहा है…</string>
+    <string name="speedtest_server_fmt">🌐  सर्वर: %1$s</string>
+    <string name="speedtest_server_none">🌐  सर्वर: कोई नहीं</string>
+    <string name="speedtest_start">टेस्ट शुरू करें</string>
+    <string name="speedtest_log">टेस्ट लॉग</string>
+    <string name="speedtest_waiting">प्रतीक्षा… </string>
+    <string name="speedtest_backend_cf">बैकएंड: Cloudflare (speed.cloudflare.com)</string>
+    <string name="speedtest_backend_netflix">बैकएंड: Netflix / Fast.com (अपलोड समर्थित नहीं)</string>
+    <string name="speedtest_start_msg">=== टेस्ट शुरू %1$s ===</string>
+    <string name="speedtest_done_msg">=== टेस्ट पूरा ===</string>
+    <string name="speedtest_stopping_msg">टेस्ट रुक रहा है…</string>
+    <string name="speedtest_interrupted">टेस्ट बाधित हुआ।</string>
+    <string name="speedtest_error_fmt">त्रुटि: %1$s</string>
+    <string name="speedtest_ookla_loading">Ookla सर्वर सूची लोड हो रही है…</string>
+    <string name="speedtest_ookla_latency">Ookla सर्वर लेटेंसी टेस्ट…</string>
+    <string name="speedtest_ookla_loaded_fmt">%1$d Ookla सर्वर लोड हुए।</string>
+    <string name="speedtest_ookla_err_code_fmt">Ookla सर्वर त्रुटि: %1$d</string>
+    <string name="speedtest_ookla_err_load_fmt">Ookla लोड त्रुटि: %1$s</string>
+    <string name="speedtest_ookla_none">कोई Ookla सर्वर उपलब्ध नहीं।</string>
+    <string name="speedtest_ookla_not_selected">कोई Ookla सर्वर नहीं चुना।</string>
+    <string name="speedtest_ping_section_fmt"> --- Ping %1$s (%2$d अनुरोध) ---</string>
+    <string name="speedtest_ping_attempt_fmt">  #%1$d : %2$.1f ms</string>
+    <string name="speedtest_ping_fail_fmt">  #%1$d: विफल</string>
+    <string name="speedtest_ping_avg_fmt">  औसत: %1$.1f ms | जिटर: %2$.1f ms</string>
+    <string name="speedtest_dl_section_fmt"> --- डाउनलोड %1$s (%2$d कनेक्शन, %3$d सेकंड) ---</string>
+    <string name="speedtest_ul_section_fmt"> --- अपलोड %1$s (%2$d कनेक्शन, %3$d सेकंड) ---</string>
+    <string name="speedtest_mbps_fmt">  %1$.2f Mbps (%2$.1f MB / %3$.1f सेकंड)</string>
+    <string name="speedtest_upload_na">अपलोड समर्थित नहीं (N/A)</string>
+    <string name="speedtest_ip_none">IP : --</string>
+    <string name="speedtest_netflix_title">Netflix / Fast.com</string>
+    <string name="speedtest_cloudflare_title">Cloudflare</string>
+    <string name="speedtest_ookla_title">Ookla</string>
+    <string name="report_conn_fmt">कनेक्शन: %1$s</string>
+    <string name="report_carrier_fmt">कैरियर: %1$s</string>
+    <string name="report_isp_fmt">ISP: %1$s</string>
+    <string name="report_ipv4_fmt">IPv4 : %1$s</string>
+    <string name="report_ipv6_fmt">IPv6 : %1$s</string>
+    <string name="report_local_ip_fmt">लोकल IP: %1$s</string>
+    <string name="report_profile_fmt">प्रोफ़ाइल: %1$s - %2$s</string>
+    <string name="dns_active_vpn_fmt">सक्रिय DNS: %1$s (%2$s)</string>
+    <string name="dns_active_vpn">सक्रिय DNS: VPN</string>
+    <string name="dns_active_dot_fmt">सक्रिय DNS: DoT (%1$s)</string>
+    <string name="dns_active_dot_host_fmt">सक्रिय DNS: DoT (%1$s)</string>
+    <string name="dns_active_dot">सक्रिय DNS: DoT</string>
+    <string name="dt_vpn_active_fmt">🟢 VPN सक्रिय (%1$s)</string>
+    <string name="dt_vpn_active">🟢 VPN सक्रिय</string>
+    <string name="dt_dot_active">🟢 निजी DNS सक्रिय</string>
+    <string name="dt_no_dns">🔴 कोई सक्रिय DNS नहीं (ISP रिज़ॉल्व)</string>
 </resources>

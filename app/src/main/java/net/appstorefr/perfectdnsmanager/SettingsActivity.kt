@@ -937,11 +937,11 @@ class SettingsActivity : AppCompatActivity() {
                     }
                 }
             }
-            .setNegativeButton("Tout d\u00e9cocher") { _, _ ->
+            .setNegativeButton(getString(R.string.uncheck_all)) { _, _ ->
                 for (i in checked.indices) checked[i] = false
                 for (key in extraPopularChecked.keys) extraPopularChecked[key] = false
                 saveExcludedApps(emptySet())
-                Toast.makeText(this, "Toutes les applications ont \u00e9t\u00e9 d\u00e9coch\u00e9es", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.all_apps_unchecked), Toast.LENGTH_SHORT).show()
 
                 if (net.appstorefr.perfectdnsmanager.service.DnsVpnService.isVpnRunning) {
                     val profileJson = prefs.getString("selected_profile_json", null)
@@ -1256,7 +1256,7 @@ class SettingsActivity : AppCompatActivity() {
                 val code = editCode.text.toString().trim()
                 val pwd = editPwd.text.toString().trim()
                 if (code.isEmpty() || pwd.isEmpty()) {
-                    Toast.makeText(this, "Lien ET mot de passe requis", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.link_and_password_required), Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
                 Toast.makeText(this, getString(R.string.downloading), Toast.LENGTH_SHORT).show()

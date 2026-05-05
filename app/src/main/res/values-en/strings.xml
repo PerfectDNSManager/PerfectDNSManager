@@ -3,25 +3,14 @@
 
     <!-- MainActivity -->
     <string name="dns_switcher">Perfect DNS Manager</string>
-    <string name="dns_profile">DNS Profile</string>
     <string name="add_new_profile">➕ NEW PROFILE</string>
-    <string name="application_method">Application method</string>
-    <string name="private_dns_adb">Private DNS (ADB)</string>
-    <string name="local_vpn_all_types">Local VPN</string>
     <string name="activate">ENABLE</string>
     <string name="deactivate">DISABLE</string>
     <string name="no_active_dns">No active DNS</string>
-    <string name="about">About</string>
     <string name="select_a_profile">Select a profile</string>
-    <string name="click_to_select_dns">Click here to choose a DNS</string>
-    <string name="profile_added">Profile added: %1$s</string>
     <string name="private_dns_supports_only_dot">Private DNS only supports DoT</string>
     <string name="adb_requires_root_or_pc">Unable to modify settings.\n\nMake sure you granted the permission via a PC:\n\nadb shell pm grant %1$s android.permission.WRITE_SECURE_SETTINGS\n\n(Or that your device is Rooted)</string>
-    <string name="error_activating_adb">Error activating ADB</string>
-    <string name="dns_activated_via_adb">DNS activated via ADB</string>
     <string name="vpn_permission_denied">VPN permission denied</string>
-    <string name="vpn_activated">VPN enabled: %1$s</string>
-    <string name="dns_disabled">DNS disabled</string>
     <string name="switching_disabling_dot">Disabling previous DoT…</string>
     <string name="firestick_warning_title">Firestick Warning</string>
     <string name="firestick_warning_message">Using the ADB method on Firestick devices may cause loss of internet connectivity. It is recommended to use the VPN method.</string>
@@ -29,34 +18,21 @@
     <string name="dns_provider_label">1. Choose DNS Provider:</string>
     <string name="dns_select_button">👉 Choose DNS provider 👈</string>
     <string name="activation_label">2. Activation:</string>
-    <string name="dns_service_used">Active DNS service:</string>
     <string name="settings_content_description">Settings</string>
-    <string name="wan_ipv4_label">IPv4: </string>
-    <string name="wan_ipv6_label">IPv6: </string>
-    <string name="wan_ip_loading">loading…</string>
     <string name="wan_ip_error">unavailable</string>
     <string name="wan_ipv6_blocked">blocked ✓</string>
-    <string name="share_ip_button">📤 Share report</string>
-    <string name="share_ip_uploading">Uploading IPs…</string>
     <string name="share_ip_success_title">Encrypted report shared</string>
-    <string name="share_ip_success_message">Code: %1$s\n\nThe code has been copied to clipboard.\n\nLink: %2$s\n(AES-256 encrypted file)</string>
     <string name="share_ip_error">Error sharing IPs</string>
 
     <!-- Navigation -->
-    <string name="back">Back</string>
     <string name="back_arrow">← Back</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
-    <string name="settings_section_startup">Startup &amp; connection</string>
-    <string name="settings_section_advanced">Advanced</string>
-    <string name="settings_section_config">Configuration file</string>
-    <string name="language_select_button">Language / Langue</string>
     <string name="how_to_adb">🛠 How to enable ADB</string>
     <string name="adb_status_active">🟢 ADB Debugging: Active</string>
     <string name="adb_status_inactive">🔴 ADB Debugging: Inactive</string>
     <string name="advanced_features_title">⚙️ Advanced DNS settings</string>
-    <string name="advanced_features_desc">Enables: DNS DoT via ADB, URL Rewrite and operator DNS.</string>
     <string name="url_rewrite_warning">URL Rewrite only works with DoH or Standard DNS (not DoT/ADB)</string>
     <string name="url_rewrite_button">🔀 URL Rewrite</string>
     <string name="restore_dns_button">🔄 Restore initial DNS</string>
@@ -73,49 +49,24 @@
     <string name="beta_updates_locked">You\'re already on a beta build — this option is locked on.</string>
 
     <!-- Auto-start / Auto-reconnect -->
-    <string name="auto_settings_title">Auto-start</string>
     <string name="auto_start_label">Launch at boot</string>
-    <string name="auto_start_description">Automatically launch the app when the device starts</string>
     <string name="auto_reconnect_label">Auto-connect to DNS</string>
-    <string name="auto_reconnect_description">Automatically reconnect to default DNS or last used</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ No DNS configured</string>
     <string name="auto_reconnect_default_prefix">(default) </string>
 
     <!-- Import / Export -->
     <string name="import_export_title">💾 Configuration file</string>
-    <string name="import_export_desc">Save or restore your complete configuration (profiles, default DNS, rewrite rules, settings).</string>
     <string name="export_config_button">📤 Export encrypted config (AES-256-GCM)</string>
     <string name="import_config_button">📥 Import encrypted config</string>
-    <string name="config_exported_title">📤 Configuration exported</string>
-    <string name="config_exported_message">File: %1$s\n\nThe JSON was also copied to clipboard.\n\nYou can share or save it.</string>
-    <string name="share_button">Share</string>
-    <string name="upload_encrypted">🔒 Send encrypted</string>
     <string name="uploading">Encrypting and sending…</string>
     <string name="upload_success_title">🔒 Encrypted file sent!</string>
-    <string name="upload_success_message_with_number">Import code: %1$s\n\nTo import on another device, type this code.\n\nFull link:\n%2$s\n\nCode copied to clipboard.\n\n🔒 AES-256 encrypted — the key is in the link.</string>
     <string name="upload_error">Upload error: %1$s</string>
-    <string name="share_config">Share configuration</string>
     <string name="export_error">Export error: %1$s</string>
-    <string name="import_from_clipboard">📋 Paste from clipboard</string>
-    <string name="import_from_url">🌐 Import from URL</string>
-    <string name="import_from_file">📁 Import from local file</string>
-    <string name="import_from_code">🔒 From an encrypted code</string>
     <string name="import_from_code_title">🔒 Import an encrypted configuration</string>
-    <string name="enter_share_code">Enter the code:</string>
-    <string name="share_code_hint">123456</string>
     <string name="import_code_explain">Generate this code via Export in settings.\n\nThe file will be downloaded and decrypted automatically.\n\nVerification: https://appstorefr.github.io/PerfectDNSManager/decrypt.html</string>
-    <string name="choose_expiration">File expiration:</string>
-    <string name="expiration_1h">1 hour</string>
-    <string name="expiration_12h">12 hours</string>
-    <string name="expiration_24h">24 hours</string>
-    <string name="expiration_72h">72 hours (3 days)</string>
-    <string name="clipboard_empty">Clipboard empty</string>
-    <string name="enter_config_url">Enter the URL of the JSON configuration file:</string>
-    <string name="import_from_url_title">🌐 Import from URL</string>
     <string name="download_button">Download</string>
     <string name="downloading">Downloading…</string>
-    <string name="no_file_found">No file found: %1$s</string>
     <string name="read_error">Read error: %1$s</string>
     <string name="confirm_import_title">📥 Confirm import</string>
     <string name="confirm_import_message">Configuration contents:\n\n%1$s\n\nThis will replace your current configuration.</string>
@@ -181,7 +132,6 @@
     <string name="lang_deutsch">🇩🇪 Deutsch</string>
 
     <!-- Support -->
-    <string name="support_us_button">❤️ Support me</string>
     <string name="support_us_title">Support me ❤️</string>
     <string name="support_us_message">Do you like the app? Did it help you?\nFeel free to make a small gesture for the developer!</string>
     <string name="select_crypto_button">👉 Click here to choose which crypto to send 👈</string>
@@ -193,14 +143,9 @@
     <string name="about_community_text">🚫 No ads\n📊 No data collection\n🆓 Free to use and share\n💜 Made for the community ❤️</string>
     <string name="check_for_updates">Check for updates</string>
     <string name="checking_for_updates">Checking for updates…</string>
-    <string name="appstorefr">AppstoreFR</string>
     <string name="support_about_button">❤️ Support me</string>
 
     <!-- DNS Deletion -->
-    <string name="cannot_delete">Cannot delete</string>
-    <string name="cannot_delete_predefined">You cannot delete a predefined profile.</string>
-    <string name="confirm_delete">Confirm deletion</string>
-    <string name="delete_profile_message">Do you really want to delete the profile &quot;%1$s&quot;?</string>
     <string name="delete">Delete</string>
 
     <!-- AddProfileDialog -->
@@ -225,27 +170,6 @@
     <string name="primary_dns_required">Primary DNS required</string>
 
     <!-- DNS Test -->
-    <string name="test_dns">🔍 Test DNS</string>
-    <string name="test_dns_title">DNS Test</string>
-    <string name="test_dns_running">Testing…</string>
-    <string name="test_dns_success">✅ DNS is working!\n\n%1$s resolved successfully.\nThe DNS change is active.</string>
-    <string name="test_dns_fail">❌ DNS resolution failed.\n\nThe domain %1$s could not be resolved.\nCheck your DNS configuration.</string>
-    <string name="test_dns_no_dns">Enable a DNS first before testing.</string>
-    <string name="test_domain_label">Domain to test:</string>
-    <string name="test_button">Test</string>
-    <string name="test_flushing">Flushing DNS cache + testing…</string>
-    <string name="test_no_connection_title">❌ No connection</string>
-    <string name="test_no_connection_msg">Cannot resolve anything.\nCheck your internet connection.</string>
-    <string name="test_blocked_title">🔒 Domain BLOCKED</string>
-    <string name="test_blocked_msg">%1$s → %2$s\n\nThis IP is a blocking address.\n%3$s</string>
-    <string name="test_blocked_dns_bad">The DNS is not working correctly.</string>
-    <string name="test_blocked_activate">Enable an alternative DNS and try again!</string>
-    <string name="test_accessible_title">✅ Domain ACCESSIBLE</string>
-    <string name="test_accessible_msg_active">%1$s → %2$s\n\nDNS is working!</string>
-    <string name="test_accessible_msg_inactive">%1$s → %2$s\n\nThis domain is accessible without alternative DNS.</string>
-    <string name="test_unresolved_title">❓ Not resolved</string>
-    <string name="test_unresolved_msg_active">%1$s: %2$s\n\nThe DNS server may not know this domain.</string>
-    <string name="test_unresolved_msg_inactive">%1$s: %2$s\n\nYour ISP probably blocks this domain.</string>
 
     <!-- VPN Report -->
     <string name="dns_report_title">DNS Report</string>
@@ -258,7 +182,6 @@
     <string name="report_method">Method: %1$s</string>
     <string name="report_primary">Primary: %1$s</string>
     <string name="report_secondary">Secondary: %1$s</string>
-    <string name="ok">OK</string>
 
     <!-- ADB Error -->
     <string name="adb_error_title">ADB Error / Permission</string>
@@ -267,9 +190,6 @@
 
     <!-- DnsSelection -->
     <string name="choose_dns_server">Choose a DNS server</string>
-    <string name="method_doh_vpn_dot_adb">DoH / Standard → VPN   |   DoT → Private DNS (ADB)</string>
-    <string name="method_vpn_only">DNS via VPN — DoH and Standard</string>
-    <string name="long_press_edit">(long press = edit)</string>
     <string name="remove_default_dns">⭐ Remove from default DNS</string>
     <string name="set_default_dns">⭐ Set as default DNS</string>
     <string name="default_dns_removed">Default DNS removed</string>
@@ -287,9 +207,6 @@
 
     <!-- NextDNS -->
     <string name="add_nextdns_profile">➕ Add a custom NextDNS profile</string>
-    <string name="nextdns_explain">Enter your NextDNS profile ID.\nhttps://my.nextdns.io/XXXXXX/setup</string>
-    <string name="nextdns_add_title">Add NextDNS profile</string>
-    <string name="nextdns_add_select">Add and select (DoH)</string>
     <string name="nextdns_id_required">ID required</string>
 
     <!-- HowTo -->
@@ -318,7 +235,6 @@
     <!-- UpdateManager -->
     <string name="update_available">Update available: v%1$s</string>
     <string name="app_up_to_date">App is up to date ✓</string>
-    <string name="update_check_error">Unable to check for updates</string>
     <string name="update_downloading">Downloading…</string>
     <string name="update_download_error">Download error</string>
     <string name="update_install_error">Installation error</string>
@@ -381,15 +297,10 @@
     <string name="privacy_label">Privacy</string>
 
     <!-- Missing from FR -->
-    <string name="contact_email">contact@appstorefr.net</string>
 
     <!-- DNS Speedtest -->
     <string name="dns_speedtest_button">Start test</string>
     <string name="dns_speedtest_title">⚡ DNS Speedtest</string>
-    <string name="dns_speedtest_running">Running DNS latency test…</string>
-    <string name="dns_speedtest_result">%1$s (%2$s): %3$s</string>
-    <string name="dns_speedtest_error">Error</string>
-    <string name="dns_speedtest_ms">%1$d ms</string>
 
     <!-- Granular export -->
     <string name="export_select_title">📤 What do you want to export?</string>
@@ -400,9 +311,6 @@
     <string name="export_toggle_rewrite">URL Rewrite rules</string>
     <string name="export_toggle_settings">Settings</string>
     <string name="export_button">Export</string>
-    <string name="export_choose_dest">File generated: %1$s\n\nJSON copied to clipboard.\n\nChoose destination:</string>
-    <string name="export_save_local">💾 Save locally</string>
-    <string name="export_saved_locally">💾 File saved:\n%1$s</string>
 
     <!-- IPv6 VPN reconnect -->
     <string name="vpn_reconnecting_ipv6">VPN reconnected (IPv6 changed)</string>
@@ -414,54 +322,31 @@
     <string name="gpl_license_text">Free today. Free tomorrow. You can block a road, not freedom!\nThe source code is open, any redistribution must remain open source.\nGPL v3 License\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
-    <string name="speedtest_button">🌐 Internet Speedtest</string>
-    <string name="speedtest_title">Internet Speedtest</string>
-    <string name="speedtest_running">Speedtest running…</string>
-    <string name="speedtest_result_ping">Ping: %1$d ms</string>
-    <string name="speedtest_result_download">Download: %1$s Mbps</string>
-    <string name="speedtest_result_upload">Upload: %1$s Mbps</string>
-    <string name="speedtest_error">Speedtest failed</string>
 
     <!-- DNS Leak Test -->
-    <string name="dns_leak_button">🔒 DNS Leak Test</string>
-    <string name="dns_leak_title">DNS Leak Test</string>
-    <string name="dns_leak_running">DNS leak test running…</string>
-    <string name="dns_leak_result_title">DNS Leak Results</string>
-    <string name="dns_leak_no_leak">✅ No leak detected — your DNS is secure!</string>
-    <string name="dns_leak_resolvers_found">%1$d DNS resolvers found:</string>
-    <string name="dns_leak_error">DNS leak test failed</string>
 
     <!-- Rapport enrichi -->
     <string name="report_generating">Generating report…</string>
-    <string name="report_blocking_test_before">Before DNS (8.8.8.8)</string>
-    <string name="report_blocking_test_after">After DNS (active)</string>
 
     <!-- Test tools (unified module) -->
-    <string name="tools_section_label">3. Show test tools:</string>
     <string name="generate_report_button">▶ Generate report</string>
     <string name="quick_dns_test_button">🔍 Domain Tester</string>
-    <string name="quick_dns_test_running">DNS test in progress...</string>
     <string name="no_report_yet">No report generated.\nPress the button above to run tests.</string>
     <string name="share_report_button">📤 Share Report</string>
     <string name="share_toggle_network">Network Info (IP, DNS)</string>
     <string name="share_toggle_speedtest">Internet Speedtest</string>
     <string name="share_toggle_leak">DNS Leak Test</string>
     <string name="share_toggle_blocking">URL Blocking Test</string>
-    <string name="report_progress_ip">⏳ Fetching IPs…</string>
     <string name="report_progress_speedtest">⏳ Running speedtest…</string>
     <string name="report_progress_leak">⏳ Running DNS Leak test…</string>
     <string name="report_progress_blocking">⏳ Running blocking test…</string>
     <string name="report_complete">✅ Report generated</string>
     <string name="no_report_to_share">Generate a report first</string>
-    <string name="test_domains_button">Test domains</string>
-    <string name="test_domains_add">Add a domain</string>
-    <string name="test_domains_empty">No domain configured</string>
 
     <!-- Split tunneling -->
     <string name="split_tunnel_button">Exclude applications</string>
     <string name="split_tunnel_title">Exclude applications from VPN</string>
     <string name="split_tunnel_desc">Selected apps will not go through the DNS VPN. Useful for apps that don\'t work with the VPN active.</string>
-    <string name="split_tunnel_no_apps">No excluded apps</string>
     <string name="split_tunnel_apps_count">%d excluded app(s)</string>
     <string name="split_tunnel_loading">Loading apps…</string>
     <string name="split_tunnel_search">Search…</string>
@@ -519,17 +404,13 @@
     <!-- Device info -->
     <string name="share_toggle_device">Device information</string>
     <string name="md_device_info">Device Information</string>
-    <string name="md_device_name">Device</string>
     <string name="md_device_type">Type</string>
     <string name="md_device_model">Model</string>
-    <string name="md_device_manufacturer">Manufacturer</string>
     <string name="md_android_version">Android Version</string>
-    <string name="md_api_level">API Level</string>
     <string name="md_app_version">App Version</string>
     <string name="device_type_tv">Android TV / Box</string>
     <string name="device_type_phone">Phone</string>
     <string name="device_type_tablet">Tablet</string>
-    <string name="device_type_unknown">Unknown</string>
 
     <!-- Reset app -->
     <string name="reset_app_button">⚠ Reset application</string>
@@ -547,7 +428,6 @@
     <string name="domain_tester_no_enabled">No domain enabled.</string>
     <string name="domain_tester_dns_all">All</string>
     <string name="domain_tester_dns_select">DNS to test:</string>
-    <string name="internet_speedtest_button">Speed tester</string>
     <string name="internet_speedtest_advanced">⚡ Internet speed test</string>
     <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
 
@@ -564,12 +444,10 @@
     <string name="speedtest_server_fmt">🌐  Server: %1$s</string>
     <string name="speedtest_server_none">🌐  Server: none</string>
     <string name="speedtest_start">Start test</string>
-    <string name="speedtest_stop">Stop test</string>
     <string name="speedtest_log">Test log</string>
     <string name="speedtest_waiting">Waiting…
 </string>
     <string name="speedtest_backend_cf">Backend: Cloudflare (speed.cloudflare.com)</string>
-    <string name="speedtest_backend_ookla">Backend: Ookla</string>
     <string name="speedtest_backend_netflix">Backend: Netflix / Fast.com (upload not supported)</string>
     <string name="speedtest_start_msg">=== Starting %1$s test ===</string>
     <string name="speedtest_done_msg">=== Test complete ===</string>
@@ -595,7 +473,6 @@
     <string name="speedtest_mbps_fmt">  %1$.2f Mbps (%2$.1f MB / %3$.1fs)</string>
     <string name="speedtest_upload_na">Upload not supported (N/A)</string>
     <string name="speedtest_ip_none">IP: --</string>
-    <string name="speedtest_ip_fmt">IP: %1$s</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
     <string name="speedtest_cloudflare_title">Cloudflare</string>
     <string name="speedtest_ookla_title">Ookla</string>
@@ -614,7 +491,6 @@
     <string name="dns_active_dot_fmt">Active DNS: DoT (%1$s)</string>
     <string name="dns_active_dot_host_fmt">Active DNS: DoT (%1$s)</string>
     <string name="dns_active_dot">Active DNS: DoT</string>
-    <string name="report_vpn_active_fmt">VPN active (%1$s)</string>
 
 
     <!-- Domain Tester status -->
@@ -623,4 +499,7 @@
     <string name="dt_dot_active">🟢 Private DNS active</string>
     <string name="dt_no_dns">🔴 No active DNS (ISP resolution)</string>
 
+    <string name="uncheck_all">Uncheck all</string>
+    <string name="all_apps_unchecked">All apps have been unchecked</string>
+    <string name="link_and_password_required">Both link AND password required</string>
 </resources>
