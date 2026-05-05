@@ -214,7 +214,7 @@ class MainActivity : AppCompatActivity() {
         UpdateManager(this).checkOnLaunch(currentVersion)
         // Sync blocking authorities list in background
         lifecycleScope.launch(Dispatchers.IO) {
-            net.appstorefr.perfectdnsmanager.util.BlockingAuthoritiesManager.syncFromRemote(this)
+            net.appstorefr.perfectdnsmanager.util.BlockingAuthoritiesManager.syncFromRemote(this@MainActivity)
         }
     }
 
@@ -1035,7 +1035,7 @@ class MainActivity : AppCompatActivity() {
                         msg.setSpan(android.text.style.ForegroundColorSpan(accentColor), pwdStart, pwdStart + pwd.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                         msg.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), pwdStart, pwdStart + pwd.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
-                    val dialog = AlertDialog.Builder(this)
+                    val dialog = AlertDialog.Builder(this@MainActivity)
                         .setTitle(getString(R.string.share_ip_success_title))
                         .setMessage(msg)
                         .setPositiveButton("OK", null)
@@ -1046,7 +1046,7 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     btnShareReport.isEnabled = true
                     btnShareReport.setBackgroundResource(R.drawable.pdm_btn_primary)
-                    Toast.makeText(this, getString(R.string.share_ip_error) + ": ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@MainActivity, getString(R.string.share_ip_error) + ": ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -1448,7 +1448,7 @@ class MainActivity : AppCompatActivity() {
             .setCancelable(false)
             .show()
         lifecycleScope.launch(Dispatchers.IO) {
-            val mgr = net.appstorefr.perfectdnsmanager.service.AdbPairingManager(this)
+            val mgr = net.appstorefr.perfectdnsmanager.service.AdbPairingManager(this@MainActivity)
             mgr.pairAndGrant(code, object : net.appstorefr.perfectdnsmanager.service.AdbPairingManager.Callback {
                 override fun onProgress(step: String) {
                     runOnUiThread {

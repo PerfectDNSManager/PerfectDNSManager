@@ -1208,14 +1208,14 @@ class SettingsActivity : AppCompatActivity() {
                         msg.setSpan(android.text.style.ForegroundColorSpan(accentColor), pwdStart, pwdStart + result.password.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                         msg.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), pwdStart, pwdStart + result.password.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
-                    AlertDialog.Builder(this)
+                    AlertDialog.Builder(this@SettingsActivity)
                         .setTitle(getString(R.string.upload_success_title))
                         .setMessage(msg)
                         .setPositiveButton("OK", null)
                         .show()
                 }
             } catch (e: Exception) {
-                runOnUiThread { Toast.makeText(this, getString(R.string.upload_error, e.message ?: ""), Toast.LENGTH_LONG).show() }
+                runOnUiThread { Toast.makeText(this@SettingsActivity, getString(R.string.upload_error, e.message ?: ""), Toast.LENGTH_LONG).show() }
             }
         }
     }
@@ -1282,12 +1282,12 @@ class SettingsActivity : AppCompatActivity() {
                             runOnUiThread { confirmAndImport(json) }
                         } else {
                             runOnUiThread {
-                                Toast.makeText(this, getString(R.string.read_error, "Empty response"), Toast.LENGTH_LONG).show()
+                                Toast.makeText(this@SettingsActivity, getString(R.string.read_error, "Empty response"), Toast.LENGTH_LONG).show()
                             }
                         }
                     } catch (e: Exception) {
                         runOnUiThread {
-                            Toast.makeText(this, getString(R.string.read_error, e.message ?: ""), Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@SettingsActivity, getString(R.string.read_error, e.message ?: ""), Toast.LENGTH_LONG).show()
                         }
                     }
                 }
