@@ -52,7 +52,7 @@
     <string name="how_to_adb">🛠 Как включить ADB</string>
     <string name="adb_status_active">🟢 Отладка ADB: Активна</string>
     <string name="adb_status_inactive">🔴 Отладка ADB: Неактивна</string>
-    <string name="advanced_features_title">⚙️ Расширенные функции</string>
+    <string name="advanced_features_title">⚙️ Расширенные настройки DNS</string>
     <string name="advanced_features_desc">Включает функции: DNS DoT через ADB, URL Rewrite и операторский DNS.</string>
     <string name="url_rewrite_warning">URL Rewrite работает только с DNS DoH или Стандартным (не DoT/ADB)</string>
     <string name="url_rewrite_button">🔀 URL Rewrite</string>

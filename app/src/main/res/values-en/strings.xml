@@ -55,7 +55,7 @@
     <string name="how_to_adb">🛠 How to enable ADB</string>
     <string name="adb_status_active">🟢 ADB Debugging: Active</string>
     <string name="adb_status_inactive">🔴 ADB Debugging: Inactive</string>
-    <string name="advanced_features_title">⚙️ Advanced features</string>
+    <string name="advanced_features_title">⚙️ Advanced DNS settings</string>
     <string name="advanced_features_desc">Enables: DNS DoT via ADB, URL Rewrite and operator DNS.</string>
     <string name="url_rewrite_warning">URL Rewrite only works with DoH or Standard DNS (not DoT/ADB)</string>
     <string name="url_rewrite_button">🔀 URL Rewrite</string>

@@ -52,7 +52,7 @@
     <string name="how_to_adb">🛠 ADB の有効化方法</string>
     <string name="adb_status_active">🟢 ADB デバッグ：有効</string>
     <string name="adb_status_inactive">🔴 ADB デバッグ：無効</string>
-    <string name="advanced_features_title">⚙️ 高度な機能</string>
+    <string name="advanced_features_title">⚙️ 詳細DNS設定</string>
     <string name="advanced_features_desc">以下の機能を有効にします：ADB 経由の DNS DoT、URL リライト、キャリア DNS。</string>
     <string name="url_rewrite_warning">URL リライトは DNS DoH または Standard モードでのみ動作します（DoT/ADB では動作しません）</string>
     <string name="url_rewrite_button">🔀 URL リライト</string>

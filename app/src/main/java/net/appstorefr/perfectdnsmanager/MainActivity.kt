@@ -440,6 +440,10 @@ class MainActivity : AppCompatActivity() {
         ivSelectedDnsIcon = findViewById(R.id.ivSelectedDnsIcon)
         tvSelectDns = findViewById(R.id.tvSelectDns)
         btnSettings = findViewById(R.id.btnSettings)
+        // Titre + version dynamique (lue depuis BuildConfig, donc auto-cohérente
+        // avec celle affichée dans la section À propos des Settings).
+        findViewById<TextView>(R.id.tvTitle)?.text =
+            "${getString(R.string.dns_switcher)}  v${BuildConfig.VERSION_NAME}"
         tvStatusInfo = findViewById(R.id.tvStatusInfo)
         btnDomainTester = findViewById(R.id.btnDomainTester)
         btnSpeedtest = findViewById(R.id.btnSpeedtest)

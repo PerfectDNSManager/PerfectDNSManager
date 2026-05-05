@@ -79,7 +79,6 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AboutActivity" android:exported="false" />
         <activity android:name=".SettingsActivity" android:exported="false" />
         <activity android:name=".DnsSelectionActivity" android:exported="false" />
         <activity android:name=".HowToActivity" android:exported="false" />

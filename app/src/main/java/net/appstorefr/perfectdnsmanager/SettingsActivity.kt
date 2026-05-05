@@ -56,9 +56,7 @@ class SettingsActivity : AppCompatActivity() {
         adbDnsManager = AdbDnsManager(this)
 
         val btnBack: Button = findViewById(R.id.btnBack)
-        val btnAbout: Button = findViewById(R.id.btnAbout)
         val btnHowTo: Button = findViewById(R.id.btnHowTo)
-        val btnSupport: Button = findViewById(R.id.btnSupport)
         val tvAdbStatus: TextView = findViewById(R.id.tvAdbStatus)
         val switchAutoStart: Switch = findViewById(R.id.switchAutoStart)
         val switchAutoReconnect: Switch = findViewById(R.id.switchAutoReconnect)
@@ -456,9 +454,20 @@ class SettingsActivity : AppCompatActivity() {
 
         findViewById<LinearLayout>(R.id.rowAdvanced).requestFocus()
         btnBack.setOnClickListener { finish() }
-        btnAbout.setOnClickListener { startActivity(Intent(this, AboutActivity::class.java)) }
         btnHowTo.setOnClickListener { startActivity(Intent(this, HowToActivity::class.java)) }
-        btnSupport.setOnClickListener { startActivity(Intent(this, SupportActivity::class.java)) }
+
+        // ── Section À propos inlinée (anciennement AboutActivity) ──
+        // Version dynamique via BuildConfig — cohérente avec le titre MainActivity.
+        findViewById<TextView>(R.id.tvVersion).text =
+            getString(R.string.version, BuildConfig.VERSION_NAME)
+        findViewById<Button>(R.id.btnSupportAbout).setOnClickListener {
+            startActivity(Intent(this, SupportActivity::class.java))
+        }
+        val updateManager = net.appstorefr.perfectdnsmanager.service.UpdateManager(this)
+        findViewById<Button>(R.id.btnCheckForUpdate).setOnClickListener {
+            Toast.makeText(this, getString(R.string.checking_for_updates), Toast.LENGTH_SHORT).show()
+            updateManager.checkForUpdateGitHub("appstorefr/PerfectDNSManager", BuildConfig.VERSION_NAME)
+        }
 
         updateFocusChain()
     }
@@ -471,37 +480,24 @@ class SettingsActivity : AppCompatActivity() {
      */
     private fun updateFocusChain() {
         val rowAdvanced = findViewById<LinearLayout>(R.id.rowAdvanced)
-        val rowBetaUpdates = findViewById<LinearLayout>(R.id.rowBetaUpdates)
+        // rowBetaUpdates est désormais en dehors de layoutAdvancedSection
+        // (sa propre card sous Fichier de configuration), donc plus dans le
+        // focus interne de la section avancée. Premier row interne = profile variants.
+        val rowProfileVariants = findViewById<LinearLayout>(R.id.rowProfileVariants)
         val layoutAdvanced = findViewById<LinearLayout>(R.id.layoutAdvancedSection)
         val rowImportExport = findViewById<LinearLayout>(R.id.rowImportExport)
         val layoutImportExport = findViewById<LinearLayout>(R.id.layoutImportExportContent)
-        val btnExportConfig = findViewById<Button>(R.id.btnExportConfig)
-        val btnResetApp = findViewById<Button>(R.id.btnResetApp)
         val btnSplitTunnel = findViewById<Button>(R.id.btnSplitTunnel)
-        val btnSupport = findViewById<Button>(R.id.btnSupport)
-        val btnAbout = findViewById<Button>(R.id.btnAbout)
 
         val advancedOpen = layoutAdvanced.visibility == View.VISIBLE
-        val importOpen = layoutImportExport.visibility == View.VISIBLE
 
         // rowAdvanced → vers premier row avancé ou directement Import si fermé
         rowAdvanced.nextFocusDownId =
-            if (advancedOpen) rowBetaUpdates.id else rowImportExport.id
+            if (advancedOpen) rowProfileVariants.id else rowImportExport.id
         // Dernier bouton visible section avancée → Import
         btnSplitTunnel.nextFocusDownId = rowImportExport.id
         rowImportExport.nextFocusUpId =
             if (advancedOpen) btnSplitTunnel.id else rowAdvanced.id
-
-        // rowImportExport → vers premier bouton export ou directement Support si fermé
-        rowImportExport.nextFocusDownId =
-            if (importOpen) btnExportConfig.id else btnSupport.id
-        btnResetApp.nextFocusDownId = btnSupport.id
-        btnSupport.nextFocusUpId =
-            if (importOpen) btnResetApp.id else rowImportExport.id
-
-        // Footer chain
-        btnSupport.nextFocusDownId = btnAbout.id
-        btnAbout.nextFocusUpId = btnSupport.id
     }
 
     // ── Split tunneling (bypass VPN per-app) ─────────────────────

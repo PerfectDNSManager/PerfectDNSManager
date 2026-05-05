@@ -52,7 +52,7 @@
     <string name="how_to_adb">🛠 Como ativar o ADB</string>
     <string name="adb_status_active">🟢 Depuração ADB: Ativa</string>
     <string name="adb_status_inactive">🔴 Depuração ADB: Inativa</string>
-    <string name="advanced_features_title">⚙️ Funções avançadas</string>
+    <string name="advanced_features_title">⚙️ Configurações DNS avançadas</string>
     <string name="advanced_features_desc">Ativa as funções: DNS DoT via ADB, URL Rewrite e DNS da operadora.</string>
     <string name="url_rewrite_warning">URL Rewrite funciona apenas com DNS DoH ou Padrão (não com DoT/ADB)</string>
     <string name="url_rewrite_button">🔀 URL Rewrite</string>

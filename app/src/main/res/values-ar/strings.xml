@@ -52,7 +52,7 @@
     <string name="how_to_adb">🛠 كيفية تفعيل ADB</string>
     <string name="adb_status_active">🟢 تصحيح ADB: نشط</string>
     <string name="adb_status_inactive">🔴 تصحيح ADB: غير نشط</string>
-    <string name="advanced_features_title">⚙️ الميزات المتقدمة</string>
+    <string name="advanced_features_title">⚙️ إعدادات DNS متقدمة</string>
     <string name="advanced_features_desc">تفعيل الميزات: DNS DoT عبر ADB، URL Rewrite و DNS المشغّل.</string>
     <string name="url_rewrite_warning">URL Rewrite يعمل فقط مع DNS DoH أو القياسي (ليس DoT/ADB)</string>
     <string name="url_rewrite_button">🔀 URL Rewrite</string>

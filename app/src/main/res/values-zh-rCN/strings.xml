@@ -52,7 +52,7 @@
     <string name="how_to_adb">🛠 如何启用 ADB</string>
     <string name="adb_status_active">🟢 ADB 调试：已启用</string>
     <string name="adb_status_inactive">🔴 ADB 调试：未启用</string>
-    <string name="advanced_features_title">⚙️ 高级功能</string>
+    <string name="advanced_features_title">⚙️ 高级DNS设置</string>
     <string name="advanced_features_desc">启用功能：通过 ADB 使用 DNS DoT、URL Rewrite 和运营商 DNS。</string>
     <string name="url_rewrite_warning">URL Rewrite 仅适用于 DoH 或标准 DNS（不适用于 DoT/ADB）</string>
     <string name="url_rewrite_button">🔀 URL Rewrite</string>

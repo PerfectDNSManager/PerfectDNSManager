@@ -52,7 +52,7 @@
     <string name="how_to_adb">🛠 ADB কীভাবে সক্রিয় করবেন</string>
     <string name="adb_status_active">🟢 ADB ডিবাগিং: সক্রিয়</string>
     <string name="adb_status_inactive">🔴 ADB ডিবাগিং: নিষ্ক্রিয়</string>
-    <string name="advanced_features_title">⚙️ উন্নত বৈশিষ্ট্য</string>
+    <string name="advanced_features_title">⚙️ উন্নত DNS সেটিংস</string>
     <string name="advanced_features_desc">বৈশিষ্ট্য সক্রিয় করুন: ADB এর মাধ্যমে DNS DoT, URL Rewrite এবং অপারেটর DNS।</string>
     <string name="url_rewrite_warning">URL Rewrite শুধুমাত্র DNS DoH বা Standard এ কাজ করে (DoT/ADB তে নয়)</string>
     <string name="url_rewrite_button">🔀 URL Rewrite</string>
