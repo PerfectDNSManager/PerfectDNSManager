@@ -624,6 +624,7 @@
                     android:textColor="@color/pdm_text_primary"
                     android:textSize="15sp"/>
                 <TextView
+                    android:id="@+id/tvBetaUpdatesDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/beta_updates_description"

@@ -67,6 +67,7 @@
     <!-- Beta updates -->
     <string name="beta_updates_label">बीटा अपडेट प्राप्त करें</string>
     <string name="beta_updates_description">स्वचालित अपडेट जाँच में बीटा संस्करण शामिल करें</string>
+    <string name="beta_updates_locked">आप पहले से बीटा संस्करण उपयोग कर रहे हैं — यह विकल्प हमेशा सक्रिय।</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">स्वचालित स्टार्टअप</string>

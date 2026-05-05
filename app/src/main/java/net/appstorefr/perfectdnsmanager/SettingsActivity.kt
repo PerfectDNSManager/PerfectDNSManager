@@ -69,12 +69,25 @@ class SettingsActivity : AppCompatActivity() {
         rowDisableIpv6.setOnClickListener { switchDisableIpv6.toggle() }
 
         // ── Mises à jour bêta ──
+        // Sur un build bêta on force l'option ON et on verrouille la rangée :
+        // l'utilisateur est déjà sur prerelease, le désactiver le couperait
+        // des mises à jour (UpdateManager ne verrait que les stables, donc
+        // toujours antérieures à la version courante).
         val rowBetaUpdates: LinearLayout = findViewById(R.id.rowBetaUpdates)
         val switchBetaUpdates: Switch = findViewById(R.id.switchBetaUpdates)
-        switchBetaUpdates.isChecked = prefs.getBoolean("beta_updates_enabled", false)
-        rowBetaUpdates.setOnClickListener { switchBetaUpdates.toggle() }
-        switchBetaUpdates.setOnCheckedChangeListener { _, checked ->
-            prefs.edit().putBoolean("beta_updates_enabled", checked).apply()
+        if (PdmApp.isBetaBuild()) {
+            switchBetaUpdates.isChecked = true
+            rowBetaUpdates.isClickable = false
+            rowBetaUpdates.isFocusable = false
+            rowBetaUpdates.alpha = 0.7f
+            findViewById<TextView>(R.id.tvBetaUpdatesDescription)
+                .setText(R.string.beta_updates_locked)
+        } else {
+            switchBetaUpdates.isChecked = prefs.getBoolean("beta_updates_enabled", false)
+            rowBetaUpdates.setOnClickListener { switchBetaUpdates.toggle() }
+            switchBetaUpdates.setOnCheckedChangeListener { _, checked ->
+                prefs.edit().putBoolean("beta_updates_enabled", checked).apply()
+            }
         }
 
         // ── Toggle fonctions avancées ──

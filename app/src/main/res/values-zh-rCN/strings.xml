@@ -67,6 +67,7 @@
     <!-- Beta updates -->
     <string name="beta_updates_label">接收测试版更新</string>
     <string name="beta_updates_description">在自动更新检查中包含测试版本</string>
+    <string name="beta_updates_locked">您已在使用 Beta 版本 — 此选项始终启用。</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">自动启动</string>

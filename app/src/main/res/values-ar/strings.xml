@@ -67,6 +67,7 @@
     <!-- Beta updates -->
     <string name="beta_updates_label">تلقّي تحديثات البيتا</string>
     <string name="beta_updates_description">تضمين إصدارات البيتا في الفحص التلقائي للتحديثات</string>
+    <string name="beta_updates_locked">أنت تستخدم نسخة بيتا بالفعل — هذا الخيار مفعّل دائمًا.</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">التشغيل التلقائي</string>

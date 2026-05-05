@@ -75,6 +75,7 @@
     <!-- Mises à jour bêta -->
     <string name="beta_updates_label">Recevoir les mises à jour bêta</string>
     <string name="beta_updates_description">Inclure les versions bêta dans la vérification automatique des mises à jour</string>
+    <string name="beta_updates_locked">Vous utilisez déjà une bêta — option forcément activée.</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">Démarrage automatique</string>

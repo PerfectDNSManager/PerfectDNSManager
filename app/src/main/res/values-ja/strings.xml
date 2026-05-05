@@ -67,6 +67,7 @@
     <!-- Beta updates -->
     <string name="beta_updates_label">ベータ版アップデートを受け取る</string>
     <string name="beta_updates_description">自動アップデート確認にベータ版を含める</string>
+    <string name="beta_updates_locked">すでにベータ版を使用中 — このオプションは常に有効です。</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">自動起動</string>

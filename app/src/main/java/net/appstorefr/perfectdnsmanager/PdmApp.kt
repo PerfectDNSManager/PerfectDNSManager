@@ -25,12 +25,22 @@ class PdmApp : Application() {
                 "dark"
             }
             applyThemeMode(mode)
+            // Build bêta = canal bêta forcément activé : sinon UpdateManager
+            // ne verrait que les stables et l'utilisateur (déjà sur prerelease)
+            // ne recevrait jamais de mise à jour. Écrase le pref sans toucher
+            // aux autres préférences.
+            if (isBetaBuild()) {
+                prefs.edit().putBoolean("beta_updates_enabled", true).apply()
+            }
         } catch (_: Throwable) {
             // Never crash startup on theme init
         }
     }
 
     companion object {
+        /** True si VERSION_NAME contient un suffixe pré-release (ex: 1.1.0-beta.50). */
+        fun isBetaBuild(): Boolean = BuildConfig.VERSION_NAME.contains('-')
+
         fun applyThemeMode(mode: String) {
             AppCompatDelegate.setDefaultNightMode(
                 when (mode) {

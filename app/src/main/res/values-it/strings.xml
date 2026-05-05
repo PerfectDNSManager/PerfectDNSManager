@@ -67,6 +67,7 @@
     <!-- Beta updates -->
     <string name="beta_updates_label">Ricevi aggiornamenti beta</string>
     <string name="beta_updates_description">Includi le versioni beta nel controllo automatico degli aggiornamenti</string>
+    <string name="beta_updates_locked">Stai già usando una versione beta — questa opzione è attivata in modo permanente.</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">Avvio automatico</string>

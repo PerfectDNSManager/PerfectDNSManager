@@ -67,6 +67,7 @@
     <!-- Beta updates -->
     <string name="beta_updates_label">Получать бета-обновления</string>
     <string name="beta_updates_description">Включить бета-версии в автоматическую проверку обновлений</string>
+    <string name="beta_updates_locked">Вы уже используете бета-версию — этот параметр всегда включён.</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_settings_title">Автозапуск</string>
