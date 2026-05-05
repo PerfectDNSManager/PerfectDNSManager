@@ -191,6 +191,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         }
 
         val btnBack = Button(this).apply {
+            id = View.generateViewId()
             text = getString(R.string.back_arrow)
             setTextColor(COLOR_WHITE)
             textSize = 18f
@@ -282,6 +283,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         }
 
         btnServerPicker = Button(this).apply {
+            id = View.generateViewId()
             text = getString(R.string.speedtest_server_loading)
             setTextColor(COLOR_WHITE)
             textSize = 14f
@@ -310,15 +312,21 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             layoutParams = lp(matchParent, wrapContent).apply { bottomMargin = dp(8) }
             setOnClickListener { toggleTest() }
         }
-        // UP depuis Start → premier chip (CLOUDFLARE par défaut). Le default
-        // focus search ne traversait pas le HorizontalScrollView correctement.
+        // Chaîne D-pad verticale explicite — sans ça, btnServerPicker était
+        // bypassé (chips → Start direct) et btnBack n'avait pas de cible
+        // descendante, ce qui faisait perdre le curseur en navigation TV.
+        // Ordre : btnBack ↓ premier chip · chips ↓ btnServerPicker · btnServerPicker ↔ btnStartStop.
         val firstChipId = backendButtons.values.firstOrNull()?.id
         if (firstChipId != null) {
-            btnStartStop.nextFocusUpId = firstChipId
+            btnBack.nextFocusDownId = firstChipId
             backendButtons.values.forEach { chip ->
-                chip.nextFocusDownId = btnStartStop.id
+                chip.nextFocusUpId = btnBack.id
+                chip.nextFocusDownId = btnServerPicker.id
             }
+            btnServerPicker.nextFocusUpId = firstChipId
         }
+        btnServerPicker.nextFocusDownId = btnStartStop.id
+        btnStartStop.nextFocusUpId = btnServerPicker.id
         mainColumn.addView(btnStartStop)
 
         // ── Results card ─────────────────────────────────────────────────
