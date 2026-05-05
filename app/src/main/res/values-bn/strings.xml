@@ -484,5 +484,7 @@
     <string name="dt_dot_active">🟢 প্রাইভেট DNS সক্রিয়</string>
     <string name="dt_no_dns">🔴 সক্রিয় DNS নেই (ISP রিসোলিউশন)</string>
     <string name="current_version_fmt">বর্তমান সংস্করণ: %1$s</string>
+    <string name="cancelling">বাতিল হচ্ছে…</string>
+
 
 </resources>

@@ -19,7 +19,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -35,9 +34,6 @@ import androidx.appcompat.app.AppCompatActivity
 import net.appstorefr.perfectdnsmanager.data.ProfileManager
 import net.appstorefr.perfectdnsmanager.service.AdbDnsManager
 import net.appstorefr.perfectdnsmanager.util.LocaleHelper
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.asRequestBody
-
 class SettingsActivity : AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context) {

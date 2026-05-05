@@ -499,5 +499,7 @@
     <string name="all_apps_unchecked">Toutes les applications ont été décochées</string>
     <string name="link_and_password_required">Lien ET mot de passe requis</string>
     <string name="current_version_fmt">Version actuelle : %1$s</string>
+    <string name="cancelling">Annulation…</string>
+
 
 </resources>

@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import net.appstorefr.perfectdnsmanager.util.LocaleHelper
 import net.appstorefr.perfectdnsmanager.util.pdmDanger

@@ -9,10 +9,7 @@ import net.appstorefr.perfectdnsmanager.util.pdmTextPrimary
 import net.appstorefr.perfectdnsmanager.util.pdmTextSecondary
 import net.appstorefr.perfectdnsmanager.util.pdmTextDisabled
 import net.appstorefr.perfectdnsmanager.util.pdmAccent
-import net.appstorefr.perfectdnsmanager.util.pdmAccentAlt
 import net.appstorefr.perfectdnsmanager.util.pdmDanger
-import net.appstorefr.perfectdnsmanager.util.pdmWarning
-
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -1309,13 +1306,4 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         return if (idx > 8) url.substring(0, idx + 1) else "$url/"
     }
 
-    /** Ensure a URL starts with https://. */
-    private fun ensureHttps(url: String): String {
-        val trimmed = url.trimEnd('/')
-        return when {
-            trimmed.startsWith("https://") -> trimmed
-            trimmed.startsWith("http://") -> trimmed.replaceFirst("http://", "https://")
-            else -> "https://$trimmed"
-        }
-    }
 }

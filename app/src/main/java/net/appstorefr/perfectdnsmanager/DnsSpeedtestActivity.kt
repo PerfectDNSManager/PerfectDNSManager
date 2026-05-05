@@ -1,15 +1,8 @@
 package net.appstorefr.perfectdnsmanager
 
-import net.appstorefr.perfectdnsmanager.util.pdmBackground
-import net.appstorefr.perfectdnsmanager.util.pdmBorder
-import net.appstorefr.perfectdnsmanager.util.pdmSurface
-import net.appstorefr.perfectdnsmanager.util.pdmSurfaceInput
-import net.appstorefr.perfectdnsmanager.util.pdmSurfaceElevated
 import net.appstorefr.perfectdnsmanager.util.pdmTextPrimary
-import net.appstorefr.perfectdnsmanager.util.pdmTextSecondary
 import net.appstorefr.perfectdnsmanager.util.pdmTextDisabled
 import net.appstorefr.perfectdnsmanager.util.pdmAccent
-import net.appstorefr.perfectdnsmanager.util.pdmAccentAlt
 import net.appstorefr.perfectdnsmanager.util.pdmDanger
 import net.appstorefr.perfectdnsmanager.util.pdmWarning
 
@@ -101,7 +94,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
             btnStartStop.focusable = View.FOCUSABLE
         }
 
-        tvCurrentTest.text = "DNS Speedtest"
+        tvCurrentTest.text = getString(R.string.dns_speedtest_title)
 
         // Ranking panel: D-pad UP/DOWN scrolls the content
         scrollRanking.setOnKeyListener { _, keyCode, event ->
@@ -123,7 +116,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
     private fun toggleStartStop() {
         if (running) {
             cancelled = true
-            btnStartStop.text = "Annulation..."
+            btnStartStop.text = getString(R.string.cancelling)
             btnStartStop.isEnabled = false
         } else {
             startSpeedtest()

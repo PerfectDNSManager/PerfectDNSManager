@@ -503,5 +503,7 @@
     <string name="all_apps_unchecked">All apps have been unchecked</string>
     <string name="link_and_password_required">Both link AND password required</string>
     <string name="current_version_fmt">Current version: %1$s</string>
+    <string name="cancelling">Cancelling…</string>
+
 
 </resources>

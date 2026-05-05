@@ -1,19 +1,11 @@
 package net.appstorefr.perfectdnsmanager
 
-import net.appstorefr.perfectdnsmanager.util.pdmBackground
-import net.appstorefr.perfectdnsmanager.util.pdmBorder
-import net.appstorefr.perfectdnsmanager.util.pdmSurface
-import net.appstorefr.perfectdnsmanager.util.pdmSurfaceInput
-import net.appstorefr.perfectdnsmanager.util.pdmSurfaceElevated
 import net.appstorefr.perfectdnsmanager.util.pdmTextPrimary
 import net.appstorefr.perfectdnsmanager.util.pdmTextSecondary
-import net.appstorefr.perfectdnsmanager.util.pdmTextDisabled
 import net.appstorefr.perfectdnsmanager.util.pdmAccent
 import net.appstorefr.perfectdnsmanager.util.pdmAccentAlt
 import net.appstorefr.perfectdnsmanager.util.pdmAccentGold
 import net.appstorefr.perfectdnsmanager.util.pdmDanger
-import net.appstorefr.perfectdnsmanager.util.pdmWarning
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -1143,12 +1135,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun clearSelectedProfile() {
-        selectedProfile = null
-        prefs.edit().remove("selected_profile_json").apply()
-        updateSelectButtonText()
-    }
-
     private fun setupUI() {
         layoutSelectDns.requestFocus()
 
@@ -1375,24 +1361,6 @@ class MainActivity : AppCompatActivity() {
             if (isActivating) return@setOnCheckedChangeListener
             if (isActive) disableDns() else applyDns()
         }
-    }
-
-    private fun showDnsReport() {
-        val vpnActive = prefs.getBoolean("vpn_active", false)
-        val vpnLabel = prefs.getString("vpn_label", "") ?: ""
-        val adbReport = adbManager.getFullDnsReport()
-        val report = StringBuilder()
-        report.appendLine(getString(R.string.report_private_dns_header)); report.appendLine(adbReport); report.appendLine()
-        report.appendLine(getString(R.string.report_vpn_header))
-        if (vpnActive && vpnLabel.isNotEmpty()) { report.appendLine(getString(R.string.report_vpn_active)); report.appendLine(getString(R.string.report_vpn_server, vpnLabel.replace("DNS via VPN: ", ""))) }
-        else report.appendLine(getString(R.string.report_vpn_inactive))
-        selectedProfile?.let {
-            report.appendLine(); report.appendLine(getString(R.string.report_selected_header))
-            report.appendLine("${it.providerName} - ${it.name}"); report.appendLine("Type: ${it.type}")
-            report.appendLine(getString(R.string.report_method, methodForProfile(it)))
-            report.appendLine(getString(R.string.report_primary, it.primary)); it.secondary?.let { s -> report.appendLine(getString(R.string.report_secondary, s)) }
-        }
-        AlertDialog.Builder(this).setTitle(getString(R.string.dns_report_title)).setMessage(report.toString()).setPositiveButton("OK", null).show()
     }
 
     private fun showAdbErrorDialog() {

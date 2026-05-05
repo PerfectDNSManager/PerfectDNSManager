@@ -484,5 +484,7 @@
     <string name="dt_dot_active">🟢 Privates DNS aktiv</string>
     <string name="dt_no_dns">🔴 Kein aktives DNS (ISP-Auflösung)</string>
     <string name="current_version_fmt">Aktuelle Version: %1$s</string>
+    <string name="cancelling">Abbrechen…</string>
+
 
 </resources>

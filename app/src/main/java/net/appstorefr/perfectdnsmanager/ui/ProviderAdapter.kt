@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import net.appstorefr.perfectdnsmanager.R
 import net.appstorefr.perfectdnsmanager.data.DnsProfile
-import net.appstorefr.perfectdnsmanager.data.DnsType
 import net.appstorefr.perfectdnsmanager.util.DnsColors
 
 class ProviderAdapter(

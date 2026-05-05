@@ -484,5 +484,7 @@
     <string name="dt_dot_active">🟢 निजी DNS सक्रिय</string>
     <string name="dt_no_dns">🔴 कोई सक्रिय DNS नहीं (ISP रिज़ॉल्व)</string>
     <string name="current_version_fmt">वर्तमान संस्करण: %1$s</string>
+    <string name="cancelling">रद्द हो रहा है…</string>
+
 
 </resources>
