@@ -177,17 +177,7 @@
             android:textSize="14sp"/>
     </LinearLayout>
 
-    <!-- Section Fonctions avancées -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_section_advanced"
-        android:textColor="@color/pdm_text_secondary"
-        android:textSize="12sp"
-        android:textAllCaps="true"
-        android:letterSpacing="0.1"
-        android:paddingStart="4dp"
-        android:layout_marginBottom="4dp" />
+    <!-- Section Fonctions avancées (titre supprimé, doublon avec advanced_features_title) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -563,17 +553,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Import / Export (collapsible) -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings_section_config"
-        android:textColor="@color/pdm_text_secondary"
-        android:textSize="12sp"
-        android:textAllCaps="true"
-        android:letterSpacing="0.1"
-        android:paddingStart="4dp"
-        android:layout_marginBottom="4dp" />
+    <!-- Import / Export (titre supprimé, doublon avec import_export_title) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
