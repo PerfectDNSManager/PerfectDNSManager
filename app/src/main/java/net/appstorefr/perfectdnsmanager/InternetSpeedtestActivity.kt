@@ -554,7 +554,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             setPadding(dp(20), dp(20), dp(20), dp(12))
-            setBackgroundColor(net.appstorefr.perfectdnsmanager.util.pdmSurfaceElevated())
+            setBackgroundColor(pdmSurfaceElevated())
         }
 
         // ── Colonne gauche : titre + radio backends ──
