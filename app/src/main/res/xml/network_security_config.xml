@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Configuration réseau de PerfectDNSManager.
+
+  cleartextTrafficPermitted=true en base : nécessaire pour les serveurs
+  Ookla speedtest qui sont presque tous en HTTP (port 8080) — ils n'ont
+  pas tous de cert HTTPS valide. Compromise acceptable car :
+
+  - Les endpoints sensibles (pdm.appstorefr.net, GitHub Releases, Cloudflare
+    speedtest, Fast.com) sont en HTTPS strict via leurs URLs.
+  - Le speedtest n'envoie pas de données privées — random bytes.
+  - Sans ça, Ookla serait inutilisable.
+
+  Si on veut durcir plus tard, on peut whitelister explicitement les TLDs
+  speedtest et bloquer le cleartext partout ailleurs.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
