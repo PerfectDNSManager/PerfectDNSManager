@@ -130,7 +130,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
     // ── UI widgets ───────────────────────────────────────────────────────────
     private lateinit var btnBackend: Button
-    private lateinit var btnOoklaServer: Button
     private lateinit var btnStartStop: Button
     private lateinit var resultsCard: LinearLayout
     private lateinit var tvPing: TextView
@@ -151,10 +150,9 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     private val cancelled = AtomicBoolean(false)
     private var testThread: Thread? = null
     private var currentBackend: SpeedBackend = SpeedBackend.CLOUDFLARE
-    // Ookla : on charge la liste à la sélection du backend, on ping tous les
-    // serveurs en parallèle pour avoir leur latence, on auto-sélectionne le
-    // plus rapide. Le user peut ensuite choisir un autre serveur via
-    // btnOoklaServer (picker dialog avec latence affichée à côté).
+    // Ookla : on charge la liste à la sélection du backend dans le picker
+    // dialog, on ping tous les serveurs en parallèle pour afficher la
+    // latence à côté de chaque option dans la colonne droite du dialog.
     private val ooklaServers = mutableListOf<OoklaServer>()
     private var selectedOoklaServer: OoklaServer? = null
     private val ooklaLatencies = mutableMapOf<Int, Double>()
@@ -275,26 +273,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         }
         mainColumn.addView(btnBackend)
 
-        // ── Bouton serveur Ookla — visible uniquement quand Ookla sélectionné.
-        // Permet de choisir parmi les serveurs détectés, avec leur latence.
-        btnOoklaServer = Button(this).apply {
-            id = View.generateViewId()
-            text = getString(R.string.speedtest_ookla_server_loading)
-            setTextColor(COLOR_LIGHT_GREY)
-            textSize = 13f
-            setTypeface(typeface, Typeface.BOLD)
-            isFocusable = true
-            background = chipBackground(dp(12), COLOR_CYAN, false)
-            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
-            setPadding(dp(20), dp(10), dp(20), dp(10))
-            layoutParams = lp(matchParent, wrapContent).apply { bottomMargin = dp(6) }
-            gravity = Gravity.CENTER
-            visibility = View.GONE
-            setOnClickListener {
-                if (!running.get() && ooklaServers.isNotEmpty()) showOoklaServerPickerDialog()
-            }
-        }
-        mainColumn.addView(btnOoklaServer)
 
         // ── Start / Stop button ──────────────────────────────────────────
         btnStartStop = Button(this).apply {
@@ -326,8 +304,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             }
         }
         // Chaîne DPAD : btnBack ↓ btnBackend ↓ btnStartStop ↓ consoleWrapper.
-        // updateOoklaServerVisibility() insère btnOoklaServer dans la chaîne
-        // quand Ookla est sélectionné.
         btnBack.nextFocusDownId = btnBackend.id
         btnBackend.nextFocusUpId = btnBack.id
         btnBackend.nextFocusDownId = btnStartStop.id
@@ -565,54 +541,166 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         return if (country.isNotEmpty()) "$sponsor ($country)$latStr" else "$sponsor$latStr"
     }
 
-    private fun showOoklaServerPickerDialog() {
-        val labels = ooklaServers.map { ooklaServerLabel(it) }.toTypedArray()
-        val currentIdx = ooklaServers.indexOf(selectedOoklaServer).coerceAtLeast(0)
-        net.appstorefr.perfectdnsmanager.util.TvDialog.showRadioPicker(
-            this,
-            getString(R.string.speedtest_ookla_picker_title),
-            labels,
-            currentIdx
-        ) { which ->
-            selectedOoklaServer = ooklaServers[which]
-            btnOoklaServer.text = getString(R.string.speedtest_ookla_server_fmt, ooklaServerLabel(ooklaServers[which]))
-            logConsole("✓ ${ooklaServers[which].displayName}")
-        }
-    }
-
-    /** Dialog picker liste pour choisir le backend de test (Cloudflare / Fast.com). */
+    /**
+     * Dialog picker 2-colonnes : à gauche les backends (Cloudflare / Ookla /
+     * Fast.com), à droite — UNIQUEMENT quand Ookla est sélectionné — la
+     * liste des serveurs Ookla avec leur ping (loading puis valeur). Click
+     * sur un backend non-Ookla confirme directement. Click sur un serveur
+     * Ookla confirme aussi (sélectionne Ookla + ce serveur).
+     */
     private fun showBackendPickerDialog() {
         val backends = SpeedBackend.entries.toList()
-        val labels = backends.map { it.label }.toTypedArray()
-        val currentIdx = backends.indexOf(currentBackend).coerceAtLeast(0)
-        net.appstorefr.perfectdnsmanager.util.TvDialog.showRadioPicker(
-            this,
-            getString(R.string.speedtest_backend_picker_title),
-            labels,
-            currentIdx
-        ) { which ->
-            val picked = backends[which]
-            if (picked != currentBackend) switchBackend(picked)
+
+        val root = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(dp(20), dp(20), dp(20), dp(12))
+            setBackgroundColor(net.appstorefr.perfectdnsmanager.util.pdmSurfaceElevated())
         }
+
+        // ── Colonne gauche : titre + radio backends ──
+        val leftCol = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f)
+        }
+        leftCol.addView(TextView(this).apply {
+            text = getString(R.string.speedtest_backend_picker_title)
+            setTextColor(COLOR_WHITE); textSize = 17f
+            setTypeface(typeface, Typeface.BOLD)
+            setPadding(0, 0, 0, dp(12))
+        })
+
+        // ── Colonne droite : liste serveurs Ookla (cachée si autre backend) ──
+        val rightCol = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f).apply {
+                marginStart = dp(16)
+            }
+            visibility = if (currentBackend == SpeedBackend.OOKLA) View.VISIBLE else View.GONE
+        }
+        val rightTitle = TextView(this).apply {
+            text = getString(R.string.speedtest_ookla_picker_title)
+            setTextColor(COLOR_WHITE); textSize = 16f
+            setTypeface(typeface, Typeface.BOLD)
+            setPadding(0, 0, 0, dp(8))
+        }
+        rightCol.addView(rightTitle)
+        val serverScroll = ScrollView(this).apply {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(280))
+            isFillViewport = false
+        }
+        val serverList = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        serverScroll.addView(serverList)
+        rightCol.addView(serverScroll)
+
+        val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
+            .setView(root)
+            .setNegativeButton(R.string.cancel, null)
+            .create()
+
+        // Backend radios — focusable, on-click adapte la colonne droite.
+        val backendBtns = mutableMapOf<SpeedBackend, android.widget.RadioButton>()
+        val rg = android.widget.RadioGroup(this).apply { orientation = android.widget.RadioGroup.VERTICAL }
+        backends.forEach { be ->
+            val rb = android.widget.RadioButton(this).apply {
+                id = View.generateViewId()
+                text = be.label
+                setTextColor(COLOR_WHITE); textSize = 15f
+                buttonTintList = android.content.res.ColorStateList.valueOf(COLOR_CYAN)
+                background = resources.getDrawable(R.drawable.focusable_item_background, theme)
+                setPadding(dp(8), dp(10), dp(8), dp(10))
+                isFocusable = true; isFocusableInTouchMode = false
+                isChecked = be == currentBackend
+                layoutParams = android.widget.RadioGroup.LayoutParams(
+                    android.widget.RadioGroup.LayoutParams.MATCH_PARENT, dp(48)
+                )
+            }
+            backendBtns[be] = rb
+            rg.addView(rb)
+        }
+        leftCol.addView(rg)
+
+        root.addView(leftCol)
+        root.addView(rightCol)
+
+        // Helpers locaux pour rendre la liste des serveurs.
+        fun renderServerList(items: List<OoklaServer>, loading: Boolean) {
+            serverList.removeAllViews()
+            if (loading && items.isEmpty()) {
+                serverList.addView(TextView(this).apply {
+                    text = getString(R.string.speedtest_ookla_loading)
+                    setTextColor(COLOR_LIGHT_GREY); textSize = 13f
+                    setPadding(dp(8), dp(10), dp(8), dp(10))
+                })
+                return
+            }
+            val srvRg = android.widget.RadioGroup(this).apply { orientation = android.widget.RadioGroup.VERTICAL }
+            items.forEachIndexed { i, srv ->
+                val rb = android.widget.RadioButton(this).apply {
+                    id = View.generateViewId()
+                    text = ooklaServerLabel(srv)
+                    setTextColor(COLOR_WHITE); textSize = 13f
+                    buttonTintList = android.content.res.ColorStateList.valueOf(COLOR_CYAN)
+                    background = resources.getDrawable(R.drawable.focusable_item_background, theme)
+                    setPadding(dp(8), dp(8), dp(8), dp(8))
+                    isFocusable = true; isFocusableInTouchMode = false
+                    isChecked = srv.id == selectedOoklaServer?.id
+                    layoutParams = android.widget.RadioGroup.LayoutParams(
+                        android.widget.RadioGroup.LayoutParams.MATCH_PARENT, dp(44)
+                    )
+                    setOnClickListener {
+                        selectedOoklaServer = srv
+                        currentBackend = SpeedBackend.OOKLA
+                        btnBackend.text = backendButtonText(SpeedBackend.OOKLA)
+                        logConsole("✓ ${srv.displayName}")
+                        dialog.dismiss()
+                    }
+                }
+                srvRg.addView(rb)
+                if (i == 0) rb.post { rb.requestFocus() }
+            }
+            serverList.addView(srvRg)
+        }
+
+        // Charge la liste au moment où Ookla est sélectionné si on a rien.
+        fun loadOoklaForDialog() {
+            if (ooklaServers.isNotEmpty()) {
+                renderServerList(ooklaServers, loading = false)
+                return
+            }
+            renderServerList(emptyList(), loading = true)
+            lifecycleScope.launch(Dispatchers.IO) {
+                fetchAndPingOoklaServers()
+                ui {
+                    if (rightCol.visibility == View.VISIBLE)
+                        renderServerList(ooklaServers, loading = false)
+                }
+            }
+        }
+
+        rg.setOnCheckedChangeListener { _, checkedId ->
+            val picked = backendBtns.entries.firstOrNull { it.value.id == checkedId }?.key ?: return@setOnCheckedChangeListener
+            if (picked == SpeedBackend.OOKLA) {
+                rightCol.visibility = View.VISIBLE
+                loadOoklaForDialog()
+            } else {
+                rightCol.visibility = View.GONE
+                if (picked != currentBackend) switchBackend(picked)
+                dialog.dismiss()
+            }
+        }
+
+        // Si on ouvre le dialog avec Ookla déjà actif → précharger la liste.
+        if (currentBackend == SpeedBackend.OOKLA) loadOoklaForDialog()
+
+        dialog.setOnShowListener {
+            backendBtns[currentBackend]?.post { backendBtns[currentBackend]?.requestFocus() }
+        }
+        dialog.show()
     }
 
     private fun switchBackend(backend: SpeedBackend) {
         currentBackend = backend
         btnBackend.text = backendButtonText(backend)
-        // Affiche/cache le bouton de sélection serveur Ookla et adapte la
-        // chaîne DPAD : btnBackend ↓ btnOoklaServer ↓ btnStartStop si Ookla,
-        // sinon btnBackend ↓ btnStartStop direct.
-        if (backend == SpeedBackend.OOKLA) {
-            btnOoklaServer.visibility = View.VISIBLE
-            btnBackend.nextFocusDownId = btnOoklaServer.id
-            btnOoklaServer.nextFocusUpId = btnBackend.id
-            btnOoklaServer.nextFocusDownId = btnStartStop.id
-            btnStartStop.nextFocusUpId = btnOoklaServer.id
-        } else {
-            btnOoklaServer.visibility = View.GONE
-            btnBackend.nextFocusDownId = btnStartStop.id
-            btnStartStop.nextFocusUpId = btnBackend.id
-        }
         when (backend) {
             SpeedBackend.CLOUDFLARE -> {
                 btnStartStop.visibility = View.VISIBLE
@@ -632,7 +720,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 rootScroll.visibility = View.VISIBLE
                 resetResults()
                 tvConsole.text = getString(R.string.speedtest_waiting)
-                loadOoklaServerList()  // Auto-pick le serveur le plus rapide
+                // Liste/ping serveurs déclenché par le picker dialog.
             }
             SpeedBackend.NETFLIX -> {
                 btnStartStop.visibility = View.VISIBLE
@@ -873,45 +961,43 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     // ═════════════════════════════════════════════════════════════════════════
 
     /**
-     * Charge la liste des serveurs Ookla et auto-sélectionne le plus rapide
-     * (par latence). Pas de UI dédiée — on stocke en `selectedOoklaServer`
-     * et on l'utilise au démarrage du test. Appelé depuis switchBackend.
+     * Fetch + ping de tous les serveurs Ookla. Appelé depuis le picker dialog
+     * (lifecycleScope.launch IO). Met à jour ooklaServers + ooklaLatencies +
+     * selectedOoklaServer (auto-pick = plus rapide).
      */
-    private fun loadOoklaServerList() {
+    private suspend fun fetchAndPingOoklaServers() {
         ooklaLatencies.clear()
-        btnOoklaServer.text = getString(R.string.speedtest_ookla_server_loading)
-        logConsole(getString(R.string.speedtest_ookla_loading))
-        lifecycleScope.launch(Dispatchers.IO) {
-            val fetched = mutableListOf<OoklaServer>()
-            try {
-                val client = plainClient(10)
-                val req = Request.Builder()
-                    .url(OOKLA_SERVER_LIST_URL)
-                    .header("Accept", "application/json")
-                    .header("User-Agent", OOKLA_USER_AGENT)
-                    .build()
-                val resp = client.newCall(req).execute()
-                if (resp.isSuccessful) {
-                    val json = resp.body?.string() ?: "[]"
-                    resp.close()
-                    val type = object : TypeToken<List<OoklaServer>>() {}.type
-                    fetched.addAll(Gson().fromJson<List<OoklaServer>>(json, type))
-                } else {
-                    val code = resp.code
-                    resp.close()
-                    ui { logConsole(getString(R.string.speedtest_ookla_err_code_fmt, code)) }
-                }
-                shutdown(client)
-            } catch (e: Exception) {
-                Log.w(TAG, "Ookla server list fetch failed", e)
-                ui { logConsole(getString(R.string.speedtest_ookla_err_load_fmt, e.message ?: "")) }
+        ui { logConsole(getString(R.string.speedtest_ookla_loading)) }
+        val fetched = mutableListOf<OoklaServer>()
+        try {
+            val client = plainClient(10)
+            val req = Request.Builder()
+                .url(OOKLA_SERVER_LIST_URL)
+                .header("Accept", "application/json")
+                .header("User-Agent", OOKLA_USER_AGENT)
+                .build()
+            val resp = client.newCall(req).execute()
+            if (resp.isSuccessful) {
+                val json = resp.body?.string() ?: "[]"
+                resp.close()
+                val type = object : TypeToken<List<OoklaServer>>() {}.type
+                fetched.addAll(Gson().fromJson<List<OoklaServer>>(json, type))
+            } else {
+                val code = resp.code
+                resp.close()
+                ui { logConsole(getString(R.string.speedtest_ookla_err_code_fmt, code)) }
             }
+            shutdown(client)
+        } catch (e: Exception) {
+            Log.w(TAG, "Ookla server list fetch failed", e)
+            ui { logConsole(getString(R.string.speedtest_ookla_err_load_fmt, e.message ?: "")) }
+        }
 
-            // Ping TOUS les serveurs en parallèle (3s timeout chacun) pour
-            // avoir leur latence affichable dans le picker.
-            if (fetched.isNotEmpty()) {
-                ui { logConsole(getString(R.string.speedtest_ookla_latency)) }
-                val pingJobs = fetched.map { server ->
+        // Ping TOUS les serveurs en parallèle (3s timeout chacun).
+        if (fetched.isNotEmpty()) {
+            ui { logConsole(getString(R.string.speedtest_ookla_latency)) }
+            val pingJobs = kotlinx.coroutines.coroutineScope {
+                fetched.map { server ->
                     async(Dispatchers.IO) {
                         if (cancelled.get()) return@async null
                         try {
@@ -932,26 +1018,23 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                         } catch (_: Exception) { null }
                     }
                 }
-                val measured = pingJobs.mapNotNull { it.await() }.toMap()
-                // Tri par latence : injoignables à la fin
-                fetched.sortWith(compareBy(nullsLast()) { measured[it.id] })
-                ui { ooklaLatencies.putAll(measured) }
             }
+            val measured = pingJobs.mapNotNull { it.await() }.toMap()
+            fetched.sortWith(compareBy(nullsLast()) { measured[it.id] })
+            ui { ooklaLatencies.putAll(measured) }
+        }
 
-            ui {
-                ooklaServers.clear()
-                ooklaServers.addAll(fetched)
-                if (ooklaServers.isEmpty()) {
-                    logConsole(getString(R.string.speedtest_ookla_none))
-                    selectedOoklaServer = null
-                    btnOoklaServer.text = getString(R.string.speedtest_ookla_none)
-                    return@ui
-                }
-                logConsole(getString(R.string.speedtest_ookla_loaded_fmt, ooklaServers.size))
-                selectedOoklaServer = ooklaServers[0]
-                btnOoklaServer.text = getString(R.string.speedtest_ookla_server_fmt, ooklaServerLabel(ooklaServers[0]))
-                logConsole("✓ ${ooklaServers[0].displayName}")
+        ui {
+            ooklaServers.clear()
+            ooklaServers.addAll(fetched)
+            if (ooklaServers.isEmpty()) {
+                logConsole(getString(R.string.speedtest_ookla_none))
+                selectedOoklaServer = null
+                return@ui
             }
+            logConsole(getString(R.string.speedtest_ookla_loaded_fmt, ooklaServers.size))
+            selectedOoklaServer = ooklaServers[0]
+            logConsole("✓ ${ooklaServers[0].displayName}")
         }
     }
 
