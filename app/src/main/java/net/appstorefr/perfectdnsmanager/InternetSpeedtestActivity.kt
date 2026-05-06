@@ -64,8 +64,8 @@ data class OoklaServer(
  */
 enum class SpeedBackend(val label: String) {
     CLOUDFLARE("Cloudflare"),
-    OOKLA("Ookla"),
-    NETFLIX("Fast.com")
+    NETFLIX("Fast.com"),
+    OOKLA("Ookla")
 }
 
 /**
@@ -528,9 +528,17 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     //  BACKEND SWITCHING
     // ═════════════════════════════════════════════════════════════════════════
 
-    /** Libellé "Serveur de test : Cloudflare ▾" pour le bouton sélecteur. */
-    private fun backendButtonText(backend: SpeedBackend): String =
-        getString(R.string.speedtest_backend_label_fmt, backend.label)
+    /**
+     * Libellé du bouton "Serveur de test". Pour Ookla, on suffixe le nom du
+     * serveur sélectionné + sa latence pour qu'on sache lequel sera utilisé.
+     */
+    private fun backendButtonText(backend: SpeedBackend): String {
+        val label = if (backend == SpeedBackend.OOKLA) {
+            val srv = selectedOoklaServer
+            if (srv != null) "${backend.label} — ${ooklaServerLabel(srv)}" else backend.label
+        } else backend.label
+        return getString(R.string.speedtest_backend_label_fmt, label)
+    }
 
     /** Libellé du picker Ookla : "Sponsor (Pays) — 12 ms". */
     private fun ooklaServerLabel(s: OoklaServer): String {
@@ -1034,6 +1042,11 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             }
             logConsole(getString(R.string.speedtest_ookla_loaded_fmt, ooklaServers.size))
             selectedOoklaServer = ooklaServers[0]
+            // Reflète l'auto-pick dans le bouton "Serveur de test : ..." si
+            // on est en mode Ookla actuellement.
+            if (currentBackend == SpeedBackend.OOKLA) {
+                btnBackend.text = backendButtonText(SpeedBackend.OOKLA)
+            }
             logConsole("✓ ${ooklaServers[0].displayName}")
         }
     }
