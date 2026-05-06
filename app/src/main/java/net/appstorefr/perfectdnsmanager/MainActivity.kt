@@ -315,24 +315,38 @@ class MainActivity : AppCompatActivity() {
 
             val v4Job = async(Dispatchers.IO) { whoamiOn(ipv4Only = true) }
             val v6Job = async(Dispatchers.IO) { whoamiOn(ipv4Only = false) }
-            val v4Info = v4Job.await()
-            val v6Info = v6Job.await()
 
+            // Phase 2a : dès que v4 arrive (typiquement 1-2s), on rend ISP +
+            // IPv4 réels. IPv6 reste en "…" tant que la résolution n'est pas
+            // finie. Évite d'attendre 3s de timeout v6 sur les box v4-only
+            // alors que tout le reste est déjà connu.
+            val v4Info = v4Job.await()
             val ipv4 = v4Info?.optString("ip")?.takeIf { it.isNotBlank() }
+            val ispInfoV4 = v4Info?.optString("isp", "")?.takeIf { it.isNotBlank() } ?: ""
+
+            val (dnsText2, dnsActive2) = computeDnsStatus()
+            runOnUiThread {
+                renderStatus(
+                    dnsText2, dnsActive2, connType, carrierName,
+                    ispInfo = ispInfoV4.ifEmpty { getString(R.string.wan_ip_error) },
+                    localIp = localIp,
+                    ipv4Display = ipv4 ?: getString(R.string.wan_ip_error),
+                    ipv6Display = "…",
+                    devType = devType
+                )
+            }
+
+            // Phase 2b : v6 finit (succès ou timeout 3s), on remet à jour
+            // uniquement l'IPv6 dans le bloc — le reste est déjà bon.
+            val v6Info = v6Job.await()
             val ipv6 = v6Info?.optString("ip")?.takeIf { it.isNotBlank() && it.contains(":") }
-            val ispInfo = v4Info?.optString("isp", "")?.takeIf { it.isNotBlank() }
-                ?: v6Info?.optString("isp", "")?.takeIf { it.isNotBlank() }
-                ?: ""
+            val ispInfo = ispInfoV4.ifEmpty {
+                v6Info?.optString("isp", "")?.takeIf { it.isNotBlank() } ?: ""
+            }
 
             lastIpv4 = ipv4
             lastIpv6 = ipv6
             lastCarrierName = carrierName.ifEmpty { null }
-
-            // Re-évaluer DNS status après les ~5s d'IO : au cold start, le
-            // DnsVpnService peut ne pas avoir initialisé `isVpnRunning=true` au
-            // moment du phase 1. À phase 2, le service a eu le temps de boot, et
-            // on capture l'état réel pour aligner avec checkStatus()/le toggle.
-            val (dnsText2, dnsActive2) = computeDnsStatus()
 
             runOnUiThread {
                 renderStatus(
