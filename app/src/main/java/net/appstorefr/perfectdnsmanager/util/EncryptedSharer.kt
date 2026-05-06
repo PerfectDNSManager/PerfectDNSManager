@@ -48,7 +48,6 @@ class EncryptedSharer {
         private const val PASSWORD_LEN = 6
 
         private const val PDM_BASE_URL = "https://pdm.appstorefr.net"
-        private const val PDM_API_KEY = "2b396e45cea4b5f9d7176bad3552c5ad0ba2c9170e917f5aa235e43f9292ba2e"
 
         private val SLUG_RE = Regex("^[0-9]{6}$|^[a-z0-9]{5,16}$")
 
@@ -83,12 +82,17 @@ class EncryptedSharer {
                 .readTimeout(15, TimeUnit.SECONDS)
                 .build()
 
+            // Token éphémère — pas de clé statique extractible de l'APK.
+            // Le worker rate-limite /api/challenge, donc un attaquant ne peut
+            // pas se pré-émettre un stock de tokens. TTL 5 min côté serveur.
+            val token = fetchUploadToken(client)
+
             val nameParam = java.net.URLEncoder.encode(fileName, "UTF-8")
             val uploadUrl = "$PDM_BASE_URL/api/upload?expires_in=$expiresIn&name=$nameParam"
 
             val request = Request.Builder()
                 .url(uploadUrl)
-                .header("X-API-Key", PDM_API_KEY)
+                .header("X-Upload-Token", token)
                 .post(combined.toRequestBody("application/octet-stream".toMediaType()))
                 .build()
 
@@ -154,6 +158,25 @@ class EncryptedSharer {
                 throw Exception(context.getString(R.string.es_err_wrong_password))
             }
             return String(decrypted, Charsets.UTF_8)
+        }
+
+        /**
+         * Demande un token de session au worker via /api/challenge. Token signé
+         * HMAC-SHA256 côté serveur, lié à l'IP du client, TTL 5 min. Empêche
+         * d'avoir une clé statique extractible de l'APK.
+         */
+        private fun fetchUploadToken(client: OkHttpClient): String {
+            val req = Request.Builder()
+                .url("$PDM_BASE_URL/api/challenge")
+                .post("".toRequestBody("application/octet-stream".toMediaType()))
+                .build()
+            client.newCall(req).execute().use { resp ->
+                val body = resp.body?.string() ?: ""
+                if (!resp.isSuccessful) throw Exception("Challenge failed (${resp.code})")
+                val token = JSONObject(body).optString("token", "")
+                if (token.isBlank()) throw Exception("Challenge response invalid")
+                return token
+            }
         }
 
         /** Accepte "abcd1234" (slug), "https://pdm.appstorefr.net/d/abcd1234", etc. */
