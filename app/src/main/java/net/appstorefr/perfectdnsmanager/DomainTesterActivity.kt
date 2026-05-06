@@ -246,9 +246,12 @@ class DomainTesterActivity : AppCompatActivity() {
         getString(R.string.domain_tester_dns_button_fmt, dnsSelectionSummary())
 
     /**
-     * Dialog picker : "Tous" + un checkbox par DNS provider. Multi-select
-     * préservé. "Tous" décoche les autres et inversement (cohérence : "Tous"
-     * == aucun individuel).
+     * Dialog picker : "Tous" + un checkbox par DNS provider.
+     *
+     * "Tous" agit comme un toggle-all : cocher = coche tous les individuels,
+     * décocher = décoche tous. Cocher tous les individuels manuellement
+     * coche aussi "Tous". Au confirm, sélection vide ou complète = mode
+     * "all" (testera tous les DNS).
      */
     private fun showDnsPickerDialog() {
         val root = LinearLayout(this).apply {
@@ -275,11 +278,14 @@ class DomainTesterActivity : AppCompatActivity() {
         scroll.addView(list)
         root.addView(scroll)
 
-        // État local du dialog (validé seulement au clic OK).
-        var localAllSelected = isAllSelected
-        val localSelected = selectedDnsOptions.toMutableSet()
+        // État local du dialog, validé seulement au clic OK.
+        val localSelected = if (isAllSelected) allDnsOptions.toMutableSet() else selectedDnsOptions.toMutableSet()
 
         val cbProviders = mutableListOf<Pair<DnsOption, android.widget.CheckBox>>()
+
+        // Garde anti-réentrance : sync cbAll ↔ individuels sans loop infini.
+        var syncing = false
+
         val cbAll = android.widget.CheckBox(this).apply {
             text = getString(R.string.domain_tester_dns_all)
             setTextColor(pdmTextPrimary())
@@ -288,17 +294,20 @@ class DomainTesterActivity : AppCompatActivity() {
             background = resources.getDrawable(R.drawable.focusable_item_background, theme)
             setPadding(16, 20, 16, 20)
             isFocusable = true
-            isChecked = localAllSelected
+            isChecked = localSelected.size == allDnsOptions.size
         }
         cbAll.setOnCheckedChangeListener { _, checked ->
+            if (syncing) return@setOnCheckedChangeListener
+            syncing = true
             if (checked) {
-                localAllSelected = true
+                localSelected.clear()
+                localSelected.addAll(allDnsOptions)
+                cbProviders.forEach { it.second.isChecked = true }
+            } else {
                 localSelected.clear()
                 cbProviders.forEach { it.second.isChecked = false }
-            } else if (localSelected.isEmpty()) {
-                // Décocher "Tous" sans rien d'autre coché → re-cocher "Tous"
-                cbAll.isChecked = true
             }
+            syncing = false
         }
         list.addView(cbAll)
 
@@ -311,22 +320,14 @@ class DomainTesterActivity : AppCompatActivity() {
                 background = resources.getDrawable(R.drawable.focusable_item_background, theme)
                 setPadding(16, 20, 16, 20)
                 isFocusable = true
-                isChecked = !localAllSelected && option in localSelected
+                isChecked = option in localSelected
             }
             cb.setOnCheckedChangeListener { _, checked ->
-                if (checked) {
-                    localSelected.add(option)
-                    if (localAllSelected) {
-                        localAllSelected = false
-                        cbAll.isChecked = false
-                    }
-                } else {
-                    localSelected.remove(option)
-                    if (localSelected.isEmpty()) {
-                        localAllSelected = true
-                        cbAll.isChecked = true
-                    }
-                }
+                if (syncing) return@setOnCheckedChangeListener
+                syncing = true
+                if (checked) localSelected.add(option) else localSelected.remove(option)
+                cbAll.isChecked = localSelected.size == allDnsOptions.size
+                syncing = false
             }
             cbProviders.add(option to cb)
             list.addView(cb)
@@ -335,9 +336,10 @@ class DomainTesterActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setView(root)
             .setPositiveButton(android.R.string.ok) { _, _ ->
-                isAllSelected = localAllSelected
+                // Vide ou complet → mode "all" (sinon on testerait rien).
+                isAllSelected = localSelected.isEmpty() || localSelected.size == allDnsOptions.size
                 selectedDnsOptions.clear()
-                if (!localAllSelected) selectedDnsOptions.addAll(localSelected)
+                if (!isAllSelected) selectedDnsOptions.addAll(localSelected)
                 btnDnsSelect.text = dnsButtonText()
             }
             .setNegativeButton(getString(R.string.cancel), null)
