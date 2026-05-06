@@ -355,8 +355,13 @@ class MainActivity : AppCompatActivity() {
             val statusColor = if (dnsActive) pdmAccent() else pdmDanger()
             sb.setSpan(ForegroundColorSpan(statusColor), s1, sb.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             sb.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), s1, sb.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            selectedProfile?.let {
-                sb.append("\n").append(getString(R.string.report_profile_fmt, it.providerName, it.name))
+            // Profil affiché uniquement si DNS actif — sinon ça suggère que ce DNS
+            // tourne, alors qu'il est juste sélectionné. Le fournisseur sélectionné
+            // est déjà visible dans le bouton "Choix du fournisseur DNS" en haut.
+            if (dnsActive) {
+                selectedProfile?.let {
+                    sb.append("\n").append(getString(R.string.report_profile_fmt, it.providerName, it.name))
+                }
             }
             sb.append("\n\n")
 
@@ -450,8 +455,13 @@ class MainActivity : AppCompatActivity() {
         btnShareReport.setOnClickListener { shareReport() }
 
         // D-pad scroll uniquement présent dans le layout TV (layout-television/) :
-        // wrapReport y contient un ScrollView dédié. Sur mobile, le scroll est géré
-        // par le ScrollView parent global (touch-driven), pas besoin d'intercepter.
+        // wrapStatus + wrapReport contiennent chacun un ScrollView dédié. Sur mobile,
+        // le scroll est géré par le ScrollView parent global (touch-driven), no-op ici.
+        val wrapStatusFl = findViewById<android.widget.FrameLayout>(R.id.wrapStatus)
+        val scrollStatus = findViewById<android.widget.ScrollView>(R.id.scrollStatus)
+        if (wrapStatusFl != null && scrollStatus != null) {
+            attachDpadScroll(wrapStatusFl, scrollStatus)
+        }
         val wrapReportFl = findViewById<android.widget.FrameLayout>(R.id.wrapReport)
         val scrollReport = findViewById<android.widget.ScrollView>(R.id.scrollReport)
         if (wrapReportFl != null && scrollReport != null) {
