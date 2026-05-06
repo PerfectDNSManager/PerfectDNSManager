@@ -281,34 +281,48 @@ class MainActivity : AppCompatActivity() {
 
         // ── Phase 2 : IO réseau (parallèle) puis update final ──
         lifecycleScope.launch(Dispatchers.IO) {
-            val httpClient = okhttp3.OkHttpClient.Builder()
-                .connectTimeout(5, java.util.concurrent.TimeUnit.SECONDS)
-                .readTimeout(5, java.util.concurrent.TimeUnit.SECONDS)
-                .build()
-            fun quickGet(url: String): String? = try {
-                val req = okhttp3.Request.Builder().url(url).build()
-                val resp = httpClient.newCall(req).execute()
-                val body = resp.body?.string()?.trim()
-                resp.close()
-                if (resp.isSuccessful && !body.isNullOrEmpty()) body else null
+            // Une seule API : pdm-worker /api/whoami. Renvoie ip + isp + asn +
+            // country + colo en 1 round-trip via request.cf de Cloudflare. On
+            // force la résolution IPv4-only puis IPv6-only en parallèle, ce qui
+            // permet de capturer les deux familles. Plus rapide et plus fiable
+            // qu'ipify+ipinfo (qui chaînait + ajoutait 5s pour le FAI).
+            fun whoamiOn(ipv4Only: Boolean): org.json.JSONObject? = try {
+                val client = okhttp3.OkHttpClient.Builder()
+                    .connectTimeout(3, java.util.concurrent.TimeUnit.SECONDS)
+                    .readTimeout(3, java.util.concurrent.TimeUnit.SECONDS)
+                    .dns(object : okhttp3.Dns {
+                        override fun lookup(hostname: String): List<java.net.InetAddress> {
+                            val filtered = okhttp3.Dns.SYSTEM.lookup(hostname).filter {
+                                if (ipv4Only) it is java.net.Inet4Address
+                                else it is java.net.Inet6Address
+                            }
+                            if (filtered.isEmpty())
+                                throw java.net.UnknownHostException("no ${if (ipv4Only) "v4" else "v6"} for $hostname")
+                            return filtered
+                        }
+                    })
+                    .build()
+                val req = okhttp3.Request.Builder()
+                    .url("https://pdm.appstorefr.net/api/whoami")
+                    .build()
+                client.newCall(req).execute().use { resp ->
+                    if (resp.isSuccessful) {
+                        val body = resp.body?.string() ?: return@use null
+                        org.json.JSONObject(body)
+                    } else null
+                }
             } catch (_: Exception) { null }
 
-            val ipv4Job = async(Dispatchers.IO) {
-                quickGet("https://api4.ipify.org") ?: quickGet("https://ipv4.icanhazip.com")
-            }
-            val ipv6Job = async(Dispatchers.IO) {
-                val v6 = quickGet("https://api6.ipify.org") ?: quickGet("https://ipv6.icanhazip.com")
-                if (v6 != null && v6.contains(":")) v6 else null
-            }
-            val ipv4 = ipv4Job.await()
-            val ipv6 = ipv6Job.await()
+            val v4Job = async(Dispatchers.IO) { whoamiOn(ipv4Only = true) }
+            val v6Job = async(Dispatchers.IO) { whoamiOn(ipv4Only = false) }
+            val v4Info = v4Job.await()
+            val v6Info = v6Job.await()
 
-            val ispInfo = try {
-                if (ipv4 != null) {
-                    val ispJson = quickGet("https://ipinfo.io/$ipv4/json")
-                    if (ispJson != null) org.json.JSONObject(ispJson).optString("org", "") else ""
-                } else ""
-            } catch (_: Exception) { "" }
+            val ipv4 = v4Info?.optString("ip")?.takeIf { it.isNotBlank() }
+            val ipv6 = v6Info?.optString("ip")?.takeIf { it.isNotBlank() && it.contains(":") }
+            val ispInfo = v4Info?.optString("isp", "")?.takeIf { it.isNotBlank() }
+                ?: v6Info?.optString("isp", "")?.takeIf { it.isNotBlank() }
+                ?: ""
 
             lastIpv4 = ipv4
             lastIpv6 = ipv6
