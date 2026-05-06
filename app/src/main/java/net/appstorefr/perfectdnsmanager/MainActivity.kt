@@ -257,41 +257,7 @@ class MainActivity : AppCompatActivity() {
             ?: telephonyManager?.simOperatorName?.takeIf { it.isNotBlank() }
             ?: ""
 
-        val vpnRunning = DnsVpnService.isVpnRunning
-        val dotActive = try {
-            val mode = android.provider.Settings.Global.getString(contentResolver, "private_dns_mode")
-            mode == "hostname"
-        } catch (_: Exception) { false }
-
-        val dnsStatusText: String
-        val dnsActive: Boolean
-        when {
-            vpnRunning -> {
-                val profile = selectedProfile
-                dnsStatusText = if (profile != null) {
-                    getString(R.string.dns_active_vpn_fmt, typeLabelFor(profile.type), profile.providerName)
-                } else getString(R.string.dns_active_vpn)
-                dnsActive = true
-            }
-            dotActive -> {
-                val host = try {
-                    android.provider.Settings.Global.getString(contentResolver, "private_dns_specifier") ?: ""
-                } catch (_: Exception) { "" }
-                val profile = selectedProfile
-                val profileMatchesHost = profile != null && host.isNotEmpty() &&
-                    host.equals(profile.primary, ignoreCase = true)
-                dnsStatusText = when {
-                    profileMatchesHost -> getString(R.string.dns_active_dot_fmt, profile!!.providerName)
-                    host.isNotEmpty() -> getString(R.string.dns_active_dot_host_fmt, host)
-                    else -> getString(R.string.dns_active_dot)
-                }
-                dnsActive = true
-            }
-            else -> {
-                dnsStatusText = getString(R.string.no_active_dns)
-                dnsActive = false
-            }
-        }
+        val (dnsStatusText, dnsActive) = computeDnsStatus()
 
         val devType = if (packageManager.hasSystemFeature("android.software.leanback")) {
             getString(R.string.device_type_tv)
@@ -348,15 +314,60 @@ class MainActivity : AppCompatActivity() {
             lastIpv6 = ipv6
             lastCarrierName = carrierName.ifEmpty { null }
 
+            // Re-évaluer DNS status après les ~5s d'IO : au cold start, le
+            // DnsVpnService peut ne pas avoir initialisé `isVpnRunning=true` au
+            // moment du phase 1. À phase 2, le service a eu le temps de boot, et
+            // on capture l'état réel pour aligner avec checkStatus()/le toggle.
+            val (dnsText2, dnsActive2) = computeDnsStatus()
+
             runOnUiThread {
                 renderStatus(
-                    dnsStatusText, dnsActive, connType, carrierName,
+                    dnsText2, dnsActive2, connType, carrierName,
                     ispInfo = ispInfo, localIp = localIp,
                     ipv4Display = ipv4 ?: getString(R.string.wan_ip_error),
                     ipv6Display = ipv6 ?: getString(R.string.wan_ipv6_blocked),
                     devType = devType
                 )
             }
+        }
+    }
+
+    /**
+     * Calcule (dnsStatusText, dnsActive) en lisant l'état temps réel du système :
+     * VpnService.isVpnRunning + Settings.Global.private_dns_mode. Extrait pour
+     * pouvoir être appelé 2× dans refreshIpDisplay (phase 1 sync + phase 2 après
+     * IO réseau, qui laisse au service le temps d'initialiser son flag static).
+     */
+    private fun computeDnsStatus(): Pair<String, Boolean> {
+        val vpnRunning = DnsVpnService.isVpnRunning
+        val dotActive = try {
+            val mode = android.provider.Settings.Global.getString(contentResolver, "private_dns_mode")
+            mode == "hostname"
+        } catch (_: Exception) { false }
+
+        return when {
+            vpnRunning -> {
+                val profile = selectedProfile
+                val text = if (profile != null) {
+                    getString(R.string.dns_active_vpn_fmt, typeLabelFor(profile.type), profile.providerName)
+                } else getString(R.string.dns_active_vpn)
+                text to true
+            }
+            dotActive -> {
+                val host = try {
+                    android.provider.Settings.Global.getString(contentResolver, "private_dns_specifier") ?: ""
+                } catch (_: Exception) { "" }
+                val profile = selectedProfile
+                val profileMatchesHost = profile != null && host.isNotEmpty() &&
+                    host.equals(profile.primary, ignoreCase = true)
+                val text = when {
+                    profileMatchesHost -> getString(R.string.dns_active_dot_fmt, profile!!.providerName)
+                    host.isNotEmpty() -> getString(R.string.dns_active_dot_host_fmt, host)
+                    else -> getString(R.string.dns_active_dot)
+                }
+                text to true
+            }
+            else -> getString(R.string.no_active_dns) to false
         }
     }
 
