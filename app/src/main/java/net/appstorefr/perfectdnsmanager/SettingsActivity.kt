@@ -459,10 +459,27 @@ class SettingsActivity : AppCompatActivity() {
         val rowAbout = findViewById<FrameLayout>(R.id.rowAbout)
         val layoutAbout = findViewById<LinearLayout>(R.id.layoutAboutContent)
         val tvAboutArrow = findViewById<TextView>(R.id.tvAboutArrow)
+        val settingsScroll = findViewById<android.widget.ScrollView>(R.id.settingsScrollView)
+        var scrollBeforeAboutExpand = 0
         rowAbout.setOnClickListener {
             val expanded = layoutAbout.visibility == View.VISIBLE
-            layoutAbout.visibility = if (expanded) View.GONE else View.VISIBLE
-            tvAboutArrow.text = if (expanded) "▶" else "▼"
+            if (!expanded) {
+                // Expanding : mémoriser la position courante et descendre tout en bas
+                // après le layout pass pour que l'utilisateur voie le contenu déplié.
+                scrollBeforeAboutExpand = settingsScroll.scrollY
+                layoutAbout.visibility = View.VISIBLE
+                tvAboutArrow.text = "▼"
+                settingsScroll.post {
+                    settingsScroll.smoothScrollTo(0, settingsScroll.getChildAt(0).bottom)
+                }
+            } else {
+                // Collapsing : remonter là où on était avant le déploiement.
+                layoutAbout.visibility = View.GONE
+                tvAboutArrow.text = "▶"
+                settingsScroll.post {
+                    settingsScroll.smoothScrollTo(0, scrollBeforeAboutExpand)
+                }
+            }
         }
 
         findViewById<Button>(R.id.btnSupportAbout).setOnClickListener {
