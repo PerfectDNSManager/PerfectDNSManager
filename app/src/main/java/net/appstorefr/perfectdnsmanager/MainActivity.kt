@@ -273,7 +273,7 @@ class MainActivity : AppCompatActivity() {
         runOnUiThread {
             renderStatus(
                 dnsStatusText, dnsActive, connType, carrierName,
-                ispInfo = "", localIp = localIp,
+                ispInfo = "…", localIp = localIp,
                 ipv4Display = "…", ipv6Display = "…",
                 devType = devType
             )
@@ -323,7 +323,8 @@ class MainActivity : AppCompatActivity() {
             runOnUiThread {
                 renderStatus(
                     dnsText2, dnsActive2, connType, carrierName,
-                    ispInfo = ispInfo, localIp = localIp,
+                    ispInfo = ispInfo.ifEmpty { getString(R.string.wan_ip_error) },
+                    localIp = localIp,
                     ipv4Display = ipv4 ?: getString(R.string.wan_ip_error),
                     ipv6Display = ipv6 ?: getString(R.string.wan_ipv6_blocked),
                     devType = devType
@@ -391,7 +392,9 @@ class MainActivity : AppCompatActivity() {
 
         sb.append(getString(R.string.report_conn_fmt, connType)).append("\n")
         if (carrierName.isNotEmpty()) sb.append(getString(R.string.report_carrier_fmt, carrierName)).append("\n")
-        if (ispInfo.isNotEmpty()) sb.append(getString(R.string.report_isp_fmt, ispInfo)).append("\n")
+        // FAI : ligne toujours affichée — phase 1 passe "…", phase 2 remplace par
+        // la valeur fetched ou "indisponible". Cohérent avec IPv4/IPv6.
+        sb.append(getString(R.string.report_isp_fmt, ispInfo)).append("\n")
         sb.append(getString(R.string.report_local_ip_fmt, localIp)).append("\n")
         sb.append(getString(R.string.report_ipv4_fmt, ipv4Display)).append("\n")
         sb.append(getString(R.string.report_ipv6_fmt, ipv6Display))
