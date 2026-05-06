@@ -1,7 +1,6 @@
 package net.appstorefr.perfectdnsmanager
 
 import net.appstorefr.perfectdnsmanager.util.pdmBackground
-import net.appstorefr.perfectdnsmanager.util.pdmBorder
 import net.appstorefr.perfectdnsmanager.util.pdmSurface
 import net.appstorefr.perfectdnsmanager.util.pdmSurfaceInput
 import net.appstorefr.perfectdnsmanager.util.pdmTextPrimary
@@ -42,7 +41,7 @@ class DomainTesterActivity : AppCompatActivity() {
     private lateinit var listContainer: LinearLayout
     private lateinit var tvResult: TextView
     private lateinit var btnRunTest: Button
-    private lateinit var dnsChipsContainer: LinearLayout
+    private lateinit var btnDnsSelect: Button
     private var testThread: Thread? = null
     private var isTesting = false
 
@@ -50,8 +49,6 @@ class DomainTesterActivity : AppCompatActivity() {
     private val selectedDnsOptions = mutableSetOf<DnsOption>()
     private var allDnsOptions = listOf<DnsOption>()
     private var isAllSelected = true
-    private val chipButtons = mutableListOf<Button>()
-    private var btnAll: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -159,32 +156,22 @@ class DomainTesterActivity : AppCompatActivity() {
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 16)
         })
 
-        // DNS selector section
-        val tvDnsLabel = TextView(this).apply {
-            text = getString(R.string.domain_tester_dns_select)
-            setTextColor(pdmTextSecondary())
-            textSize = 13f
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-                bottomMargin = 8
-            }
-        }
-        mainLayout.addView(tvDnsLabel)
-
-        // Horizontal scrollable chips container
-        val scrollChips = HorizontalScrollView(this).apply {
+        // DNS selector — pattern bouton + dialog picker (idem InternetSpeedtest)
+        btnDnsSelect = Button(this).apply {
+            text = dnsButtonText()
+            setTextColor(pdmAccentAlt())
+            setBackgroundResource(R.drawable.focusable_item_background)
+            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+            isFocusable = true
+            textSize = 14f
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            gravity = android.view.Gravity.CENTER
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 bottomMargin = 16
             }
-            isHorizontalScrollBarEnabled = false
+            setOnClickListener { showDnsPickerDialog() }
         }
-        dnsChipsContainer = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = android.view.Gravity.CENTER_VERTICAL
-        }
-        scrollChips.addView(dnsChipsContainer)
-        mainLayout.addView(scrollChips)
-
-        buildDnsChips()
+        mainLayout.addView(btnDnsSelect)
 
         // Spacer
         mainLayout.addView(View(this).apply {
@@ -244,92 +231,117 @@ class DomainTesterActivity : AppCompatActivity() {
         return options
     }
 
-    private fun buildDnsChips() {
-        dnsChipsContainer.removeAllViews()
-        chipButtons.clear()
+    /** Résumé pour le bouton : "Tous", "Cloudflare", "Cloudflare + Google", "3 DNS sélectionnés". */
+    private fun dnsSelectionSummary(): String {
+        if (isAllSelected) return getString(R.string.domain_tester_dns_all)
+        val labels = selectedDnsOptions.map { it.label }
+        return when {
+            labels.isEmpty() -> getString(R.string.domain_tester_dns_all)
+            labels.size <= 2 -> labels.joinToString(" + ")
+            else -> getString(R.string.domain_tester_dns_count_fmt, labels.size)
+        }
+    }
 
-        // "All" button
-        val allBtn = Button(this).apply {
+    private fun dnsButtonText(): String =
+        getString(R.string.domain_tester_dns_button_fmt, dnsSelectionSummary())
+
+    /**
+     * Dialog picker : "Tous" + un checkbox par DNS provider. Multi-select
+     * préservé. "Tous" décoche les autres et inversement (cohérence : "Tous"
+     * == aucun individuel).
+     */
+    private fun showDnsPickerDialog() {
+        val root = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(40, 32, 40, 16)
+            setBackgroundColor(pdmSurface())
+        }
+
+        root.addView(TextView(this).apply {
+            text = getString(R.string.domain_tester_dns_picker_title)
+            setTextColor(pdmTextPrimary())
+            textSize = 17f
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setPadding(0, 0, 0, 24)
+        })
+
+        val scroll = ScrollView(this).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                (resources.displayMetrics.density * 320).toInt()
+            )
+        }
+        val list = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        scroll.addView(list)
+        root.addView(scroll)
+
+        // État local du dialog (validé seulement au clic OK).
+        var localAllSelected = isAllSelected
+        val localSelected = selectedDnsOptions.toMutableSet()
+
+        val cbProviders = mutableListOf<Pair<DnsOption, android.widget.CheckBox>>()
+        val cbAll = android.widget.CheckBox(this).apply {
             text = getString(R.string.domain_tester_dns_all)
-            textSize = 12f
-            setPadding(24, 8, 24, 8)
+            setTextColor(pdmTextPrimary())
+            textSize = 15f
+            buttonTintList = android.content.res.ColorStateList.valueOf(pdmAccentAlt())
+            background = resources.getDrawable(R.drawable.focusable_item_background, theme)
+            setPadding(16, 20, 16, 20)
             isFocusable = true
-            setBackgroundResource(R.drawable.focusable_item_background)
-            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-                marginEnd = 8
-            }
-            setOnClickListener { selectAll() }
+            isChecked = localAllSelected
         }
-        btnAll = allBtn
-        dnsChipsContainer.addView(allBtn)
+        cbAll.setOnCheckedChangeListener { _, checked ->
+            if (checked) {
+                localAllSelected = true
+                localSelected.clear()
+                cbProviders.forEach { it.second.isChecked = false }
+            } else if (localSelected.isEmpty()) {
+                // Décocher "Tous" sans rien d'autre coché → re-cocher "Tous"
+                cbAll.isChecked = true
+            }
+        }
+        list.addView(cbAll)
 
-        // One chip per DNS provider
         for (option in allDnsOptions) {
-            val btn = Button(this).apply {
+            val cb = android.widget.CheckBox(this).apply {
                 text = option.label
-                textSize = 12f
-                setPadding(24, 8, 24, 8)
+                setTextColor(pdmTextPrimary())
+                textSize = 15f
+                buttonTintList = android.content.res.ColorStateList.valueOf(pdmAccentAlt())
+                background = resources.getDrawable(R.drawable.focusable_item_background, theme)
+                setPadding(16, 20, 16, 20)
                 isFocusable = true
-                setBackgroundResource(R.drawable.focusable_item_background)
-                foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
-                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-                    marginEnd = 8
+                isChecked = !localAllSelected && option in localSelected
+            }
+            cb.setOnCheckedChangeListener { _, checked ->
+                if (checked) {
+                    localSelected.add(option)
+                    if (localAllSelected) {
+                        localAllSelected = false
+                        cbAll.isChecked = false
+                    }
+                } else {
+                    localSelected.remove(option)
+                    if (localSelected.isEmpty()) {
+                        localAllSelected = true
+                        cbAll.isChecked = true
+                    }
                 }
-                tag = option
-                setOnClickListener { toggleDnsOption(option) }
             }
-            chipButtons.add(btn)
-            dnsChipsContainer.addView(btn)
+            cbProviders.add(option to cb)
+            list.addView(cb)
         }
 
-        updateChipColors()
-    }
-
-    private fun selectAll() {
-        isAllSelected = true
-        selectedDnsOptions.clear()
-        updateChipColors()
-    }
-
-    private fun toggleDnsOption(option: DnsOption) {
-        isAllSelected = false
-        if (option in selectedDnsOptions) {
-            selectedDnsOptions.remove(option)
-            if (selectedDnsOptions.isEmpty()) {
-                isAllSelected = true
+        AlertDialog.Builder(this)
+            .setView(root)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                isAllSelected = localAllSelected
+                selectedDnsOptions.clear()
+                if (!localAllSelected) selectedDnsOptions.addAll(localSelected)
+                btnDnsSelect.text = dnsButtonText()
             }
-        } else {
-            selectedDnsOptions.add(option)
-        }
-        updateChipColors()
-    }
-
-    private fun updateChipColors() {
-        val accent = pdmAccentAlt()
-        val dimText = pdmTextSecondary()
-
-        fun chipBg(active: Boolean): android.graphics.drawable.GradientDrawable =
-            android.graphics.drawable.GradientDrawable().apply {
-                setColor(pdmSurface())
-                cornerRadius = (8 * resources.displayMetrics.density)
-                setStroke(
-                    ((if (active) 2 else 1) * resources.displayMetrics.density).toInt(),
-                    if (active) accent else pdmBorder()
-                )
-            }
-
-        btnAll?.let { btn ->
-            btn.background = chipBg(isAllSelected)
-            btn.setTextColor(if (isAllSelected) accent else dimText)
-        }
-
-        for (btn in chipButtons) {
-            val option = btn.tag as DnsOption
-            val active = !isAllSelected && option in selectedDnsOptions
-            btn.background = chipBg(active)
-            btn.setTextColor(if (active) accent else dimText)
-        }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .show()
     }
 
     private fun loadEntries(): MutableList<TestDomainEntry> {

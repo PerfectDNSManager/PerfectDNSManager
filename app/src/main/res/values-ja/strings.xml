@@ -381,8 +381,7 @@
     <string name="domain_tester_no_result">テスト未実行。</string>
     <string name="domain_tester_no_enabled">有効なドメインがありません。</string>
     <string name="domain_tester_dns_all">すべて</string>
-    <string name="domain_tester_dns_select">テストするDNS：</string>
-    <string name="internet_speedtest_advanced">⚡ インターネット速度テスト</string>
+<string name="internet_speedtest_advanced">⚡ インターネット速度テスト</string>
     <string name="dns_speedtest_shortcut">⚡ DNS スピードテスト</string>
 
     <!-- Theme -->
@@ -532,7 +531,8 @@
     <string name="speedtest_ookla_err_load_fmt">Ookla 読込エラー: %1$s</string>
     <string name="speedtest_ookla_none">利用可能な Ookla サーバーがありません。</string>
     <string name="speedtest_ookla_not_selected">Ookla サーバーが選択されていません。</string>
-    <string name="speedtest_ookla_title">Ookla</string>    <string name="speedtest_ookla_server_loading">🌐  サーバー読み込み中…</string>
-    <string name="speedtest_ookla_server_fmt">🌐  %1$s  ▾</string>
-    <string name="speedtest_ookla_picker_title">Ookla サーバーを選択</string>
+    <string name="speedtest_ookla_title">Ookla</string><string name="speedtest_ookla_picker_title">Ookla サーバーを選択</string>
+    <string name="domain_tester_dns_button_fmt">テスト対象 DNS：%1$s  ▾</string>
+    <string name="domain_tester_dns_picker_title">テストする DNS を選択</string>
+    <string name="domain_tester_dns_count_fmt">%1$d 個の DNS を選択中</string>
 </resources>

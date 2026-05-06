@@ -381,8 +381,7 @@
     <string name="domain_tester_no_result">未进行测试。</string>
     <string name="domain_tester_no_enabled">没有启用的域名。</string>
     <string name="domain_tester_dns_all">全部</string>
-    <string name="domain_tester_dns_select">要测试的 DNS：</string>
-    <string name="internet_speedtest_advanced">⚡ 互联网速度测试</string>
+<string name="internet_speedtest_advanced">⚡ 互联网速度测试</string>
     <string name="dns_speedtest_shortcut">⚡ DNS 测速</string>
 
     <!-- Theme -->
@@ -532,7 +531,8 @@
     <string name="speedtest_ookla_err_load_fmt">Ookla 加载错误: %1$s</string>
     <string name="speedtest_ookla_none">没有可用的 Ookla 服务器。</string>
     <string name="speedtest_ookla_not_selected">未选择 Ookla 服务器。</string>
-    <string name="speedtest_ookla_title">Ookla</string>    <string name="speedtest_ookla_server_loading">🌐  正在加载服务器…</string>
-    <string name="speedtest_ookla_server_fmt">🌐  %1$s  ▾</string>
-    <string name="speedtest_ookla_picker_title">选择 Ookla 服务器</string>
+    <string name="speedtest_ookla_title">Ookla</string><string name="speedtest_ookla_picker_title">选择 Ookla 服务器</string>
+    <string name="domain_tester_dns_button_fmt">测试 DNS：%1$s  ▾</string>
+    <string name="domain_tester_dns_picker_title">选择要测试的 DNS</string>
+    <string name="domain_tester_dns_count_fmt">已选 %1$d 个 DNS</string>
 </resources>

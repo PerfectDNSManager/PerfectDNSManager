@@ -381,8 +381,7 @@
     <string name="domain_tester_no_result">কোনো টেস্ট করা হয়নি।</string>
     <string name="domain_tester_no_enabled">কোনো ডোমেইন সক্রিয় নেই।</string>
     <string name="domain_tester_dns_all">সব</string>
-    <string name="domain_tester_dns_select">পরীক্ষার জন্য DNS:</string>
-    <string name="internet_speedtest_advanced">⚡ ইন্টারনেট স্পিড টেস্ট</string>
+<string name="internet_speedtest_advanced">⚡ ইন্টারনেট স্পিড টেস্ট</string>
     <string name="dns_speedtest_shortcut">⚡ DNS স্পিডটেস্ট</string>
 
     <!-- Theme -->
@@ -533,7 +532,8 @@
     <string name="speedtest_ookla_err_load_fmt">Ookla লোড ত্রুটি: %1$s</string>
     <string name="speedtest_ookla_none">কোনো Ookla সার্ভার নেই।</string>
     <string name="speedtest_ookla_not_selected">কোনো Ookla সার্ভার নির্বাচিত নয়।</string>
-    <string name="speedtest_ookla_title">Ookla</string>    <string name="speedtest_ookla_server_loading">🌐  সার্ভার লোড হচ্ছে…</string>
-    <string name="speedtest_ookla_server_fmt">🌐  %1$s  ▾</string>
-    <string name="speedtest_ookla_picker_title">Ookla সার্ভার নির্বাচন</string>
+    <string name="speedtest_ookla_title">Ookla</string><string name="speedtest_ookla_picker_title">Ookla সার্ভার নির্বাচন</string>
+    <string name="domain_tester_dns_button_fmt">টেস্ট করার DNS: %1$s  ▾</string>
+    <string name="domain_tester_dns_picker_title">টেস্ট করতে DNS বাছুন</string>
+    <string name="domain_tester_dns_count_fmt">%1$d DNS নির্বাচিত</string>
 </resources>

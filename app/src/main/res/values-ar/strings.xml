@@ -381,8 +381,7 @@
     <string name="domain_tester_no_result">لم يتم إجراء أي اختبار.</string>
     <string name="domain_tester_no_enabled">لا يوجد نطاق مفعّل.</string>
     <string name="domain_tester_dns_all">الكل</string>
-    <string name="domain_tester_dns_select">DNS للاختبار:</string>
-    <string name="internet_speedtest_advanced">⚡ اختبار سرعة الإنترنت</string>
+<string name="internet_speedtest_advanced">⚡ اختبار سرعة الإنترنت</string>
     <string name="dns_speedtest_shortcut">⚡ اختبار سرعة DNS</string>
 
     <!-- Theme -->
@@ -537,7 +536,8 @@
     <string name="speedtest_ookla_err_load_fmt">خطأ تحميل Ookla: %1$s</string>
     <string name="speedtest_ookla_none">لا يوجد خادم Ookla متاح.</string>
     <string name="speedtest_ookla_not_selected">لم يتم اختيار خادم Ookla.</string>
-    <string name="speedtest_ookla_title">Ookla</string>    <string name="speedtest_ookla_server_loading">🌐  تحميل الخوادم…</string>
-    <string name="speedtest_ookla_server_fmt">🌐  %1$s  ▾</string>
-    <string name="speedtest_ookla_picker_title">اختر خادم Ookla</string>
+    <string name="speedtest_ookla_title">Ookla</string><string name="speedtest_ookla_picker_title">اختر خادم Ookla</string>
+    <string name="domain_tester_dns_button_fmt">DNS للاختبار: %1$s  ▾</string>
+    <string name="domain_tester_dns_picker_title">اختر DNS للاختبار</string>
+    <string name="domain_tester_dns_count_fmt">تم اختيار %1$d DNS</string>
 </resources>

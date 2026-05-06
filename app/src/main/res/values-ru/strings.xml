@@ -381,8 +381,7 @@
     <string name="domain_tester_no_result">Тест не проведён.</string>
     <string name="domain_tester_no_enabled">Нет активных доменов.</string>
     <string name="domain_tester_dns_all">Все</string>
-    <string name="domain_tester_dns_select">DNS для теста:</string>
-    <string name="internet_speedtest_advanced">⚡ Тест скорости Интернета</string>
+<string name="internet_speedtest_advanced">⚡ Тест скорости Интернета</string>
     <string name="dns_speedtest_shortcut">⚡ DNS Speedtest</string>
 
     <!-- Theme -->
@@ -534,7 +533,8 @@
     <string name="speedtest_ookla_err_load_fmt">Ошибка загрузки Ookla: %1$s</string>
     <string name="speedtest_ookla_none">Нет доступных серверов Ookla.</string>
     <string name="speedtest_ookla_not_selected">Сервер Ookla не выбран.</string>
-    <string name="speedtest_ookla_title">Ookla</string>    <string name="speedtest_ookla_server_loading">🌐  Загрузка серверов…</string>
-    <string name="speedtest_ookla_server_fmt">🌐  %1$s  ▾</string>
-    <string name="speedtest_ookla_picker_title">Выбрать сервер Ookla</string>
+    <string name="speedtest_ookla_title">Ookla</string><string name="speedtest_ookla_picker_title">Выбрать сервер Ookla</string>
+    <string name="domain_tester_dns_button_fmt">DNS для теста: %1$s  ▾</string>
+    <string name="domain_tester_dns_picker_title">Выберите DNS для теста</string>
+    <string name="domain_tester_dns_count_fmt">Выбрано DNS: %1$d</string>
 </resources>

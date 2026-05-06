@@ -410,8 +410,7 @@
     <string name="domain_tester_no_result">No test performed.</string>
     <string name="domain_tester_no_enabled">No domain enabled.</string>
     <string name="domain_tester_dns_all">All</string>
-    <string name="domain_tester_dns_select">DNS to test:</string>
-    <string name="internet_speedtest_advanced">⚡ Internet speed test</string>
+<string name="internet_speedtest_advanced">⚡ Internet speed test</string>
     <string name="dns_speedtest_shortcut">⚡ DNS Speedtest</string>
 
     <!-- Theme -->
@@ -552,7 +551,8 @@
     <string name="speedtest_ookla_err_load_fmt">Ookla load error: %1$s</string>
     <string name="speedtest_ookla_none">No Ookla servers available.</string>
     <string name="speedtest_ookla_not_selected">No Ookla server selected.</string>
-    <string name="speedtest_ookla_title">Ookla</string>    <string name="speedtest_ookla_server_loading">🌐  Loading servers…</string>
-    <string name="speedtest_ookla_server_fmt">🌐  %1$s  ▾</string>
-    <string name="speedtest_ookla_picker_title">Pick an Ookla server</string>
+    <string name="speedtest_ookla_title">Ookla</string><string name="speedtest_ookla_picker_title">Pick an Ookla server</string>
+    <string name="domain_tester_dns_button_fmt">DNS to test: %1$s  ▾</string>
+    <string name="domain_tester_dns_picker_title">Choose DNS to test</string>
+    <string name="domain_tester_dns_count_fmt">%1$d DNS selected</string>
 </resources>
