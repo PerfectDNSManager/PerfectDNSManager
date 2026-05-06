@@ -222,6 +222,91 @@ class MainActivity : AppCompatActivity() {
      * Contient : type connexion, opérateur, IP locale, IPv4, IPv6, ISP, statut DNS (vert/rouge).
      */
     private fun refreshIpDisplay() {
+        // ── Phase 1 : données synchrones (rendu instantané, pas d'IO) ──
+        val localIp = try {
+            java.net.NetworkInterface.getNetworkInterfaces()?.toList()
+                ?.flatMap { it.inetAddresses.toList() }
+                ?.firstOrNull { !it.isLoopbackAddress && it is java.net.Inet4Address }
+                ?.hostAddress ?: "N/A"
+        } catch (_: Exception) { "N/A" }
+
+        val connType = try {
+            val cm = getSystemService(CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                val nc = cm.getNetworkCapabilities(cm.activeNetwork)
+                when {
+                    nc?.hasTransport(android.net.NetworkCapabilities.TRANSPORT_ETHERNET) == true -> "Ethernet"
+                    nc?.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI) == true -> "WiFi"
+                    nc?.hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR) == true -> "4G/5G"
+                    else -> getString(R.string.report_conn_unknown)
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                when (cm.activeNetworkInfo?.type) {
+                    android.net.ConnectivityManager.TYPE_ETHERNET -> "Ethernet"
+                    android.net.ConnectivityManager.TYPE_WIFI -> "WiFi"
+                    android.net.ConnectivityManager.TYPE_MOBILE -> "4G/5G"
+                    else -> getString(R.string.report_conn_unknown)
+                }
+            }
+        } catch (_: Exception) { getString(R.string.report_conn_unknown) }
+
+        val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as? android.telephony.TelephonyManager
+        val carrierName = telephonyManager?.networkOperatorName?.takeIf { it.isNotBlank() }
+            ?: telephonyManager?.simOperatorName?.takeIf { it.isNotBlank() }
+            ?: ""
+
+        val vpnRunning = DnsVpnService.isVpnRunning
+        val dotActive = try {
+            val mode = android.provider.Settings.Global.getString(contentResolver, "private_dns_mode")
+            mode == "hostname"
+        } catch (_: Exception) { false }
+
+        val dnsStatusText: String
+        val dnsActive: Boolean
+        when {
+            vpnRunning -> {
+                val profile = selectedProfile
+                dnsStatusText = if (profile != null) {
+                    getString(R.string.dns_active_vpn_fmt, typeLabelFor(profile.type), profile.providerName)
+                } else getString(R.string.dns_active_vpn)
+                dnsActive = true
+            }
+            dotActive -> {
+                val host = try {
+                    android.provider.Settings.Global.getString(contentResolver, "private_dns_specifier") ?: ""
+                } catch (_: Exception) { "" }
+                val profile = selectedProfile
+                val profileMatchesHost = profile != null && host.isNotEmpty() &&
+                    host.equals(profile.primary, ignoreCase = true)
+                dnsStatusText = when {
+                    profileMatchesHost -> getString(R.string.dns_active_dot_fmt, profile!!.providerName)
+                    host.isNotEmpty() -> getString(R.string.dns_active_dot_host_fmt, host)
+                    else -> getString(R.string.dns_active_dot)
+                }
+                dnsActive = true
+            }
+            else -> {
+                dnsStatusText = getString(R.string.no_active_dns)
+                dnsActive = false
+            }
+        }
+
+        val devType = if (packageManager.hasSystemFeature("android.software.leanback")) {
+            getString(R.string.device_type_tv)
+        } else if (resources.configuration.smallestScreenWidthDp >= 600) {
+            getString(R.string.device_type_tablet)
+        } else getString(R.string.device_type_phone)
+
+        // Rendu immédiat avec placeholders "…" pour ipv4/ipv6/ispInfo
+        renderStatus(
+            dnsStatusText, dnsActive, connType, carrierName,
+            ispInfo = "", localIp = localIp,
+            ipv4Display = "…", ipv6Display = "…",
+            devType = devType
+        )
+
+        // ── Phase 2 : IO réseau (parallèle) puis update final ──
         lifecycleScope.launch(Dispatchers.IO) {
             val httpClient = okhttp3.OkHttpClient.Builder()
                 .connectTimeout(5, java.util.concurrent.TimeUnit.SECONDS)
@@ -235,156 +320,72 @@ class MainActivity : AppCompatActivity() {
                 if (resp.isSuccessful && !body.isNullOrEmpty()) body else null
             } catch (_: Exception) { null }
 
-            // IPv4
-            val ipv4 = quickGet("https://api4.ipify.org")
-                ?: quickGet("https://ipv4.icanhazip.com")
-
-            // IPv6
-            val ipv6 = run {
-                val v6 = quickGet("https://api6.ipify.org")
-                    ?: quickGet("https://ipv6.icanhazip.com")
+            val ipv4Job = kotlinx.coroutines.async(Dispatchers.IO) {
+                quickGet("https://api4.ipify.org") ?: quickGet("https://ipv4.icanhazip.com")
+            }
+            val ipv6Job = kotlinx.coroutines.async(Dispatchers.IO) {
+                val v6 = quickGet("https://api6.ipify.org") ?: quickGet("https://ipv6.icanhazip.com")
                 if (v6 != null && v6.contains(":")) v6 else null
             }
+            val ipv4 = ipv4Job.await()
+            val ipv6 = ipv6Job.await()
 
-            // IP locale
-            val localIp = try {
-                java.net.NetworkInterface.getNetworkInterfaces()?.toList()
-                    ?.flatMap { it.inetAddresses.toList() }
-                    ?.firstOrNull { !it.isLoopbackAddress && it is java.net.Inet4Address }
-                    ?.hostAddress ?: "N/A"
-            } catch (_: Exception) { "N/A" }
-
-            // Type de connexion
-            val connType = try {
-                val cm = getSystemService(CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    val nc = cm.getNetworkCapabilities(cm.activeNetwork)
-                    when {
-                        nc?.hasTransport(android.net.NetworkCapabilities.TRANSPORT_ETHERNET) == true -> "Ethernet"
-                        nc?.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI) == true -> "WiFi"
-                        nc?.hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR) == true -> "4G/5G"
-                        else -> getString(R.string.report_conn_unknown)
-                    }
-                } else {
-                    @Suppress("DEPRECATION")
-                    when (cm.activeNetworkInfo?.type) {
-                        android.net.ConnectivityManager.TYPE_ETHERNET -> "Ethernet"
-                        android.net.ConnectivityManager.TYPE_WIFI -> "WiFi"
-                        android.net.ConnectivityManager.TYPE_MOBILE -> "4G/5G"
-                        else -> getString(R.string.report_conn_unknown)
-                    }
-                }
-            } catch (_: Exception) { getString(R.string.report_conn_unknown) }
-
-            // Op\u00e9rateur
-            val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as? android.telephony.TelephonyManager
-            val carrierName = telephonyManager?.networkOperatorName?.takeIf { it.isNotBlank() }
-                ?: telephonyManager?.simOperatorName?.takeIf { it.isNotBlank() }
-                ?: ""
-
-            // ISP info
             val ispInfo = try {
-                val ispJson = quickGet("https://ipinfo.io/${ipv4 ?: ""}/json")
-                if (ispJson != null) {
-                    val obj = org.json.JSONObject(ispJson)
-                    obj.optString("org", "")
+                if (ipv4 != null) {
+                    val ispJson = quickGet("https://ipinfo.io/$ipv4/json")
+                    if (ispJson != null) org.json.JSONObject(ispJson).optString("org", "") else ""
                 } else ""
             } catch (_: Exception) { "" }
 
-            // DNS status check (VPN + DoT)
-            val vpnRunning = DnsVpnService.isVpnRunning
-            val dotActive = try {
-                val mode = android.provider.Settings.Global.getString(contentResolver, "private_dns_mode")
-                mode == "hostname"
-            } catch (_: Exception) { false }
-
-            val dnsStatusText: String
-            val dnsActive: Boolean
-            when {
-                vpnRunning -> {
-                    val profile = selectedProfile
-                    dnsStatusText = if (profile != null) {
-                        // Affiche le protocole réel (DoH/DoQ/Standard) plutôt que
-                        // juste "VPN" — symétrique au cas DoT.
-                        getString(R.string.dns_active_vpn_fmt, typeLabelFor(profile.type), profile.providerName)
-                    } else {
-                        getString(R.string.dns_active_vpn)
-                    }
-                    dnsActive = true
-                }
-                dotActive -> {
-                    val host = try {
-                        android.provider.Settings.Global.getString(contentResolver, "private_dns_specifier") ?: ""
-                    } catch (_: Exception) { "" }
-                    val profile = selectedProfile
-                    // N'afficher le nom du profil que si le host système correspond.
-                    // Sinon le DoT vient d'ailleurs (résidu d'une session précédente,
-                    // outil tiers, etc.) — fallback sur le host pour rester honnête.
-                    val profileMatchesHost = profile != null &&
-                        host.isNotEmpty() &&
-                        host.equals(profile.primary, ignoreCase = true)
-                    dnsStatusText = when {
-                        profileMatchesHost -> getString(R.string.dns_active_dot_fmt, profile!!.providerName)
-                        host.isNotEmpty() -> getString(R.string.dns_active_dot_host_fmt, host)
-                        else -> getString(R.string.dns_active_dot)
-                    }
-                    dnsActive = true
-                }
-                else -> {
-                    dnsStatusText = getString(R.string.no_active_dns)
-                    dnsActive = false
-                }
-            }
-
-            // Sauvegarder les IPs pour le rapport
             lastIpv4 = ipv4
             lastIpv6 = ipv6
             lastCarrierName = carrierName.ifEmpty { null }
 
-            val devType = if (packageManager.hasSystemFeature("android.software.leanback")) {
-                getString(R.string.device_type_tv)
-            } else if (resources.configuration.smallestScreenWidthDp >= 600) {
-                getString(R.string.device_type_tablet)
-            } else {
-                getString(R.string.device_type_phone)
-            }
-            // Un seul gros TextView (tvStatusInfo). 3 sections séparées par lignes vides.
-            val sb = android.text.SpannableStringBuilder()
-            val s1 = sb.length
-            sb.append(dnsStatusText)
-            val statusColor = if (dnsActive) pdmAccent() else pdmDanger()
-            sb.setSpan(ForegroundColorSpan(statusColor), s1, sb.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            sb.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), s1, sb.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            // Profil affiché uniquement si DNS actif — sinon ça suggère que ce DNS
-            // tourne, alors qu'il est juste sélectionné. Le fournisseur sélectionné
-            // est déjà visible dans le bouton "Choix du fournisseur DNS" en haut.
-            if (dnsActive) {
-                selectedProfile?.let {
-                    sb.append("\n").append(getString(R.string.report_profile_fmt, it.providerName, it.name))
-                }
-            }
-            sb.append("\n\n")
-
-            // Section 2 \u2014 Connexion + IPs
-            sb.append(getString(R.string.report_conn_fmt, connType)).append("\n")
-            if (carrierName.isNotEmpty()) sb.append(getString(R.string.report_carrier_fmt, carrierName)).append("\n")
-            if (ispInfo.isNotEmpty()) sb.append(getString(R.string.report_isp_fmt, ispInfo)).append("\n")
-            sb.append(getString(R.string.report_local_ip_fmt, localIp)).append("\n")
-            sb.append(getString(R.string.report_ipv4_fmt, ipv4 ?: getString(R.string.wan_ip_error))).append("\n")
-            sb.append(getString(R.string.report_ipv6_fmt, ipv6 ?: getString(R.string.wan_ipv6_blocked)))
-            sb.append("\n\n")
-
-            // Section 3 — Hardware
-            sb.append("${getString(R.string.md_device_model)}: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}").append("\n")
-            sb.append("${getString(R.string.md_device_type)}: $devType").append("\n")
-            sb.append("${getString(R.string.md_android_version)}: ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})").append("\n")
-            sb.append("${getString(R.string.md_app_version)}: ${BuildConfig.VERSION_NAME}")
-
             runOnUiThread {
-                tvStatusInfo.setTextColor(pdmTextSecondary())
-                tvStatusInfo.text = sb
+                renderStatus(
+                    dnsStatusText, dnsActive, connType, carrierName,
+                    ispInfo = ispInfo, localIp = localIp,
+                    ipv4Display = ipv4 ?: getString(R.string.wan_ip_error),
+                    ipv6Display = ipv6 ?: getString(R.string.wan_ipv6_blocked),
+                    devType = devType
+                )
             }
         }
+    }
+
+    /** Construit + affiche le bloc status complet dans tvStatusInfo. */
+    private fun renderStatus(
+        dnsStatusText: String, dnsActive: Boolean, connType: String, carrierName: String,
+        ispInfo: String, localIp: String, ipv4Display: String, ipv6Display: String, devType: String
+    ) {
+        val sb = android.text.SpannableStringBuilder()
+        val s1 = sb.length
+        sb.append(dnsStatusText)
+        val statusColor = if (dnsActive) pdmAccent() else pdmDanger()
+        sb.setSpan(ForegroundColorSpan(statusColor), s1, sb.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        sb.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), s1, sb.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        if (dnsActive) {
+            selectedProfile?.let {
+                sb.append("\n").append(getString(R.string.report_profile_fmt, it.providerName, it.name))
+            }
+        }
+        sb.append("\n\n")
+
+        sb.append(getString(R.string.report_conn_fmt, connType)).append("\n")
+        if (carrierName.isNotEmpty()) sb.append(getString(R.string.report_carrier_fmt, carrierName)).append("\n")
+        if (ispInfo.isNotEmpty()) sb.append(getString(R.string.report_isp_fmt, ispInfo)).append("\n")
+        sb.append(getString(R.string.report_local_ip_fmt, localIp)).append("\n")
+        sb.append(getString(R.string.report_ipv4_fmt, ipv4Display)).append("\n")
+        sb.append(getString(R.string.report_ipv6_fmt, ipv6Display))
+        sb.append("\n\n")
+
+        sb.append("${getString(R.string.md_device_model)}: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}").append("\n")
+        sb.append("${getString(R.string.md_device_type)}: $devType").append("\n")
+        sb.append("${getString(R.string.md_android_version)}: ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})").append("\n")
+        sb.append("${getString(R.string.md_app_version)}: ${BuildConfig.VERSION_NAME}")
+
+        tvStatusInfo.setTextColor(pdmTextSecondary())
+        tvStatusInfo.text = sb
     }
 
     override fun onResume() {
