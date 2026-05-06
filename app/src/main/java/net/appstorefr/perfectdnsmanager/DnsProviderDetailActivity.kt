@@ -448,7 +448,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
             holder.tvCategoryMethod.text = methodLabel
             holder.tvCategoryMethod.setTextColor(badgeColor)
 
-            holder.tvCategoryCount.text = resources.getQuantityString(R.plurals.profile_count, header.count, header.count)
+            holder.tvCategoryCount.text = holder.itemView.resources.getQuantityString(R.plurals.profile_count, header.count, header.count)
             holder.tvCategoryCount.setTextColor(badgeColor)
 
             holder.itemView.setOnClickListener { clickedView ->
