@@ -767,7 +767,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // ── Collapsible "All apps" section ──
         val allAppsHeader = TextView(this).apply {
-            text = "\u25B6 \uD83D\uDCF1 Toutes les applications"
+            text = "\u25B6 \uD83D\uDCF1 ${getString(R.string.split_tunnel_all_apps_label)}"
             setTextColor(pdmWarning()); textSize = 14f
             setTypeface(null, android.graphics.Typeface.BOLD)
             setPadding(16, 16, 16, 16)
@@ -804,7 +804,7 @@ class SettingsActivity : AppCompatActivity() {
 
         // Hint text
         val searchHint = TextView(this).apply {
-            text = "Tapez pour rechercher parmi ${allItems.size} applications..."
+            text = getString(R.string.split_tunnel_search_hint_fmt, allItems.size)
             setTextColor(pdmTextDisabled()); textSize = 12f
             setPadding(8, 8, 0, 8)
         }
@@ -857,12 +857,13 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         allAppsHeader.setOnClickListener {
+            val label = getString(R.string.split_tunnel_all_apps_label)
             if (allAppsContent.visibility == View.GONE) {
                 allAppsContent.visibility = View.VISIBLE
-                allAppsHeader.text = "\u25BC \uD83D\uDCF1 Toutes les applications"
+                allAppsHeader.text = "\u25BC \uD83D\uDCF1 $label"
             } else {
                 allAppsContent.visibility = View.GONE
-                allAppsHeader.text = "\u25B6 \uD83D\uDCF1 Toutes les applications"
+                allAppsHeader.text = "\u25B6 \uD83D\uDCF1 $label"
             }
         }
 
@@ -875,8 +876,10 @@ class SettingsActivity : AppCompatActivity() {
                 resultsContainer.removeAllViews()
                 if (query.length < 2) {
                     searchHint.visibility = View.VISIBLE
-                    searchHint.text = if (query.isEmpty()) "Tapez pour rechercher parmi ${allItems.size} applications..."
-                                      else "Tapez au moins 2 caract\u00e8res..."
+                    searchHint.text = if (query.isEmpty())
+                        getString(R.string.split_tunnel_search_hint_fmt, allItems.size)
+                    else
+                        getString(R.string.split_tunnel_search_min_chars)
                     return
                 }
                 searchHint.visibility = View.GONE

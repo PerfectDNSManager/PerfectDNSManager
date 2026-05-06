@@ -515,4 +515,9 @@
     <string name="adb_err_interrupted">ADB 连接已中断</string>
     <string name="adb_err_invalid_hostname_fmt">无效的主机名: %1$s</string>
     <string name="dns_standard_warning_fmt">⚠️ 标准DNS：在 %1$s 上绑定您的 IP 以激活您的自定义配置。</string>
+    <!-- Strings ajoutées beta.88 (sortie de hardcode) -->
+    <string name="protocol_label">协议:</string>
+    <string name="split_tunnel_search_hint_fmt">在 %1$d 个应用中搜索…</string>
+    <string name="split_tunnel_search_min_chars">至少输入 2 个字符…</string>
+    <string name="split_tunnel_all_apps_label">所有应用</string>
 </resources>

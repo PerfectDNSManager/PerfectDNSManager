@@ -515,4 +515,9 @@
     <string name="adb_err_interrupted">ADB कनेक्शन बाधित</string>
     <string name="adb_err_invalid_hostname_fmt">अमान्य होस्टनाम: %1$s</string>
     <string name="dns_standard_warning_fmt">⚠️ क्लासिक DNS: अपना कस्टम प्रोफ़ाइल सक्रिय करने के लिए %1$s पर अपना IP लिंक करें।</string>
+    <!-- Strings ajoutées beta.88 (sortie de hardcode) -->
+    <string name="protocol_label">प्रोटोकॉल:</string>
+    <string name="split_tunnel_search_hint_fmt">%1$d ऐप्स में खोजने के लिए टाइप करें…</string>
+    <string name="split_tunnel_search_min_chars">कम से कम 2 अक्षर टाइप करें…</string>
+    <string name="split_tunnel_all_apps_label">सभी ऐप्स</string>
 </resources>

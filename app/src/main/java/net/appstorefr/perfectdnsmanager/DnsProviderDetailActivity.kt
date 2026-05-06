@@ -217,7 +217,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         }
 
         val tvProto = TextView(this).apply {
-            text = "Protocole :"
+            text = getString(R.string.protocol_label)
             setTextColor(pdmTextSecondary())
             textSize = 13f
             setPadding(0, 0, 0, 8)

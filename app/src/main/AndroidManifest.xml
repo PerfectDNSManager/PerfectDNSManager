@@ -43,12 +43,16 @@
             android:name=".service.BootReceiver"
             android:enabled="true"
             android:exported="true"
-            android:directBootAware="true">
+            android:directBootAware="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <!-- BOOT_COMPLETED + LOCKED_BOOT_COMPLETED + MY_PACKAGE_REPLACED sont
+                 des broadcasts protégés (système uniquement). Les anciennes
+                 actions OEM-spécifiques QUICKBOOT_POWERON ont été retirées :
+                 elles n'étaient pas protégées et permettaient à n'importe quelle
+                 app tierce de spoofer notre receiver. -->
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
@@ -83,7 +87,6 @@
         <activity android:name=".DnsSelectionActivity" android:exported="false" />
         <activity android:name=".HowToActivity" android:exported="false" />
         <activity android:name=".SupportActivity" android:exported="false" />
-        <activity android:name=".DnsRewriteActivity" android:exported="false" />
         <activity android:name=".DnsSpeedtestActivity" android:exported="false" />
         <activity android:name=".DomainTesterActivity"
             android:theme="@style/Theme.PerfectDNSChanger"

@@ -515,4 +515,9 @@
     <string name="adb_err_interrupted">ADB接続が中断されました</string>
     <string name="adb_err_invalid_hostname_fmt">無効なホスト名: %1$s</string>
     <string name="dns_standard_warning_fmt">⚠️ 標準DNS: %1$s でIPを紐付けてカスタムプロファイルを有効化してください。</string>
+    <!-- Strings ajoutées beta.88 (sortie de hardcode) -->
+    <string name="protocol_label">プロトコル:</string>
+    <string name="split_tunnel_search_hint_fmt">%1$d 個のアプリから検索…</string>
+    <string name="split_tunnel_search_min_chars">2 文字以上を入力…</string>
+    <string name="split_tunnel_all_apps_label">すべてのアプリ</string>
 </resources>

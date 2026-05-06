@@ -515,4 +515,9 @@
     <string name="adb_err_interrupted">Conexión ADB interrumpida</string>
     <string name="adb_err_invalid_hostname_fmt">Nombre de host no válido: %1$s</string>
     <string name="dns_standard_warning_fmt">⚠️ DNS clásico: vincula tu IP en %1$s para activar tu perfil personalizado.</string>
+    <!-- Strings ajoutées beta.88 (sortie de hardcode) -->
+    <string name="protocol_label">Protocolo:</string>
+    <string name="split_tunnel_search_hint_fmt">Escriba para buscar entre %1$d aplicaciones…</string>
+    <string name="split_tunnel_search_min_chars">Escriba al menos 2 caracteres…</string>
+    <string name="split_tunnel_all_apps_label">Todas las aplicaciones</string>
 </resources>

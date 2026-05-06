@@ -515,4 +515,9 @@
     <string name="adb_err_interrupted">ADB সংযোগ বিচ্ছিন্ন</string>
     <string name="adb_err_invalid_hostname_fmt">অবৈধ হোস্টনাম: %1$s</string>
     <string name="dns_standard_warning_fmt">⚠️ ক্লাসিক DNS: আপনার কাস্টম প্রোফাইল সক্রিয় করতে %1$s এ আপনার IP লিঙ্ক করুন।</string>
+    <!-- Strings ajoutées beta.88 (sortie de hardcode) -->
+    <string name="protocol_label">প্রোটোকল:</string>
+    <string name="split_tunnel_search_hint_fmt">%1$d অ্যাপ থেকে অনুসন্ধান করতে টাইপ করুন…</string>
+    <string name="split_tunnel_search_min_chars">কমপক্ষে 2টি অক্ষর টাইপ করুন…</string>
+    <string name="split_tunnel_all_apps_label">সব অ্যাপ</string>
 </resources>

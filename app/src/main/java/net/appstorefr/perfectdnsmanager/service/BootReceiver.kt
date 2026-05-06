@@ -28,8 +28,6 @@ class BootReceiver : BroadcastReceiver() {
         val validActions = setOf(
             Intent.ACTION_BOOT_COMPLETED,
             "android.intent.action.LOCKED_BOOT_COMPLETED",
-            "android.intent.action.QUICKBOOT_POWERON",
-            "com.htc.intent.action.QUICKBOOT_POWERON",
             Intent.ACTION_MY_PACKAGE_REPLACED
         )
         if (intent.action !in validActions) return
