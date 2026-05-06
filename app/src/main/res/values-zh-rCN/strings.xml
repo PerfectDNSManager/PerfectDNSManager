@@ -535,5 +535,6 @@
     <string name="speedtest_error_timeout">→ 错误 / 超时</string>
     <plurals name="profile_count">
         <item quantity="other">%d 个配置文件</item>
-    </plurals>
+    </plurals>    <string name="search_refine_hint">… 请细化搜索</string>
+    <string name="nextdns_profile_id_label">NextDNS 配置文件 ID：</string>
 </resources>

@@ -286,7 +286,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         layout.addView(tvWarning)
 
         val tvId = TextView(this).apply {
-            text = "\nProfile ID NextDNS :"
+            text = "\n${getString(R.string.nextdns_profile_id_label)}"
             setTextColor(pdmTextSecondary())
             textSize = 13f
         }

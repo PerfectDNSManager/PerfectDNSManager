@@ -535,5 +535,6 @@
     <string name="speedtest_error_timeout">→ エラー / タイムアウト</string>
     <plurals name="profile_count">
         <item quantity="other">%d 件のプロファイル</item>
-    </plurals>
+    </plurals>    <string name="search_refine_hint">… 検索を絞り込んでください</string>
+    <string name="nextdns_profile_id_label">NextDNS プロファイル ID :</string>
 </resources>

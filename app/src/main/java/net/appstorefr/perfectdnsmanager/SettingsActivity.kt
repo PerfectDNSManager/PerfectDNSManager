@@ -912,7 +912,7 @@ class SettingsActivity : AppCompatActivity() {
                     }
                     if (results.size == 30) {
                         resultsContainer.addView(TextView(this@SettingsActivity).apply {
-                            text = "... affinez votre recherche"
+                            text = getString(R.string.search_refine_hint)
                             setTextColor(pdmTextDisabled()); textSize = 11f
                             setPadding(12, 8, 0, 4)
                         })

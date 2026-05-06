@@ -536,5 +536,6 @@
     <plurals name="profile_count">
         <item quantity="one">%d प्रोफ़ाइल</item>
         <item quantity="other">%d प्रोफ़ाइलें</item>
-    </plurals>
+    </plurals>    <string name="search_refine_hint">… खोज को परिष्कृत करें</string>
+    <string name="nextdns_profile_id_label">NextDNS प्रोफ़ाइल ID :</string>
 </resources>

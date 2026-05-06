@@ -536,5 +536,6 @@
     <plurals name="profile_count">
         <item quantity="one">%d perfil</item>
         <item quantity="other">%d perfis</item>
-    </plurals>
+    </plurals>    <string name="search_refine_hint">… refine sua pesquisa</string>
+    <string name="nextdns_profile_id_label">ID do perfil NextDNS:</string>
 </resources>

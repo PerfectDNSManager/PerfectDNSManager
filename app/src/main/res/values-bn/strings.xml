@@ -536,5 +536,6 @@
     <plurals name="profile_count">
         <item quantity="one">%d প্রোফাইল</item>
         <item quantity="other">%d প্রোফাইল</item>
-    </plurals>
+    </plurals>    <string name="search_refine_hint">… অনুসন্ধান পরিমার্জন করুন</string>
+    <string name="nextdns_profile_id_label">NextDNS প্রোফাইল ID :</string>
 </resources>

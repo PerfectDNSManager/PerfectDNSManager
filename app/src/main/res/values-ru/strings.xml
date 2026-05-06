@@ -537,5 +537,6 @@
         <item quantity="one">%d профиль</item>
         <item quantity="few">%d профиля</item>
         <item quantity="other">%d профилей</item>
-    </plurals>
+    </plurals>    <string name="search_refine_hint">… уточните запрос</string>
+    <string name="nextdns_profile_id_label">ID профиля NextDNS:</string>
 </resources>
