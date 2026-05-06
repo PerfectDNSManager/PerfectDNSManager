@@ -87,13 +87,6 @@ class DnsSelectionActivity : AppCompatActivity() {
         val showStandardDns = prefs.getBoolean("show_standard_dns", false)
         val showProfileVariants = prefs.getBoolean("show_profile_variants", false)
 
-        // Déterminer le fournisseur par défaut
-        val defaultProviderName = try {
-            val defJson = prefs.getString("default_profile_json", null)
-            if (defJson != null) Gson().fromJson(defJson, DnsProfile::class.java).providerName else null
-        } catch (_: Exception) { null }
-        fun displayKey(name: String) = if (name == defaultProviderName) "$name ★" else name
-
         // Filter DoQ profiles based on toggle
         if (!prefs.getBoolean("show_doq_dns", false)) {
             allProfiles.removeAll { it.type == DnsType.DOQ }
@@ -134,28 +127,28 @@ class DnsSelectionActivity : AppCompatActivity() {
         for (name in providerOrder) {
             val profiles = filtered.filter { it.providerName == name }
             if (profiles.isNotEmpty()) {
-                grouped[displayKey(name)] = profiles
+                grouped[name] = profiles
             }
         }
 
         // Fournisseurs hors classement (hors opérateurs)
         for ((pName, value) in filtered.groupBy { it.providerName }.toSortedMap()) {
             if (pName !in providerOrder && !value.any { it.isOperatorDns }) {
-                grouped[displayKey(pName)] = value
+                grouped[pName] = value
             }
         }
 
         // DNS Opérateurs en dernier
         for ((pName, value) in filtered.groupBy { it.providerName }.toSortedMap()) {
             if (value.any { it.isOperatorDns }) {
-                grouped[displayKey(pName)] = value
+                grouped[pName] = value
             }
         }
 
         val adapter = ProviderAdapter(
             grouped,
             onProviderLongClick = { providerName, profiles ->
-                val allProfiles = if (providerName == "NextDNS" || providerName == "NextDNS ★") {
+                val allProfiles = if (providerName == "NextDNS") {
                     val customPrefs = getSharedPreferences("nextdns_profiles", MODE_PRIVATE)
                     val savedIds = customPrefs.getStringSet("profile_ids", emptySet()) ?: emptySet()
                     val prefsMain = getSharedPreferences("prefs", MODE_PRIVATE)

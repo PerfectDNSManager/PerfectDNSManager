@@ -52,7 +52,6 @@
     <string name="auto_reconnect_label">বুট-এ DNS সক্রিয় করুন</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ কোনো DNS কনফিগার করা নেই</string>
-    <string name="auto_reconnect_default_prefix">(ডিফল্ট) </string>
 
     <!-- Import / Export -->
     <string name="import_export_title">💾 কনফিগারেশন ফাইল</string>
@@ -78,7 +77,7 @@
 
     <string name="import_rewrite_count">• %1$d টি rewrite নিয়ম</string>
     <string name="import_nextdns_count">• %1$d টি কাস্টম NextDNS প্রোফাইল</string>
-    <string name="import_default_restored">• ডিফল্ট DNS পুনরুদ্ধার করা হয়েছে</string>
+    <string name="import_selected_restored">• নির্বাচিত DNS পুনরুদ্ধার করা হয়েছে</string>
     <string name="import_settings_restored">• সেটিংস পুনরুদ্ধার করা হয়েছে</string>
 
     <!-- Restore DNS -->
@@ -171,10 +170,6 @@
 
     <!-- DnsSelection -->
     <string name="choose_dns_server">একটি DNS সার্ভার নির্বাচন করুন</string>
-    <string name="remove_default_dns">⭐ ডিফল্ট DNS থেকে সরান</string>
-    <string name="set_default_dns">⭐ ডিফল্ট DNS হিসেবে সেট করুন</string>
-    <string name="default_dns_removed">ডিফল্ট DNS সরানো হয়েছে</string>
-    <string name="default_dns_set">⭐ %1$s ডিফল্ট DNS হিসেবে সেট করা হয়েছে</string>
     <string name="edit_button">✏️ সম্পাদনা করুন</string>
     <string name="delete_button">🗑️ মুছে ফেলুন</string>
     <string name="delete_profile_title">এই প্রোফাইল মুছে ফেলবেন?</string>
@@ -272,7 +267,7 @@
     <string name="export_select_title">📤 আপনি কী রপ্তানি করতে চান?</string>
     <string name="export_toggle_profiles">DNS প্রোফাইল</string>
 
-    <string name="export_toggle_default_dns">ডিফল্ট DNS</string>
+    <string name="export_toggle_selected_dns">নির্বাচিত DNS</string>
     <string name="export_toggle_nextdns">কাস্টম NextDNS প্রোফাইল</string>
     <string name="export_toggle_rewrite">URL Rewrite নিয়ম</string>
     <string name="export_toggle_settings">সেটিংস</string>

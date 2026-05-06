@@ -52,7 +52,6 @@
     <string name="auto_reconnect_label">تفعيل DNS عند الإقلاع</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ لم يتم تكوين DNS</string>
-    <string name="auto_reconnect_default_prefix">(افتراضي) </string>
 
     <!-- Import / Export -->
     <string name="import_export_title">💾 ملف التكوين</string>
@@ -78,7 +77,7 @@
 
     <string name="import_rewrite_count">• %1$d قاعدة إعادة كتابة</string>
     <string name="import_nextdns_count">• %1$d ملف NextDNS مخصص</string>
-    <string name="import_default_restored">• تمت استعادة DNS الافتراضي</string>
+    <string name="import_selected_restored">• تمت استعادة DNS المحدد</string>
     <string name="import_settings_restored">• تمت استعادة الإعدادات</string>
 
     <!-- Restore DNS -->
@@ -171,10 +170,6 @@
 
     <!-- DnsSelection -->
     <string name="choose_dns_server">اختر خادم DNS</string>
-    <string name="remove_default_dns">⭐ إزالة من DNS الافتراضي</string>
-    <string name="set_default_dns">⭐ تعيين كـ DNS الافتراضي</string>
-    <string name="default_dns_removed">تمت إزالة DNS الافتراضي</string>
-    <string name="default_dns_set">⭐ تم تعيين %1$s كـ DNS الافتراضي</string>
     <string name="edit_button">✏️ تعديل</string>
     <string name="delete_button">🗑️ حذف</string>
     <string name="delete_profile_title">حذف هذا الملف؟</string>
@@ -272,7 +267,7 @@
     <string name="export_select_title">📤 ماذا تريد أن تصدّر؟</string>
     <string name="export_toggle_profiles">ملفات DNS</string>
 
-    <string name="export_toggle_default_dns">DNS الافتراضي</string>
+    <string name="export_toggle_selected_dns">DNS المحدد</string>
     <string name="export_toggle_nextdns">ملفات NextDNS المخصصة</string>
     <string name="export_toggle_rewrite">قواعد URL Rewrite</string>
     <string name="export_toggle_settings">الإعدادات</string>

@@ -569,7 +569,30 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Mises à jour bêta — sa propre card, sortie de la section avancée -->
+    <!-- "Me soutenir" — card dédiée, juste au-dessus de "À propos" pour rester
+         visible en permanence (pas plié dans la section À propos). -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/pdm_section_card"
+        android:padding="10dp"
+        android:layout_marginBottom="8dp">
+        <Button
+            android:id="@+id/btnSupportAbout"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="@string/support_about_button"
+            android:background="@drawable/pdm_btn_support"
+            android:foreground="@drawable/btn_focus_foreground"
+            android:textColor="@color/pdm_accent_support"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:focusable="true"/>
+    </LinearLayout>
+
     <!-- À propos (collapsible — header cliquable, contenu plié par défaut.
          Inclut désormais l'intégralité de la section mises à jour bêta :
          tout ce qui décrit ou pilote l'app vit ici, plus de card séparée. -->
@@ -691,22 +714,6 @@
                 android:background="@color/pdm_tint_neutral"
                 android:padding="10dp"
                 android:layout_marginBottom="10dp"/>
-
-            <!-- Bouton "Me soutenir" plein-largeur. -->
-            <Button
-                android:id="@+id/btnSupportAbout"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="@string/support_about_button"
-                android:background="@drawable/pdm_btn_support"
-                android:foreground="@drawable/btn_focus_foreground"
-                android:textColor="@color/pdm_accent_support"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:paddingStart="32dp"
-                android:paddingEnd="32dp"
-                android:layout_marginBottom="10dp"
-                android:focusable="true"/>
 
             <TextView
                 android:layout_width="match_parent"

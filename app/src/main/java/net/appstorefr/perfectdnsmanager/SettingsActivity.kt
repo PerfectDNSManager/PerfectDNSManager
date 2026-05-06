@@ -158,13 +158,10 @@ class SettingsActivity : AppCompatActivity() {
                 tvAutoReconnectDns.visibility = View.GONE
                 return
             }
-            val defaultJson = prefs.getString("default_profile_json", null)
-            val selectedJson = prefs.getString("selected_profile_json", null)
-            val profileJson = defaultJson ?: selectedJson
+            val profileJson = prefs.getString("selected_profile_json", null)
             if (profileJson != null) {
                 try {
                     val profile = com.google.gson.Gson().fromJson(profileJson, net.appstorefr.perfectdnsmanager.data.DnsProfile::class.java)
-                    val prefix = if (defaultJson != null) getString(R.string.auto_reconnect_default_prefix) else ""
                     val typeLabel = when (profile.type) {
                         net.appstorefr.perfectdnsmanager.data.DnsType.DOH -> "DoH"
                         net.appstorefr.perfectdnsmanager.data.DnsType.DOT -> "DoT"
@@ -172,7 +169,7 @@ class SettingsActivity : AppCompatActivity() {
                         net.appstorefr.perfectdnsmanager.data.DnsType.DEFAULT -> "Standard"
                     }
                     val methodLabel = if (profile.type == net.appstorefr.perfectdnsmanager.data.DnsType.DOT) "ADB" else "VPN"
-                    tvAutoReconnectDns.text = getString(R.string.auto_reconnect_dns_info, "$prefix${profile.providerName} - ${profile.name} ($typeLabel / $methodLabel)")
+                    tvAutoReconnectDns.text = getString(R.string.auto_reconnect_dns_info, "${profile.providerName} - ${profile.name} ($typeLabel / $methodLabel)")
                     tvAutoReconnectDns.visibility = View.VISIBLE
                 } catch (_: Exception) {
                     tvAutoReconnectDns.visibility = View.GONE
@@ -499,6 +496,7 @@ class SettingsActivity : AppCompatActivity() {
         val rowImportExport = findViewById<LinearLayout>(R.id.rowImportExport)
         val btnSplitTunnel = findViewById<Button>(R.id.btnSplitTunnel)
         val btnResetApp = findViewById<Button>(R.id.btnResetApp)
+        val btnSupport = findViewById<Button>(R.id.btnSupportAbout)
         val rowAbout = findViewById<FrameLayout>(R.id.rowAbout)
 
         val advancedOpen = layoutAdvanced.visibility == View.VISIBLE
@@ -510,11 +508,13 @@ class SettingsActivity : AppCompatActivity() {
         btnSplitTunnel.nextFocusDownId = rowImportExport.id
         rowImportExport.nextFocusUpId =
             if (advancedOpen) btnSplitTunnel.id else rowAdvanced.id
-        // rowImportExport ouvert : dernier bouton (btnResetApp) → rowAbout.
-        // Fermé : rowImportExport → rowAbout. rowAbout up → varie selon état.
-        rowImportExport.nextFocusDownId = if (importOpen) btnResetApp.id else rowAbout.id
-        btnResetApp.nextFocusDownId = rowAbout.id
-        rowAbout.nextFocusUpId = if (importOpen) btnResetApp.id else rowImportExport.id
+        // Section import ouverte : dernier bouton (btnResetApp) → btnSupport → rowAbout.
+        // Fermée : rowImportExport → btnSupport → rowAbout.
+        rowImportExport.nextFocusDownId = if (importOpen) btnResetApp.id else btnSupport.id
+        btnResetApp.nextFocusDownId = btnSupport.id
+        btnSupport.nextFocusUpId = if (importOpen) btnResetApp.id else rowImportExport.id
+        btnSupport.nextFocusDownId = rowAbout.id
+        rowAbout.nextFocusUpId = btnSupport.id
     }
 
     // ── Split tunneling (bypass VPN per-app) ─────────────────────
@@ -1110,8 +1110,8 @@ class SettingsActivity : AppCompatActivity() {
             isChecked = true; isEnabled = false
             setTextColor(pdmTextSecondary())
         }
-        val cbDefault = android.widget.CheckBox(this).apply {
-            text = getString(R.string.export_toggle_default_dns); isChecked = true
+        val cbSelected = android.widget.CheckBox(this).apply {
+            text = getString(R.string.export_toggle_selected_dns); isChecked = true
             setTextColor(pdmTextPrimary())
         }
         val cbNextDns = android.widget.CheckBox(this).apply {
@@ -1128,7 +1128,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         layout.addView(cbProfiles)
-        layout.addView(cbDefault)
+        layout.addView(cbSelected)
         layout.addView(cbNextDns)
         layout.addView(cbRewrite)
         layout.addView(cbSettings)
@@ -1139,7 +1139,7 @@ class SettingsActivity : AppCompatActivity() {
             .setPositiveButton(getString(R.string.export_button)) { _, _ ->
                 performExport(
                     includeProfiles = true,
-                    includeDefaultProfile = cbDefault.isChecked,
+                    includeSelectedProfile = cbSelected.isChecked,
                     includeNextDnsProfiles = cbNextDns.isChecked,
                     includeRewriteRules = cbRewrite.isChecked,
                     includeSettings = cbSettings.isChecked
@@ -1151,7 +1151,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun performExport(
         includeProfiles: Boolean,
-        includeDefaultProfile: Boolean,
+        includeSelectedProfile: Boolean,
         includeNextDnsProfiles: Boolean,
         includeRewriteRules: Boolean,
         includeSettings: Boolean
@@ -1159,7 +1159,7 @@ class SettingsActivity : AppCompatActivity() {
         try {
             val configManager = net.appstorefr.perfectdnsmanager.data.ConfigManager(this)
             val json = configManager.exportConfigSelective(
-                includeProfiles, includeDefaultProfile,
+                includeProfiles, includeSelectedProfile,
                 includeNextDnsProfiles, includeRewriteRules, includeSettings
             )
             // Directly upload encrypted
@@ -1350,7 +1350,7 @@ class SettingsActivity : AppCompatActivity() {
         msg.appendLine(getString(R.string.import_profiles_count, result.profileCount))
         msg.appendLine(getString(R.string.import_rewrite_count, result.rewriteRuleCount))
         msg.appendLine(getString(R.string.import_nextdns_count, result.nextDnsProfileCount))
-        if (result.hasDefaultProfile) msg.appendLine(getString(R.string.import_default_restored))
+        if (result.hasSelectedProfile) msg.appendLine(getString(R.string.import_selected_restored))
         if (result.settingsRestored) msg.appendLine(getString(R.string.import_settings_restored))
 
         AlertDialog.Builder(this)

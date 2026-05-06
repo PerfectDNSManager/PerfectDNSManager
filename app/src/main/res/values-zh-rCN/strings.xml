@@ -52,7 +52,6 @@
     <string name="auto_reconnect_label">开机自动启用 DNS</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ 未配置 DNS</string>
-    <string name="auto_reconnect_default_prefix">（默认）</string>
 
     <!-- Import / Export -->
     <string name="import_export_title">💾 配置文件</string>
@@ -78,7 +77,7 @@
 
     <string name="import_rewrite_count">• %1$d 条重写规则</string>
     <string name="import_nextdns_count">• %1$d 个自定义 NextDNS 配置</string>
-    <string name="import_default_restored">• 默认 DNS 已恢复</string>
+    <string name="import_selected_restored">• 已恢复选定的 DNS</string>
     <string name="import_settings_restored">• 设置已恢复</string>
 
     <!-- Restore DNS -->
@@ -171,10 +170,6 @@
 
     <!-- DnsSelection -->
     <string name="choose_dns_server">选择 DNS 服务器</string>
-    <string name="remove_default_dns">⭐ 取消默认 DNS</string>
-    <string name="set_default_dns">⭐ 设为默认 DNS</string>
-    <string name="default_dns_removed">默认 DNS 已移除</string>
-    <string name="default_dns_set">⭐ %1$s 已设为默认 DNS</string>
     <string name="edit_button">✏️ 编辑</string>
     <string name="delete_button">🗑️ 删除</string>
     <string name="delete_profile_title">删除此配置？</string>
@@ -272,7 +267,7 @@
     <string name="export_select_title">📤 您要导出什么？</string>
     <string name="export_toggle_profiles">DNS 配置</string>
 
-    <string name="export_toggle_default_dns">默认 DNS</string>
+    <string name="export_toggle_selected_dns">选定的 DNS</string>
     <string name="export_toggle_nextdns">自定义 NextDNS 配置</string>
     <string name="export_toggle_rewrite">URL Rewrite 规则</string>
     <string name="export_toggle_settings">设置</string>

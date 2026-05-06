@@ -110,9 +110,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
 
     private fun showProfileActions(profile: DnsProfile) {
         val profileManager = net.appstorefr.perfectdnsmanager.data.ProfileManager(this)
-        val isDefault = isCurrentDefault(profile)
-        val defaultLabel = if (isDefault) getString(R.string.remove_default_dns) else getString(R.string.set_default_dns)
-        val actions = arrayOf(defaultLabel, getString(R.string.edit_button), getString(R.string.delete_button))
+        val actions = arrayOf(getString(R.string.edit_button), getString(R.string.delete_button))
 
         net.appstorefr.perfectdnsmanager.util.TvDialog.showMenuPicker(
             this,
@@ -120,29 +118,9 @@ class DnsProviderDetailActivity : AppCompatActivity() {
             actions
         ) { which ->
             when (which) {
-                0 -> toggleDefaultProfile(profile, isDefault)
-                1 -> showEditProfileDialog(profile, profileManager)
-                2 -> confirmDeleteProfile(profile, profileManager)
+                0 -> showEditProfileDialog(profile, profileManager)
+                1 -> confirmDeleteProfile(profile, profileManager)
             }
-        }
-    }
-
-    private fun isCurrentDefault(profile: DnsProfile): Boolean {
-        val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
-        val defJson = prefs.getString("default_profile_json", null) ?: return false
-        return try {
-            Gson().fromJson(defJson, DnsProfile::class.java).id == profile.id
-        } catch (_: Exception) { false }
-    }
-
-    private fun toggleDefaultProfile(profile: DnsProfile, wasDefault: Boolean) {
-        val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
-        if (wasDefault) {
-            prefs.edit().remove("default_profile_json").apply()
-            Toast.makeText(this, getString(R.string.default_dns_removed), Toast.LENGTH_SHORT).show()
-        } else {
-            prefs.edit().putString("default_profile_json", Gson().toJson(profile)).apply()
-            Toast.makeText(this, getString(R.string.default_dns_set, "${profile.providerName} \u2014 ${profile.name}"), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -199,9 +177,6 @@ class DnsProviderDetailActivity : AppCompatActivity() {
             .setMessage("${profile.providerName} \u2014 ${profile.name}\n${profile.primary}")
             .setPositiveButton(getString(R.string.delete)) { _, _ ->
                 profileManager.deleteProfile(profile.id)
-                if (isCurrentDefault(profile)) {
-                    getSharedPreferences("prefs", MODE_PRIVATE).edit().remove("default_profile_json").apply()
-                }
                 if (profile.isCustom && profile.providerName == "NextDNS") {
                     val nextDnsId = extractNextDnsId(profile.primary)
                     if (nextDnsId != null) {

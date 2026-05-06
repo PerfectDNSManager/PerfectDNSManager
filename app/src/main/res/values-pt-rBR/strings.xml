@@ -52,7 +52,6 @@
     <string name="auto_reconnect_label">Ativar DNS ao ligar</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ Nenhum DNS configurado</string>
-    <string name="auto_reconnect_default_prefix">(padrão) </string>
 
     <!-- Import / Export -->
     <string name="import_export_title">💾 Arquivo de configuração</string>
@@ -78,7 +77,7 @@
 
     <string name="import_rewrite_count">• %1$d regras rewrite</string>
     <string name="import_nextdns_count">• %1$d perfis NextDNS personalizados</string>
-    <string name="import_default_restored">• DNS padrão restaurado</string>
+    <string name="import_selected_restored">• DNS selecionado restaurado</string>
     <string name="import_settings_restored">• Configurações restauradas</string>
 
     <!-- Restore DNS -->
@@ -171,10 +170,6 @@
 
     <!-- DnsSelection -->
     <string name="choose_dns_server">Escolher um servidor DNS</string>
-    <string name="remove_default_dns">⭐ Remover do DNS padrão</string>
-    <string name="set_default_dns">⭐ Definir como DNS padrão</string>
-    <string name="default_dns_removed">DNS padrão removido</string>
-    <string name="default_dns_set">⭐ %1$s definido como DNS padrão</string>
     <string name="edit_button">✏️ Editar</string>
     <string name="delete_button">🗑️ Excluir</string>
     <string name="delete_profile_title">Excluir este perfil?</string>
@@ -272,7 +267,7 @@
     <string name="export_select_title">📤 O que deseja exportar?</string>
     <string name="export_toggle_profiles">Perfis DNS</string>
 
-    <string name="export_toggle_default_dns">DNS padrão</string>
+    <string name="export_toggle_selected_dns">DNS selecionado</string>
     <string name="export_toggle_nextdns">Perfis NextDNS personalizados</string>
     <string name="export_toggle_rewrite">Regras URL Rewrite</string>
     <string name="export_toggle_settings">Configurações</string>

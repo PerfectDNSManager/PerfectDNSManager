@@ -412,13 +412,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (!isActivating) {
-            // Gestion AUTO_RECONNECT (notification boot)
-            // Priorité : DNS par défaut > dernier DNS sélectionné
+            // Gestion AUTO_RECONNECT (notification boot) → dernier DNS sélectionné
             if (intent?.getBooleanExtra("AUTO_RECONNECT", false) == true) {
                 intent?.removeExtra("AUTO_RECONNECT")
-                val defaultJson = prefs.getString("default_profile_json", null)
-                val selectedJson = prefs.getString("selected_profile_json", null)
-                val profileJson = defaultJson ?: selectedJson
+                val profileJson = prefs.getString("selected_profile_json", null)
                 if (profileJson != null && !DnsVpnService.isVpnRunning) {
                     try {
                         val profile = Gson().fromJson(profileJson, DnsProfile::class.java)
@@ -1094,14 +1091,11 @@ class MainActivity : AppCompatActivity() {
             }
             prefs.edit().putBoolean("vpn_active", false).apply()
         } else {
-            // Pré-sélectionner le DNS par défaut, sinon le dernier sélectionné
-            val defaultJson = prefs.getString("default_profile_json", null)
-            val selectedJson = prefs.getString("selected_profile_json", null)
-            val profileJson = defaultJson ?: selectedJson
+            // Pré-sélectionner le dernier DNS utilisé
+            val profileJson = prefs.getString("selected_profile_json", null)
             if (profileJson != null) {
                 try {
                     selectedProfile = Gson().fromJson(profileJson, DnsProfile::class.java)
-                    prefs.edit().putString("selected_profile_json", profileJson).apply()
                 } catch (_: Exception) {
                     selectedProfile = null
                 }

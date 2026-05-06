@@ -24,7 +24,7 @@ class ConfigManager(private val context: Context) {
         val profileCount: Int,
         val rewriteRuleCount: Int,
         val nextDnsProfileCount: Int,
-        val hasDefaultProfile: Boolean,
+        val hasSelectedProfile: Boolean,
         val settingsRestored: Boolean
     )
 
@@ -34,7 +34,7 @@ class ConfigManager(private val context: Context) {
 
     fun exportConfigSelective(
         includeProfiles: Boolean = true,
-        includeDefaultProfile: Boolean = true,
+        includeSelectedProfile: Boolean = true,
         includeNextDnsProfiles: Boolean = true,
         includeRewriteRules: Boolean = true,
         includeSettings: Boolean = true
@@ -53,11 +53,7 @@ class ConfigManager(private val context: Context) {
 
         val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
 
-        if (includeDefaultProfile) {
-            val defaultProfileJson = prefs.getString("default_profile_json", null)
-            if (defaultProfileJson != null) {
-                root.add("defaultProfile", JsonParser.parseString(defaultProfileJson))
-            }
+        if (includeSelectedProfile) {
             val selectedProfileJson = prefs.getString("selected_profile_json", null)
             if (selectedProfileJson != null) {
                 root.add("selectedProfile", JsonParser.parseString(selectedProfileJson))
@@ -114,15 +110,8 @@ class ConfigManager(private val context: Context) {
         val profiles = profileManager.loadProfiles()
         root.add("profiles", gson.toJsonTree(profiles))
 
-        // Default and selected profile from SharedPrefs "prefs"
+        // Selected profile from SharedPrefs "prefs"
         val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        val defaultProfileJson = prefs.getString("default_profile_json", null)
-        if (defaultProfileJson != null) {
-            root.add("defaultProfile", JsonParser.parseString(defaultProfileJson))
-        } else {
-            root.add("defaultProfile", null)
-        }
-
         val selectedProfileJson = prefs.getString("selected_profile_json", null)
         if (selectedProfileJson != null) {
             root.add("selectedProfile", JsonParser.parseString(selectedProfileJson))
@@ -183,24 +172,16 @@ class ConfigManager(private val context: Context) {
             profileManager.saveProfiles(profiles)
         }
 
-        // ── Default profile ──
-        val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        val hasDefaultProfile: Boolean
-        if (root.has("defaultProfile") && !root.get("defaultProfile").isJsonNull) {
-            val defaultProfileElement = root.get("defaultProfile")
-            prefs.edit().putString("default_profile_json", gson.toJson(defaultProfileElement)).apply()
-            hasDefaultProfile = true
-        } else {
-            prefs.edit().remove("default_profile_json").apply()
-            hasDefaultProfile = false
-        }
-
         // ── Selected profile ──
+        val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val hasSelectedProfile: Boolean
         if (root.has("selectedProfile") && !root.get("selectedProfile").isJsonNull) {
             val selectedProfileElement = root.get("selectedProfile")
             prefs.edit().putString("selected_profile_json", gson.toJson(selectedProfileElement)).apply()
+            hasSelectedProfile = true
         } else {
             prefs.edit().remove("selected_profile_json").apply()
+            hasSelectedProfile = false
         }
 
         // ── Rewrite rules ──
@@ -269,7 +250,7 @@ class ConfigManager(private val context: Context) {
             profileCount = profileCount,
             rewriteRuleCount = rewriteRuleCount,
             nextDnsProfileCount = nextDnsProfileCount,
-            hasDefaultProfile = hasDefaultProfile,
+            hasSelectedProfile = hasSelectedProfile,
             settingsRestored = settingsRestored
         )
     }
@@ -308,18 +289,18 @@ class ConfigManager(private val context: Context) {
                 sb.appendLine("Profiles: 0")
             }
 
-            // Default profile
-            if (root.has("defaultProfile") && !root.get("defaultProfile").isJsonNull) {
+            // Selected profile
+            if (root.has("selectedProfile") && !root.get("selectedProfile").isJsonNull) {
                 try {
-                    val dp = root.getAsJsonObject("defaultProfile")
-                    val provider = dp.get("providerName")?.asString ?: ""
-                    val name = dp.get("name")?.asString ?: ""
-                    sb.appendLine("Default profile: $provider - $name")
+                    val sp = root.getAsJsonObject("selectedProfile")
+                    val provider = sp.get("providerName")?.asString ?: ""
+                    val name = sp.get("name")?.asString ?: ""
+                    sb.appendLine("Selected profile: $provider - $name")
                 } catch (_: Exception) {
-                    sb.appendLine("Default profile: yes")
+                    sb.appendLine("Selected profile: yes")
                 }
             } else {
-                sb.appendLine("Default profile: none")
+                sb.appendLine("Selected profile: none")
             }
 
             // Rewrite rules

@@ -52,7 +52,6 @@
     <string name="auto_reconnect_label">起動時にDNSを有効化</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ DNS が設定されていません</string>
-    <string name="auto_reconnect_default_prefix">（デフォルト）</string>
 
     <!-- Import / Export -->
     <string name="import_export_title">💾 設定ファイル</string>
@@ -78,7 +77,7 @@
 
     <string name="import_rewrite_count">• %1$d 件のリライトルール</string>
     <string name="import_nextdns_count">• %1$d 件のカスタム NextDNS プロファイル</string>
-    <string name="import_default_restored">• デフォルト DNS を復元しました</string>
+    <string name="import_selected_restored">• 選択した DNS を復元しました</string>
     <string name="import_settings_restored">• 設定を復元しました</string>
 
     <!-- Restore DNS -->
@@ -171,10 +170,6 @@
 
     <!-- DnsSelection -->
     <string name="choose_dns_server">DNS サーバーを選択</string>
-    <string name="remove_default_dns">⭐ デフォルト DNS から削除</string>
-    <string name="set_default_dns">⭐ デフォルト DNS に設定</string>
-    <string name="default_dns_removed">デフォルト DNS を削除しました</string>
-    <string name="default_dns_set">⭐ %1$s をデフォルト DNS に設定しました</string>
     <string name="edit_button">✏️ 編集</string>
     <string name="delete_button">🗑️ 削除</string>
     <string name="delete_profile_title">このプロファイルを削除しますか？</string>
@@ -272,7 +267,7 @@
     <string name="export_select_title">📤 エクスポートする内容を選択してください</string>
     <string name="export_toggle_profiles">DNS プロファイル</string>
 
-    <string name="export_toggle_default_dns">デフォルト DNS</string>
+    <string name="export_toggle_selected_dns">選択した DNS</string>
     <string name="export_toggle_nextdns">カスタム NextDNS プロファイル</string>
     <string name="export_toggle_rewrite">URL リライトルール</string>
     <string name="export_toggle_settings">設定</string>

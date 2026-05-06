@@ -49,10 +49,8 @@ class BootReceiver : BroadcastReceiver() {
             return
         }
 
-        // Reconnecter le VPN — priorité : DNS par défaut > dernier DNS sélectionné
-        val defaultProfileJson = prefs.getString("default_profile_json", null)
-        val selectedProfileJson = prefs.getString("selected_profile_json", null)
-        val profileJson = defaultProfileJson ?: selectedProfileJson
+        // Reconnecter le VPN avec le dernier DNS sélectionné
+        val profileJson = prefs.getString("selected_profile_json", null)
         if (profileJson == null) {
             Log.i(TAG, "No saved DNS profile, nothing to reconnect.")
             return
@@ -65,7 +63,6 @@ class BootReceiver : BroadcastReceiver() {
             return
         }
 
-        Log.i(TAG, "Using ${if (defaultProfileJson != null) "default" else "last selected"} profile")
         Log.i(TAG, "Auto-reconnect VPN: ${profile.providerName} - ${profile.primary}")
 
         val pendingResult = goAsync()

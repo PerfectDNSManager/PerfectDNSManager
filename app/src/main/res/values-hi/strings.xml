@@ -52,7 +52,6 @@
     <string name="auto_reconnect_label">बूट पर DNS सक्रिय करें</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ कोई DNS कॉन्फ़िगर नहीं किया गया</string>
-    <string name="auto_reconnect_default_prefix">(डिफ़ॉल्ट) </string>
 
     <!-- Import / Export -->
     <string name="import_export_title">💾 कॉन्फ़िगरेशन फ़ाइल</string>
@@ -78,7 +77,7 @@
 
     <string name="import_rewrite_count">• %1$d rewrite नियम</string>
     <string name="import_nextdns_count">• %1$d कस्टम NextDNS प्रोफ़ाइल</string>
-    <string name="import_default_restored">• डिफ़ॉल्ट DNS पुनर्स्थापित</string>
+    <string name="import_selected_restored">• चयनित DNS पुनर्स्थापित</string>
     <string name="import_settings_restored">• सेटिंग्स पुनर्स्थापित</string>
 
     <!-- Restore DNS -->
@@ -171,10 +170,6 @@
 
     <!-- DnsSelection -->
     <string name="choose_dns_server">एक DNS सर्वर चुनें</string>
-    <string name="remove_default_dns">⭐ डिफ़ॉल्ट DNS से हटाएँ</string>
-    <string name="set_default_dns">⭐ डिफ़ॉल्ट DNS के रूप में सेट करें</string>
-    <string name="default_dns_removed">डिफ़ॉल्ट DNS हटाया गया</string>
-    <string name="default_dns_set">⭐ %1$s डिफ़ॉल्ट DNS के रूप में सेट किया गया</string>
     <string name="edit_button">✏️ संपादित करें</string>
     <string name="delete_button">🗑️ हटाएँ</string>
     <string name="delete_profile_title">यह प्रोफ़ाइल हटाएँ?</string>
@@ -272,7 +267,7 @@
     <string name="export_select_title">📤 आप क्या निर्यात करना चाहते हैं?</string>
     <string name="export_toggle_profiles">DNS प्रोफ़ाइल</string>
 
-    <string name="export_toggle_default_dns">डिफ़ॉल्ट DNS</string>
+    <string name="export_toggle_selected_dns">चयनित DNS</string>
     <string name="export_toggle_nextdns">कस्टम NextDNS प्रोफ़ाइल</string>
     <string name="export_toggle_rewrite">URL Rewrite नियम</string>
     <string name="export_toggle_settings">सेटिंग्स</string>
