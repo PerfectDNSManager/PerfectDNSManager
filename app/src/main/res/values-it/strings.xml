@@ -525,5 +525,6 @@
         <item quantity="one">%d profilo</item>
         <item quantity="other">%d profili</item>
     </plurals>    <string name="search_refine_hint">… affina la tua ricerca</string>
-    <string name="nextdns_profile_id_label">ID profilo NextDNS:</string>
+    <string name="nextdns_profile_id_label">ID profilo NextDNS:</string>    <string name="speedtest_backend_label_fmt">Backend: %1$s  ▾</string>
+    <string name="speedtest_backend_picker_title">Scegli il backend di test</string>
 </resources>

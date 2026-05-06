@@ -91,8 +91,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     }
 
     // ── UI widgets ───────────────────────────────────────────────────────────
-    private lateinit var backendSelectorRow: HorizontalScrollView
-    private lateinit var backendButtonsLayout: LinearLayout
+    private lateinit var btnBackend: Button
     private lateinit var btnStartStop: Button
     private lateinit var resultsCard: LinearLayout
     private lateinit var tvPing: TextView
@@ -113,7 +112,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     private val cancelled = AtomicBoolean(false)
     private var testThread: Thread? = null
     private var currentBackend: SpeedBackend = SpeedBackend.CLOUDFLARE
-    private val backendButtons = mutableMapOf<SpeedBackend, Button>()
 
     // ── Lifecycle ────────────────────────────────────────────────────────────
 
@@ -209,66 +207,27 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         header.addView(tvTitle)
         mainColumn.addView(header)
 
-        // ── Backend selector (chips row) ─────────────────────────────────
-        backendSelectorRow = HorizontalScrollView(this).apply {
-            isHorizontalScrollBarEnabled = false
+        // ── Backend selector (single button + dialog picker) ─────────────
+        // Remplace les chips horizontales en bandeau (qui débordaient à
+        // droite quand focus sur Cloudflare car scaleX=1.06 + padding parent).
+        // Pattern liste : 1 bouton "Backend : Cloudflare ▾" → dialog picker.
+        btnBackend = Button(this).apply {
+            id = View.generateViewId()
+            text = backendButtonText(SpeedBackend.CLOUDFLARE)
+            setTextColor(COLOR_CYAN)
+            textSize = 14f
+            setTypeface(typeface, Typeface.BOLD)
+            isFocusable = true
+            background = chipBackground(dp(12), COLOR_CYAN, false)
+            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+            setPadding(dp(20), dp(12), dp(20), dp(12))
             layoutParams = lp(matchParent, wrapContent).apply { bottomMargin = dp(6) }
-        }
-
-        backendButtonsLayout = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER
-            layoutParams = lp(matchParent, wrapContent)
-        }
-
-        for (backend in SpeedBackend.entries) {
-            val chipBtn = Button(this).apply {
-                id = View.generateViewId()
-                text = backend.label
-                setTextColor(COLOR_WHITE)
-                textSize = 13f
-                setTypeface(typeface, Typeface.BOLD)
-                isFocusable = true
-                // Pas de foreground btn_focus_foreground : le bord vert se mélange
-                // avec le cyan de la sélection. À la place on swap le background
-                // sur focus pour un cadre jaune/vif visible quel que soit l'état.
-                background = chipBackground(dp(20), COLOR_CYAN, false)
-                setPadding(dp(16), dp(8), dp(16), dp(8))
-                layoutParams = LinearLayout.LayoutParams(wrapContent, wrapContent).apply {
-                    marginEnd = dp(8)
-                }
-                setOnClickListener {
-                    if (!running.get()) {
-                        switchBackend(backend)
-                    }
-                }
+            setOnClickListener {
+                if (!running.get()) showBackendPickerDialog()
             }
-            // Focus visuel fort : jaune épais + agrandissement léger.
-            chipBtn.setOnFocusChangeListener { v, hasFocus ->
-                val active = backendButtons.entries.firstOrNull { it.value === v }?.key == currentBackend
-                v.background = if (hasFocus) {
-                    chipFocusedBackground(dp(20), if (active) COLOR_CYAN else pdmBorder())
-                } else {
-                    chipBackground(dp(20), COLOR_CYAN, active)
-                }
-                v.scaleX = if (hasFocus) 1.06f else 1f
-                v.scaleY = if (hasFocus) 1.06f else 1f
-            }
-            backendButtons[backend] = chipBtn
-            backendButtonsLayout.addView(chipBtn)
         }
-
-        // Chaîne D-pad horizontale entre les chips (LEFT/RIGHT). Sans ça,
-        // dans un HorizontalScrollView le focus search default ne traverse
-        // pas systématiquement les frères.
-        val chips = backendButtons.values.toList()
-        chips.forEachIndexed { idx, chip ->
-            chip.nextFocusLeftId = chips.getOrNull(idx - 1)?.id ?: chip.id
-            chip.nextFocusRightId = chips.getOrNull(idx + 1)?.id ?: chip.id
-        }
-
-        backendSelectorRow.addView(backendButtonsLayout)
-        mainColumn.addView(backendSelectorRow)
+        mainColumn.addView(btnBackend)
 
         // ── Start / Stop button ──────────────────────────────────────────
         btnStartStop = Button(this).apply {
@@ -299,20 +258,12 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 greenPill(dp(8))
             }
         }
-        // Chaîne D-pad verticale explicite : btnBack ↓ premier chip ·
-        // chips ↓ btnStartStop · btnStartStop ↔ scrollConsole.
-        // scrollConsole reçoit son id assigné après son creation plus bas,
-        // on update sa nextFocusDownId là-bas. Ici on prépare juste le côté
-        // btnStartStop ↑ chips.
-        val firstChipId = backendButtons.values.firstOrNull()?.id
-        if (firstChipId != null) {
-            btnBack.nextFocusDownId = firstChipId
-            backendButtons.values.forEach { chip ->
-                chip.nextFocusUpId = btnBack.id
-                chip.nextFocusDownId = btnStartStop.id
-            }
-            btnStartStop.nextFocusUpId = firstChipId
-        }
+        // Chaîne DPAD verticale : btnBack ↓ btnBackend ↓ btnStartStop ↓
+        // consoleWrapper. Sera complétée plus bas (consoleWrapper ↑ btnStartStop).
+        btnBack.nextFocusDownId = btnBackend.id
+        btnBackend.nextFocusUpId = btnBack.id
+        btnBackend.nextFocusDownId = btnStartStop.id
+        btnStartStop.nextFocusUpId = btnBackend.id
         mainColumn.addView(btnStartStop)
 
         // ── Results card ─────────────────────────────────────────────────
@@ -533,16 +484,29 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     //  BACKEND SWITCHING
     // ═════════════════════════════════════════════════════════════════════════
 
+    /** Libellé "Backend : Cloudflare ▾" pour le bouton sélecteur. */
+    private fun backendButtonText(backend: SpeedBackend): String =
+        getString(R.string.speedtest_backend_label_fmt, backend.label)
+
+    /** Dialog picker liste pour choisir le backend de test (Cloudflare / Fast.com). */
+    private fun showBackendPickerDialog() {
+        val backends = SpeedBackend.entries.toList()
+        val labels = backends.map { it.label }.toTypedArray()
+        val currentIdx = backends.indexOf(currentBackend).coerceAtLeast(0)
+        net.appstorefr.perfectdnsmanager.util.TvDialog.showRadioPicker(
+            this,
+            getString(R.string.speedtest_backend_picker_title),
+            labels,
+            currentIdx
+        ) { which ->
+            val picked = backends[which]
+            if (picked != currentBackend) switchBackend(picked)
+        }
+    }
+
     private fun switchBackend(backend: SpeedBackend) {
         currentBackend = backend
-
-        // Update chip colors — active = dark surface + cyan stroke; inactive = dark surface + subtle border
-        for ((b, btn) in backendButtons) {
-            val active = b == backend
-            btn.background = chipBackground(dp(20), COLOR_CYAN, active)
-            btn.setTextColor(if (active) COLOR_CYAN else COLOR_LIGHT_GREY)
-        }
-
+        btnBackend.text = backendButtonText(backend)
         when (backend) {
             SpeedBackend.CLOUDFLARE -> {
                 btnStartStop.visibility = View.VISIBLE

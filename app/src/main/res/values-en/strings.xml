@@ -544,5 +544,6 @@
         <item quantity="one">%d profile</item>
         <item quantity="other">%d profiles</item>
     </plurals>    <string name="search_refine_hint">… refine your search</string>
-    <string name="nextdns_profile_id_label">NextDNS profile ID:</string>
+    <string name="nextdns_profile_id_label">NextDNS profile ID:</string>    <string name="speedtest_backend_label_fmt">Backend: %1$s  ▾</string>
+    <string name="speedtest_backend_picker_title">Pick test backend</string>
 </resources>

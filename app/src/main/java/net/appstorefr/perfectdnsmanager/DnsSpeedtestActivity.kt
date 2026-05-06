@@ -129,6 +129,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
             btnStartStop.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmAccent())
             btnStartStop.isEnabled = true
             running = false
+            lockFocusToStartButton(false)
         }
     }
 
@@ -138,7 +139,23 @@ class DnsSpeedtestActivity : AppCompatActivity() {
             btnStartStop.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmDanger())
             btnStartStop.isEnabled = true
             running = true
+            lockFocusToStartButton(true)
         }
+    }
+
+    /**
+     * Pendant un test, on verrouille le curseur sur btnStartStop : tous les
+     * nextFocusXxx pointent sur lui-même pour empêcher le DPAD de partir.
+     * Le user peut toujours appuyer ENTER pour stopper, ou BACK système pour
+     * sortir de l'activité. Désactivé en fin de test pour rendre le DPAD libre.
+     */
+    private fun lockFocusToStartButton(lock: Boolean) {
+        val target = if (lock) btnStartStop.id else View.NO_ID
+        btnStartStop.nextFocusUpId = target
+        btnStartStop.nextFocusDownId = target
+        btnStartStop.nextFocusLeftId = target
+        btnStartStop.nextFocusRightId = target
+        if (lock) btnStartStop.requestFocus()
     }
 
     private fun startSpeedtest() {

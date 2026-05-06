@@ -540,5 +540,6 @@
         <item quantity="one">%d profil</item>
         <item quantity="other">%d profils</item>
     </plurals>    <string name="search_refine_hint">… affinez votre recherche</string>
-    <string name="nextdns_profile_id_label">ID de profil NextDNS :</string>
+    <string name="nextdns_profile_id_label">ID de profil NextDNS :</string>    <string name="speedtest_backend_label_fmt">Backend : %1$s  ▾</string>
+    <string name="speedtest_backend_picker_title">Choisir le backend de test</string>
 </resources>

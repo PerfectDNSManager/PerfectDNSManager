@@ -529,5 +529,6 @@
         <item quantity="many">%d ملفًا</item>
         <item quantity="other">%d ملف</item>
     </plurals>    <string name="search_refine_hint">… حسّن البحث</string>
-    <string name="nextdns_profile_id_label">معرّف ملف NextDNS :</string>
+    <string name="nextdns_profile_id_label">معرّف ملف NextDNS :</string>    <string name="speedtest_backend_label_fmt">الخلفية : %1$s  ▾</string>
+    <string name="speedtest_backend_picker_title">اختر خلفية الاختبار</string>
 </resources>

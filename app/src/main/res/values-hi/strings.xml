@@ -525,5 +525,6 @@
         <item quantity="one">%d प्रोफ़ाइल</item>
         <item quantity="other">%d प्रोफ़ाइलें</item>
     </plurals>    <string name="search_refine_hint">… खोज को परिष्कृत करें</string>
-    <string name="nextdns_profile_id_label">NextDNS प्रोफ़ाइल ID :</string>
+    <string name="nextdns_profile_id_label">NextDNS प्रोफ़ाइल ID :</string>    <string name="speedtest_backend_label_fmt">बैकएंड : %1$s  ▾</string>
+    <string name="speedtest_backend_picker_title">परीक्षण बैकएंड चुनें</string>
 </resources>
