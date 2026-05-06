@@ -283,7 +283,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fillViewport="true"
-                    android:focusable="false">
+                    android:focusable="false"
+                    android:scrollbars="vertical"
+                    android:fadeScrollbars="false"
+                    android:scrollbarSize="6dp"
+                    android:scrollbarThumbVertical="@color/pdm_accent_alt"
+                    android:scrollbarStyle="outsideInset">
                     <TextView
                         android:id="@+id/tvStatusInfo"
                         style="@style/PDMText.Body"
@@ -316,7 +321,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fillViewport="true"
-                    android:focusable="false">
+                    android:focusable="false"
+                    android:scrollbars="vertical"
+                    android:fadeScrollbars="false"
+                    android:scrollbarSize="6dp"
+                    android:scrollbarThumbVertical="@color/pdm_accent_alt"
+                    android:scrollbarStyle="outsideInset">
                     <TextView
                         android:id="@+id/tvReportContent"
                         style="@style/PDMText.Body"
