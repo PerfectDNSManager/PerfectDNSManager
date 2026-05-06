@@ -159,6 +159,14 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         switchBackend(SpeedBackend.CLOUDFLARE)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Focus initial systématiquement sur Démarrer le test, à chaque
+        // arrivée sur l'écran (cold start ou retour depuis sub-activity).
+        // Le post() laisse le temps au view tree d'être prêt.
+        btnStartStop.post { btnStartStop.requestFocus() }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         cancelled.set(true)
@@ -316,6 +324,9 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             setOnClickListener { toggleTest() }
         }
         btnStartStop.setOnFocusChangeListener { v, hasFocus ->
+            // Pas de scaleX/Y ici : btnStartStop est match_parent, un zoom 1.04
+            // le ferait déborder de l'écran horizontalement. Le cadre ambre 4dp
+            // suffit pour la visibilité du focus.
             v.background = if (hasFocus) {
                 pillFocusedBackground(dp(8))
             } else if (running.get()) {
@@ -323,8 +334,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             } else {
                 greenPill(dp(8))
             }
-            v.scaleX = if (hasFocus) 1.04f else 1f
-            v.scaleY = if (hasFocus) 1.04f else 1f
         }
         // Chaîne D-pad verticale explicite — sans ça, btnServerPicker était
         // bypassé (chips → Start direct) et btnBack n'avait pas de cible
