@@ -112,9 +112,7 @@
     <string name="rule_disabled">规则已停用</string>
     <string name="delete_rule_confirm">删除规则 %1$s → %2$s？</string>
     <string name="rule_deleted">规则已删除</string>
-    <string name="add_rewrite_rule_title">添加重写规则</string>
-
-    <!-- Language dialog -->
+<!-- Language dialog -->
     <string name="choose_language_title">Choose your language / Choisissez votre langue</string>
     <string name="lang_francais">🇫🇷 Français</string>
     <string name="lang_english">🇬🇧 English</string>
@@ -278,8 +276,7 @@
 
 
     <!-- DNS Rewrite screen -->
-    <string name="dns_rewrite_screen_title">DNS 重写（Rewriting）</string>
-    <string name="show_doq_dns">显示 DNS over QUIC (DoQ)</string>
+<string name="show_doq_dns">显示 DNS over QUIC (DoQ)</string>
     <string name="gpl_license_text">今天自由。明天自由。可以封路，但不能封自由！\n源代码开放，任何再发布必须保持开源。\nGPL v3 许可证\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
@@ -434,8 +431,7 @@
     <string name="speedtest_dl_section_fmt"> --- 下载 %1$s (%2$d 连接, %3$d 秒) ---</string>
     <string name="speedtest_ul_section_fmt"> --- 上传 %1$s (%2$d 连接, %3$d 秒) ---</string>
     <string name="speedtest_mbps_fmt">  %1$.2f Mbps (%2$.1f MB / %3$.1f 秒)</string>
-    <string name="speedtest_upload_na">不支持上传 (N/A)</string>
-    <string name="speedtest_ip_none">IP : --</string>
+<string name="speedtest_ip_none">IP : --</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
     <string name="speedtest_cloudflare_title">Cloudflare</string>
     <string name="report_conn_fmt">连接: %1$s</string>
@@ -535,4 +531,12 @@
     <string name="domain_tester_dns_button_fmt">测试 DNS：%1$s  ▾</string>
     <string name="domain_tester_dns_picker_title">选择要测试的 DNS</string>
     <string name="domain_tester_dns_count_fmt">已选 %1$d 个 DNS</string>
+    <string name="domain_tester_isp_dns">ISP DNS</string>
+    <string name="domain_tester_no_a_record">无 A 记录</string>
+    <string name="domain_tester_isp_not_blocked">未被 ISP 屏蔽</string>
+    <string name="domain_tester_join_and">、</string>
+    <string name="domain_tester_error_fmt">%1$s：错误 — %2$s</string>
+    <plurals name="domain_tester_unblocks_fmt">
+        <item quantity="other">%1$s 解除内容屏蔽</item>
+    </plurals>
 </resources>

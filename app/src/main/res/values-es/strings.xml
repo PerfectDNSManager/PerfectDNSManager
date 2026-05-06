@@ -112,9 +112,7 @@
     <string name="rule_disabled">Regla desactivada</string>
     <string name="delete_rule_confirm">¿Eliminar la regla %1$s → %2$s?</string>
     <string name="rule_deleted">Regla eliminada</string>
-    <string name="add_rewrite_rule_title">Añadir una regla de reescritura</string>
-
-    <!-- Language dialog -->
+<!-- Language dialog -->
     <string name="choose_language_title">🌍 Langue / Language / Idioma</string>
     <string name="lang_francais">🇫🇷 Français</string>
     <string name="lang_english">🇬🇧 English</string>
@@ -278,8 +276,7 @@
 
 
     <!-- DNS Rewrite screen -->
-    <string name="dns_rewrite_screen_title">Reescritura DNS (Rewriting)</string>
-    <string name="show_doq_dns">Mostrar DNS over QUIC (DoQ)</string>
+<string name="show_doq_dns">Mostrar DNS over QUIC (DoQ)</string>
     <string name="gpl_license_text">Libre hoy. Libre mañana. ¡Se puede bloquear un camino, no la libertad!\nEl código fuente es abierto, toda redistribución debe permanecer open source.\nLicencia GPL v3\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
@@ -434,8 +431,7 @@
     <string name="speedtest_dl_section_fmt"> --- Descarga %1$s (%2$d conex., %3$ds) ---</string>
     <string name="speedtest_ul_section_fmt"> --- Subida %1$s (%2$d conex., %3$ds) ---</string>
     <string name="speedtest_mbps_fmt">  %1$.2f Mbps (%2$.1f MB / %3$.1fs)</string>
-    <string name="speedtest_upload_na">Subida no soportada (N/D)</string>
-    <string name="speedtest_ip_none">IP : --</string>
+<string name="speedtest_ip_none">IP : --</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
     <string name="speedtest_cloudflare_title">Cloudflare</string>
     <string name="report_conn_fmt">Conexión: %1$s</string>
@@ -536,4 +532,13 @@
     <string name="domain_tester_dns_button_fmt">DNS a probar: %1$s  ▾</string>
     <string name="domain_tester_dns_picker_title">Elegir DNS a probar</string>
     <string name="domain_tester_dns_count_fmt">%1$d DNS seleccionados</string>
+    <string name="domain_tester_isp_dns">DNS del ISP</string>
+    <string name="domain_tester_no_a_record">Sin registro A</string>
+    <string name="domain_tester_isp_not_blocked">No bloqueado por el ISP</string>
+    <string name="domain_tester_join_and"> y </string>
+    <string name="domain_tester_error_fmt">%1$s: Error — %2$s</string>
+    <plurals name="domain_tester_unblocks_fmt">
+        <item quantity="one">%1$s desbloquea el contenido</item>
+        <item quantity="other">%1$s desbloquean el contenido</item>
+    </plurals>
 </resources>

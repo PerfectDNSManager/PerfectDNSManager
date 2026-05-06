@@ -53,8 +53,6 @@ class DomainTesterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
-
         // Load available DNS providers (DEFAULT/UDP only, for direct DNS queries)
         allDnsOptions = loadDnsOptions()
 
@@ -419,7 +417,7 @@ class DomainTesterActivity : AppCompatActivity() {
                 net.appstorefr.perfectdnsmanager.util.TvDialog.showMenuPicker(
                     this@DomainTesterActivity,
                     entry.domain,
-                    arrayOf("Modifier", "Supprimer")
+                    arrayOf(getString(R.string.edit_button), getString(R.string.delete_button))
                 ) { which ->
                     when (which) {
                         0 -> showEditDomainDialog(index, entry)
@@ -506,6 +504,14 @@ class DomainTesterActivity : AppCompatActivity() {
         // Snapshot selected DNS options: "Tous" = all providers, otherwise only selected
         val dnsToTest = if (isAllSelected) allDnsOptions.toList() else selectedDnsOptions.toList()
 
+        // Strings extraites pour i18n (le thread de test ne peut pas appeler getString
+        // sans context, on les snapshot ici).
+        val labelIsp = getString(R.string.domain_tester_isp_dns)
+        val labelNoARecord = getString(R.string.domain_tester_no_a_record)
+        val labelIspNotBlocked = getString(R.string.domain_tester_isp_not_blocked)
+        val labelJoinAnd = getString(R.string.domain_tester_join_and)
+        val labelError = getString(R.string.result_error)
+
         testThread = Thread {
             val entries = loadEntries().filter { it.enabled }
             val sb = StringBuilder()
@@ -518,10 +524,10 @@ class DomainTesterActivity : AppCompatActivity() {
                     val ispResult = UrlBlockingTester.resolveViaProtectedSocket(this, entry.domain)
                     val ispIcon = if (ispResult.isBlocked) "\u274C" else "\u2705"
                     val ispLabel = if (ispResult.authorityLabel != null)
-                        "${ispResult.ip ?: "No A record"} (${ispResult.authorityLabel})"
+                        "${ispResult.ip ?: labelNoARecord} (${ispResult.authorityLabel})"
                     else
-                        ispResult.ip ?: "No A record"
-                    sb.appendLine("  DNS FAI     : $ispIcon $ispLabel")
+                        ispResult.ip ?: labelNoARecord
+                    sb.appendLine("  ${labelIsp.padEnd(12)}: $ispIcon $ispLabel")
 
                     // Test each DNS provider
                     val unblocking = mutableListOf<String>()
@@ -538,20 +544,26 @@ class DomainTesterActivity : AppCompatActivity() {
                             }
                         } else {
                             icon = "\u26A0\uFE0F"
-                            resultIp = getString(R.string.result_error)
+                            resultIp = labelError
                         }
                         val padded = dnsOpt.label.padEnd(12)
                         sb.appendLine("  $padded: $icon $resultIp")
                     }
 
                     if (unblocking.isNotEmpty()) {
-                        sb.appendLine("  \u2192 ${unblocking.joinToString(" et ")} d\u00E9bloque${if (unblocking.size > 1) "nt" else ""} le contenu")
+                        val joined = unblocking.joinToString(labelJoinAnd)
+                        val msg = resources.getQuantityString(
+                            R.plurals.domain_tester_unblocks_fmt,
+                            unblocking.size,
+                            joined
+                        )
+                        sb.appendLine("  \u2192 $msg")
                     } else if (!ispResult.isBlocked) {
-                        sb.appendLine("  \u2192 Non bloqu\u00E9 par le FAI")
+                        sb.appendLine("  \u2192 $labelIspNotBlocked")
                     }
                     sb.appendLine()
                 } catch (e: Exception) {
-                    sb.appendLine("${entry.domain} : Erreur - ${e.message}")
+                    sb.appendLine(getString(R.string.domain_tester_error_fmt, entry.domain, e.message ?: ""))
                     sb.appendLine()
                 }
                 runOnUiThread { tvResult.text = sb.toString() }

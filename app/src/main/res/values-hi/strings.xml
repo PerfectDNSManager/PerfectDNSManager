@@ -112,9 +112,7 @@
     <string name="rule_disabled">नियम निष्क्रिय किया गया</string>
     <string name="delete_rule_confirm">नियम %1$s → %2$s हटाएँ?</string>
     <string name="rule_deleted">नियम हटाया गया</string>
-    <string name="add_rewrite_rule_title">रीराइट नियम जोड़ें</string>
-
-    <!-- Language dialog -->
+<!-- Language dialog -->
     <string name="choose_language_title">🌍 Langue / Language / Idioma</string>
     <string name="lang_francais">🇫🇷 Français</string>
     <string name="lang_english">🇬🇧 English</string>
@@ -278,8 +276,7 @@
 
 
     <!-- DNS Rewrite screen -->
-    <string name="dns_rewrite_screen_title">DNS रीराइटिंग (Rewriting)</string>
-    <string name="show_doq_dns">DNS over QUIC (DoQ) दिखाएं</string>
+<string name="show_doq_dns">DNS over QUIC (DoQ) दिखाएं</string>
     <string name="gpl_license_text">आज मुक्त। कल मुक्त। रास्ता रोक सकते हैं, स्वतंत्रता नहीं!\nस्रोत कोड खुला है, कोई भी पुनर्वितरण ओपन सोर्स रहना चाहिए।\nGPL v3 लाइसेंस\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
@@ -434,8 +431,7 @@
     <string name="speedtest_dl_section_fmt"> --- डाउनलोड %1$s (%2$d कनेक्शन, %3$d सेकंड) ---</string>
     <string name="speedtest_ul_section_fmt"> --- अपलोड %1$s (%2$d कनेक्शन, %3$d सेकंड) ---</string>
     <string name="speedtest_mbps_fmt">  %1$.2f Mbps (%2$.1f MB / %3$.1f सेकंड)</string>
-    <string name="speedtest_upload_na">अपलोड समर्थित नहीं (N/A)</string>
-    <string name="speedtest_ip_none">IP : --</string>
+<string name="speedtest_ip_none">IP : --</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
     <string name="speedtest_cloudflare_title">Cloudflare</string>
     <string name="report_conn_fmt">कनेक्शन: %1$s</string>
@@ -536,4 +532,13 @@
     <string name="domain_tester_dns_button_fmt">टेस्ट करने के लिए DNS: %1$s  ▾</string>
     <string name="domain_tester_dns_picker_title">टेस्ट करने के लिए DNS चुनें</string>
     <string name="domain_tester_dns_count_fmt">%1$d DNS चयनित</string>
+    <string name="domain_tester_isp_dns">ISP DNS</string>
+    <string name="domain_tester_no_a_record">कोई A रिकॉर्ड नहीं</string>
+    <string name="domain_tester_isp_not_blocked">ISP द्वारा अवरुद्ध नहीं</string>
+    <string name="domain_tester_join_and"> और </string>
+    <string name="domain_tester_error_fmt">%1$s: त्रुटि — %2$s</string>
+    <plurals name="domain_tester_unblocks_fmt">
+        <item quantity="one">%1$s सामग्री अनब्लॉक करता है</item>
+        <item quantity="other">%1$s सामग्री अनब्लॉक करते हैं</item>
+    </plurals>
 </resources>

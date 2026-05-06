@@ -112,9 +112,7 @@
     <string name="rule_disabled">Rule disabled</string>
     <string name="delete_rule_confirm">Delete rule %1$s → %2$s?</string>
     <string name="rule_deleted">Rule deleted</string>
-    <string name="add_rewrite_rule_title">Add a rewrite rule</string>
-
-    <!-- Language dialog -->
+<!-- Language dialog -->
     <string name="choose_language_title">🌍 Langue / Language / Idioma</string>
     <string name="lang_francais">🇫🇷 Français</string>
     <string name="lang_english">🇬🇧 English</string>
@@ -300,8 +298,7 @@
 
 
     <!-- DNS Rewrite screen -->
-    <string name="dns_rewrite_screen_title">DNS Rewriting</string>
-    <string name="show_doq_dns">Show DNS over QUIC (DoQ)</string>
+<string name="show_doq_dns">Show DNS over QUIC (DoQ)</string>
     <string name="gpl_license_text">Free today. Free tomorrow. You can block a road, not freedom!\nThe source code is open, any redistribution must remain open source.\nGPL v3 License\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
@@ -443,8 +440,7 @@
     <string name="speedtest_ul_section_fmt">
 --- Upload %1$s (%2$d conn., %3$ds) ---</string>
     <string name="speedtest_mbps_fmt">  %1$.2f Mbps (%2$.1f MB / %3$.1fs)</string>
-    <string name="speedtest_upload_na">Upload not supported (N/A)</string>
-    <string name="speedtest_ip_none">IP: --</string>
+<string name="speedtest_ip_none">IP: --</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
     <string name="speedtest_cloudflare_title">Cloudflare</string>
 
@@ -555,4 +551,13 @@
     <string name="domain_tester_dns_button_fmt">DNS to test: %1$s  ▾</string>
     <string name="domain_tester_dns_picker_title">Choose DNS to test</string>
     <string name="domain_tester_dns_count_fmt">%1$d DNS selected</string>
+    <string name="domain_tester_isp_dns">ISP DNS</string>
+    <string name="domain_tester_no_a_record">No A record</string>
+    <string name="domain_tester_isp_not_blocked">Not blocked by ISP</string>
+    <string name="domain_tester_join_and"> and </string>
+    <string name="domain_tester_error_fmt">%1$s: Error — %2$s</string>
+    <plurals name="domain_tester_unblocks_fmt">
+        <item quantity="one">%1$s unblocks the content</item>
+        <item quantity="other">%1$s unblock the content</item>
+    </plurals>
 </resources>

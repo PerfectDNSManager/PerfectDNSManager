@@ -469,16 +469,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             cornerRadius = r.toFloat()
         }
 
-    /** Background pour chip focusé : cadre jaune épais visible quel que soit
-     *  l'état actif/inactif (le focus_foreground vert se confondait sinon
-     *  avec le cyan de la sélection). */
-    private fun chipFocusedBackground(r: Int, baseColor: Int): GradientDrawable =
-        GradientDrawable().apply {
-            setColor(pdmSurface())
-            setStroke(dp(3), 0xFFFFD740.toInt()) // amber 400 — fort contraste
-            cornerRadius = r.toFloat()
-        }
-
     /** Background pour pilule (Start/Stop) focusée : cadre ambre visible peu
      *  importe la couleur de la pilule courante (verte au repos, rouge en
      *  cours de test). Garde un fill légèrement teinté pour matcher l'état. */

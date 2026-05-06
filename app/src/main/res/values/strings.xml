@@ -117,9 +117,7 @@
     <string name="rule_disabled">Règle désactivée</string>
     <string name="delete_rule_confirm">Supprimer la règle %1$s → %2$s ?</string>
     <string name="rule_deleted">Règle supprimée</string>
-    <string name="add_rewrite_rule_title">Ajouter une règle de réécriture</string>
-
-    <!-- Language dialog -->
+<!-- Language dialog -->
     <string name="choose_language_title">🌍 Langue / Language / Idioma</string>
     <string name="lang_francais">🇫🇷 Français</string>
     <string name="lang_english">🇬🇧 English</string>
@@ -303,8 +301,7 @@
 
 
     <!-- DNS Rewrite screen -->
-    <string name="dns_rewrite_screen_title">Réécriture DNS (Rewriting)</string>
-    <string name="show_doq_dns">Afficher DNS over QUIC</string>
+<string name="show_doq_dns">Afficher DNS over QUIC</string>
     <string name="gpl_license_text">Libre aujourd\'hui. Libre demain. On peut bloquer une route, pas la liberté !\nLe code source est ouvert, toute redistribution doit rester open source.\nLicence GPL v3\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
@@ -439,8 +436,7 @@
     <string name="speedtest_ul_section_fmt">
 --- Upload %1$s (%2$d conn., %3$ds) ---</string>
     <string name="speedtest_mbps_fmt">  %1$.2f Mbps (%2$.1f Mo / %3$.1fs)</string>
-    <string name="speedtest_upload_na">Upload non supporté (N/A)</string>
-    <string name="speedtest_ip_none">IP : --</string>
+<string name="speedtest_ip_none">IP : --</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
     <string name="speedtest_cloudflare_title">Cloudflare</string>
 
@@ -551,4 +547,13 @@
     <string name="domain_tester_dns_button_fmt">DNS à tester : %1$s  ▾</string>
     <string name="domain_tester_dns_picker_title">Choisir les DNS à tester</string>
     <string name="domain_tester_dns_count_fmt">%1$d DNS sélectionnés</string>
+    <string name="domain_tester_isp_dns">DNS FAI</string>
+    <string name="domain_tester_no_a_record">Aucun enregistrement A</string>
+    <string name="domain_tester_isp_not_blocked">Non bloqué par le FAI</string>
+    <string name="domain_tester_join_and"> et </string>
+    <string name="domain_tester_error_fmt">%1$s : Erreur — %2$s</string>
+    <plurals name="domain_tester_unblocks_fmt">
+        <item quantity="one">%1$s débloque le contenu</item>
+        <item quantity="other">%1$s débloquent le contenu</item>
+    </plurals>
 </resources>
