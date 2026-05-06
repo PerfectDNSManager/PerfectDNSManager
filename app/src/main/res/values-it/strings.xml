@@ -49,8 +49,7 @@
     <string name="beta_updates_locked">Stai già usando una versione beta — questa opzione è attivata in modo permanente.</string>
 
     <!-- Auto-start / Auto-reconnect -->
-    <string name="auto_start_label">Avvio all\'accensione</string>
-    <string name="auto_reconnect_label">Connessione automatica al DNS</string>
+    <string name="auto_reconnect_label">Attivare DNS all\'avvio</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ Nessun DNS configurato</string>
     <string name="auto_reconnect_default_prefix">(predefinito) </string>

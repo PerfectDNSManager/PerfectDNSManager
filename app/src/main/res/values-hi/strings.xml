@@ -49,8 +49,7 @@
     <string name="beta_updates_locked">आप पहले से बीटा संस्करण उपयोग कर रहे हैं — यह विकल्प हमेशा सक्रिय।</string>
 
     <!-- Auto-start / Auto-reconnect -->
-    <string name="auto_start_label">बूट पर लॉन्च</string>
-    <string name="auto_reconnect_label">DNS से स्वचालित कनेक्शन</string>
+    <string name="auto_reconnect_label">बूट पर DNS सक्रिय करें</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ कोई DNS कॉन्फ़िगर नहीं किया गया</string>
     <string name="auto_reconnect_default_prefix">(डिफ़ॉल्ट) </string>

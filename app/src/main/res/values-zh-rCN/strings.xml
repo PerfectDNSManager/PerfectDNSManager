@@ -49,8 +49,7 @@
     <string name="beta_updates_locked">您已在使用 Beta 版本 — 此选项始终启用。</string>
 
     <!-- Auto-start / Auto-reconnect -->
-    <string name="auto_start_label">开机启动</string>
-    <string name="auto_reconnect_label">自动连接 DNS</string>
+    <string name="auto_reconnect_label">开机自动启用 DNS</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ 未配置 DNS</string>
     <string name="auto_reconnect_default_prefix">（默认）</string>

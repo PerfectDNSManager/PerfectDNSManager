@@ -49,8 +49,7 @@
     <string name="beta_updates_locked">すでにベータ版を使用中 — このオプションは常に有効です。</string>
 
     <!-- Auto-start / Auto-reconnect -->
-    <string name="auto_start_label">起動時に起動</string>
-    <string name="auto_reconnect_label">DNS への自動接続</string>
+    <string name="auto_reconnect_label">起動時にDNSを有効化</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ DNS が設定されていません</string>
     <string name="auto_reconnect_default_prefix">（デフォルト）</string>

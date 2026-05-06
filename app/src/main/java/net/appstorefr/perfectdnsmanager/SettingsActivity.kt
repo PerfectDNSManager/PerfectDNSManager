@@ -58,14 +58,11 @@ class SettingsActivity : AppCompatActivity() {
         val btnBack: Button = findViewById(R.id.btnBack)
         val btnHowTo: Button = findViewById(R.id.btnHowTo)
         val tvAdbStatus: TextView = findViewById(R.id.tvAdbStatus)
-        val switchAutoStart: SwitchCompat = findViewById(R.id.switchAutoStart)
         val switchAutoReconnect: SwitchCompat = findViewById(R.id.switchAutoReconnect)
         val switchDisableIpv6: SwitchCompat = findViewById(R.id.switchDisableIpv6)
-        val rowAutoStart: LinearLayout = findViewById(R.id.rowAutoStart)
         val rowAutoReconnect: LinearLayout = findViewById(R.id.rowAutoReconnect)
         val rowDisableIpv6: LinearLayout = findViewById(R.id.rowDisableIpv6)
-        rowAutoStart.setOnClickListener { switchAutoStart.toggle() }
-        rowAutoReconnect.setOnClickListener { if (switchAutoReconnect.isEnabled) switchAutoReconnect.toggle() }
+        rowAutoReconnect.setOnClickListener { switchAutoReconnect.toggle() }
         rowDisableIpv6.setOnClickListener { switchDisableIpv6.toggle() }
 
         // ── Mises à jour bêta ──
@@ -117,10 +114,8 @@ class SettingsActivity : AppCompatActivity() {
         tvAdbStatus.text = if (adbEnabled) getString(R.string.adb_status_active) else getString(R.string.adb_status_inactive)
         tvAdbStatus.setTextColor(if (adbEnabled) getColor(android.R.color.holo_green_light) else getColor(android.R.color.holo_red_light))
 
-        // Switches démarrage auto
-        switchAutoStart.isChecked = prefs.getBoolean("auto_start_enabled", false)
+        // Switch démarrage DNS auto (option fusionnée — anciennement 2 toggles)
         switchAutoReconnect.isChecked = prefs.getBoolean("auto_reconnect_dns", false)
-        switchAutoReconnect.isEnabled = switchAutoStart.isChecked
 
         // ── Sélecteur de thème ──
         val rowTheme: LinearLayout = findViewById(R.id.rowTheme)
@@ -156,14 +151,6 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        switchAutoStart.setOnCheckedChangeListener { _, isChecked ->
-            prefs.edit().putBoolean("auto_start_enabled", isChecked).apply()
-            switchAutoReconnect.isEnabled = isChecked
-            if (!isChecked) {
-                switchAutoReconnect.isChecked = false
-                prefs.edit().putBoolean("auto_reconnect_dns", false).apply()
-            }
-        }
         // Info DNS auto-reconnect
         val tvAutoReconnectDns: TextView = findViewById(R.id.tvAutoReconnectDns)
         fun updateAutoReconnectDnsInfo() {

@@ -36,9 +36,9 @@ class BootReceiver : BroadcastReceiver() {
 
         val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
 
-        val autoStart = prefs.getBoolean("auto_start_enabled", false)
-        if (!autoStart) {
-            Log.i(TAG, "Auto-start disabled, ignoring boot.")
+        val autoReconnect = prefs.getBoolean("auto_reconnect_dns", false)
+        if (!autoReconnect) {
+            Log.i(TAG, "Auto-reconnect DNS disabled, ignoring boot.")
             return
         }
 
@@ -49,18 +49,7 @@ class BootReceiver : BroadcastReceiver() {
             return
         }
 
-        val autoReconnect = prefs.getBoolean("auto_reconnect_dns", false)
-
-        if (!autoReconnect) {
-            // autoStart=true mais autoReconnect=false → notification pour ouvrir l'app
-            // (startActivity interdit depuis un BroadcastReceiver sur Android 10+)
-            Log.i(TAG, "Auto-start without reconnect: posting notification.")
-            postOpenAppNotification(context)
-            return
-        }
-
-        // autoStart=true + autoReconnect=true → reconnecter le VPN
-        // Priorité : DNS par défaut > dernier DNS sélectionné
+        // Reconnecter le VPN — priorité : DNS par défaut > dernier DNS sélectionné
         val defaultProfileJson = prefs.getString("default_profile_json", null)
         val selectedProfileJson = prefs.getString("selected_profile_json", null)
         val profileJson = defaultProfileJson ?: selectedProfileJson
@@ -132,27 +121,6 @@ class BootReceiver : BroadcastReceiver() {
                 nm.createNotificationChannel(channel)
             }
         }
-    }
-
-    private fun postOpenAppNotification(context: Context) {
-        ensureNotificationChannel(context)
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        }
-        val pi = PendingIntent.getActivity(
-            context, 0, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        val notif = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle(context.getString(R.string.app_name))
-            .setContentText(context.getString(R.string.notif_open_app_vpn))
-            .setContentIntent(pi)
-            .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .build()
-        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        nm.notify(NOTIF_ID, notif)
     }
 
     private fun postVpnPermissionNotification(context: Context) {

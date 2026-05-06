@@ -49,8 +49,7 @@
     <string name="beta_updates_locked">أنت تستخدم نسخة بيتا بالفعل — هذا الخيار مفعّل دائمًا.</string>
 
     <!-- Auto-start / Auto-reconnect -->
-    <string name="auto_start_label">التشغيل عند بدء الجهاز</string>
-    <string name="auto_reconnect_label">الاتصال التلقائي بـ DNS</string>
+    <string name="auto_reconnect_label">تفعيل DNS عند الإقلاع</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ لم يتم تكوين DNS</string>
     <string name="auto_reconnect_default_prefix">(افتراضي) </string>

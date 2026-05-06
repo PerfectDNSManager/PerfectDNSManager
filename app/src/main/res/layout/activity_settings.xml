@@ -77,32 +77,6 @@
         android:padding="10dp"
         android:layout_marginBottom="8dp">
         <LinearLayout
-            android:id="@+id/rowAutoStart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/focusable_item_background"
-            android:foreground="@drawable/btn_focus_foreground"
-            android:padding="8dp"
-            android:layout_marginBottom="4dp"
-            android:focusable="true"
-            android:clickable="true">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/auto_start_label"
-                android:textColor="@color/pdm_text_primary"
-                android:textSize="15sp"/>
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switchAutoStart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:clickable="false" />
-        </LinearLayout>
-        <LinearLayout
             android:id="@+id/rowAutoReconnect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -49,8 +49,7 @@
     <string name="beta_updates_locked">আপনি ইতিমধ্যে বিটা সংস্করণ ব্যবহার করছেন — এই অপশনটি সর্বদা সক্রিয়।</string>
 
     <!-- Auto-start / Auto-reconnect -->
-    <string name="auto_start_label">বুটে চালু করুন</string>
-    <string name="auto_reconnect_label">DNS এ স্বয়ংক্রিয় সংযোগ</string>
+    <string name="auto_reconnect_label">বুট-এ DNS সক্রিয় করুন</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ কোনো DNS কনফিগার করা নেই</string>
     <string name="auto_reconnect_default_prefix">(ডিফল্ট) </string>

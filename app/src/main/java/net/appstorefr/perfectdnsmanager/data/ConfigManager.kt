@@ -78,7 +78,6 @@ class ConfigManager(private val context: Context) {
 
         if (includeSettings) {
             val settings = JsonObject()
-            settings.addProperty("auto_start_enabled", prefs.getBoolean("auto_start_enabled", false))
             settings.addProperty("auto_reconnect_dns", prefs.getBoolean("auto_reconnect_dns", false))
             settings.addProperty("disable_ipv6", prefs.getBoolean("disable_ipv6", false))
             settings.addProperty("adb_dot_enabled", prefs.getBoolean("adb_dot_enabled", false))
@@ -143,7 +142,6 @@ class ConfigManager(private val context: Context) {
 
         // Settings from SharedPrefs "prefs"
         val settings = JsonObject()
-        settings.addProperty("auto_start_enabled", prefs.getBoolean("auto_start_enabled", false))
         settings.addProperty("auto_reconnect_dns", prefs.getBoolean("auto_reconnect_dns", false))
         settings.addProperty("disable_ipv6", prefs.getBoolean("disable_ipv6", false))
         settings.addProperty("adb_dot_enabled", prefs.getBoolean("adb_dot_enabled", false))
@@ -244,9 +242,6 @@ class ConfigManager(private val context: Context) {
             val settings = root.getAsJsonObject("settings")
             val editor = prefs.edit()
 
-            if (settings.has("auto_start_enabled")) {
-                editor.putBoolean("auto_start_enabled", settings.get("auto_start_enabled").asBoolean)
-            }
             if (settings.has("auto_reconnect_dns")) {
                 editor.putBoolean("auto_reconnect_dns", settings.get("auto_reconnect_dns").asBoolean)
             }

@@ -49,8 +49,7 @@
     <string name="beta_updates_locked">Você já está em uma versão beta — esta opção está sempre ativa.</string>
 
     <!-- Auto-start / Auto-reconnect -->
-    <string name="auto_start_label">Iniciar ao ligar</string>
-    <string name="auto_reconnect_label">Conexão automática ao DNS</string>
+    <string name="auto_reconnect_label">Ativar DNS ao ligar</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ Nenhum DNS configurado</string>
     <string name="auto_reconnect_default_prefix">(padrão) </string>

@@ -49,8 +49,7 @@
     <string name="beta_updates_locked">Вы уже используете бета-версию — этот параметр всегда включён.</string>
 
     <!-- Auto-start / Auto-reconnect -->
-    <string name="auto_start_label">Запуск при загрузке</string>
-    <string name="auto_reconnect_label">Автоподключение к DNS</string>
+    <string name="auto_reconnect_label">Включать DNS при запуске</string>
     <string name="auto_reconnect_dns_info">→ %1$s</string>
     <string name="auto_reconnect_no_dns">→ DNS не настроен</string>
     <string name="auto_reconnect_default_prefix">(по умолчанию) </string>

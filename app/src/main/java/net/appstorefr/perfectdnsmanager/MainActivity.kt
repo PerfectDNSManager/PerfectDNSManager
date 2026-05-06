@@ -1285,10 +1285,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startVpnService(profile: DnsProfile) {
-        // Première connexion VPN : activer auto-start, auto-reconnect et disable IPv6
+        // Première connexion VPN : activer auto-reconnect DNS et disable IPv6
         if (!prefs.getBoolean("first_vpn_done", false)) {
             prefs.edit()
-                .putBoolean("auto_start_enabled", true)
                 .putBoolean("auto_reconnect_dns", true)
                 .putBoolean("disable_ipv6", true)
                 .putBoolean("first_vpn_done", true)
