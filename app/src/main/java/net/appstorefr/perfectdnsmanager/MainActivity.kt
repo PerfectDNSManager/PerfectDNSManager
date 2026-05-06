@@ -39,6 +39,7 @@ import net.appstorefr.perfectdnsmanager.util.UrlBlockingTester
 import com.google.gson.Gson
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -320,10 +321,10 @@ class MainActivity : AppCompatActivity() {
                 if (resp.isSuccessful && !body.isNullOrEmpty()) body else null
             } catch (_: Exception) { null }
 
-            val ipv4Job = kotlinx.coroutines.async(Dispatchers.IO) {
+            val ipv4Job = async(Dispatchers.IO) {
                 quickGet("https://api4.ipify.org") ?: quickGet("https://ipv4.icanhazip.com")
             }
-            val ipv6Job = kotlinx.coroutines.async(Dispatchers.IO) {
+            val ipv6Job = async(Dispatchers.IO) {
                 val v6 = quickGet("https://api6.ipify.org") ?: quickGet("https://ipv6.icanhazip.com")
                 if (v6 != null && v6.contains(":")) v6 else null
             }
