@@ -383,7 +383,7 @@
     <string name="domain_tester_dns_all">Все</string>
     <string name="domain_tester_dns_select">DNS для теста:</string>
     <string name="internet_speedtest_advanced">⚡ Тест скорости Интернета</string>
-    <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+    <string name="dns_speedtest_shortcut">⚡ DNS Speedtest</string>
 
     <!-- Theme -->
     <string name="theme_label">🎨 Тема</string>
@@ -526,6 +526,13 @@
         <item quantity="few">%d профиля</item>
         <item quantity="other">%d профилей</item>
     </plurals>    <string name="search_refine_hint">… уточните запрос</string>
-    <string name="nextdns_profile_id_label">ID профиля NextDNS:</string>    <string name="speedtest_backend_label_fmt">Бэкенд: %1$s  ▾</string>
-    <string name="speedtest_backend_picker_title">Выбрать бэкенд теста</string>
+    <string name="nextdns_profile_id_label">ID профиля NextDNS:</string>    <string name="speedtest_backend_label_fmt">Сервер теста: %1$s  ▾</string>
+    <string name="speedtest_backend_picker_title">Выбрать сервер теста</string>    <string name="speedtest_ookla_loading">Загрузка списка серверов Ookla…</string>
+    <string name="speedtest_ookla_latency">Проверка задержки серверов Ookla…</string>
+    <string name="speedtest_ookla_loaded_fmt">Загружено серверов Ookla: %1$d</string>
+    <string name="speedtest_ookla_err_code_fmt">Ошибка сервера Ookla: %1$d</string>
+    <string name="speedtest_ookla_err_load_fmt">Ошибка загрузки Ookla: %1$s</string>
+    <string name="speedtest_ookla_none">Нет доступных серверов Ookla.</string>
+    <string name="speedtest_ookla_not_selected">Сервер Ookla не выбран.</string>
+    <string name="speedtest_ookla_title">Ookla</string>
 </resources>

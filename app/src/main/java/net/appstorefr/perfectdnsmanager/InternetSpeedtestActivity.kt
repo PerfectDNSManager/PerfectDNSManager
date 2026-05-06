@@ -20,6 +20,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import net.appstorefr.perfectdnsmanager.util.LocaleHelper
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -33,15 +34,36 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
- * Enum for speed test backends.
+ * Ookla server (résultat de l'API c.speedtest.net).
+ */
+data class OoklaServer(
+    val id: Int,
+    val sponsor: String?,
+    val name: String?,
+    val host: String,
+    val url: String,
+    val lat: String?,
+    val lon: String?,
+    val country: String?,
+    val cc: String?
+) {
+    val displayName: String get() = sponsor ?: name ?: host
+    override fun toString(): String = displayName
+}
+
+/**
+ * Enum des backends de speedtest disponibles.
  *
- * Ookla a été retiré (beta.101) : l'API publique speedtest.net/api/js/servers
- * a été dépréciée/restreinte par CAPTCHA, les serveurs eux-mêmes refusent les
- * UA non-officiels. Cloudflare (sans inscription, infra mondiale CF) et
- * Fast.com (Netflix CDN) couvrent largement le besoin.
+ * - CLOUDFLARE : speed.cloudflare.com, infra CF mondiale, sans cookie/auth.
+ * - OOKLA : c.speedtest.net, auto-pick du serveur le plus proche par latence.
+ *   (Réintroduit en beta.105 : l'API marche bien, le bug venait du paramètre
+ *   `&search=` vide qui déclenchait un 403.)
+ * - NETFLIX : api.fast.com (Netflix CDN), download-only — l'API ne fournit
+ *   pas d'endpoint upload officiel.
  */
 enum class SpeedBackend(val label: String) {
     CLOUDFLARE("Cloudflare"),
+    OOKLA("Ookla"),
     NETFLIX("Fast.com")
 }
 
@@ -82,6 +104,21 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         private const val CF_UL_CONNECTIONS = 3
         private const val CF_UL_DURATION_SEC = 10
 
+        // Ookla endpoints — c.speedtest.net (XML/JSON), pas de cookie/auth.
+        // Le bug en beta.85 venait du paramètre `&search=` vide qui faisait
+        // 403. Sans ce paramètre, l'endpoint répond bien JSON.
+        private const val OOKLA_SERVER_LIST_URL =
+            "https://www.speedtest.net/api/js/servers?engine=js&limit=10"
+        private const val OOKLA_USER_AGENT =
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        private const val OOKLA_DL_CONNECTIONS = 4
+        private const val OOKLA_DL_DURATION_SEC = 10
+        private const val OOKLA_UL_PAYLOAD_SIZE = 10 * 1024 * 1024
+        private const val OOKLA_UL_CONNECTIONS = 3
+        private const val OOKLA_UL_DURATION_SEC = 10
+        private const val OOKLA_PING_COUNT = 10
+        private const val OOKLA_LATENCY_CANDIDATES = 5
+
         // Netflix (Fast.com) endpoints
         private const val NETFLIX_API_URL =
             "https://api.fast.com/netflix/speedtest/v2?https=true&token=YXNkZmFzZGxmbnNkYWZoYXNkZmhrYWxm&urlCount=5"
@@ -112,6 +149,10 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     private val cancelled = AtomicBoolean(false)
     private var testThread: Thread? = null
     private var currentBackend: SpeedBackend = SpeedBackend.CLOUDFLARE
+    // Ookla : auto-pick du serveur le plus rapide quand le user choisit
+    // Ookla dans le picker. Pas de second bouton de sélection — UX simple.
+    private val ooklaServers = mutableListOf<OoklaServer>()
+    private var selectedOoklaServer: OoklaServer? = null
 
     // ── Lifecycle ────────────────────────────────────────────────────────────
 
@@ -518,6 +559,16 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 tvConsole.text = getString(R.string.speedtest_waiting)
                 logConsole(getString(R.string.speedtest_backend_cf))
             }
+            SpeedBackend.OOKLA -> {
+                btnStartStop.visibility = View.VISIBLE
+                resultsCard.visibility = View.VISIBLE
+                tvConsoleLabel.visibility = View.VISIBLE
+                scrollConsole.visibility = View.VISIBLE
+                rootScroll.visibility = View.VISIBLE
+                resetResults()
+                tvConsole.text = getString(R.string.speedtest_waiting)
+                loadOoklaServerList()  // Auto-pick le serveur le plus rapide
+            }
             SpeedBackend.NETFLIX -> {
                 btnStartStop.visibility = View.VISIBLE
                 resultsCard.visibility = View.VISIBLE
@@ -525,7 +576,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 scrollConsole.visibility = View.VISIBLE
                 rootScroll.visibility = View.VISIBLE
                 resetResults()
-                tvUpload.text = "N/A"
                 tvConsole.text = getString(R.string.speedtest_waiting)
                 logConsole(getString(R.string.speedtest_backend_netflix))
             }
@@ -546,6 +596,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
         when (currentBackend) {
             SpeedBackend.CLOUDFLARE -> startCloudflareTest()
+            SpeedBackend.OOKLA -> startOoklaTest()
             SpeedBackend.NETFLIX -> startNetflixTest()
         }
     }
@@ -572,7 +623,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     private fun resetResults() {
         tvPing.text = "-- ms"; tvJitter.text = "-- ms"
         tvDownload.text = "-- Mbps"
-        tvUpload.text = if (currentBackend == SpeedBackend.NETFLIX) "N/A" else "-- Mbps"
+        tvUpload.text = "-- Mbps"
         tvClientIp.text = getString(R.string.speedtest_ip_none)
         pbDownload.progress = 0; pbUpload.progress = 0
         tvConsole.text = ""
@@ -753,16 +804,270 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     }
 
     // ═════════════════════════════════════════════════════════════════════════
+    //  OOKLA TEST
+    // ═════════════════════════════════════════════════════════════════════════
+
+    /**
+     * Charge la liste des serveurs Ookla et auto-sélectionne le plus rapide
+     * (par latence). Pas de UI dédiée — on stocke en `selectedOoklaServer`
+     * et on l'utilise au démarrage du test. Appelé depuis switchBackend.
+     */
+    private fun loadOoklaServerList() {
+        logConsole(getString(R.string.speedtest_ookla_loading))
+        lifecycleScope.launch(Dispatchers.IO) {
+            val fetched = mutableListOf<OoklaServer>()
+            try {
+                val client = plainClient(10)
+                val req = Request.Builder()
+                    .url(OOKLA_SERVER_LIST_URL)
+                    .header("Accept", "application/json")
+                    .header("User-Agent", OOKLA_USER_AGENT)
+                    .build()
+                val resp = client.newCall(req).execute()
+                if (resp.isSuccessful) {
+                    val json = resp.body?.string() ?: "[]"
+                    resp.close()
+                    val type = object : TypeToken<List<OoklaServer>>() {}.type
+                    fetched.addAll(Gson().fromJson<List<OoklaServer>>(json, type))
+                } else {
+                    val code = resp.code
+                    resp.close()
+                    ui { logConsole(getString(R.string.speedtest_ookla_err_code_fmt, code)) }
+                }
+                shutdown(client)
+            } catch (e: Exception) {
+                Log.w(TAG, "Ookla server list fetch failed", e)
+                ui { logConsole(getString(R.string.speedtest_ookla_err_load_fmt, e.message ?: "")) }
+            }
+
+            // Auto-pick : ping les top candidates et garde le plus rapide.
+            if (fetched.isNotEmpty()) {
+                ui { logConsole(getString(R.string.speedtest_ookla_latency)) }
+                val latencies = mutableListOf<Pair<OoklaServer, Double>>()
+                val candidates = fetched.take(OOKLA_LATENCY_CANDIDATES)
+                for (server in candidates) {
+                    if (cancelled.get()) break
+                    try {
+                        val client = plainClient(5)
+                        val baseUrl = ooklaBaseUrl(server.url)
+                        val t0 = System.nanoTime()
+                        val pingReq = Request.Builder()
+                            .url("${baseUrl}latency.txt?r=${System.nanoTime()}")
+                            .header("User-Agent", OOKLA_USER_AGENT)
+                            .build()
+                        val pingResp = client.newCall(pingReq).execute()
+                        val ms = (System.nanoTime() - t0) / 1_000_000.0
+                        pingResp.close()
+                        shutdown(client)
+                        if (pingResp.isSuccessful || pingResp.code in 200..499) {
+                            latencies.add(server to ms)
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Ookla ping failed for ${server.displayName}", e)
+                    }
+                }
+                latencies.sortBy { it.second }
+                if (latencies.isNotEmpty()) {
+                    fetched.clear()
+                    fetched.addAll(latencies.map { it.first })
+                }
+            }
+
+            ui {
+                ooklaServers.clear()
+                ooklaServers.addAll(fetched)
+                if (ooklaServers.isEmpty()) {
+                    logConsole(getString(R.string.speedtest_ookla_none))
+                    selectedOoklaServer = null
+                    return@ui
+                }
+                logConsole(getString(R.string.speedtest_ookla_loaded_fmt, ooklaServers.size))
+                selectedOoklaServer = ooklaServers[0]
+                logConsole("✓ ${ooklaServers[0].displayName}")
+            }
+        }
+    }
+
+    private fun startOoklaTest() {
+        val server = selectedOoklaServer ?: run {
+            logConsole(getString(R.string.speedtest_ookla_not_selected))
+            running.set(false); updateButton(false); return
+        }
+
+        logConsole(getString(R.string.speedtest_start_msg, getString(R.string.speedtest_ookla_title)))
+        logConsole("→ ${server.displayName}")
+
+        testThread = Thread {
+            try {
+                if (!cancelled.get()) runOoklaPing(server)
+                if (!cancelled.get()) runOoklaDownload(server)
+                if (!cancelled.get()) runOoklaUpload(server)
+                if (!cancelled.get()) ui { logConsole(getString(R.string.speedtest_done_msg)) }
+            } catch (_: InterruptedException) {
+                ui { logConsole(getString(R.string.speedtest_interrupted)) }
+            } catch (e: Exception) {
+                Log.e(TAG, "Ookla test error", e)
+                ui { logConsole(getString(R.string.speedtest_error_fmt, e.message ?: "")) }
+            } finally {
+                running.set(false)
+                ui { updateButton(false) }
+            }
+        }.also { it.start() }
+    }
+
+    private fun runOoklaPing(server: OoklaServer) {
+        ui { logConsole(getString(R.string.speedtest_ping_section_fmt, getString(R.string.speedtest_ookla_title), OOKLA_PING_COUNT)) }
+        val client = plainClient(5)
+        val baseUrl = ooklaBaseUrl(server.url)
+        val pings = mutableListOf<Double>()
+        for (i in 1..OOKLA_PING_COUNT) {
+            if (cancelled.get()) break
+            try {
+                val req = Request.Builder()
+                    .url("${baseUrl}latency.txt?r=${System.nanoTime()}")
+                    .header("Cache-Control", "no-cache")
+                    .header("User-Agent", OOKLA_USER_AGENT)
+                    .build()
+                val t0 = System.nanoTime()
+                val resp = client.newCall(req).execute()
+                val ms = (System.nanoTime() - t0) / 1_000_000.0
+                resp.body?.close(); resp.close()
+                pings.add(ms)
+                ui { logConsole(getString(R.string.speedtest_ping_attempt_fmt, i, ms)) }
+            } catch (e: Exception) {
+                if (cancelled.get()) break
+                ui { logConsole(getString(R.string.speedtest_ping_fail_fmt, i)) }
+            }
+        }
+        shutdown(client)
+        if (pings.isNotEmpty() && !cancelled.get()) {
+            val avg = pings.average()
+            val jitter = if (pings.size > 1) pings.zipWithNext { a, b -> abs(b - a) }.average() else 0.0
+            ui {
+                tvPing.text = "${"%.1f".format(avg)} ms"
+                tvJitter.text = "${"%.1f".format(jitter)} ms"
+                logConsole(getString(R.string.speedtest_ping_avg_fmt, avg, jitter))
+            }
+        }
+    }
+
+    private fun runOoklaDownload(server: OoklaServer) {
+        ui { logConsole(getString(R.string.speedtest_dl_section_fmt, getString(R.string.speedtest_ookla_title), OOKLA_DL_CONNECTIONS, OOKLA_DL_DURATION_SEC)) }
+        val baseUrl = ooklaBaseUrl(server.url)
+        val totalBytes = AtomicLong(0)
+        val t0 = System.nanoTime()
+        val deadline = t0 + OOKLA_DL_DURATION_SEC * 1_000_000_000L
+        val workers = (0 until OOKLA_DL_CONNECTIONS).map {
+            Thread {
+                val c = plainClient(OOKLA_DL_DURATION_SEC.toLong() + 5)
+                try {
+                    while (!cancelled.get() && System.nanoTime() < deadline) {
+                        val req = Request.Builder()
+                            .url("${baseUrl}random4000x4000.jpg?r=${System.nanoTime()}")
+                            .header("Cache-Control", "no-store, no-cache")
+                            .header("User-Agent", OOKLA_USER_AGENT)
+                            .build()
+                        val resp = c.newCall(req).execute()
+                        if (resp.isSuccessful) {
+                            resp.body?.byteStream()?.use { stream ->
+                                val buf = ByteArray(65536)
+                                while (!cancelled.get() && System.nanoTime() < deadline) {
+                                    val n = stream.read(buf)
+                                    if (n == -1) break
+                                    totalBytes.addAndGet(n.toLong())
+                                }
+                            }
+                        }
+                        resp.close()
+                    }
+                } catch (_: Exception) {
+                } finally { shutdown(c) }
+            }.also { it.isDaemon = true; it.start() }
+        }
+        monitorProgress(totalBytes, t0, deadline, OOKLA_DL_DURATION_SEC) { mbps, progress ->
+            tvDownload.text = "${"%.2f".format(mbps)} Mbps"
+            pbDownload.progress = progress
+        }
+        workers.forEach { it.join(2000); if (it.isAlive) it.interrupt() }
+        if (!cancelled.get()) {
+            val elapsed = (System.nanoTime() - t0) / 1e9
+            val bytes = totalBytes.get()
+            val mbps = if (elapsed > 0) (bytes * 8.0) / (elapsed * 1e6) else 0.0
+            ui {
+                tvDownload.text = "${"%.2f".format(mbps)} Mbps"; pbDownload.progress = 1000
+                logConsole(getString(R.string.speedtest_mbps_fmt, mbps, bytes / 1_048_576.0, elapsed))
+            }
+        }
+    }
+
+    private fun runOoklaUpload(server: OoklaServer) {
+        ui { logConsole(getString(R.string.speedtest_ul_section_fmt, getString(R.string.speedtest_ookla_title), OOKLA_UL_CONNECTIONS, OOKLA_UL_DURATION_SEC)) }
+        val ulUrl = server.url
+        val totalBytes = AtomicLong(0)
+        val t0 = System.nanoTime()
+        val deadline = t0 + OOKLA_UL_DURATION_SEC * 1_000_000_000L
+        val payload = ByteArray(OOKLA_UL_PAYLOAD_SIZE) { (it % 256).toByte() }
+        val workers = (0 until OOKLA_UL_CONNECTIONS).map {
+            Thread {
+                val c = plainClient(OOKLA_UL_DURATION_SEC.toLong() + 5)
+                try {
+                    while (!cancelled.get() && System.nanoTime() < deadline) {
+                        val body = object : okhttp3.RequestBody() {
+                            override fun contentType() = "application/octet-stream".toMediaType()
+                            override fun contentLength() = payload.size.toLong()
+                            override fun writeTo(sink: okio.BufferedSink) {
+                                var off = 0; val chunk = 65536
+                                while (off < payload.size && !cancelled.get() && System.nanoTime() < deadline) {
+                                    val len = minOf(chunk, payload.size - off)
+                                    sink.write(payload, off, len)
+                                    sink.flush()
+                                    totalBytes.addAndGet(len.toLong())
+                                    off += len
+                                }
+                            }
+                        }
+                        val req = Request.Builder()
+                            .url("$ulUrl?r=${System.nanoTime()}")
+                            .post(body)
+                            .header("User-Agent", OOKLA_USER_AGENT)
+                            .build()
+                        try { c.newCall(req).execute().close() } catch (_: Exception) {}
+                    }
+                } catch (_: Exception) {
+                } finally { shutdown(c) }
+            }.also { it.isDaemon = true; it.start() }
+        }
+        monitorProgress(totalBytes, t0, deadline, OOKLA_UL_DURATION_SEC) { mbps, progress ->
+            tvUpload.text = "${"%.2f".format(mbps)} Mbps"
+            pbUpload.progress = progress
+        }
+        workers.forEach { it.join(2000); if (it.isAlive) it.interrupt() }
+        if (!cancelled.get()) {
+            val elapsed = (System.nanoTime() - t0) / 1e9
+            val bytes = totalBytes.get()
+            val mbps = if (elapsed > 0) (bytes * 8.0) / (elapsed * 1e6) else 0.0
+            ui {
+                tvUpload.text = "${"%.2f".format(mbps)} Mbps"; pbUpload.progress = 1000
+                logConsole(getString(R.string.speedtest_mbps_fmt, mbps, bytes / 1_048_576.0, elapsed))
+            }
+        }
+    }
+
+    /** Extrait la base URL Ookla depuis l'URL upload.php. */
+    private fun ooklaBaseUrl(url: String): String {
+        val idx = url.lastIndexOf('/')
+        return if (idx > 8) url.substring(0, idx + 1) else "$url/"
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
     //  NETFLIX (FAST.COM) TEST
     // ═════════════════════════════════════════════════════════════════════════
 
     private fun startNetflixTest() {
         logConsole(getString(R.string.speedtest_start_msg, getString(R.string.speedtest_netflix_title)))
-        logConsole(getString(R.string.speedtest_upload_na))
 
         testThread = Thread {
             try {
-                // Fetch test URLs from Fast.com API
                 val testUrls = fetchNetflixTestUrls()
                 if (testUrls.isEmpty()) {
                     ui { logConsole(getString(R.string.speedtest_error_fmt, "Fast.com URLs unavailable")) }
@@ -772,10 +1077,8 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
                 if (!cancelled.get()) runNetflixPing(testUrls)
                 if (!cancelled.get()) runNetflixDownload(testUrls)
+                if (!cancelled.get()) runNetflixUpload(testUrls)
                 if (!cancelled.get()) ui {
-                    tvUpload.text = "N/A"
-                    pbUpload.progress = 1000
-                    logConsole("\n${getString(R.string.speedtest_upload_unsupported)}")
                     logConsole(getString(R.string.speedtest_done_msg))
                 }
             } catch (_: InterruptedException) {
@@ -922,6 +1225,68 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             val mbps = if (elapsed > 0) (bytes * 8.0) / (elapsed * 1e6) else 0.0
             ui {
                 tvDownload.text = "${"%.2f".format(mbps)} Mbps"; pbDownload.progress = 1000
+                logConsole(getString(R.string.speedtest_mbps_fmt, mbps, bytes / 1_048_576.0, elapsed))
+            }
+        }
+    }
+
+    /**
+     * Netflix upload : POST chunked vers les URLs CDN OCA Netflix.
+     * L'API Fast.com publique ne fournit pas d'endpoint upload officiel,
+     * mais l'app Fast.com officielle fait POST aux mêmes URLs de download
+     * (Netflix CDN accepte le POST et discard le body, on mesure les bytes
+     * écrits côté client). Reverse-engineered, mais ça correspond à ce que
+     * fait l'app officielle.
+     */
+    private fun runNetflixUpload(testUrls: List<String>) {
+        val connections = testUrls.size
+        ui { logConsole("\n${getString(R.string.speedtest_ul_section_fmt, getString(R.string.speedtest_netflix_title), connections, NETFLIX_DL_DURATION_SEC)}") }
+        val totalBytes = AtomicLong(0)
+        val t0 = System.nanoTime()
+        val deadline = t0 + NETFLIX_DL_DURATION_SEC * 1_000_000_000L
+        val payload = ByteArray(2 * 1024 * 1024) { (it % 256).toByte() }  // 2 MB chunks
+
+        val workers = testUrls.map { url ->
+            Thread {
+                val c = plainClient(NETFLIX_DL_DURATION_SEC.toLong() + 5)
+                try {
+                    while (!cancelled.get() && System.nanoTime() < deadline) {
+                        val body = object : okhttp3.RequestBody() {
+                            override fun contentType() = "application/octet-stream".toMediaType()
+                            override fun contentLength() = payload.size.toLong()
+                            override fun writeTo(sink: okio.BufferedSink) {
+                                var off = 0; val chunk = 65536
+                                while (off < payload.size && !cancelled.get() && System.nanoTime() < deadline) {
+                                    val len = minOf(chunk, payload.size - off)
+                                    sink.write(payload, off, len)
+                                    sink.flush()
+                                    totalBytes.addAndGet(len.toLong())
+                                    off += len
+                                }
+                            }
+                        }
+                        val req = Request.Builder()
+                            .url(url)
+                            .post(body)
+                            .header("User-Agent", "Mozilla/5.0")
+                            .build()
+                        try { c.newCall(req).execute().close() } catch (_: Exception) {}
+                    }
+                } catch (_: Exception) {
+                } finally { shutdown(c) }
+            }.also { it.isDaemon = true; it.start() }
+        }
+        monitorProgress(totalBytes, t0, deadline, NETFLIX_DL_DURATION_SEC) { mbps, progress ->
+            tvUpload.text = "${"%.2f".format(mbps)} Mbps"
+            pbUpload.progress = progress
+        }
+        workers.forEach { it.join(2000); if (it.isAlive) it.interrupt() }
+        if (!cancelled.get()) {
+            val elapsed = (System.nanoTime() - t0) / 1e9
+            val bytes = totalBytes.get()
+            val mbps = if (elapsed > 0) (bytes * 8.0) / (elapsed * 1e6) else 0.0
+            ui {
+                tvUpload.text = "${"%.2f".format(mbps)} Mbps"; pbUpload.progress = 1000
                 logConsole(getString(R.string.speedtest_mbps_fmt, mbps, bytes / 1_048_576.0, elapsed))
             }
         }

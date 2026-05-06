@@ -35,9 +35,13 @@ class DnsSpeedtestActivity : AppCompatActivity() {
 
     private lateinit var tvCurrentTest: TextView
     private lateinit var layoutProviders: LinearLayout
-    private lateinit var tvRanking: TextView
+    private lateinit var tvTopRanking: TextView
+    private lateinit var tvFullRanking: TextView
+    private lateinit var wrapTopRanking: android.widget.FrameLayout
+    private lateinit var wrapFullRanking: android.widget.FrameLayout
     private lateinit var scrollProviders: ScrollView
-    private lateinit var scrollRanking: ScrollView
+    private lateinit var scrollTopRanking: ScrollView
+    private lateinit var scrollFullRanking: ScrollView
     private lateinit var btnStartStop: Button
     private lateinit var btnBack: Button
 
@@ -78,16 +82,19 @@ class DnsSpeedtestActivity : AppCompatActivity() {
 
         tvCurrentTest = findViewById(R.id.tvCurrentTest)
         layoutProviders = findViewById(R.id.layoutProviders)
-        tvRanking = findViewById(R.id.tvRanking)
+        tvTopRanking = findViewById(R.id.tvTopRanking)
+        tvFullRanking = findViewById(R.id.tvFullRanking)
+        wrapTopRanking = findViewById(R.id.wrapTopRanking)
+        wrapFullRanking = findViewById(R.id.wrapFullRanking)
         scrollProviders = findViewById(R.id.scrollProviders)
-        scrollRanking = findViewById(R.id.scrollRanking)
+        scrollTopRanking = findViewById(R.id.scrollTopRanking)
+        scrollFullRanking = findViewById(R.id.scrollFullRanking)
         btnStartStop = findViewById(R.id.btnStartStop)
         btnBack = findViewById(R.id.btnBack)
 
         btnBack.setOnClickListener { finish() }
         btnStartStop.setOnClickListener { toggleStartStop() }
 
-        // Force focus sur btnStartStop
         btnStartStop.isFocusable = true
         btnStartStop.isFocusableInTouchMode = false
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -96,14 +103,20 @@ class DnsSpeedtestActivity : AppCompatActivity() {
 
         tvCurrentTest.text = getString(R.string.dns_speedtest_title)
 
-        // Ranking panel: D-pad UP/DOWN scrolls the content
-        scrollRanking.setOnKeyListener { _, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_DOWN) {
-                when (keyCode) {
-                    KeyEvent.KEYCODE_DPAD_DOWN -> { scrollRanking.smoothScrollBy(0, 100); true }
-                    KeyEvent.KEYCODE_DPAD_UP -> { scrollRanking.smoothScrollBy(0, -100); true }
-                    else -> false
-                }
+        // DPAD UP/DOWN sur les wrappers focusables : scroll le ScrollView
+        // interne (pattern wrapStatus/wrapReport de l'écran principal).
+        wrapTopRanking.setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN) when (keyCode) {
+                KeyEvent.KEYCODE_DPAD_DOWN -> { scrollTopRanking.smoothScrollBy(0, 100); true }
+                KeyEvent.KEYCODE_DPAD_UP -> { scrollTopRanking.smoothScrollBy(0, -100); true }
+                else -> false
+            } else false
+        }
+        wrapFullRanking.setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN) when (keyCode) {
+                KeyEvent.KEYCODE_DPAD_DOWN -> { scrollFullRanking.smoothScrollBy(0, 100); true }
+                KeyEvent.KEYCODE_DPAD_UP -> { scrollFullRanking.smoothScrollBy(0, -100); true }
+                else -> false
             } else false
         }
     }
@@ -162,7 +175,8 @@ class DnsSpeedtestActivity : AppCompatActivity() {
         recentProgressLines.clear()
         expandedProviders.clear()
         tvCurrentTest.text = ""
-        tvRanking.text = ""
+        tvTopRanking.text = ""
+        tvFullRanking.text = ""
         layoutProviders.removeAllViews()
         cancelled = false
 
@@ -267,17 +281,18 @@ class DnsSpeedtestActivity : AppCompatActivity() {
             // Only restore focus to btnStartStop when test finishes
             // (do NOT steal focus during test — user may be browsing results)
 
-            // --- RIGHT panel: Ranking ---
-            val rankingBuf = SpannableStringBuilder()
+            // --- RIGHT panels : 2 sub-columns (Top5+Recommand\u00E9 | Classement) ---
+            val topBuf = SpannableStringBuilder()
+            val fullBuf = SpannableStringBuilder()
 
-            // Top 5 with medals
+            // \u2500\u2500 Top 5 with medals + Recommand\u00E9 \u2500\u2500
             val podiumEmojis = listOf("\uD83E\uDD47", "\uD83E\uDD48", "\uD83E\uDD49", "4.", "5.")
             val top5 = sorted.filter { it.latency != null }.take(5)
 
             if (top5.isNotEmpty()) {
-                appendToBuf(rankingBuf, getString(R.string.speedtest_best_dns), COLOR_GOLD)
-                appendToBuf(rankingBuf, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500", COLOR_GOLD)
-                appendToBuf(rankingBuf, "", COLOR_WHITE)
+                appendToBuf(topBuf, getString(R.string.speedtest_best_dns), COLOR_GOLD)
+                appendToBuf(topBuf, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500", COLOR_GOLD)
+                appendToBuf(topBuf, "", COLOR_WHITE)
 
                 for ((i, r) in top5.withIndex()) {
                     val medal = podiumEmojis.getOrElse(i) { "${i + 1}." }
@@ -288,30 +303,23 @@ class DnsSpeedtestActivity : AppCompatActivity() {
                         else -> COLOR_WHITE
                     }
                     val protoColor = protocolColorForLabel(r.type)
-                    appendToBuf(rankingBuf, "$medal ${r.provider}", color)
-                    appendTwoPart(rankingBuf, "   (", r.type, protoColor, ") ${r.latency} ms", color)
-                    appendToBuf(rankingBuf, "", COLOR_WHITE)
+                    appendToBuf(topBuf, "$medal ${r.provider}", color)
+                    appendTwoPart(topBuf, "   (", r.type, protoColor, ") ${r.latency} ms", color)
+                    appendToBuf(topBuf, "", COLOR_WHITE)
                 }
 
-                if (final && top5.isNotEmpty()) {
-                    appendToBuf(rankingBuf, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500", COLOR_GREEN)
-                    appendToBuf(rankingBuf, getString(R.string.speedtest_recommended), COLOR_GREEN)
+                if (final) {
+                    appendToBuf(topBuf, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500", COLOR_GREEN)
+                    appendToBuf(topBuf, getString(R.string.speedtest_recommended), COLOR_GREEN)
                     val recProtoColor = protocolColorForLabel(top5[0].type)
-                    appendToBuf(rankingBuf, top5[0].provider, COLOR_GOLD)
-                    appendTwoPart(rankingBuf, "(", top5[0].type, recProtoColor, ") ${top5[0].latency} ms", COLOR_GOLD)
-                    appendToBuf(rankingBuf, "", COLOR_WHITE)
+                    appendToBuf(topBuf, top5[0].provider, COLOR_GOLD)
+                    appendTwoPart(topBuf, "(", top5[0].type, recProtoColor, ") ${top5[0].latency} ms", COLOR_GOLD)
                 }
             }
 
-            // Full ranking
-            appendToBuf(rankingBuf, "", COLOR_WHITE)
-            if (final) {
-                appendToBuf(rankingBuf, getString(R.string.speedtest_full_ranking), COLOR_CYAN)
-            } else {
-                appendToBuf(rankingBuf, getString(R.string.speedtest_partial_ranking), COLOR_CYAN)
-            }
-            appendToBuf(rankingBuf, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500", COLOR_CYAN)
-
+            // \u2500\u2500 Full ranking (sub-column droite) \u2500\u2500
+            appendToBuf(fullBuf, if (final) getString(R.string.speedtest_full_ranking) else getString(R.string.speedtest_partial_ranking), COLOR_CYAN)
+            appendToBuf(fullBuf, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500", COLOR_CYAN)
             for ((i, r) in sorted.withIndex()) {
                 val latencyStr = if (r.latency != null) "${r.latency} ms" else getString(R.string.result_error)
                 val color = if (r.latency != null) {
@@ -323,12 +331,14 @@ class DnsSpeedtestActivity : AppCompatActivity() {
                     }
                 } else COLOR_GREY
                 val protoColor = protocolColorForLabel(r.type)
-                appendTwoPart(rankingBuf, "${String.format("%2d", i + 1)}. ${r.provider} (", r.type, protoColor, ")", color)
-                appendToBuf(rankingBuf, "    $latencyStr", color)
+                appendTwoPart(fullBuf, "${String.format("%2d", i + 1)}. ${r.provider} (", r.type, protoColor, ")", color)
+                appendToBuf(fullBuf, "    $latencyStr", color)
             }
 
-            tvRanking.text = rankingBuf
-            scrollRanking.post { scrollRanking.scrollTo(0, 0) }
+            tvTopRanking.text = topBuf
+            tvFullRanking.text = fullBuf
+            scrollTopRanking.post { scrollTopRanking.scrollTo(0, 0) }
+            scrollFullRanking.post { scrollFullRanking.scrollTo(0, 0) }
         }
     }
 

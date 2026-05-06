@@ -58,7 +58,7 @@
             android:focusable="true"
             android:nextFocusUp="@id/btnBack"
             android:nextFocusDown="@id/scrollProviders"
-            android:nextFocusRight="@id/scrollRanking"/>
+            android:nextFocusRight="@id/wrapTopRanking"/>
 
         <TextView
             android:id="@+id/tvCurrentTest"
@@ -75,14 +75,18 @@
             android:padding="8dp"/>
     </LinearLayout>
 
-    <!-- Bottom: Providers (left) | Ranking (right) -->
+    <!-- Bottom 3 colonnes : Providers | Top5+Recommandé | Classement complet.
+         Chaque colonne ranking utilise le pattern FrameLayout wrapper (focusable
+         + foreground border) + ScrollView interne (non-focusable). Sans ce
+         wrapper, le focus border ne suivait pas les bounds réelles et le
+         contenu scrollable débordait visuellement. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <!-- LEFT: Providers with expandable results -->
+        <!-- COL 1 : Providers (expandable) -->
         <ScrollView
             android:id="@+id/scrollProviders"
             android:layout_width="0dp"
@@ -95,7 +99,7 @@
             android:focusable="false"
             android:descendantFocusability="afterDescendants"
             android:nextFocusUp="@id/btnStartStop"
-            android:nextFocusRight="@id/scrollRanking">
+            android:nextFocusRight="@id/wrapTopRanking">
 
             <LinearLayout
                 android:id="@+id/layoutProviders"
@@ -104,31 +108,80 @@
                 android:orientation="vertical"/>
         </ScrollView>
 
-        <!-- RIGHT: Ranking -->
-        <ScrollView
-            android:id="@+id/scrollRanking"
+        <!-- COL 2 : Meilleurs DNS + Recommandé -->
+        <FrameLayout
+            android:id="@+id/wrapTopRanking"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@color/pdm_background"
+            android:foreground="@drawable/btn_focus_foreground"
+            android:foregroundGravity="fill"
+            android:focusable="true"
+            android:descendantFocusability="blocksDescendants"
+            android:nextFocusUp="@id/btnStartStop"
+            android:nextFocusLeft="@id/scrollProviders"
+            android:nextFocusRight="@id/wrapFullRanking">
+            <ScrollView
+                android:id="@+id/scrollTopRanking"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="6dp"
+                android:fillViewport="false"
+                android:focusable="false"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"
+                android:scrollbarSize="6dp"
+                android:scrollbarThumbVertical="@color/pdm_accent_alt">
+                <TextView
+                    android:id="@+id/tvTopRanking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/pdm_text_secondary"
+                    android:textSize="11sp"
+                    android:fontFamily="monospace"
+                    android:lineSpacingExtra="1dp"
+                    android:focusable="false"/>
+            </ScrollView>
+        </FrameLayout>
+
+        <!-- COL 3 : Classement complet -->
+        <FrameLayout
+            android:id="@+id/wrapFullRanking"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginStart="4dp"
             android:background="@color/pdm_background"
             android:foreground="@drawable/btn_focus_foreground"
-            android:padding="6dp"
-            android:fillViewport="true"
+            android:foregroundGravity="fill"
             android:focusable="true"
             android:descendantFocusability="blocksDescendants"
             android:nextFocusUp="@id/btnStartStop"
-            android:nextFocusLeft="@id/scrollProviders">
-
-            <TextView
-                android:id="@+id/tvRanking"
+            android:nextFocusLeft="@id/wrapTopRanking">
+            <ScrollView
+                android:id="@+id/scrollFullRanking"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/pdm_text_secondary"
-                android:textSize="11sp"
-                android:fontFamily="monospace"
-                android:lineSpacingExtra="1dp"
-                android:focusable="false"/>
-        </ScrollView>
+                android:layout_height="match_parent"
+                android:padding="6dp"
+                android:fillViewport="false"
+                android:focusable="false"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"
+                android:scrollbarSize="6dp"
+                android:scrollbarThumbVertical="@color/pdm_accent_alt">
+                <TextView
+                    android:id="@+id/tvFullRanking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/pdm_text_secondary"
+                    android:textSize="11sp"
+                    android:fontFamily="monospace"
+                    android:lineSpacingExtra="1dp"
+                    android:focusable="false"/>
+            </ScrollView>
+        </FrameLayout>
     </LinearLayout>
 </LinearLayout>

@@ -412,7 +412,7 @@
     <string name="domain_tester_dns_all">All</string>
     <string name="domain_tester_dns_select">DNS to test:</string>
     <string name="internet_speedtest_advanced">⚡ Internet speed test</string>
-    <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+    <string name="dns_speedtest_shortcut">⚡ DNS Speedtest</string>
 
     <!-- Theme -->
     <string name="theme_label">🎨 Theme</string>
@@ -544,6 +544,13 @@
         <item quantity="one">%d profile</item>
         <item quantity="other">%d profiles</item>
     </plurals>    <string name="search_refine_hint">… refine your search</string>
-    <string name="nextdns_profile_id_label">NextDNS profile ID:</string>    <string name="speedtest_backend_label_fmt">Backend: %1$s  ▾</string>
-    <string name="speedtest_backend_picker_title">Pick test backend</string>
+    <string name="nextdns_profile_id_label">NextDNS profile ID:</string>    <string name="speedtest_backend_label_fmt">Test server: %1$s  ▾</string>
+    <string name="speedtest_backend_picker_title">Pick test server</string>    <string name="speedtest_ookla_loading">Loading Ookla server list…</string>
+    <string name="speedtest_ookla_latency">Testing Ookla server latency…</string>
+    <string name="speedtest_ookla_loaded_fmt">%1$d Ookla server(s) loaded.</string>
+    <string name="speedtest_ookla_err_code_fmt">Ookla server error: %1$d</string>
+    <string name="speedtest_ookla_err_load_fmt">Ookla load error: %1$s</string>
+    <string name="speedtest_ookla_none">No Ookla servers available.</string>
+    <string name="speedtest_ookla_not_selected">No Ookla server selected.</string>
+    <string name="speedtest_ookla_title">Ookla</string>
 </resources>

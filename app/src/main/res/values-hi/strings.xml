@@ -383,7 +383,7 @@
     <string name="domain_tester_dns_all">सभी</string>
     <string name="domain_tester_dns_select">परीक्षण के लिए DNS:</string>
     <string name="internet_speedtest_advanced">⚡ इंटरनेट स्पीड टेस्ट</string>
-    <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+    <string name="dns_speedtest_shortcut">⚡ DNS स्पीडटेस्ट</string>
 
     <!-- Theme -->
     <string name="theme_label">🎨 थीम</string>
@@ -525,6 +525,13 @@
         <item quantity="one">%d प्रोफ़ाइल</item>
         <item quantity="other">%d प्रोफ़ाइलें</item>
     </plurals>    <string name="search_refine_hint">… खोज को परिष्कृत करें</string>
-    <string name="nextdns_profile_id_label">NextDNS प्रोफ़ाइल ID :</string>    <string name="speedtest_backend_label_fmt">बैकएंड : %1$s  ▾</string>
-    <string name="speedtest_backend_picker_title">परीक्षण बैकएंड चुनें</string>
+    <string name="nextdns_profile_id_label">NextDNS प्रोफ़ाइल ID :</string>    <string name="speedtest_backend_label_fmt">परीक्षण सर्वर : %1$s  ▾</string>
+    <string name="speedtest_backend_picker_title">परीक्षण सर्वर चुनें</string>    <string name="speedtest_ookla_loading">Ookla सर्वर सूची लोड हो रही है…</string>
+    <string name="speedtest_ookla_latency">Ookla सर्वर लेटेंसी टेस्ट…</string>
+    <string name="speedtest_ookla_loaded_fmt">%1$d Ookla सर्वर लोड हुए।</string>
+    <string name="speedtest_ookla_err_code_fmt">Ookla सर्वर त्रुटि: %1$d</string>
+    <string name="speedtest_ookla_err_load_fmt">Ookla लोड त्रुटि: %1$s</string>
+    <string name="speedtest_ookla_none">कोई Ookla सर्वर उपलब्ध नहीं।</string>
+    <string name="speedtest_ookla_not_selected">कोई Ookla सर्वर नहीं चुना।</string>
+    <string name="speedtest_ookla_title">Ookla</string>
 </resources>

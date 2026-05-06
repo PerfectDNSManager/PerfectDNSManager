@@ -383,7 +383,7 @@
     <string name="domain_tester_dns_all">Todos</string>
     <string name="domain_tester_dns_select">DNS a probar:</string>
     <string name="internet_speedtest_advanced">⚡ Test de velocidad Internet</string>
-    <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+    <string name="dns_speedtest_shortcut">⚡ Speedtest DNS</string>
 
     <!-- Theme -->
     <string name="theme_label">🎨 Tema</string>
@@ -525,6 +525,13 @@
         <item quantity="one">%d perfil</item>
         <item quantity="other">%d perfiles</item>
     </plurals>    <string name="search_refine_hint">… afine su búsqueda</string>
-    <string name="nextdns_profile_id_label">ID de perfil NextDNS:</string>    <string name="speedtest_backend_label_fmt">Backend: %1$s  ▾</string>
-    <string name="speedtest_backend_picker_title">Elegir backend de prueba</string>
+    <string name="nextdns_profile_id_label">ID de perfil NextDNS:</string>    <string name="speedtest_backend_label_fmt">Servidor de prueba: %1$s  ▾</string>
+    <string name="speedtest_backend_picker_title">Elegir servidor de prueba</string>    <string name="speedtest_ookla_loading">Cargando lista de servidores Ookla…</string>
+    <string name="speedtest_ookla_latency">Probando latencia de servidores Ookla…</string>
+    <string name="speedtest_ookla_loaded_fmt">%1$d servidor(es) Ookla cargado(s).</string>
+    <string name="speedtest_ookla_err_code_fmt">Error servidor Ookla: %1$d</string>
+    <string name="speedtest_ookla_err_load_fmt">Error de carga Ookla: %1$s</string>
+    <string name="speedtest_ookla_none">Ningún servidor Ookla disponible.</string>
+    <string name="speedtest_ookla_not_selected">Ningún servidor Ookla seleccionado.</string>
+    <string name="speedtest_ookla_title">Ookla</string>
 </resources>

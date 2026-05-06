@@ -383,7 +383,7 @@
     <string name="domain_tester_dns_all">সব</string>
     <string name="domain_tester_dns_select">পরীক্ষার জন্য DNS:</string>
     <string name="internet_speedtest_advanced">⚡ ইন্টারনেট স্পিড টেস্ট</string>
-    <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+    <string name="dns_speedtest_shortcut">⚡ DNS স্পিডটেস্ট</string>
 
     <!-- Theme -->
     <string name="theme_label">🎨 থিম</string>
@@ -525,6 +525,13 @@
         <item quantity="one">%d প্রোফাইল</item>
         <item quantity="other">%d প্রোফাইল</item>
     </plurals>    <string name="search_refine_hint">… অনুসন্ধান পরিমার্জন করুন</string>
-    <string name="nextdns_profile_id_label">NextDNS প্রোফাইল ID :</string>    <string name="speedtest_backend_label_fmt">ব্যাকএন্ড : %1$s  ▾</string>
-    <string name="speedtest_backend_picker_title">টেস্ট ব্যাকএন্ড নির্বাচন করুন</string>
+    <string name="nextdns_profile_id_label">NextDNS প্রোফাইল ID :</string>    <string name="speedtest_backend_label_fmt">টেস্ট সার্ভার : %1$s  ▾</string>
+    <string name="speedtest_backend_picker_title">টেস্ট সার্ভার নির্বাচন করুন</string>    <string name="speedtest_ookla_loading">Ookla সার্ভার তালিকা লোড হচ্ছে…</string>
+    <string name="speedtest_ookla_latency">Ookla সার্ভার লেটেন্সি পরীক্ষা…</string>
+    <string name="speedtest_ookla_loaded_fmt">%1$d Ookla সার্ভার লোড হয়েছে।</string>
+    <string name="speedtest_ookla_err_code_fmt">Ookla সার্ভার ত্রুটি: %1$d</string>
+    <string name="speedtest_ookla_err_load_fmt">Ookla লোড ত্রুটি: %1$s</string>
+    <string name="speedtest_ookla_none">কোনো Ookla সার্ভার নেই।</string>
+    <string name="speedtest_ookla_not_selected">কোনো Ookla সার্ভার নির্বাচিত নয়।</string>
+    <string name="speedtest_ookla_title">Ookla</string>
 </resources>

@@ -383,7 +383,7 @@
     <string name="domain_tester_dns_all">الكل</string>
     <string name="domain_tester_dns_select">DNS للاختبار:</string>
     <string name="internet_speedtest_advanced">⚡ اختبار سرعة الإنترنت</string>
-    <string name="dns_speedtest_shortcut">⚡ Speedtest</string>
+    <string name="dns_speedtest_shortcut">⚡ اختبار سرعة DNS</string>
 
     <!-- Theme -->
     <string name="theme_label">🎨 السمة</string>
@@ -529,6 +529,13 @@
         <item quantity="many">%d ملفًا</item>
         <item quantity="other">%d ملف</item>
     </plurals>    <string name="search_refine_hint">… حسّن البحث</string>
-    <string name="nextdns_profile_id_label">معرّف ملف NextDNS :</string>    <string name="speedtest_backend_label_fmt">الخلفية : %1$s  ▾</string>
-    <string name="speedtest_backend_picker_title">اختر خلفية الاختبار</string>
+    <string name="nextdns_profile_id_label">معرّف ملف NextDNS :</string>    <string name="speedtest_backend_label_fmt">خادم الاختبار : %1$s  ▾</string>
+    <string name="speedtest_backend_picker_title">اختر خادم الاختبار</string>    <string name="speedtest_ookla_loading">جاري تحميل قائمة خوادم Ookla…</string>
+    <string name="speedtest_ookla_latency">اختبار زمن وصول خوادم Ookla…</string>
+    <string name="speedtest_ookla_loaded_fmt">تم تحميل %1$d خادم Ookla.</string>
+    <string name="speedtest_ookla_err_code_fmt">خطأ خادم Ookla: %1$d</string>
+    <string name="speedtest_ookla_err_load_fmt">خطأ تحميل Ookla: %1$s</string>
+    <string name="speedtest_ookla_none">لا يوجد خادم Ookla متاح.</string>
+    <string name="speedtest_ookla_not_selected">لم يتم اختيار خادم Ookla.</string>
+    <string name="speedtest_ookla_title">Ookla</string>
 </resources>
