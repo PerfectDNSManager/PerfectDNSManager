@@ -519,5 +519,5 @@
     <string name="protocol_label">Protokoll:</string>
     <string name="split_tunnel_search_hint_fmt">Tippen, um unter %1$d Apps zu suchen…</string>
     <string name="split_tunnel_search_min_chars">Mindestens 2 Zeichen tippen…</string>
-    <string name="split_tunnel_all_apps_label">Alle Apps</string>
+    <string name="split_tunnel_all_apps_label">Alle Apps</string>    <string name="primary_dns_invalid">Ungültiger primärer DNS. Format gemäß gewähltem Protokoll prüfen.</string>    <string name="update_signature_mismatch">Fehler: APK-Signatur stimmt nicht. Update abgebrochen.</string>
 </resources>

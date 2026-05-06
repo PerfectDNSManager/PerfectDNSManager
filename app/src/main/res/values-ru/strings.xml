@@ -519,5 +519,5 @@
     <string name="protocol_label">Протокол:</string>
     <string name="split_tunnel_search_hint_fmt">Введите для поиска среди %1$d приложений…</string>
     <string name="split_tunnel_search_min_chars">Введите минимум 2 символа…</string>
-    <string name="split_tunnel_all_apps_label">Все приложения</string>
+    <string name="split_tunnel_all_apps_label">Все приложения</string>    <string name="primary_dns_invalid">Неверный основной DNS. Проверьте формат для выбранного протокола.</string>    <string name="update_signature_mismatch">Ошибка: подпись APK не совпадает. Обновление отменено.</string>
 </resources>

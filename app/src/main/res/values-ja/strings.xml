@@ -519,5 +519,5 @@
     <string name="protocol_label">プロトコル:</string>
     <string name="split_tunnel_search_hint_fmt">%1$d 個のアプリから検索…</string>
     <string name="split_tunnel_search_min_chars">2 文字以上を入力…</string>
-    <string name="split_tunnel_all_apps_label">すべてのアプリ</string>
+    <string name="split_tunnel_all_apps_label">すべてのアプリ</string>    <string name="primary_dns_invalid">プライマリ DNS が無効です。選択したプロトコルの形式を確認してください。</string>    <string name="update_signature_mismatch">エラー : APK の署名が一致しません。更新を中止しました。</string>
 </resources>

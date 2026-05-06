@@ -519,5 +519,5 @@
     <string name="protocol_label">البروتوكول:</string>
     <string name="split_tunnel_search_hint_fmt">اكتب للبحث بين %1$d تطبيق…</string>
     <string name="split_tunnel_search_min_chars">اكتب حرفين على الأقل…</string>
-    <string name="split_tunnel_all_apps_label">كل التطبيقات</string>
+    <string name="split_tunnel_all_apps_label">كل التطبيقات</string>    <string name="primary_dns_invalid">DNS الأساسي غير صالح. تحقق من التنسيق وفقاً للبروتوكول المختار.</string>    <string name="update_signature_mismatch">خطأ : توقيع APK غير متطابق. تم إلغاء التحديث.</string>
 </resources>

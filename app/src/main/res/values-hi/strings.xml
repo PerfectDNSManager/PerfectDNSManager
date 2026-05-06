@@ -519,5 +519,5 @@
     <string name="protocol_label">प्रोटोकॉल:</string>
     <string name="split_tunnel_search_hint_fmt">%1$d ऐप्स में खोजने के लिए टाइप करें…</string>
     <string name="split_tunnel_search_min_chars">कम से कम 2 अक्षर टाइप करें…</string>
-    <string name="split_tunnel_all_apps_label">सभी ऐप्स</string>
+    <string name="split_tunnel_all_apps_label">सभी ऐप्स</string>    <string name="primary_dns_invalid">प्राथमिक DNS अमान्य। चुने गए प्रोटोकॉल के अनुसार प्रारूप जांचें।</string>    <string name="update_signature_mismatch">त्रुटि : APK हस्ताक्षर मेल नहीं खाते। अपडेट रद्द किया गया।</string>
 </resources>

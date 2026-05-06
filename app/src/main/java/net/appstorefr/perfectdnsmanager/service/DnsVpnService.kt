@@ -16,6 +16,7 @@ import net.appstorefr.perfectdnsmanager.MainActivity
 import net.appstorefr.perfectdnsmanager.R
 import net.appstorefr.perfectdnsmanager.data.DnsRewriteRepository
 import net.appstorefr.perfectdnsmanager.data.DnsRewriteRule
+import net.appstorefr.perfectdnsmanager.util.redactDnsUrl
 import okhttp3.Dns
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -166,7 +167,7 @@ class DnsVpnService : VpnService() {
                             )
                             dnsServer = profile.primary
                             dnsServerSecondary = profile.secondary
-                            Log.i(T, "Always-on/system start: ${profile.providerName} - ${profile.primary}")
+                            Log.i(T, "Always-on/system start: ${profile.providerName} - ${redactDnsUrl(profile.primary)}")
                             stopVpn(); startVpn()
                         } catch (e: Exception) {
                             Log.e(T, "Failed to parse saved profile: ${e.message}")
@@ -187,7 +188,7 @@ class DnsVpnService : VpnService() {
 
     private fun startVpn() {
         try {
-            Log.i(T, "=== START VPN beta-34 ===  primary=$dnsServer  secondary=$dnsServerSecondary")
+            Log.i(T, "=== START VPN ===  primary=${redactDnsUrl(dnsServer)}  secondary=${redactDnsUrl(dnsServerSecondary)}")
 
             // Load rewrite rules
             rewriteRules = DnsRewriteRepository(this).getAllRules().filter { it.isEnabled }
@@ -523,27 +524,38 @@ class DnsVpnService : VpnService() {
         }
     } catch (e: Exception) { Log.w(T, "DoH err: ${e.javaClass.simpleName}: ${e.message}"); null }
 
-    /** Résoudre un hostname en bypassant le VPN (requête DNS directe UDP vers 8.8.8.8) */
+    /**
+     * Résoudre un hostname en bypassant le VPN (requête DNS directe UDP).
+     * Bootstrap DNS sans Google : Cloudflare 1.1.1.1 d'abord, puis Quad9 9.9.9.9
+     * en fallback. Cohérent avec une app de DNS privé : on n'envoie pas le
+     * hostname amorce à Google.
+     */
     private fun resolveHostBypass(host: String): InetAddress? = try {
-        // Si c'est déjà une IP, pas besoin de résoudre
         if (host.matches(Regex("\\d+\\.\\d+\\.\\d+\\.\\d+"))) {
             InetAddress.getByName(host)
         } else {
-            // Construire une requête DNS brute pour résoudre le host
-            val query = buildDnsQuery(host)
-            val sock = DatagramSocket()
-            protect(sock) // bypass VPN
+            queryBootstrapDns(host, byteArrayOf(1, 1, 1, 1))
+                ?: queryBootstrapDns(host, byteArrayOf(9, 9, 9, 9))
+        }
+    } catch (e: Exception) { Log.w(T, "resolveHostBypass: ${e.message}"); null }
+
+    /** Une requête DNS UDP vers une IP de bootstrap, VPN bypass. */
+    private fun queryBootstrapDns(host: String, serverIp: ByteArray): InetAddress? = try {
+        val query = buildDnsQuery(host)
+        DatagramSocket().use { sock ->
+            protect(sock)
             sock.soTimeout = 3000
-            val googleDns = InetAddress.getByAddress(byteArrayOf(8, 8, 8, 8))
-            sock.send(DatagramPacket(query, query.size, googleDns, 53))
+            val server = InetAddress.getByAddress(serverIp)
+            sock.send(DatagramPacket(query, query.size, server, 53))
             val resp = ByteArray(512)
             val pkt = DatagramPacket(resp, resp.size)
             sock.receive(pkt)
-            sock.close()
-            // Parser la réponse pour extraire la première IP
             parseDnsResponseIp(resp, pkt.length)
         }
-    } catch (e: Exception) { Log.w(T, "resolveHostBypass: ${e.message}"); null }
+    } catch (e: Exception) {
+        Log.w(T, "bootstrap DNS ${serverIp.joinToString(".") { (it.toInt() and 0xFF).toString() }} failed: ${e.message}")
+        null
+    }
 
     /** Construire une requête DNS type A pour un hostname */
     private fun buildDnsQuery(host: String): ByteArray {

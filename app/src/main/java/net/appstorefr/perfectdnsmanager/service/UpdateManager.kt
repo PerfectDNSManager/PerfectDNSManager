@@ -3,6 +3,8 @@ package net.appstorefr.perfectdnsmanager.service
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -12,6 +14,7 @@ import com.github.kittinunf.result.Result
 import net.appstorefr.perfectdnsmanager.R
 import org.json.JSONObject
 import java.io.File
+import java.security.MessageDigest
 
 class UpdateManager(private val context: Context) {
 
@@ -206,6 +209,18 @@ class UpdateManager(private val context: Context) {
 
     private fun installApk(apkFile: File) {
         try {
+            // Vérifier la signature AVANT de lancer l'install : si le compte
+            // GitHub appstorefr est compromis ou si on subit un MitM avec un
+            // cert custom installé sur l'appareil, l'APK téléchargé pourrait
+            // venir d'un attaquant. Comparer avec la signature du package
+            // courant ferme ce vecteur (PackageInstaller bloque ensuite tout
+            // mismatch côté système, mais on échoue plus tôt et plus clair).
+            if (!verifyApkSignature(apkFile)) {
+                Log.e(TAG, "APK signature mismatch — install aborted")
+                showToastOnMainThread(context.getString(R.string.update_signature_mismatch))
+                apkFile.delete()
+                return
+            }
             val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", apkFile)
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(uri, "application/vnd.android.package-archive")
@@ -217,6 +232,59 @@ class UpdateManager(private val context: Context) {
             Log.e(TAG, "APK install error", e)
             showToastOnMainThread(context.getString(R.string.update_install_error))
         }
+    }
+
+    /**
+     * Compare le SHA-256 du certificat de signature de l'APK téléchargé avec
+     * celui de l'app courante. Renvoie false si différent ou indéterminable.
+     * On utilise l'API PackageManager pour parser l'APK (ne nécessite aucune
+     * permission supplémentaire et fonctionne hors ligne).
+     */
+    private fun verifyApkSignature(apkFile: File): Boolean {
+        return try {
+            val pm = context.packageManager
+            val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                @Suppress("DEPRECATION")
+                PackageManager.GET_SIGNING_CERTIFICATES
+            } else {
+                @Suppress("DEPRECATION")
+                PackageManager.GET_SIGNATURES
+            }
+            val downloadedInfo = pm.getPackageArchiveInfo(apkFile.absolutePath, flags)
+                ?: run { Log.e(TAG, "Cannot parse APK"); return false }
+            val installedInfo = pm.getPackageInfo(context.packageName, flags)
+
+            val downloadedSigs = signaturesFor(downloadedInfo)
+            val installedSigs = signaturesFor(installedInfo)
+            if (downloadedSigs.isEmpty() || installedSigs.isEmpty()) {
+                Log.e(TAG, "Empty signatures (downloaded=${downloadedSigs.size}, installed=${installedSigs.size})")
+                return false
+            }
+            val match = installedSigs.any { it in downloadedSigs }
+            if (!match) {
+                Log.e(TAG, "Signature mismatch: installed=${installedSigs.firstOrNull()?.take(16)}… downloaded=${downloadedSigs.firstOrNull()?.take(16)}…")
+            }
+            match
+        } catch (e: Exception) {
+            Log.e(TAG, "verifyApkSignature error", e)
+            false
+        }
+    }
+
+    private fun signaturesFor(info: android.content.pm.PackageInfo): Set<String> {
+        val sigs = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            info.signingInfo?.let {
+                if (it.hasMultipleSigners()) it.apkContentsSigners else it.signingCertificateHistory
+            } ?: emptyArray()
+        } else {
+            @Suppress("DEPRECATION")
+            info.signatures ?: emptyArray()
+        }
+        val md = MessageDigest.getInstance("SHA-256")
+        return sigs.map { sig ->
+            md.reset()
+            md.digest(sig.toByteArray()).joinToString("") { "%02x".format(it) }
+        }.toSet()
     }
 
     private fun showToastOnMainThread(message: String) {

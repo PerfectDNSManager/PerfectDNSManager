@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import net.appstorefr.perfectdnsmanager.MainActivity
 import net.appstorefr.perfectdnsmanager.R
 import net.appstorefr.perfectdnsmanager.data.DnsProfile
+import net.appstorefr.perfectdnsmanager.util.redactDnsUrl
 import com.google.gson.Gson
 
 class BootReceiver : BroadcastReceiver() {
@@ -61,7 +62,7 @@ class BootReceiver : BroadcastReceiver() {
             return
         }
 
-        Log.i(TAG, "Auto-reconnect VPN: ${profile.providerName} - ${profile.primary}")
+        Log.i(TAG, "Auto-reconnect VPN: ${profile.providerName} - ${redactDnsUrl(profile.primary)}")
 
         val pendingResult = goAsync()
         Thread {

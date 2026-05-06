@@ -519,5 +519,5 @@
     <string name="protocol_label">协议:</string>
     <string name="split_tunnel_search_hint_fmt">在 %1$d 个应用中搜索…</string>
     <string name="split_tunnel_search_min_chars">至少输入 2 个字符…</string>
-    <string name="split_tunnel_all_apps_label">所有应用</string>
+    <string name="split_tunnel_all_apps_label">所有应用</string>    <string name="primary_dns_invalid">主 DNS 无效。请根据所选协议检查格式。</string>    <string name="update_signature_mismatch">错误：APK 签名不匹配，更新已中止。</string>
 </resources>

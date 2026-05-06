@@ -519,5 +519,5 @@
     <string name="protocol_label">Protocollo:</string>
     <string name="split_tunnel_search_hint_fmt">Digita per cercare tra %1$d app…</string>
     <string name="split_tunnel_search_min_chars">Digita almeno 2 caratteri…</string>
-    <string name="split_tunnel_all_apps_label">Tutte le app</string>
+    <string name="split_tunnel_all_apps_label">Tutte le app</string>    <string name="primary_dns_invalid">DNS primario non valido. Verifica il formato per il protocollo scelto.</string>    <string name="update_signature_mismatch">Errore: la firma dell\'APK non corrisponde. Aggiornamento annullato.</string>
 </resources>
