@@ -306,11 +306,25 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             textSize = 16f
             setTypeface(typeface, Typeface.BOLD)
             isFocusable = true
-            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+            // Pas de foreground btn_focus_foreground : sa stroke verte se confond
+            // avec la stroke verte du greenPill → curseur invisible. À la place,
+            // on swap le background sur focus pour un cadre ambre vif et un
+            // léger zoom (cohérent avec les chips backend).
             background = greenPill(dp(8))
             setPadding(dp(24), dp(14), dp(24), dp(14))
             layoutParams = lp(matchParent, wrapContent).apply { bottomMargin = dp(8) }
             setOnClickListener { toggleTest() }
+        }
+        btnStartStop.setOnFocusChangeListener { v, hasFocus ->
+            v.background = if (hasFocus) {
+                pillFocusedBackground(dp(8))
+            } else if (running.get()) {
+                redPill(dp(8))
+            } else {
+                greenPill(dp(8))
+            }
+            v.scaleX = if (hasFocus) 1.04f else 1f
+            v.scaleY = if (hasFocus) 1.04f else 1f
         }
         // Chaîne D-pad verticale explicite — sans ça, btnServerPicker était
         // bypassé (chips → Start direct) et btnBack n'avait pas de cible
@@ -469,6 +483,16 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         GradientDrawable().apply {
             setColor(pdmSurface())
             setStroke(dp(3), 0xFFFFD740.toInt()) // amber 400 — fort contraste
+            cornerRadius = r.toFloat()
+        }
+
+    /** Background pour pilule (Start/Stop) focusée : cadre ambre visible peu
+     *  importe la couleur de la pilule courante (verte au repos, rouge en
+     *  cours de test). Garde un fill légèrement teinté pour matcher l'état. */
+    private fun pillFocusedBackground(r: Int): GradientDrawable =
+        GradientDrawable().apply {
+            setColor(pdmSurface())
+            setStroke(dp(4), 0xFFFFD740.toInt()) // amber 400 — fort contraste
             cornerRadius = r.toFloat()
         }
 
@@ -662,7 +686,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         val currentIndex = ooklaServers.indexOf(selectedOoklaServer).coerceAtLeast(0)
         net.appstorefr.perfectdnsmanager.util.TvDialog.showRadioPicker(
             this,
-            "Choisir un serveur Ookla",
+            getString(R.string.speedtest_pick_ookla_title),
             names,
             currentIndex
         ) { which ->
@@ -700,10 +724,15 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
     private fun updateButton(isRunning: Boolean) {
         val dp8 = dp(8)
-        btnStartStop.text = if (isRunning) "Arr\u00eater" else "D\u00e9marrer le test"
-        btnStartStop.background = if (isRunning) redPill(dp8) else greenPill(dp8)
+        btnStartStop.text = getString(if (isRunning) R.string.speedtest_stop else R.string.speedtest_start)
+        // Si focus en cours, on garde le cadre ambre \u2014 le focus listener
+        // restaurera la pilule color\u00e9e \u00e0 la perte de focus.
+        btnStartStop.background = when {
+            btnStartStop.isFocused -> pillFocusedBackground(dp8)
+            isRunning -> redPill(dp8)
+            else -> greenPill(dp8)
+        }
         btnStartStop.setTextColor(if (isRunning) COLOR_RED else COLOR_GREEN)
-        btnStartStop.foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
     }
 
     private fun resetResults() {
@@ -1090,14 +1119,14 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                     ui { logConsole(getString(R.string.speedtest_error_fmt, "Fast.com URLs unavailable")) }
                     return@Thread
                 }
-                ui { logConsole("${testUrls.size} test URL(s) loaded.") }
+                ui { logConsole(getString(R.string.speedtest_fast_urls_loaded_fmt, testUrls.size)) }
 
                 if (!cancelled.get()) runNetflixPing(testUrls)
                 if (!cancelled.get()) runNetflixDownload(testUrls)
                 if (!cancelled.get()) ui {
                     tvUpload.text = "N/A"
                     pbUpload.progress = 1000
-                    logConsole("\n--- Upload : non support\u00e9 (N/A) ---")
+                    logConsole("\n${getString(R.string.speedtest_upload_unsupported)}")
                     logConsole(getString(R.string.speedtest_done_msg))
                 }
             } catch (_: InterruptedException) {
@@ -1156,7 +1185,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     }
 
     private fun runNetflixPing(testUrls: List<String>) {
-        ui { logConsole("\n--- Ping Fast.com ($NETFLIX_PING_COUNT requ\u00eates) ---") }
+        ui { logConsole("\n${getString(R.string.speedtest_ping_section_fmt, getString(R.string.speedtest_netflix_title), NETFLIX_PING_COUNT)}") }
         val client = plainClient(5)
         val pings = mutableListOf<Double>()
         val pingUrl = testUrls.first()
@@ -1197,7 +1226,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
     private fun runNetflixDownload(testUrls: List<String>) {
         val connections = testUrls.size
-        ui { logConsole("\n--- Download Fast.com ($connections conn., ${NETFLIX_DL_DURATION_SEC}s) ---") }
+        ui { logConsole("\n${getString(R.string.speedtest_dl_section_fmt, getString(R.string.speedtest_netflix_title), connections, NETFLIX_DL_DURATION_SEC)}") }
 
         val totalBytes = AtomicLong(0)
         val t0 = System.nanoTime()

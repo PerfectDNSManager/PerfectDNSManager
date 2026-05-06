@@ -519,5 +519,22 @@
     <string name="protocol_label">প্রোটোকল:</string>
     <string name="split_tunnel_search_hint_fmt">%1$d অ্যাপ থেকে অনুসন্ধান করতে টাইপ করুন…</string>
     <string name="split_tunnel_search_min_chars">কমপক্ষে 2টি অক্ষর টাইপ করুন…</string>
-    <string name="split_tunnel_all_apps_label">সব অ্যাপ</string>    <string name="primary_dns_invalid">প্রাথমিক DNS অবৈধ। নির্বাচিত প্রোটোকল অনুযায়ী ফরম্যাট যাচাই করুন।</string>    <string name="update_signature_mismatch">ত্রুটি : APK স্বাক্ষর মিলছে না। আপডেট বাতিল করা হয়েছে।</string>
+    <string name="split_tunnel_all_apps_label">সব অ্যাপ</string>    <string name="primary_dns_invalid">প্রাথমিক DNS অবৈধ। নির্বাচিত প্রোটোকল অনুযায়ী ফরম্যাট যাচাই করুন।</string>    <string name="update_signature_mismatch">ত্রুটি : APK স্বাক্ষর মিলছে না। আপডেট বাতিল করা হয়েছে।</string>    <string name="btn_stop">⏹ থামান</string>
+    <string name="speedtest_stop">থামান</string>
+    <string name="speedtest_pick_ookla_title">একটি Ookla সার্ভার বেছে নিন</string>
+    <string name="speedtest_fast_urls_loaded_fmt">%1$d টি পরীক্ষার URL লোড হয়েছে।</string>
+    <string name="speedtest_upload_unsupported">--- আপলোড : সমর্থিত নয় (N/A) ---</string>
+    <string name="speedtest_providers_count_fmt">%1$d জন প্রদানকারী</string>
+    <string name="speedtest_cancelled">>> বাতিল করা হয়েছে।</string>
+    <string name="speedtest_finished">সম্পন্ন।</string>
+    <string name="speedtest_partial_count_fmt">%1$d/%2$d পরীক্ষিত।</string>
+    <string name="speedtest_best_dns">সেরা DNS</string>
+    <string name="speedtest_recommended">প্রস্তাবিত :</string>
+    <string name="speedtest_full_ranking">সম্পূর্ণ র‍্যাঙ্কিং</string>
+    <string name="speedtest_partial_ranking">অস্থায়ী র‍্যাঙ্কিং</string>
+    <string name="speedtest_error_timeout">→ ত্রুটি / সময় শেষ</string>
+    <plurals name="profile_count">
+        <item quantity="one">%d প্রোফাইল</item>
+        <item quantity="other">%d প্রোফাইল</item>
+    </plurals>
 </resources>

@@ -566,7 +566,7 @@ class MainActivity : AppCompatActivity() {
         }
         isGenerating = true
         reportGenerated = false
-        btnGenerateReport.text = "⏹ Stop"
+        btnGenerateReport.text = getString(R.string.btn_stop)
         btnGenerateReport.setBackgroundResource(R.drawable.pdm_btn_danger)
         btnShareReport.isEnabled = false
         btnShareReport.setBackgroundResource(R.drawable.pdm_btn_danger)

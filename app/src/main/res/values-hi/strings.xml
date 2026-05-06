@@ -519,5 +519,22 @@
     <string name="protocol_label">प्रोटोकॉल:</string>
     <string name="split_tunnel_search_hint_fmt">%1$d ऐप्स में खोजने के लिए टाइप करें…</string>
     <string name="split_tunnel_search_min_chars">कम से कम 2 अक्षर टाइप करें…</string>
-    <string name="split_tunnel_all_apps_label">सभी ऐप्स</string>    <string name="primary_dns_invalid">प्राथमिक DNS अमान्य। चुने गए प्रोटोकॉल के अनुसार प्रारूप जांचें।</string>    <string name="update_signature_mismatch">त्रुटि : APK हस्ताक्षर मेल नहीं खाते। अपडेट रद्द किया गया।</string>
+    <string name="split_tunnel_all_apps_label">सभी ऐप्स</string>    <string name="primary_dns_invalid">प्राथमिक DNS अमान्य। चुने गए प्रोटोकॉल के अनुसार प्रारूप जांचें।</string>    <string name="update_signature_mismatch">त्रुटि : APK हस्ताक्षर मेल नहीं खाते। अपडेट रद्द किया गया।</string>    <string name="btn_stop">⏹ रोकें</string>
+    <string name="speedtest_stop">रोकें</string>
+    <string name="speedtest_pick_ookla_title">Ookla सर्वर चुनें</string>
+    <string name="speedtest_fast_urls_loaded_fmt">%1$d परीक्षण URL लोड हुए।</string>
+    <string name="speedtest_upload_unsupported">--- अपलोड : समर्थित नहीं (N/A) ---</string>
+    <string name="speedtest_providers_count_fmt">%1$d प्रदाता</string>
+    <string name="speedtest_cancelled">>> रद्द किया गया।</string>
+    <string name="speedtest_finished">पूरा हुआ।</string>
+    <string name="speedtest_partial_count_fmt">%1$d/%2$d परीक्षित।</string>
+    <string name="speedtest_best_dns">सर्वश्रेष्ठ DNS</string>
+    <string name="speedtest_recommended">अनुशंसित :</string>
+    <string name="speedtest_full_ranking">पूर्ण रैंकिंग</string>
+    <string name="speedtest_partial_ranking">अंतरिम रैंकिंग</string>
+    <string name="speedtest_error_timeout">→ त्रुटि / समय समाप्त</string>
+    <plurals name="profile_count">
+        <item quantity="one">%d प्रोफ़ाइल</item>
+        <item quantity="other">%d प्रोफ़ाइलें</item>
+    </plurals>
 </resources>

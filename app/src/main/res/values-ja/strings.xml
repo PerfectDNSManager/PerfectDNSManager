@@ -519,5 +519,21 @@
     <string name="protocol_label">プロトコル:</string>
     <string name="split_tunnel_search_hint_fmt">%1$d 個のアプリから検索…</string>
     <string name="split_tunnel_search_min_chars">2 文字以上を入力…</string>
-    <string name="split_tunnel_all_apps_label">すべてのアプリ</string>    <string name="primary_dns_invalid">プライマリ DNS が無効です。選択したプロトコルの形式を確認してください。</string>    <string name="update_signature_mismatch">エラー : APK の署名が一致しません。更新を中止しました。</string>
+    <string name="split_tunnel_all_apps_label">すべてのアプリ</string>    <string name="primary_dns_invalid">プライマリ DNS が無効です。選択したプロトコルの形式を確認してください。</string>    <string name="update_signature_mismatch">エラー : APK の署名が一致しません。更新を中止しました。</string>    <string name="btn_stop">⏹ 停止</string>
+    <string name="speedtest_stop">停止</string>
+    <string name="speedtest_pick_ookla_title">Ookla サーバーを選択</string>
+    <string name="speedtest_fast_urls_loaded_fmt">%1$d 個のテスト URL を読み込みました。</string>
+    <string name="speedtest_upload_unsupported">--- アップロード : 非対応 (N/A) ---</string>
+    <string name="speedtest_providers_count_fmt">%1$d 個のプロバイダー</string>
+    <string name="speedtest_cancelled">>> キャンセル済み。</string>
+    <string name="speedtest_finished">完了。</string>
+    <string name="speedtest_partial_count_fmt">%1$d/%2$d テスト済み。</string>
+    <string name="speedtest_best_dns">ベスト DNS</string>
+    <string name="speedtest_recommended">おすすめ :</string>
+    <string name="speedtest_full_ranking">総合ランキング</string>
+    <string name="speedtest_partial_ranking">暫定ランキング</string>
+    <string name="speedtest_error_timeout">→ エラー / タイムアウト</string>
+    <plurals name="profile_count">
+        <item quantity="other">%d 件のプロファイル</item>
+    </plurals>
 </resources>

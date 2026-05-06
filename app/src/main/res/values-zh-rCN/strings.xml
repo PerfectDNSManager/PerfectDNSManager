@@ -519,5 +519,21 @@
     <string name="protocol_label">协议:</string>
     <string name="split_tunnel_search_hint_fmt">在 %1$d 个应用中搜索…</string>
     <string name="split_tunnel_search_min_chars">至少输入 2 个字符…</string>
-    <string name="split_tunnel_all_apps_label">所有应用</string>    <string name="primary_dns_invalid">主 DNS 无效。请根据所选协议检查格式。</string>    <string name="update_signature_mismatch">错误：APK 签名不匹配，更新已中止。</string>
+    <string name="split_tunnel_all_apps_label">所有应用</string>    <string name="primary_dns_invalid">主 DNS 无效。请根据所选协议检查格式。</string>    <string name="update_signature_mismatch">错误：APK 签名不匹配，更新已中止。</string>    <string name="btn_stop">⏹ 停止</string>
+    <string name="speedtest_stop">停止</string>
+    <string name="speedtest_pick_ookla_title">选择 Ookla 服务器</string>
+    <string name="speedtest_fast_urls_loaded_fmt">已加载 %1$d 个测试 URL。</string>
+    <string name="speedtest_upload_unsupported">--- 上传：不支持 (N/A) ---</string>
+    <string name="speedtest_providers_count_fmt">%1$d 家服务商</string>
+    <string name="speedtest_cancelled">>> 已取消。</string>
+    <string name="speedtest_finished">完成。</string>
+    <string name="speedtest_partial_count_fmt">已测试 %1$d/%2$d。</string>
+    <string name="speedtest_best_dns">最佳 DNS</string>
+    <string name="speedtest_recommended">推荐：</string>
+    <string name="speedtest_full_ranking">完整排名</string>
+    <string name="speedtest_partial_ranking">临时排名</string>
+    <string name="speedtest_error_timeout">→ 错误 / 超时</string>
+    <plurals name="profile_count">
+        <item quantity="other">%d 个配置文件</item>
+    </plurals>
 </resources>

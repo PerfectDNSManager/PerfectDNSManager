@@ -534,5 +534,22 @@
     <string name="protocol_label">Protocole :</string>
     <string name="split_tunnel_search_hint_fmt">Tapez pour rechercher parmi %1$d applications…</string>
     <string name="split_tunnel_search_min_chars">Tapez au moins 2 caractères…</string>
-    <string name="split_tunnel_all_apps_label">Toutes les applications</string>    <string name="primary_dns_invalid">DNS principal invalide. Vérifiez le format selon le protocole choisi.</string>    <string name="update_signature_mismatch">Erreur : signature de l\'APK incompatible. Mise à jour annulée.</string>
+    <string name="split_tunnel_all_apps_label">Toutes les applications</string>    <string name="primary_dns_invalid">DNS principal invalide. Vérifiez le format selon le protocole choisi.</string>    <string name="update_signature_mismatch">Erreur : signature de l\'APK incompatible. Mise à jour annulée.</string>    <string name="btn_stop">⏹ Arrêter</string>
+    <string name="speedtest_stop">Arrêter</string>
+    <string name="speedtest_pick_ookla_title">Choisir un serveur Ookla</string>
+    <string name="speedtest_fast_urls_loaded_fmt">%1$d URL(s) de test chargée(s).</string>
+    <string name="speedtest_upload_unsupported">--- Upload : non supporté (N/A) ---</string>
+    <string name="speedtest_providers_count_fmt">%1$d fournisseurs</string>
+    <string name="speedtest_cancelled">>> Annulé.</string>
+    <string name="speedtest_finished">Terminé.</string>
+    <string name="speedtest_partial_count_fmt">%1$d/%2$d testés.</string>
+    <string name="speedtest_best_dns">Meilleurs DNS</string>
+    <string name="speedtest_recommended">Recommandé :</string>
+    <string name="speedtest_full_ranking">Classement complet</string>
+    <string name="speedtest_partial_ranking">Classement provisoire</string>
+    <string name="speedtest_error_timeout">→ Erreur / Timeout</string>
+    <plurals name="profile_count">
+        <item quantity="one">%d profil</item>
+        <item quantity="other">%d profils</item>
+    </plurals>
 </resources>

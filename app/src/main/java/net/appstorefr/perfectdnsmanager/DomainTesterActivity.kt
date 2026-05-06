@@ -484,7 +484,7 @@ class DomainTesterActivity : AppCompatActivity() {
 
     private fun runTest() {
         isTesting = true
-        btnRunTest.text = "\u23F9 Stop"
+        btnRunTest.text = getString(R.string.btn_stop)
         btnRunTest.setTextColor(pdmDanger())
         btnRunTest.setBackgroundResource(R.drawable.pdm_btn_danger)
         tvResult.text = getString(R.string.domain_tester_testing)

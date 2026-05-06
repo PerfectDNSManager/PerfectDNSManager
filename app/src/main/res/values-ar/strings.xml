@@ -519,5 +519,26 @@
     <string name="protocol_label">البروتوكول:</string>
     <string name="split_tunnel_search_hint_fmt">اكتب للبحث بين %1$d تطبيق…</string>
     <string name="split_tunnel_search_min_chars">اكتب حرفين على الأقل…</string>
-    <string name="split_tunnel_all_apps_label">كل التطبيقات</string>    <string name="primary_dns_invalid">DNS الأساسي غير صالح. تحقق من التنسيق وفقاً للبروتوكول المختار.</string>    <string name="update_signature_mismatch">خطأ : توقيع APK غير متطابق. تم إلغاء التحديث.</string>
+    <string name="split_tunnel_all_apps_label">كل التطبيقات</string>    <string name="primary_dns_invalid">DNS الأساسي غير صالح. تحقق من التنسيق وفقاً للبروتوكول المختار.</string>    <string name="update_signature_mismatch">خطأ : توقيع APK غير متطابق. تم إلغاء التحديث.</string>    <string name="btn_stop">⏹ إيقاف</string>
+    <string name="speedtest_stop">إيقاف</string>
+    <string name="speedtest_pick_ookla_title">اختر خادم Ookla</string>
+    <string name="speedtest_fast_urls_loaded_fmt">تم تحميل %1$d عنوان URL للاختبار.</string>
+    <string name="speedtest_upload_unsupported">--- رفع : غير مدعوم (N/A) ---</string>
+    <string name="speedtest_providers_count_fmt">%1$d موفر</string>
+    <string name="speedtest_cancelled">>> ملغى.</string>
+    <string name="speedtest_finished">تم.</string>
+    <string name="speedtest_partial_count_fmt">تم اختبار %1$d/%2$d.</string>
+    <string name="speedtest_best_dns">أفضل DNS</string>
+    <string name="speedtest_recommended">مُوصى به :</string>
+    <string name="speedtest_full_ranking">الترتيب الكامل</string>
+    <string name="speedtest_partial_ranking">ترتيب مؤقت</string>
+    <string name="speedtest_error_timeout">→ خطأ / انتهت المهلة</string>
+    <plurals name="profile_count">
+        <item quantity="zero">%d ملف</item>
+        <item quantity="one">ملف واحد</item>
+        <item quantity="two">ملفان</item>
+        <item quantity="few">%d ملفات</item>
+        <item quantity="many">%d ملفًا</item>
+        <item quantity="other">%d ملف</item>
+    </plurals>
 </resources>

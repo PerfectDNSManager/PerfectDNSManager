@@ -134,7 +134,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
 
     private fun setButtonStop() {
         runOnUiThread {
-            btnStartStop.text = "\u25A0  Stop"
+            btnStartStop.text = getString(R.string.btn_stop)
             btnStartStop.backgroundTintList = android.content.res.ColorStateList.valueOf(pdmDanger())
             btnStartStop.isEnabled = true
             running = true
@@ -170,7 +170,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
                     true
                 }
 
-                appendProgress("${testProfiles.size} fournisseurs", COLOR_WHITE)
+                appendProgress(getString(R.string.speedtest_providers_count_fmt, testProfiles.size), COLOR_WHITE)
 
                 val sharedClient = OkHttpClient.Builder()
                     .connectTimeout(5, TimeUnit.SECONDS)
@@ -182,7 +182,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
 
                 for ((index, profile) in testProfiles.withIndex()) {
                     if (cancelled) {
-                        appendProgress(">> Annule.", COLOR_RED)
+                        appendProgress(getString(R.string.speedtest_cancelled), COLOR_RED)
                         break
                     }
 
@@ -214,7 +214,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
                         }
                         appendProgress("   -> ${latency} ms", color)
                     } else {
-                        appendProgress("   -> Erreur / Timeout", COLOR_GREY)
+                        appendProgress("   ${getString(R.string.speedtest_error_timeout)}", COLOR_GREY)
                     }
 
                     results.add(SpeedResult(profile.providerName, profile.primary, latency, typeLabel))
@@ -225,10 +225,10 @@ class DnsSpeedtestActivity : AppCompatActivity() {
                 try { sharedClient.connectionPool.evictAll() } catch (_: Exception) {}
 
                 if (!cancelled) {
-                    appendProgress("Termine.", COLOR_GREEN)
+                    appendProgress(getString(R.string.speedtest_finished), COLOR_GREEN)
                     updatePanels(results, final = true)
                 } else {
-                    appendProgress("${results.size}/${testProfiles.size} testes.", COLOR_ORANGE)
+                    appendProgress(getString(R.string.speedtest_partial_count_fmt, results.size, testProfiles.size), COLOR_ORANGE)
                     updatePanels(results, final = true)
                 }
 
@@ -258,7 +258,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
             val top5 = sorted.filter { it.latency != null }.take(5)
 
             if (top5.isNotEmpty()) {
-                appendToBuf(rankingBuf, "Meilleurs DNS", COLOR_GOLD)
+                appendToBuf(rankingBuf, getString(R.string.speedtest_best_dns), COLOR_GOLD)
                 appendToBuf(rankingBuf, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500", COLOR_GOLD)
                 appendToBuf(rankingBuf, "", COLOR_WHITE)
 
@@ -278,7 +278,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
 
                 if (final && top5.isNotEmpty()) {
                     appendToBuf(rankingBuf, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500", COLOR_GREEN)
-                    appendToBuf(rankingBuf, "Recommande :", COLOR_GREEN)
+                    appendToBuf(rankingBuf, getString(R.string.speedtest_recommended), COLOR_GREEN)
                     val recProtoColor = protocolColorForLabel(top5[0].type)
                     appendToBuf(rankingBuf, top5[0].provider, COLOR_GOLD)
                     appendTwoPart(rankingBuf, "(", top5[0].type, recProtoColor, ") ${top5[0].latency} ms", COLOR_GOLD)
@@ -289,9 +289,9 @@ class DnsSpeedtestActivity : AppCompatActivity() {
             // Full ranking
             appendToBuf(rankingBuf, "", COLOR_WHITE)
             if (final) {
-                appendToBuf(rankingBuf, "Classement complet", COLOR_CYAN)
+                appendToBuf(rankingBuf, getString(R.string.speedtest_full_ranking), COLOR_CYAN)
             } else {
-                appendToBuf(rankingBuf, "Classement provisoire", COLOR_CYAN)
+                appendToBuf(rankingBuf, getString(R.string.speedtest_partial_ranking), COLOR_CYAN)
             }
             appendToBuf(rankingBuf, "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500", COLOR_CYAN)
 

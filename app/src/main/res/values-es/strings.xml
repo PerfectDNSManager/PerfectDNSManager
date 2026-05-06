@@ -519,5 +519,22 @@
     <string name="protocol_label">Protocolo:</string>
     <string name="split_tunnel_search_hint_fmt">Escriba para buscar entre %1$d aplicaciones…</string>
     <string name="split_tunnel_search_min_chars">Escriba al menos 2 caracteres…</string>
-    <string name="split_tunnel_all_apps_label">Todas las aplicaciones</string>    <string name="primary_dns_invalid">DNS principal no válido. Compruebe el formato según el protocolo elegido.</string>    <string name="update_signature_mismatch">Error: la firma del APK no coincide. Actualización cancelada.</string>
+    <string name="split_tunnel_all_apps_label">Todas las aplicaciones</string>    <string name="primary_dns_invalid">DNS principal no válido. Compruebe el formato según el protocolo elegido.</string>    <string name="update_signature_mismatch">Error: la firma del APK no coincide. Actualización cancelada.</string>    <string name="btn_stop">⏹ Detener</string>
+    <string name="speedtest_stop">Detener</string>
+    <string name="speedtest_pick_ookla_title">Elegir un servidor Ookla</string>
+    <string name="speedtest_fast_urls_loaded_fmt">%1$d URL(s) de prueba cargadas.</string>
+    <string name="speedtest_upload_unsupported">--- Subida: no admitida (N/A) ---</string>
+    <string name="speedtest_providers_count_fmt">%1$d proveedores</string>
+    <string name="speedtest_cancelled">>> Cancelado.</string>
+    <string name="speedtest_finished">Hecho.</string>
+    <string name="speedtest_partial_count_fmt">%1$d/%2$d probados.</string>
+    <string name="speedtest_best_dns">Mejores DNS</string>
+    <string name="speedtest_recommended">Recomendado:</string>
+    <string name="speedtest_full_ranking">Clasificación completa</string>
+    <string name="speedtest_partial_ranking">Clasificación parcial</string>
+    <string name="speedtest_error_timeout">→ Error / Tiempo agotado</string>
+    <plurals name="profile_count">
+        <item quantity="one">%d perfil</item>
+        <item quantity="other">%d perfiles</item>
+    </plurals>
 </resources>

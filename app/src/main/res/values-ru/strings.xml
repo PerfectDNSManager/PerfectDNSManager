@@ -519,5 +519,23 @@
     <string name="protocol_label">Протокол:</string>
     <string name="split_tunnel_search_hint_fmt">Введите для поиска среди %1$d приложений…</string>
     <string name="split_tunnel_search_min_chars">Введите минимум 2 символа…</string>
-    <string name="split_tunnel_all_apps_label">Все приложения</string>    <string name="primary_dns_invalid">Неверный основной DNS. Проверьте формат для выбранного протокола.</string>    <string name="update_signature_mismatch">Ошибка: подпись APK не совпадает. Обновление отменено.</string>
+    <string name="split_tunnel_all_apps_label">Все приложения</string>    <string name="primary_dns_invalid">Неверный основной DNS. Проверьте формат для выбранного протокола.</string>    <string name="update_signature_mismatch">Ошибка: подпись APK не совпадает. Обновление отменено.</string>    <string name="btn_stop">⏹ Стоп</string>
+    <string name="speedtest_stop">Стоп</string>
+    <string name="speedtest_pick_ookla_title">Выбрать сервер Ookla</string>
+    <string name="speedtest_fast_urls_loaded_fmt">Загружено тестовых URL: %1$d.</string>
+    <string name="speedtest_upload_unsupported">--- Загрузка: не поддерживается (N/A) ---</string>
+    <string name="speedtest_providers_count_fmt">%1$d провайдеров</string>
+    <string name="speedtest_cancelled">>> Отменено.</string>
+    <string name="speedtest_finished">Готово.</string>
+    <string name="speedtest_partial_count_fmt">Протестировано %1$d/%2$d.</string>
+    <string name="speedtest_best_dns">Лучшие DNS</string>
+    <string name="speedtest_recommended">Рекомендовано:</string>
+    <string name="speedtest_full_ranking">Полный рейтинг</string>
+    <string name="speedtest_partial_ranking">Промежуточный рейтинг</string>
+    <string name="speedtest_error_timeout">→ Ошибка / Таймаут</string>
+    <plurals name="profile_count">
+        <item quantity="one">%d профиль</item>
+        <item quantity="few">%d профиля</item>
+        <item quantity="other">%d профилей</item>
+    </plurals>
 </resources>
