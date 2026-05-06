@@ -392,10 +392,10 @@ class MainActivity : AppCompatActivity() {
 
         sb.append(getString(R.string.report_conn_fmt, connType)).append("\n")
         if (carrierName.isNotEmpty()) sb.append(getString(R.string.report_carrier_fmt, carrierName)).append("\n")
+        sb.append(getString(R.string.report_local_ip_fmt, localIp)).append("\n")
         // FAI : ligne toujours affichée — phase 1 passe "…", phase 2 remplace par
         // la valeur fetched ou "indisponible". Cohérent avec IPv4/IPv6.
         sb.append(getString(R.string.report_isp_fmt, ispInfo)).append("\n")
-        sb.append(getString(R.string.report_local_ip_fmt, localIp)).append("\n")
         sb.append(getString(R.string.report_ipv4_fmt, ipv4Display)).append("\n")
         sb.append(getString(R.string.report_ipv6_fmt, ipv6Display))
         sb.append("\n\n")
