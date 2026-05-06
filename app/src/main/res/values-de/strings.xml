@@ -533,5 +533,7 @@
     <string name="speedtest_ookla_err_load_fmt">Ookla-Ladefehler: %1$s</string>
     <string name="speedtest_ookla_none">Kein Ookla-Server verfügbar.</string>
     <string name="speedtest_ookla_not_selected">Kein Ookla-Server ausgewählt.</string>
-    <string name="speedtest_ookla_title">Ookla</string>
+    <string name="speedtest_ookla_title">Ookla</string>    <string name="speedtest_ookla_server_loading">🌐  Server werden geladen…</string>
+    <string name="speedtest_ookla_server_fmt">🌐  %1$s  ▾</string>
+    <string name="speedtest_ookla_picker_title">Ookla-Server wählen</string>
 </resources>

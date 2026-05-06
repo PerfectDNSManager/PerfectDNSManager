@@ -537,5 +537,7 @@
     <string name="speedtest_ookla_err_load_fmt">خطأ تحميل Ookla: %1$s</string>
     <string name="speedtest_ookla_none">لا يوجد خادم Ookla متاح.</string>
     <string name="speedtest_ookla_not_selected">لم يتم اختيار خادم Ookla.</string>
-    <string name="speedtest_ookla_title">Ookla</string>
+    <string name="speedtest_ookla_title">Ookla</string>    <string name="speedtest_ookla_server_loading">🌐  تحميل الخوادم…</string>
+    <string name="speedtest_ookla_server_fmt">🌐  %1$s  ▾</string>
+    <string name="speedtest_ookla_picker_title">اختر خادم Ookla</string>
 </resources>

@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.abs
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 /**
@@ -129,6 +130,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
     // ── UI widgets ───────────────────────────────────────────────────────────
     private lateinit var btnBackend: Button
+    private lateinit var btnOoklaServer: Button
     private lateinit var btnStartStop: Button
     private lateinit var resultsCard: LinearLayout
     private lateinit var tvPing: TextView
@@ -149,10 +151,13 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     private val cancelled = AtomicBoolean(false)
     private var testThread: Thread? = null
     private var currentBackend: SpeedBackend = SpeedBackend.CLOUDFLARE
-    // Ookla : auto-pick du serveur le plus rapide quand le user choisit
-    // Ookla dans le picker. Pas de second bouton de sélection — UX simple.
+    // Ookla : on charge la liste à la sélection du backend, on ping tous les
+    // serveurs en parallèle pour avoir leur latence, on auto-sélectionne le
+    // plus rapide. Le user peut ensuite choisir un autre serveur via
+    // btnOoklaServer (picker dialog avec latence affichée à côté).
     private val ooklaServers = mutableListOf<OoklaServer>()
     private var selectedOoklaServer: OoklaServer? = null
+    private val ooklaLatencies = mutableMapOf<Int, Double>()
 
     // ── Lifecycle ────────────────────────────────────────────────────────────
 
@@ -270,6 +275,27 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         }
         mainColumn.addView(btnBackend)
 
+        // ── Bouton serveur Ookla — visible uniquement quand Ookla sélectionné.
+        // Permet de choisir parmi les serveurs détectés, avec leur latence.
+        btnOoklaServer = Button(this).apply {
+            id = View.generateViewId()
+            text = getString(R.string.speedtest_ookla_server_loading)
+            setTextColor(COLOR_LIGHT_GREY)
+            textSize = 13f
+            setTypeface(typeface, Typeface.BOLD)
+            isFocusable = true
+            background = chipBackground(dp(12), COLOR_CYAN, false)
+            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+            setPadding(dp(20), dp(10), dp(20), dp(10))
+            layoutParams = lp(matchParent, wrapContent).apply { bottomMargin = dp(6) }
+            gravity = Gravity.CENTER
+            visibility = View.GONE
+            setOnClickListener {
+                if (!running.get() && ooklaServers.isNotEmpty()) showOoklaServerPickerDialog()
+            }
+        }
+        mainColumn.addView(btnOoklaServer)
+
         // ── Start / Stop button ──────────────────────────────────────────
         btnStartStop = Button(this).apply {
             id = View.generateViewId()
@@ -299,8 +325,9 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 greenPill(dp(8))
             }
         }
-        // Chaîne DPAD verticale : btnBack ↓ btnBackend ↓ btnStartStop ↓
-        // consoleWrapper. Sera complétée plus bas (consoleWrapper ↑ btnStartStop).
+        // Chaîne DPAD : btnBack ↓ btnBackend ↓ btnStartStop ↓ consoleWrapper.
+        // updateOoklaServerVisibility() insère btnOoklaServer dans la chaîne
+        // quand Ookla est sélectionné.
         btnBack.nextFocusDownId = btnBackend.id
         btnBackend.nextFocusUpId = btnBack.id
         btnBackend.nextFocusDownId = btnStartStop.id
@@ -525,9 +552,33 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     //  BACKEND SWITCHING
     // ═════════════════════════════════════════════════════════════════════════
 
-    /** Libellé "Backend : Cloudflare ▾" pour le bouton sélecteur. */
+    /** Libellé "Serveur de test : Cloudflare ▾" pour le bouton sélecteur. */
     private fun backendButtonText(backend: SpeedBackend): String =
         getString(R.string.speedtest_backend_label_fmt, backend.label)
+
+    /** Libellé du picker Ookla : "Sponsor (Pays) — 12 ms". */
+    private fun ooklaServerLabel(s: OoklaServer): String {
+        val country = s.cc ?: s.country ?: ""
+        val sponsor = s.displayName
+        val latency = ooklaLatencies[s.id]
+        val latStr = if (latency != null) " — ${"%.0f".format(latency)} ms" else ""
+        return if (country.isNotEmpty()) "$sponsor ($country)$latStr" else "$sponsor$latStr"
+    }
+
+    private fun showOoklaServerPickerDialog() {
+        val labels = ooklaServers.map { ooklaServerLabel(it) }.toTypedArray()
+        val currentIdx = ooklaServers.indexOf(selectedOoklaServer).coerceAtLeast(0)
+        net.appstorefr.perfectdnsmanager.util.TvDialog.showRadioPicker(
+            this,
+            getString(R.string.speedtest_ookla_picker_title),
+            labels,
+            currentIdx
+        ) { which ->
+            selectedOoklaServer = ooklaServers[which]
+            btnOoklaServer.text = getString(R.string.speedtest_ookla_server_fmt, ooklaServerLabel(ooklaServers[which]))
+            logConsole("✓ ${ooklaServers[which].displayName}")
+        }
+    }
 
     /** Dialog picker liste pour choisir le backend de test (Cloudflare / Fast.com). */
     private fun showBackendPickerDialog() {
@@ -548,6 +599,20 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     private fun switchBackend(backend: SpeedBackend) {
         currentBackend = backend
         btnBackend.text = backendButtonText(backend)
+        // Affiche/cache le bouton de sélection serveur Ookla et adapte la
+        // chaîne DPAD : btnBackend ↓ btnOoklaServer ↓ btnStartStop si Ookla,
+        // sinon btnBackend ↓ btnStartStop direct.
+        if (backend == SpeedBackend.OOKLA) {
+            btnOoklaServer.visibility = View.VISIBLE
+            btnBackend.nextFocusDownId = btnOoklaServer.id
+            btnOoklaServer.nextFocusUpId = btnBackend.id
+            btnOoklaServer.nextFocusDownId = btnStartStop.id
+            btnStartStop.nextFocusUpId = btnOoklaServer.id
+        } else {
+            btnOoklaServer.visibility = View.GONE
+            btnBackend.nextFocusDownId = btnStartStop.id
+            btnStartStop.nextFocusUpId = btnBackend.id
+        }
         when (backend) {
             SpeedBackend.CLOUDFLARE -> {
                 btnStartStop.visibility = View.VISIBLE
@@ -813,6 +878,8 @@ class InternetSpeedtestActivity : AppCompatActivity() {
      * et on l'utilise au démarrage du test. Appelé depuis switchBackend.
      */
     private fun loadOoklaServerList() {
+        ooklaLatencies.clear()
+        btnOoklaServer.text = getString(R.string.speedtest_ookla_server_loading)
         logConsole(getString(R.string.speedtest_ookla_loading))
         lifecycleScope.launch(Dispatchers.IO) {
             val fetched = mutableListOf<OoklaServer>()
@@ -840,37 +907,35 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 ui { logConsole(getString(R.string.speedtest_ookla_err_load_fmt, e.message ?: "")) }
             }
 
-            // Auto-pick : ping les top candidates et garde le plus rapide.
+            // Ping TOUS les serveurs en parallèle (3s timeout chacun) pour
+            // avoir leur latence affichable dans le picker.
             if (fetched.isNotEmpty()) {
                 ui { logConsole(getString(R.string.speedtest_ookla_latency)) }
-                val latencies = mutableListOf<Pair<OoklaServer, Double>>()
-                val candidates = fetched.take(OOKLA_LATENCY_CANDIDATES)
-                for (server in candidates) {
-                    if (cancelled.get()) break
-                    try {
-                        val client = plainClient(5)
-                        val baseUrl = ooklaBaseUrl(server.url)
-                        val t0 = System.nanoTime()
-                        val pingReq = Request.Builder()
-                            .url("${baseUrl}latency.txt?r=${System.nanoTime()}")
-                            .header("User-Agent", OOKLA_USER_AGENT)
-                            .build()
-                        val pingResp = client.newCall(pingReq).execute()
-                        val ms = (System.nanoTime() - t0) / 1_000_000.0
-                        pingResp.close()
-                        shutdown(client)
-                        if (pingResp.isSuccessful || pingResp.code in 200..499) {
-                            latencies.add(server to ms)
-                        }
-                    } catch (e: Exception) {
-                        Log.w(TAG, "Ookla ping failed for ${server.displayName}", e)
+                val pingJobs = fetched.map { server ->
+                    async(Dispatchers.IO) {
+                        if (cancelled.get()) return@async null
+                        try {
+                            val client = plainClient(3)
+                            val baseUrl = ooklaBaseUrl(server.url)
+                            val t0 = System.nanoTime()
+                            val pingReq = Request.Builder()
+                                .url("${baseUrl}latency.txt?r=${System.nanoTime()}")
+                                .header("User-Agent", OOKLA_USER_AGENT)
+                                .build()
+                            val pingResp = client.newCall(pingReq).execute()
+                            val ms = (System.nanoTime() - t0) / 1_000_000.0
+                            pingResp.close()
+                            shutdown(client)
+                            if (pingResp.isSuccessful || pingResp.code in 200..499)
+                                server.id to ms
+                            else null
+                        } catch (_: Exception) { null }
                     }
                 }
-                latencies.sortBy { it.second }
-                if (latencies.isNotEmpty()) {
-                    fetched.clear()
-                    fetched.addAll(latencies.map { it.first })
-                }
+                val measured = pingJobs.mapNotNull { it.await() }.toMap()
+                // Tri par latence : injoignables à la fin
+                fetched.sortWith(compareBy(nullsLast()) { measured[it.id] })
+                ui { ooklaLatencies.putAll(measured) }
             }
 
             ui {
@@ -879,10 +944,12 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 if (ooklaServers.isEmpty()) {
                     logConsole(getString(R.string.speedtest_ookla_none))
                     selectedOoklaServer = null
+                    btnOoklaServer.text = getString(R.string.speedtest_ookla_none)
                     return@ui
                 }
                 logConsole(getString(R.string.speedtest_ookla_loaded_fmt, ooklaServers.size))
                 selectedOoklaServer = ooklaServers[0]
+                btnOoklaServer.text = getString(R.string.speedtest_ookla_server_fmt, ooklaServerLabel(ooklaServers[0]))
                 logConsole("✓ ${ooklaServers[0].displayName}")
             }
         }

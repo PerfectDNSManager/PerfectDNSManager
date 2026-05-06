@@ -533,5 +533,7 @@
     <string name="speedtest_ookla_err_load_fmt">Ookla লোড ত্রুটি: %1$s</string>
     <string name="speedtest_ookla_none">কোনো Ookla সার্ভার নেই।</string>
     <string name="speedtest_ookla_not_selected">কোনো Ookla সার্ভার নির্বাচিত নয়।</string>
-    <string name="speedtest_ookla_title">Ookla</string>
+    <string name="speedtest_ookla_title">Ookla</string>    <string name="speedtest_ookla_server_loading">🌐  সার্ভার লোড হচ্ছে…</string>
+    <string name="speedtest_ookla_server_fmt">🌐  %1$s  ▾</string>
+    <string name="speedtest_ookla_picker_title">Ookla সার্ভার নির্বাচন</string>
 </resources>

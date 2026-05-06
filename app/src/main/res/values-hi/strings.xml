@@ -533,5 +533,7 @@
     <string name="speedtest_ookla_err_load_fmt">Ookla लोड त्रुटि: %1$s</string>
     <string name="speedtest_ookla_none">कोई Ookla सर्वर उपलब्ध नहीं।</string>
     <string name="speedtest_ookla_not_selected">कोई Ookla सर्वर नहीं चुना।</string>
-    <string name="speedtest_ookla_title">Ookla</string>
+    <string name="speedtest_ookla_title">Ookla</string>    <string name="speedtest_ookla_server_loading">🌐  सर्वर लोड हो रहे हैं…</string>
+    <string name="speedtest_ookla_server_fmt">🌐  %1$s  ▾</string>
+    <string name="speedtest_ookla_picker_title">Ookla सर्वर चुनें</string>
 </resources>

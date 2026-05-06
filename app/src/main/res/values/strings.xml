@@ -548,5 +548,7 @@
     <string name="speedtest_ookla_err_load_fmt">Erreur chargement Ookla : %1$s</string>
     <string name="speedtest_ookla_none">Aucun serveur Ookla disponible.</string>
     <string name="speedtest_ookla_not_selected">Aucun serveur Ookla sélectionné.</string>
-    <string name="speedtest_ookla_title">Ookla</string>
+    <string name="speedtest_ookla_title">Ookla</string>    <string name="speedtest_ookla_server_loading">🌐  Chargement des serveurs…</string>
+    <string name="speedtest_ookla_server_fmt">🌐  %1$s  ▾</string>
+    <string name="speedtest_ookla_picker_title">Choisir un serveur Ookla</string>
 </resources>
