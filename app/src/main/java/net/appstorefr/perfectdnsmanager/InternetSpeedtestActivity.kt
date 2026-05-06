@@ -392,13 +392,13 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         }
         mainColumn.addView(tvConsoleLabel)
 
-        // Console : encart focusable + scrollable, plus grand qu'avant pour
-        // afficher 15+ lignes. Le user peut DPAD-DOWN dedans depuis Démarrer
-        // pour scroller le log (comme les encarts rapport/info système de
-        // l'écran principal). Cadre vert au focus via btn_focus_foreground.
+        // Console : encart focusable + scrollable. Hauteur calibrée pour
+        // que tout l'écran tienne en une page sans scroll global (chips +
+        // Démarrer + résultats + log = ~1 écran). DPAD-DOWN dans le log
+        // pour scroller le contenu si besoin de voir plus de lignes.
         scrollConsole = ScrollView(this).apply {
             id = View.generateViewId()
-            layoutParams = lp(matchParent, dp(220))
+            layoutParams = lp(matchParent, dp(130))
             background = GradientDrawable().apply {
                 setColor(pdmSurfaceInput()); cornerRadius = dp(8).toFloat()
             }
