@@ -21,7 +21,6 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import android.widget.Toast
@@ -56,11 +55,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var ivSelectedDnsIcon: ImageView
     private lateinit var tvSelectDns: TextView
     private lateinit var btnSettings: ImageButton
-    private lateinit var tvStatusInfo: TextView
+    private lateinit var tvStatusDns: TextView
+    private lateinit var tvStatusConn: TextView
+    private lateinit var tvStatusDevice: TextView
     private lateinit var btnDomainTester: Button
     private lateinit var btnSpeedtest: Button
     private lateinit var btnGenerateReport: Button
-    private lateinit var tvReportContent: TextView
+    private lateinit var tvReportBlocking: TextView
+    private lateinit var tvReportLeak: TextView
+    private lateinit var tvReportSpeedtest: TextView
     private lateinit var btnShareReport: Button
     private lateinit var adbManager: AdbDnsManager
     private lateinit var prefs: SharedPreferences
@@ -219,7 +222,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Affiche en permanence les infos réseau + statut DNS dans le panneau droit (tvStatusInfo).
+     * Peuple les 3 cards du panneau status (gauche) : DNS actif + profil, connexion + IPs, hardware.
      * Contient : type connexion, opérateur, IP locale, IPv4, IPv6, ISP, statut DNS (vert/rouge).
      */
     private fun refreshIpDisplay() {
@@ -342,26 +345,27 @@ class MainActivity : AppCompatActivity() {
             lastIpv6 = ipv6
             lastCarrierName = carrierName.ifEmpty { null }
 
-            val display = StringBuilder()
-            // DNS status en premier (mis en \u00e9vidence + coloris\u00e9 en aval).
-            display.appendLine(dnsStatusText)
+            // Card 1 \u2014 DNS actif + Profil (DNS status en gras color\u00e9 vert/rouge)
+            val dnsCard = android.text.SpannableStringBuilder()
+            val dnsStart = dnsCard.length
+            dnsCard.append(dnsStatusText)
+            val color = if (dnsActive) pdmAccent() else pdmDanger()
+            dnsCard.setSpan(ForegroundColorSpan(color), dnsStart, dnsCard.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            dnsCard.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), dnsStart, dnsCard.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             selectedProfile?.let {
-                display.appendLine(getString(R.string.report_profile_fmt, it.providerName, it.name))
+                dnsCard.append("\n").append(getString(R.string.report_profile_fmt, it.providerName, it.name))
             }
-            display.appendLine()
-            display.appendLine(getString(R.string.report_conn_fmt, connType))
-            if (carrierName.isNotEmpty()) {
-                display.appendLine(getString(R.string.report_carrier_fmt, carrierName))
-            }
-            if (ispInfo.isNotEmpty()) {
-                display.appendLine(getString(R.string.report_isp_fmt, ispInfo))
-            }
-            display.appendLine(getString(R.string.report_local_ip_fmt, localIp))
-            display.appendLine(getString(R.string.report_ipv4_fmt, ipv4 ?: getString(R.string.wan_ip_error)))
-            val ipv6Display = ipv6 ?: getString(R.string.wan_ipv6_blocked)
-            display.appendLine(getString(R.string.report_ipv6_fmt, ipv6Display))
 
-            // Infos appareil — toujours visibles, pas besoin de générer un rapport
+            // Card 2 \u2014 Connexion + IPs
+            val connCard = StringBuilder()
+            connCard.appendLine(getString(R.string.report_conn_fmt, connType))
+            if (carrierName.isNotEmpty()) connCard.appendLine(getString(R.string.report_carrier_fmt, carrierName))
+            if (ispInfo.isNotEmpty()) connCard.appendLine(getString(R.string.report_isp_fmt, ispInfo))
+            connCard.appendLine(getString(R.string.report_local_ip_fmt, localIp))
+            connCard.appendLine(getString(R.string.report_ipv4_fmt, ipv4 ?: getString(R.string.wan_ip_error)))
+            connCard.append(getString(R.string.report_ipv6_fmt, ipv6 ?: getString(R.string.wan_ipv6_blocked)))
+
+            // Card 3 — Hardware
             val devType = if (packageManager.hasSystemFeature("android.software.leanback")) {
                 getString(R.string.device_type_tv)
             } else if (resources.configuration.smallestScreenWidthDp >= 600) {
@@ -369,35 +373,17 @@ class MainActivity : AppCompatActivity() {
             } else {
                 getString(R.string.device_type_phone)
             }
-            display.appendLine()
-            display.appendLine("${getString(R.string.md_device_model)}: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
-            display.appendLine("${getString(R.string.md_device_type)}: $devType")
-            display.appendLine("${getString(R.string.md_android_version)}: ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})")
-            display.append("${getString(R.string.md_app_version)}: ${BuildConfig.VERSION_NAME}")
+            val deviceCard = StringBuilder().apply {
+                appendLine("${getString(R.string.md_device_model)}: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
+                appendLine("${getString(R.string.md_device_type)}: $devType")
+                appendLine("${getString(R.string.md_android_version)}: ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})")
+                append("${getString(R.string.md_app_version)}: ${BuildConfig.VERSION_NAME}")
+            }
 
             runOnUiThread {
-                val spannable = android.text.SpannableStringBuilder(display.toString().trimEnd())
-                // Color the DNS status line
-                val fullText = spannable.toString()
-                val dnsLineStart = fullText.indexOf(dnsStatusText)
-                if (dnsLineStart >= 0) {
-                    val color = if (dnsActive) pdmAccent() else pdmDanger()
-                    spannable.setSpan(
-                        ForegroundColorSpan(color),
-                        dnsLineStart,
-                        dnsLineStart + dnsStatusText.length,
-                        android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    spannable.setSpan(
-                        android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                        dnsLineStart,
-                        dnsLineStart + dnsStatusText.length,
-                        android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                }
-                tvStatusInfo.setTextColor(pdmTextSecondary())
-                tvStatusInfo.setTypeface(null, android.graphics.Typeface.NORMAL)
-                tvStatusInfo.text = spannable
+                tvStatusDns.text = dnsCard
+                tvStatusConn.text = connCard.toString()
+                tvStatusDevice.text = deviceCard.toString()
             }
         }
     }
@@ -453,11 +439,15 @@ class MainActivity : AppCompatActivity() {
         // avec celle affichée dans la section À propos des Settings).
         findViewById<TextView>(R.id.tvTitle)?.text =
             "${getString(R.string.dns_switcher)}  v${BuildConfig.VERSION_NAME}"
-        tvStatusInfo = findViewById(R.id.tvStatusInfo)
+        tvStatusDns = findViewById(R.id.tvStatusDns)
+        tvStatusConn = findViewById(R.id.tvStatusConn)
+        tvStatusDevice = findViewById(R.id.tvStatusDevice)
         btnDomainTester = findViewById(R.id.btnDomainTester)
         btnSpeedtest = findViewById(R.id.btnSpeedtest)
         btnGenerateReport = findViewById(R.id.btnGenerateReport)
-        tvReportContent = findViewById(R.id.tvReportContent)
+        tvReportBlocking = findViewById(R.id.tvReportBlocking)
+        tvReportLeak = findViewById(R.id.tvReportLeak)
+        tvReportSpeedtest = findViewById(R.id.tvReportSpeedtest)
         btnShareReport = findViewById(R.id.btnShareReport)
 
         btnDomainTester.setOnClickListener {
@@ -469,41 +459,8 @@ class MainActivity : AppCompatActivity() {
         btnGenerateReport.setOnClickListener { generateReport() }
         btnShareReport.setOnClickListener { shareReport() }
 
-        // D-pad scroll du panneau Report uniquement (wrapStatus n'est plus focusable
-        // depuis qu'on a viré le toggle Outils — son contenu fit sans scroll).
-        val wrapReport: FrameLayout = findViewById(R.id.wrapReport)
-        val scrollReport: ScrollView = findViewById(R.id.scrollReport)
-        attachDpadScroll(wrapReport, scrollReport)
-
         // Focus initial sur le CTA principal pour navigation D-pad prévisible
         btnToggle.post { btnToggle.requestFocus() }
-    }
-
-    /**
-     * Permet le scroll D-pad sur un panneau wrapper : UP/DOWN scrollent le contenu interne
-     * tant qu'il y a de quoi scroller, sinon laissent la nav D-pad opérer (nextFocusUp/Down).
-     */
-    private fun attachDpadScroll(wrapper: View, sv: ScrollView) {
-        wrapper.setOnKeyListener { _, keyCode, event ->
-            if (event.action != android.view.KeyEvent.ACTION_DOWN) return@setOnKeyListener false
-            val step = (sv.height * 0.85f).toInt().coerceAtLeast(80)
-            when (keyCode) {
-                android.view.KeyEvent.KEYCODE_DPAD_DOWN -> {
-                    val maxScroll = (sv.getChildAt(0)?.height ?: 0) - sv.height
-                    if (sv.scrollY < maxScroll) {
-                        sv.smoothScrollBy(0, step)
-                        true
-                    } else false
-                }
-                android.view.KeyEvent.KEYCODE_DPAD_UP -> {
-                    if (sv.scrollY > 0) {
-                        sv.smoothScrollBy(0, -step)
-                        true
-                    } else false
-                }
-                else -> false
-            }
-        }
     }
 
     /** Charge la liste des domaines de test activés depuis les prefs */
@@ -533,8 +490,9 @@ class MainActivity : AppCompatActivity() {
         isGenerating = false
         btnGenerateReport.text = getString(R.string.generate_report_button)
         btnGenerateReport.setBackgroundResource(R.drawable.pdm_btn_primary)
-        tvReportContent.setTextColor(pdmTextSecondary())
-        tvReportContent.text = getString(R.string.no_report_yet)
+        tvReportBlocking.text = getString(R.string.no_report_yet)
+        tvReportLeak.text = ""
+        tvReportSpeedtest.text = ""
         btnShareReport.isEnabled = reportGenerated
         btnShareReport.setBackgroundResource(if (reportGenerated) R.drawable.pdm_btn_primary else R.drawable.pdm_btn_danger)
     }
@@ -567,138 +525,129 @@ class MainActivity : AppCompatActivity() {
         lastIpv4 = null
         lastIpv6 = null
 
-        val display = StringBuilder()
-        tvReportContent.setTextColor(pdmTextSecondary())
-        tvReportContent.text = getString(R.string.report_progress_blocking)
+        runOnUiThread {
+            tvReportBlocking.text = boldTitle(getString(R.string.share_toggle_blocking)).append("\n\u23F3 ${getString(R.string.report_progress_blocking)}")
+            tvReportLeak.text = boldTitle(getString(R.string.share_toggle_leak))
+            tvReportSpeedtest.text = boldTitle(getString(R.string.share_toggle_speedtest))
+        }
 
         generatingThread = Thread {
             val t = Thread.currentThread()
 
-            // Refresh right panel in background too
+            // Refresh status panel (left) in background \u2014 peuple lastIpv4/etc. utilis\u00e9s par uploadReport()
             refreshIpDisplay()
 
-            // === 1. URL Blocking test (multi-domain) ===
+            // \u2500\u2500 Card 1 : URL Blocking test (multi-domain) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
             if (t.isInterrupted) return@Thread
-            runOnUiThread {
-                tvReportContent.text = display.toString() + getString(R.string.report_progress_blocking)
-            }
-
             val testDomains = loadTestDomains()
             val allBlockingResults = mutableListOf<UrlBlockingTester.BlockingResult>()
-            display.appendLine("\u2501\u2501\u2501 ${getString(R.string.share_toggle_blocking)} \u2501\u2501\u2501")
+            val bldBlocking = StringBuilder()
             for (domain in testDomains) {
                 if (t.isInterrupted) break
                 try {
                     val blocking = UrlBlockingTester.testBeforeAfter(this@MainActivity, domain)
                     allBlockingResults.add(blocking)
-                    display.appendLine("  ${blocking.domain} :")
+                    bldBlocking.appendLine("${blocking.domain} :")
                     val ispIcon = if (blocking.ispDns.isBlocked) "\u274c" else "\u2705"
                     val ispIp = blocking.ispDns.ip ?: blocking.ispDns.error ?: "N/A"
                     val ispAuth = blocking.ispDns.authorityLabel?.let { " \u2014 $it" } ?: ""
-                    display.appendLine("    ${getString(R.string.report_isp_dns_label)}   : $ispIcon $ispIp$ispAuth")
+                    bldBlocking.appendLine("  ${getString(R.string.report_isp_dns_label)} : $ispIcon $ispIp$ispAuth")
                     val activeIcon = if (blocking.activeDns.isBlocked) "\u274c" else "\u2705"
                     val activeIp = blocking.activeDns.ip ?: blocking.activeDns.error ?: "N/A"
                     val activeAuth = blocking.activeDns.authorityLabel?.let { " \u2014 $it" } ?: ""
-                    display.appendLine("    ${getString(R.string.report_active_dns_label)} : $activeIcon $activeIp$activeAuth")
+                    bldBlocking.appendLine("  ${getString(R.string.report_active_dns_label)} : $activeIcon $activeIp$activeAuth")
                     if (blocking.ispDns.isBlocked && !blocking.activeDns.isBlocked) {
-                        display.appendLine("    \u2192 ${getString(R.string.report_dns_unblocks)}")
+                        bldBlocking.appendLine("  \u2192 ${getString(R.string.report_dns_unblocks)}")
                     }
                 } catch (e: Exception) {
-                    display.appendLine("  $domain : \u274c ${e.message}")
+                    bldBlocking.appendLine("$domain : \u274c ${e.message}")
                 }
                 runOnUiThread {
-                    tvReportContent.text = display.toString() + "\n\u23F3 ${getString(R.string.report_testing_blocking)}"
+                    tvReportBlocking.text = boldTitle(getString(R.string.share_toggle_blocking))
+                        .append("\n").append(bldBlocking.toString().trimEnd())
                 }
             }
             lastBlockingResult = allBlockingResults.firstOrNull()
-            display.appendLine()
-
-            // === 2. DNS Leak test -- comparaison avant/apr\u00e8s ===
-            if (t.isInterrupted) return@Thread
             runOnUiThread {
-                tvReportContent.text = display.toString() + getString(R.string.report_progress_leak)
+                tvReportBlocking.text = boldTitle(getString(R.string.share_toggle_blocking))
+                    .append("\n").append(bldBlocking.toString().trimEnd())
             }
 
+            // \u2500\u2500 Card 2 : DNS Leak test \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+            if (t.isInterrupted) return@Thread
+            runOnUiThread {
+                tvReportLeak.text = boldTitle(getString(R.string.share_toggle_leak))
+                    .append("\n\u23F3 ${getString(R.string.report_progress_leak)}")
+            }
+            val bldLeak = StringBuilder()
             try {
                 val leakComparison = DnsLeakTester.runLeakTestComparison(this@MainActivity)
                 lastLeakIspResult = leakComparison.ispResult
                 lastLeakResult = leakComparison.vpnResult
-                display.appendLine("\u2501\u2501\u2501 ${getString(R.string.share_toggle_leak)} \u2501\u2501\u2501")
-
-                // ISP DNS (sans VPN)
-                display.appendLine("  ${getString(R.string.dns_leak_isp_label)} :")
+                bldLeak.appendLine("${getString(R.string.dns_leak_isp_label)} :")
                 if (leakComparison.ispResult.error != null) {
-                    display.appendLine("    \u274c ${leakComparison.ispResult.error}")
+                    bldLeak.appendLine("  \u274c ${leakComparison.ispResult.error}")
                 } else {
                     for (r in leakComparison.ispResult.resolverIps) {
-                        val info = buildString {
-                            append("    \u2022 ${r.ip}")
+                        bldLeak.appendLine(buildString {
+                            append("  \u2022 ${r.ip}")
                             if (r.country != null) append(" \u2014 ${r.country}")
                             if (r.isp != null) append(" (${r.isp})")
-                        }
-                        display.appendLine(info)
+                        })
                     }
                 }
-
-                // VPN DNS (avec VPN)
-                display.appendLine("  ${getString(R.string.dns_leak_vpn_label)} :")
+                bldLeak.appendLine("${getString(R.string.dns_leak_vpn_label)} :")
                 if (leakComparison.vpnResult.error != null) {
-                    display.appendLine("    \u274c ${leakComparison.vpnResult.error}")
+                    bldLeak.appendLine("  \u274c ${leakComparison.vpnResult.error}")
                 } else {
                     for (r in leakComparison.vpnResult.resolverIps) {
-                        val info = buildString {
-                            append("    \u2022 ${r.ip}")
+                        bldLeak.appendLine(buildString {
+                            append("  \u2022 ${r.ip}")
                             if (r.country != null) append(" \u2014 ${r.country}")
                             if (r.isp != null) append(" (${r.isp})")
-                        }
-                        display.appendLine(info)
+                        })
                     }
                 }
-
-                // Comparaison
                 val ispIps = leakComparison.ispResult.resolverIps.map { it.ip }.toSet()
                 val vpnIps = leakComparison.vpnResult.resolverIps.map { it.ip }.toSet()
                 if (ispIps.isNotEmpty() && vpnIps.isNotEmpty() && ispIps != vpnIps) {
-                    display.appendLine("  \u2705 ${getString(R.string.report_no_leak)}")
+                    bldLeak.append("\u2705 ${getString(R.string.report_no_leak)}")
                 } else if (ispIps.isNotEmpty() && ispIps == vpnIps) {
-                    display.appendLine("  \u26a0\ufe0f ${getString(R.string.report_leak_detected)}")
+                    bldLeak.append("\u26a0\ufe0f ${getString(R.string.report_leak_detected)}")
                 }
-
-                display.appendLine()
             } catch (e: Exception) {
-                display.appendLine("\u2501\u2501\u2501 ${getString(R.string.share_toggle_leak)} \u2501\u2501\u2501")
-                display.appendLine("\u274c ${e.message}")
-                display.appendLine()
+                bldLeak.append("\u274c ${e.message}")
+            }
+            runOnUiThread {
+                tvReportLeak.text = boldTitle(getString(R.string.share_toggle_leak))
+                    .append("\n").append(bldLeak.toString().trimEnd())
             }
 
-            // === 3. Speedtest (basique) ===
+            // \u2500\u2500 Card 3 : Speedtest (basique) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
             if (t.isInterrupted) return@Thread
             runOnUiThread {
-                tvReportContent.text = display.toString() + getString(R.string.report_progress_speedtest)
+                tvReportSpeedtest.text = boldTitle(getString(R.string.share_toggle_speedtest))
+                    .append("\n\u23F3 ${getString(R.string.report_progress_speedtest)}")
             }
-
+            val bldSpeed = StringBuilder()
             try {
                 val speed = SpeedTester.runFullTest { progress ->
                     runOnUiThread {
-                        tvReportContent.text = display.toString() + "\u23F3 $progress"
+                        tvReportSpeedtest.text = boldTitle(getString(R.string.share_toggle_speedtest))
+                            .append("\n\u23F3 $progress")
                     }
                 }
                 lastSpeedResult = speed
-                display.appendLine("\u2501\u2501\u2501 ${getString(R.string.share_toggle_speedtest)} \u2501\u2501\u2501")
-                if (speed.pingMs >= 0) display.appendLine("Ping : ${speed.pingMs} ms")
-                display.appendLine("\u2193 Download : ${String.format("%.1f", speed.downloadMbps)} Mbps")
-                display.appendLine("\u2191 Upload : ${String.format("%.1f", speed.uploadMbps)} Mbps")
-                display.appendLine()
+                if (speed.pingMs >= 0) bldSpeed.appendLine("Ping : ${speed.pingMs} ms")
+                bldSpeed.appendLine("\u2193 Download : ${String.format("%.1f", speed.downloadMbps)} Mbps")
+                bldSpeed.append("\u2191 Upload : ${String.format("%.1f", speed.uploadMbps)} Mbps")
             } catch (e: Exception) {
-                display.appendLine("\u2501\u2501\u2501 ${getString(R.string.share_toggle_speedtest)} \u2501\u2501\u2501")
-                display.appendLine("\u274c ${e.message}")
-                display.appendLine()
+                bldSpeed.append("\u274c ${e.message}")
             }
-
-            // Note: section "Informations appareil" volontairement absente du rapport
-            // affich\u00e9 \u2014 d\u00e9j\u00e0 visible en permanence dans le panneau status (droite),
-            // ce qui faisait doublon. Le rapport markdown partag\u00e9 garde la section
-            // (cf shareReport()).
+            runOnUiThread {
+                tvReportSpeedtest.text = boldTitle(getString(R.string.share_toggle_speedtest))
+                    .append("\n").append(bldSpeed.toString().trimEnd())
+            }
 
             if (t.isInterrupted) return@Thread
             reportGenerated = true
@@ -710,40 +659,20 @@ class MainActivity : AppCompatActivity() {
                 btnGenerateReport.setBackgroundResource(R.drawable.pdm_btn_primary)
                 btnShareReport.isEnabled = true
                 btnShareReport.setBackgroundResource(R.drawable.pdm_btn_primary)
-                tvReportContent.setTextColor(pdmTextSecondary())
-                tvReportContent.text = renderReportWithBoldTitles(display.toString().trimEnd())
                 Toast.makeText(this, getString(R.string.report_complete), Toast.LENGTH_SHORT).show()
             }
         }
         generatingThread!!.start()
     }
 
-    /**
-     * Convertit "\u2501\u2501\u2501 TITLE \u2501\u2501\u2501" en TITLE bold.
-     * Les \u2500\u2500\u2500 rendaient mal sur \u00e9cran \u00e9troit (t\u00e9l\u00e9phone) ; on garde le contenu
-     * lisible en transformant uniquement \u00e0 l'affichage final.
-     */
-    private fun renderReportWithBoldTitles(raw: String): CharSequence {
-        val titlePattern = Regex("^\u2501\u2501\u2501 (.+?) \u2501\u2501\u2501$", RegexOption.MULTILINE)
-        // \u00c9tape 1 : remplacer la ligne par le titre seul
-        val replaced = titlePattern.replace(raw) { m -> m.groupValues[1] }
-        // \u00c9tape 2 : appliquer Bold sur chaque titre (re-scan dans le texte sans bordures)
-        val spannable = android.text.SpannableStringBuilder(replaced)
-        for (m in titlePattern.findAll(raw)) {
-            val title = m.groupValues[1]
-            // Trouver l'occurrence dans le texte transform\u00e9 \u2014 la premi\u00e8re apr\u00e8s
-            // la position correspondante (mapping na\u00eff, suffisant ici car titles uniques)
-            val idx = spannable.indexOf(title)
-            if (idx >= 0) {
-                spannable.setSpan(
-                    android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                    idx,
-                    idx + title.length,
-                    android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-        }
-        return spannable
+    /** Pr\u00e9fixe de card : titre bold (utilis\u00e9 en t\u00eate de chaque carte rapport). */
+    private fun boldTitle(title: String): android.text.SpannableStringBuilder {
+        val sb = android.text.SpannableStringBuilder(title)
+        sb.setSpan(
+            android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+            0, title.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        return sb
     }
 
     private fun shareReport() {
@@ -861,7 +790,7 @@ class MainActivity : AppCompatActivity() {
                     appendLine("*Version : $appVersion*")
                     appendLine()
 
-                    // Always include right panel (network info) from tvStatusInfo
+                    // Always include network info from saved fields (was tvStatusInfo, désormais peuplé via les 3 cards status)
                     if (includeNetwork) {
                         val localIp = try {
                             java.net.NetworkInterface.getNetworkInterfaces()?.toList()
@@ -903,7 +832,8 @@ class MainActivity : AppCompatActivity() {
                         appendLine("| **IPv4** | `${lastIpv4 ?: "N/A"}` |")
                         val ipv6Status = lastIpv6 ?: "${getString(R.string.wan_ipv6_blocked)}"
                         appendLine("| **IPv6** | `$ipv6Status` |")
-                        val dnsStatusClean = (tvStatusInfo.text?.toString() ?: getString(R.string.no_active_dns)).replace("\n", " \u2014 ")
+                        // tvStatusDns contient d\u00e9j\u00e0 "DNS actif (...)\nProfil : ..." \u2014 on flatte sur 1 ligne pour la cellule du tableau MD.
+                        val dnsStatusClean = (tvStatusDns.text?.toString() ?: getString(R.string.no_active_dns)).replace("\n", " \u2014 ")
                         appendLine("| **${getString(R.string.md_active_dns)}** | `$dnsStatusClean` |")
                         appendLine("| **${getString(R.string.report_label_profile)}** | ${selectedProfile?.let { "${it.providerName} - ${it.name}" } ?: getString(R.string.report_label_none)} |")
                         appendLine("| **${getString(R.string.md_date)}** | ${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.US).format(java.util.Date())} |")
