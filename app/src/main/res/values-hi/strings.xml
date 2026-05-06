@@ -418,9 +418,6 @@
     <string name="share_exp_24h">24 h</string>
     <string name="share_exp_72h">72 h</string>
     <string name="speedtest_adv_title">इंटरनेट स्पीड टेस्ट</string>
-    <string name="speedtest_server_loading">🌐  सर्वर: लोड हो रहा है…</string>
-    <string name="speedtest_server_fmt">🌐  सर्वर: %1$s</string>
-    <string name="speedtest_server_none">🌐  सर्वर: कोई नहीं</string>
     <string name="speedtest_start">टेस्ट शुरू करें</string>
     <string name="speedtest_log">टेस्ट लॉग</string>
     <string name="speedtest_waiting">प्रतीक्षा… </string>
@@ -431,13 +428,6 @@
     <string name="speedtest_stopping_msg">टेस्ट रुक रहा है…</string>
     <string name="speedtest_interrupted">टेस्ट बाधित हुआ।</string>
     <string name="speedtest_error_fmt">त्रुटि: %1$s</string>
-    <string name="speedtest_ookla_loading">Ookla सर्वर सूची लोड हो रही है…</string>
-    <string name="speedtest_ookla_latency">Ookla सर्वर लेटेंसी टेस्ट…</string>
-    <string name="speedtest_ookla_loaded_fmt">%1$d Ookla सर्वर लोड हुए।</string>
-    <string name="speedtest_ookla_err_code_fmt">Ookla सर्वर त्रुटि: %1$d</string>
-    <string name="speedtest_ookla_err_load_fmt">Ookla लोड त्रुटि: %1$s</string>
-    <string name="speedtest_ookla_none">कोई Ookla सर्वर उपलब्ध नहीं।</string>
-    <string name="speedtest_ookla_not_selected">कोई Ookla सर्वर नहीं चुना।</string>
     <string name="speedtest_ping_section_fmt"> --- Ping %1$s (%2$d अनुरोध) ---</string>
     <string name="speedtest_ping_attempt_fmt">  #%1$d : %2$.1f ms</string>
     <string name="speedtest_ping_fail_fmt">  #%1$d: विफल</string>
@@ -449,7 +439,6 @@
     <string name="speedtest_ip_none">IP : --</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
     <string name="speedtest_cloudflare_title">Cloudflare</string>
-    <string name="speedtest_ookla_title">Ookla</string>
     <string name="report_conn_fmt">कनेक्शन: %1$s</string>
     <string name="report_carrier_fmt">कैरियर: %1$s</string>
     <string name="report_isp_fmt">ISP: %1$s</string>
@@ -521,7 +510,6 @@
     <string name="split_tunnel_search_min_chars">कम से कम 2 अक्षर टाइप करें…</string>
     <string name="split_tunnel_all_apps_label">सभी ऐप्स</string>    <string name="primary_dns_invalid">प्राथमिक DNS अमान्य। चुने गए प्रोटोकॉल के अनुसार प्रारूप जांचें।</string>    <string name="update_signature_mismatch">त्रुटि : APK हस्ताक्षर मेल नहीं खाते। अपडेट रद्द किया गया।</string>    <string name="btn_stop">⏹ रोकें</string>
     <string name="speedtest_stop">रोकें</string>
-    <string name="speedtest_pick_ookla_title">Ookla सर्वर चुनें</string>
     <string name="speedtest_fast_urls_loaded_fmt">%1$d परीक्षण URL लोड हुए।</string>
     <string name="speedtest_upload_unsupported">--- अपलोड : समर्थित नहीं (N/A) ---</string>
     <string name="speedtest_providers_count_fmt">%1$d प्रदाता</string>

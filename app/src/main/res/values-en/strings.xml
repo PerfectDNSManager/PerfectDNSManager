@@ -423,9 +423,6 @@
 
     <!-- Speedtest Internet (advanced) -->
     <string name="speedtest_adv_title">Internet speed test</string>
-    <string name="speedtest_server_loading">🌐  Server: loading…</string>
-    <string name="speedtest_server_fmt">🌐  Server: %1$s</string>
-    <string name="speedtest_server_none">🌐  Server: none</string>
     <string name="speedtest_start">Start test</string>
     <string name="speedtest_log">Test log</string>
     <string name="speedtest_waiting">Waiting…
@@ -437,13 +434,6 @@
     <string name="speedtest_stopping_msg">Stopping test…</string>
     <string name="speedtest_interrupted">Test interrupted.</string>
     <string name="speedtest_error_fmt">Error: %1$s</string>
-    <string name="speedtest_ookla_loading">Loading Ookla server list…</string>
-    <string name="speedtest_ookla_latency">Testing Ookla server latency…</string>
-    <string name="speedtest_ookla_loaded_fmt">%1$d Ookla server(s) loaded.</string>
-    <string name="speedtest_ookla_err_code_fmt">Ookla server error: %1$d</string>
-    <string name="speedtest_ookla_err_load_fmt">Ookla load error: %1$s</string>
-    <string name="speedtest_ookla_none">No Ookla servers available.</string>
-    <string name="speedtest_ookla_not_selected">No Ookla server selected.</string>
     <string name="speedtest_ping_section_fmt">
 --- Ping %1$s (%2$d requests) ---</string>
     <string name="speedtest_ping_attempt_fmt">  #%1$d: %2$.1f ms</string>
@@ -458,7 +448,6 @@
     <string name="speedtest_ip_none">IP: --</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
     <string name="speedtest_cloudflare_title">Cloudflare</string>
-    <string name="speedtest_ookla_title">Ookla</string>
 
 
     <!-- Network panel (Home) -->
@@ -540,7 +529,6 @@
     <string name="split_tunnel_search_min_chars">Type at least 2 characters…</string>
     <string name="split_tunnel_all_apps_label">All applications</string>    <string name="primary_dns_invalid">Invalid primary DNS. Check the format for the chosen protocol.</string>    <string name="update_signature_mismatch">Error: APK signature mismatch. Update aborted.</string>    <string name="btn_stop">⏹ Stop</string>
     <string name="speedtest_stop">Stop</string>
-    <string name="speedtest_pick_ookla_title">Pick an Ookla server</string>
     <string name="speedtest_fast_urls_loaded_fmt">%1$d test URL(s) loaded.</string>
     <string name="speedtest_upload_unsupported">--- Upload: not supported (N/A) ---</string>
     <string name="speedtest_providers_count_fmt">%1$d providers</string>

@@ -418,9 +418,6 @@
     <string name="share_exp_24h">24 h</string>
     <string name="share_exp_72h">72 h</string>
     <string name="speedtest_adv_title">ইন্টারনেট স্পিড টেস্ট</string>
-    <string name="speedtest_server_loading">🌐  সার্ভার: লোড হচ্ছে…</string>
-    <string name="speedtest_server_fmt">🌐  সার্ভার: %1$s</string>
-    <string name="speedtest_server_none">🌐  সার্ভার: কেউ নয়</string>
     <string name="speedtest_start">টেস্ট শুরু করুন</string>
     <string name="speedtest_log">টেস্ট লগ</string>
     <string name="speedtest_waiting">অপেক্ষা… </string>
@@ -431,13 +428,6 @@
     <string name="speedtest_stopping_msg">টেস্ট থামানো হচ্ছে…</string>
     <string name="speedtest_interrupted">টেস্ট বাধাগ্রস্ত হয়েছে।</string>
     <string name="speedtest_error_fmt">ত্রুটি: %1$s</string>
-    <string name="speedtest_ookla_loading">Ookla সার্ভার তালিকা লোড হচ্ছে…</string>
-    <string name="speedtest_ookla_latency">Ookla সার্ভার লেটেন্সি পরীক্ষা…</string>
-    <string name="speedtest_ookla_loaded_fmt">%1$d Ookla সার্ভার লোড হয়েছে।</string>
-    <string name="speedtest_ookla_err_code_fmt">Ookla সার্ভার ত্রুটি: %1$d</string>
-    <string name="speedtest_ookla_err_load_fmt">Ookla লোড ত্রুটি: %1$s</string>
-    <string name="speedtest_ookla_none">কোনো Ookla সার্ভার নেই।</string>
-    <string name="speedtest_ookla_not_selected">কোনো Ookla সার্ভার নির্বাচিত নয়।</string>
     <string name="speedtest_ping_section_fmt"> --- Ping %1$s (%2$d অনুরোধ) ---</string>
     <string name="speedtest_ping_attempt_fmt">  #%1$d : %2$.1f ms</string>
     <string name="speedtest_ping_fail_fmt">  #%1$d: ব্যর্থ</string>
@@ -449,7 +439,6 @@
     <string name="speedtest_ip_none">IP : --</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
     <string name="speedtest_cloudflare_title">Cloudflare</string>
-    <string name="speedtest_ookla_title">Ookla</string>
     <string name="report_conn_fmt">সংযোগ: %1$s</string>
     <string name="report_carrier_fmt">ক্যারিয়ার: %1$s</string>
     <string name="report_isp_fmt">ISP: %1$s</string>
@@ -521,7 +510,6 @@
     <string name="split_tunnel_search_min_chars">কমপক্ষে 2টি অক্ষর টাইপ করুন…</string>
     <string name="split_tunnel_all_apps_label">সব অ্যাপ</string>    <string name="primary_dns_invalid">প্রাথমিক DNS অবৈধ। নির্বাচিত প্রোটোকল অনুযায়ী ফরম্যাট যাচাই করুন।</string>    <string name="update_signature_mismatch">ত্রুটি : APK স্বাক্ষর মিলছে না। আপডেট বাতিল করা হয়েছে।</string>    <string name="btn_stop">⏹ থামান</string>
     <string name="speedtest_stop">থামান</string>
-    <string name="speedtest_pick_ookla_title">একটি Ookla সার্ভার বেছে নিন</string>
     <string name="speedtest_fast_urls_loaded_fmt">%1$d টি পরীক্ষার URL লোড হয়েছে।</string>
     <string name="speedtest_upload_unsupported">--- আপলোড : সমর্থিত নয় (N/A) ---</string>
     <string name="speedtest_providers_count_fmt">%1$d জন প্রদানকারী</string>

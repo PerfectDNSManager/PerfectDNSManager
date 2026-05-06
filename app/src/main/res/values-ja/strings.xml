@@ -418,9 +418,6 @@
     <string name="share_exp_24h">24 h</string>
     <string name="share_exp_72h">72 h</string>
     <string name="speedtest_adv_title">インターネット速度テスト</string>
-    <string name="speedtest_server_loading">🌐  サーバー: 読み込み中…</string>
-    <string name="speedtest_server_fmt">🌐  サーバー: %1$s</string>
-    <string name="speedtest_server_none">🌐  サーバー: なし</string>
     <string name="speedtest_start">テスト開始</string>
     <string name="speedtest_log">テストログ</string>
     <string name="speedtest_waiting">待機中… </string>
@@ -431,13 +428,6 @@
     <string name="speedtest_stopping_msg">テスト停止中…</string>
     <string name="speedtest_interrupted">テストが中断されました。</string>
     <string name="speedtest_error_fmt">エラー: %1$s</string>
-    <string name="speedtest_ookla_loading">Ookla サーバーリストを読み込み中…</string>
-    <string name="speedtest_ookla_latency">Ookla サーバー遅延テスト中…</string>
-    <string name="speedtest_ookla_loaded_fmt">%1$d 個の Ookla サーバーを読み込みました。</string>
-    <string name="speedtest_ookla_err_code_fmt">Ookla サーバーエラー: %1$d</string>
-    <string name="speedtest_ookla_err_load_fmt">Ookla 読込エラー: %1$s</string>
-    <string name="speedtest_ookla_none">利用可能な Ookla サーバーがありません。</string>
-    <string name="speedtest_ookla_not_selected">Ookla サーバーが選択されていません。</string>
     <string name="speedtest_ping_section_fmt"> --- Ping %1$s (%2$d 回) ---</string>
     <string name="speedtest_ping_attempt_fmt">  #%1$d : %2$.1f ms</string>
     <string name="speedtest_ping_fail_fmt">  #%1$d: 失敗</string>
@@ -449,7 +439,6 @@
     <string name="speedtest_ip_none">IP : --</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
     <string name="speedtest_cloudflare_title">Cloudflare</string>
-    <string name="speedtest_ookla_title">Ookla</string>
     <string name="report_conn_fmt">接続: %1$s</string>
     <string name="report_carrier_fmt">通信事業者: %1$s</string>
     <string name="report_isp_fmt">ISP: %1$s</string>
@@ -521,7 +510,6 @@
     <string name="split_tunnel_search_min_chars">2 文字以上を入力…</string>
     <string name="split_tunnel_all_apps_label">すべてのアプリ</string>    <string name="primary_dns_invalid">プライマリ DNS が無効です。選択したプロトコルの形式を確認してください。</string>    <string name="update_signature_mismatch">エラー : APK の署名が一致しません。更新を中止しました。</string>    <string name="btn_stop">⏹ 停止</string>
     <string name="speedtest_stop">停止</string>
-    <string name="speedtest_pick_ookla_title">Ookla サーバーを選択</string>
     <string name="speedtest_fast_urls_loaded_fmt">%1$d 個のテスト URL を読み込みました。</string>
     <string name="speedtest_upload_unsupported">--- アップロード : 非対応 (N/A) ---</string>
     <string name="speedtest_providers_count_fmt">%1$d 個のプロバイダー</string>

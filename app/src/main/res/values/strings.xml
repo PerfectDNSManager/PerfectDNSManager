@@ -419,9 +419,6 @@
 
     <!-- Speedtest Internet (avancé) -->
     <string name="speedtest_adv_title">Test débit Internet</string>
-    <string name="speedtest_server_loading">🌐  Serveur : chargement…</string>
-    <string name="speedtest_server_fmt">🌐  Serveur : %1$s</string>
-    <string name="speedtest_server_none">🌐  Serveur : aucun</string>
     <string name="speedtest_start">Démarrer le test</string>
     <string name="speedtest_log">Journal du test</string>
     <string name="speedtest_waiting">En attente…
@@ -433,13 +430,6 @@
     <string name="speedtest_stopping_msg">Arrêt du test…</string>
     <string name="speedtest_interrupted">Test interrompu.</string>
     <string name="speedtest_error_fmt">Erreur : %1$s</string>
-    <string name="speedtest_ookla_loading">Chargement de la liste des serveurs Ookla…</string>
-    <string name="speedtest_ookla_latency">Test de latence des serveurs Ookla…</string>
-    <string name="speedtest_ookla_loaded_fmt">%1$d serveur(s) Ookla chargé(s).</string>
-    <string name="speedtest_ookla_err_code_fmt">Erreur serveur Ookla : %1$d</string>
-    <string name="speedtest_ookla_err_load_fmt">Erreur chargement Ookla : %1$s</string>
-    <string name="speedtest_ookla_none">Aucun serveur Ookla disponible.</string>
-    <string name="speedtest_ookla_not_selected">Aucun serveur Ookla sélectionné.</string>
     <string name="speedtest_ping_section_fmt">
 --- Ping %1$s (%2$d requêtes) ---</string>
     <string name="speedtest_ping_attempt_fmt">  #%1$d : %2$.1f ms</string>
@@ -454,7 +444,6 @@
     <string name="speedtest_ip_none">IP : --</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
     <string name="speedtest_cloudflare_title">Cloudflare</string>
-    <string name="speedtest_ookla_title">Ookla</string>
 
 
     <!-- Network panel (Home) -->
@@ -536,7 +525,6 @@
     <string name="split_tunnel_search_min_chars">Tapez au moins 2 caractères…</string>
     <string name="split_tunnel_all_apps_label">Toutes les applications</string>    <string name="primary_dns_invalid">DNS principal invalide. Vérifiez le format selon le protocole choisi.</string>    <string name="update_signature_mismatch">Erreur : signature de l\'APK incompatible. Mise à jour annulée.</string>    <string name="btn_stop">⏹ Arrêter</string>
     <string name="speedtest_stop">Arrêter</string>
-    <string name="speedtest_pick_ookla_title">Choisir un serveur Ookla</string>
     <string name="speedtest_fast_urls_loaded_fmt">%1$d URL(s) de test chargée(s).</string>
     <string name="speedtest_upload_unsupported">--- Upload : non supporté (N/A) ---</string>
     <string name="speedtest_providers_count_fmt">%1$d fournisseurs</string>

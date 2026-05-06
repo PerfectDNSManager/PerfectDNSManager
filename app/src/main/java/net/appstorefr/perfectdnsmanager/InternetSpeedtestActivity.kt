@@ -20,7 +20,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import net.appstorefr.perfectdnsmanager.util.LocaleHelper
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -34,36 +33,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
- * Ookla server data class.
- */
-data class OoklaServer(
-    val id: Int,
-    val sponsor: String?,
-    val name: String?,
-    val host: String,
-    val url: String,
-    val lat: String?,
-    val lon: String?,
-    val country: String?,
-    val cc: String?
-) {
-    val displayName: String get() = sponsor ?: name ?: host
-    override fun toString(): String = displayName
-}
-
-/**
  * Enum for speed test backends.
+ *
+ * Ookla a été retiré (beta.101) : l'API publique speedtest.net/api/js/servers
+ * a été dépréciée/restreinte par CAPTCHA, les serveurs eux-mêmes refusent les
+ * UA non-officiels. Cloudflare (sans inscription, infra mondiale CF) et
+ * Fast.com (Netflix CDN) couvrent largement le besoin.
  */
 enum class SpeedBackend(val label: String) {
     CLOUDFLARE("Cloudflare"),
-    OOKLA("Ookla"),
     NETFLIX("Fast.com")
 }
 
 /**
  * Multi-backend speed test activity.
  *
- * Supports 5 backends: LibreSpeed, Cloudflare, Ookla, Netflix (Fast.com), nPerf.
+ * Supports 2 backends : Cloudflare et Netflix (Fast.com).
  * Uses OkHttp for HTTP, fully programmatic UI (no XML layout).
  */
 class InternetSpeedtestActivity : AppCompatActivity() {
@@ -97,19 +82,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         private const val CF_UL_CONNECTIONS = 3
         private const val CF_UL_DURATION_SEC = 10
 
-        // Ookla endpoints
-        private const val OOKLA_SERVER_LIST_URL =
-            "https://www.speedtest.net/api/js/servers?engine=js&limit=10&search="
-        private const val OOKLA_USER_AGENT =
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        private const val OOKLA_DL_CONNECTIONS = 4
-        private const val OOKLA_DL_DURATION_SEC = 10
-        private const val OOKLA_UL_PAYLOAD_SIZE = 10 * 1024 * 1024
-        private const val OOKLA_UL_CONNECTIONS = 3
-        private const val OOKLA_UL_DURATION_SEC = 10
-        private const val OOKLA_PING_COUNT = 10
-        private const val OOKLA_LATENCY_CANDIDATES = 5
-
         // Netflix (Fast.com) endpoints
         private const val NETFLIX_API_URL =
             "https://api.fast.com/netflix/speedtest/v2?https=true&token=YXNkZmFzZGxmbnNkYWZoYXNkZmhrYWxm&urlCount=5"
@@ -121,8 +93,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     // ── UI widgets ───────────────────────────────────────────────────────────
     private lateinit var backendSelectorRow: HorizontalScrollView
     private lateinit var backendButtonsLayout: LinearLayout
-    private lateinit var serverPickerRow: LinearLayout
-    private lateinit var btnServerPicker: Button
     private lateinit var btnStartStop: Button
     private lateinit var resultsCard: LinearLayout
     private lateinit var tvPing: TextView
@@ -142,8 +112,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     private val running = AtomicBoolean(false)
     private val cancelled = AtomicBoolean(false)
     private var testThread: Thread? = null
-    private val ooklaServers = mutableListOf<OoklaServer>()
-    private var selectedOoklaServer: OoklaServer? = null
     private var currentBackend: SpeedBackend = SpeedBackend.CLOUDFLARE
     private val backendButtons = mutableMapOf<SpeedBackend, Button>()
 
@@ -302,29 +270,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         backendSelectorRow.addView(backendButtonsLayout)
         mainColumn.addView(backendSelectorRow)
 
-        // ── Server selector ──────────────────────────────────────────────
-        serverPickerRow = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER
-            layoutParams = lp(matchParent, wrapContent).apply { bottomMargin = dp(6) }
-        }
-
-        btnServerPicker = Button(this).apply {
-            id = View.generateViewId()
-            text = getString(R.string.speedtest_server_loading)
-            setTextColor(COLOR_WHITE)
-            textSize = 14f
-            background = chipBackground(dp(12), COLOR_CYAN, false)
-            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
-            isFocusable = true
-            setPadding(dp(20), dp(14), dp(20), dp(14))
-            layoutParams = lp(wrapContent, wrapContent)
-            gravity = Gravity.CENTER
-            setOnClickListener { showServerPickerDialog() }
-        }
-        serverPickerRow.addView(btnServerPicker)
-        mainColumn.addView(serverPickerRow)
-
         // ── Start / Stop button ──────────────────────────────────────────
         btnStartStop = Button(this).apply {
             id = View.generateViewId()
@@ -354,24 +299,20 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 greenPill(dp(8))
             }
         }
-        // Chaîne D-pad verticale explicite — sans ça, btnServerPicker était
-        // bypassé (chips → Start direct) et btnBack n'avait pas de cible
-        // descendante, ce qui faisait perdre le curseur en navigation TV.
-        // Ordre : btnBack ↓ premier chip · chips ↓ btnServerPicker · btnServerPicker ↔ btnStartStop.
+        // Chaîne D-pad verticale explicite : btnBack ↓ premier chip ·
+        // chips ↓ btnStartStop · btnStartStop ↔ scrollConsole.
+        // scrollConsole reçoit son id assigné après son creation plus bas,
+        // on update sa nextFocusDownId là-bas. Ici on prépare juste le côté
+        // btnStartStop ↑ chips.
         val firstChipId = backendButtons.values.firstOrNull()?.id
         if (firstChipId != null) {
             btnBack.nextFocusDownId = firstChipId
             backendButtons.values.forEach { chip ->
                 chip.nextFocusUpId = btnBack.id
-                chip.nextFocusDownId = btnServerPicker.id
+                chip.nextFocusDownId = btnStartStop.id
             }
-            btnServerPicker.nextFocusUpId = firstChipId
+            btnStartStop.nextFocusUpId = firstChipId
         }
-        btnServerPicker.nextFocusDownId = btnStartStop.id
-        btnStartStop.nextFocusUpId = btnServerPicker.id
-        // DPAD DOWN sur btnStartStop : on bloque sur place. Sinon le focus
-        // partait dans le ScrollView console et disparaissait.
-        btnStartStop.nextFocusDownId = btnStartStop.id
         mainColumn.addView(btnStartStop)
 
         // ── Results card ─────────────────────────────────────────────────
@@ -451,28 +392,38 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         }
         mainColumn.addView(tvConsoleLabel)
 
-        // Console réduite (60dp au lieu de 120dp) pour que tout tienne sans
-        // défilement sur l'écran 1080p Android TV. C'est un log de diagnostic,
-        // pas l'élément principal — 4-5 lignes suffisent pour le user moyen.
+        // Console : encart focusable + scrollable, plus grand qu'avant pour
+        // afficher 15+ lignes. Le user peut DPAD-DOWN dedans depuis Démarrer
+        // pour scroller le log (comme les encarts rapport/info système de
+        // l'écran principal). Cadre vert au focus via btn_focus_foreground.
         scrollConsole = ScrollView(this).apply {
-            layoutParams = lp(matchParent, dp(60))
+            id = View.generateViewId()
+            layoutParams = lp(matchParent, dp(220))
             background = GradientDrawable().apply {
                 setColor(pdmSurfaceInput()); cornerRadius = dp(8).toFloat()
             }
-            // C'est un log de diagnostic en lecture seule — ne doit pas être
-            // focusable au DPAD (sinon le curseur disparaît dans la console).
-            isFocusable = false
+            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+            isFocusable = true
             isFocusableInTouchMode = false
             descendantFocusability = android.view.ViewGroup.FOCUS_BLOCK_DESCENDANTS
+            isScrollbarFadingEnabled = false
+            scrollBarStyle = ScrollView.SCROLLBARS_INSIDE_OVERLAY
         }
         tvConsole = TextView(this).apply {
-            setTextColor(COLOR_LIGHT_GREY); textSize = 11f
-            setPadding(dp(8), dp(6), dp(8), dp(6))
+            setTextColor(COLOR_LIGHT_GREY); textSize = 12f
+            setPadding(dp(10), dp(8), dp(10), dp(8))
             text = getString(R.string.speedtest_waiting)
             isFocusable = false
         }
         scrollConsole.addView(tvConsole)
         mainColumn.addView(scrollConsole)
+
+        // Maintenant que scrollConsole a son id, on ferme la chaîne DPAD :
+        // btnStartStop ↓ scrollConsole · scrollConsole ↑ btnStartStop ·
+        // scrollConsole ↓ lui-même (rien de focusable en dessous).
+        btnStartStop.nextFocusDownId = scrollConsole.id
+        scrollConsole.nextFocusUpId = btnStartStop.id
+        scrollConsole.nextFocusDownId = scrollConsole.id
 
         rootScroll.addView(mainColumn)
         // Focus on Start button, scroll to top
@@ -584,7 +535,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
         when (backend) {
             SpeedBackend.CLOUDFLARE -> {
-                serverPickerRow.visibility = View.GONE
                 btnStartStop.visibility = View.VISIBLE
                 resultsCard.visibility = View.VISIBLE
                 tvConsoleLabel.visibility = View.VISIBLE
@@ -594,19 +544,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 tvConsole.text = getString(R.string.speedtest_waiting)
                 logConsole(getString(R.string.speedtest_backend_cf))
             }
-            SpeedBackend.OOKLA -> {
-                serverPickerRow.visibility = View.VISIBLE
-                btnStartStop.visibility = View.VISIBLE
-                resultsCard.visibility = View.VISIBLE
-                tvConsoleLabel.visibility = View.VISIBLE
-                scrollConsole.visibility = View.VISIBLE
-                rootScroll.visibility = View.VISIBLE
-                resetResults()
-                tvConsole.text = getString(R.string.speedtest_waiting)
-                loadOoklaServerList()
-            }
             SpeedBackend.NETFLIX -> {
-                serverPickerRow.visibility = View.GONE
                 btnStartStop.visibility = View.VISIBLE
                 resultsCard.visibility = View.VISIBLE
                 tvConsoleLabel.visibility = View.VISIBLE
@@ -617,119 +555,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 tvConsole.text = getString(R.string.speedtest_waiting)
                 logConsole(getString(R.string.speedtest_backend_netflix))
             }
-        }
-    }
-
-    // ═════════════════════════════════════════════════════════════════════════
-    //  SERVER LISTS
-    // ═════════════════════════════════════════════════════════════════════════
-
-    private fun loadOoklaServerList() {
-        btnServerPicker.text = getString(R.string.speedtest_server_loading)
-        logConsole(getString(R.string.speedtest_ookla_loading))
-        lifecycleScope.launch(Dispatchers.IO) {
-            val fetched = mutableListOf<OoklaServer>()
-            try {
-                val client = plainClient(10)
-                val req = Request.Builder()
-                    .url(OOKLA_SERVER_LIST_URL)
-                    .header("Accept", "application/json")
-                    .header("User-Agent", OOKLA_USER_AGENT)
-                    .build()
-                val resp = client.newCall(req).execute()
-                if (resp.isSuccessful) {
-                    val json = resp.body?.string() ?: "[]"
-                    resp.close()
-                    val type = object : TypeToken<List<OoklaServer>>() {}.type
-                    fetched.addAll(Gson().fromJson<List<OoklaServer>>(json, type))
-                } else {
-                    val code = resp.code
-                    resp.close()
-                    ui { logConsole(getString(R.string.speedtest_ookla_err_code_fmt, code)) }
-                }
-                shutdown(client)
-            } catch (e: Exception) {
-                Log.w(TAG, "Ookla server list fetch failed", e)
-                ui { logConsole(getString(R.string.speedtest_ookla_err_load_fmt, e.message ?: "")) }
-            }
-
-            // Ping top candidates to find fastest
-            if (fetched.isNotEmpty()) {
-                ui { logConsole(getString(R.string.speedtest_ookla_latency)) }
-                val latencies = mutableListOf<Pair<OoklaServer, Double>>()
-                val candidates = fetched.take(OOKLA_LATENCY_CANDIDATES)
-                for (server in candidates) {
-                    if (cancelled.get()) break
-                    try {
-                        val client = plainClient(5)
-                        val baseUrl = ooklaBaseUrl(server.url)
-                        val t0 = System.nanoTime()
-                        val pingReq = Request.Builder()
-                            .url("${baseUrl}latency.txt?r=${System.nanoTime()}")
-                            .header("User-Agent", OOKLA_USER_AGENT)
-                            .build()
-                        val pingResp = client.newCall(pingReq).execute()
-                        val ms = (System.nanoTime() - t0) / 1_000_000.0
-                        pingResp.close()
-                        shutdown(client)
-                        if (pingResp.isSuccessful || pingResp.code in 200..499) {
-                            latencies.add(server to ms)
-                        }
-                    } catch (e: Exception) {
-                        Log.w(TAG, "Ookla ping failed for ${server.displayName}", e)
-                    }
-                }
-                // Sort by latency, best first
-                latencies.sortBy { it.second }
-                if (latencies.isNotEmpty()) {
-                    fetched.clear()
-                    fetched.addAll(latencies.map { it.first })
-                    // Add remaining servers that weren't pinged
-                    val pingedIds = latencies.map { it.first.id }.toSet()
-                    fetched.addAll(candidates.filter { it.id !in pingedIds })
-                }
-            }
-
-            ui {
-                ooklaServers.clear()
-                ooklaServers.addAll(fetched)
-
-                if (ooklaServers.isEmpty()) {
-                    logConsole(getString(R.string.speedtest_ookla_none))
-                    btnServerPicker.text = getString(R.string.speedtest_server_none)
-                    return@ui
-                }
-                logConsole(getString(R.string.speedtest_ookla_loaded_fmt, ooklaServers.size))
-
-                selectedOoklaServer = ooklaServers[0]
-                btnServerPicker.text = getString(R.string.speedtest_server_fmt, ooklaServers[0].displayName)
-            }
-        }
-    }
-
-    private fun showServerPickerDialog() {
-        when (currentBackend) {
-            SpeedBackend.OOKLA -> showOoklaPickerDialog()
-            else -> { /* no server picker for other backends */ }
-        }
-    }
-
-    private fun showOoklaPickerDialog() {
-        if (ooklaServers.isEmpty()) {
-            logConsole(getString(R.string.speedtest_ookla_none))
-            return
-        }
-        val names = ooklaServers.map { it.displayName }.toTypedArray()
-        val currentIndex = ooklaServers.indexOf(selectedOoklaServer).coerceAtLeast(0)
-        net.appstorefr.perfectdnsmanager.util.TvDialog.showRadioPicker(
-            this,
-            getString(R.string.speedtest_pick_ookla_title),
-            names,
-            currentIndex
-        ) { which ->
-            selectedOoklaServer = ooklaServers[which]
-            btnServerPicker.text = getString(R.string.speedtest_server_fmt, ooklaServers[which].displayName)
-            logConsole(getString(R.string.speedtest_server_fmt, ooklaServers[which].displayName))
         }
     }
 
@@ -747,9 +572,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
         when (currentBackend) {
             SpeedBackend.CLOUDFLARE -> startCloudflareTest()
-            SpeedBackend.OOKLA -> startOoklaTest()
             SpeedBackend.NETFLIX -> startNetflixTest()
-            else -> { /* nPerf handled by WebView */ }
         }
     }
 
@@ -938,191 +761,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         }
 
         monitorProgress(totalBytes, t0, deadline, CF_UL_DURATION_SEC) { mbps, progress ->
-            tvUpload.text = "${"%.2f".format(mbps)} Mbps"
-            pbUpload.progress = progress
-        }
-
-        workers.forEach { it.join(2000); if (it.isAlive) it.interrupt() }
-
-        if (!cancelled.get()) {
-            val elapsed = (System.nanoTime() - t0) / 1e9
-            val bytes = totalBytes.get()
-            val mbps = if (elapsed > 0) (bytes * 8.0) / (elapsed * 1e6) else 0.0
-            ui {
-                tvUpload.text = "${"%.2f".format(mbps)} Mbps"; pbUpload.progress = 1000
-                logConsole(getString(R.string.speedtest_mbps_fmt, mbps, bytes / 1_048_576.0, elapsed))
-            }
-        }
-    }
-
-    // ═════════════════════════════════════════════════════════════════════════
-    //  OOKLA TEST
-    // ═════════════════════════════════════════════════════════════════════════
-
-    private fun startOoklaTest() {
-        val server = selectedOoklaServer ?: run {
-            logConsole(getString(R.string.speedtest_ookla_not_selected)); running.set(false); updateButton(false); return
-        }
-
-        logConsole(getString(R.string.speedtest_start_msg, getString(R.string.speedtest_ookla_title)))
-        logConsole(getString(R.string.speedtest_server_fmt, server.displayName).removePrefix("🌐  "))
-        logConsole("URL: ${server.url}")
-
-        testThread = Thread {
-            try {
-                if (!cancelled.get()) runOoklaPing(server)
-                if (!cancelled.get()) runOoklaDownload(server)
-                if (!cancelled.get()) runOoklaUpload(server)
-                if (!cancelled.get()) ui { logConsole(getString(R.string.speedtest_done_msg)) }
-            } catch (_: InterruptedException) {
-                ui { logConsole(getString(R.string.speedtest_interrupted)) }
-            } catch (e: Exception) {
-                Log.e(TAG, "Ookla test error", e)
-                ui { logConsole(getString(R.string.speedtest_error_fmt, e.message ?: "")) }
-            } finally {
-                running.set(false)
-                ui { updateButton(false) }
-            }
-        }.also { it.start() }
-    }
-
-    private fun runOoklaPing(server: OoklaServer) {
-        ui { logConsole(getString(R.string.speedtest_ping_section_fmt, getString(R.string.speedtest_ookla_title), OOKLA_PING_COUNT)) }
-        val client = plainClient(5)
-        val baseUrl = ooklaBaseUrl(server.url)
-        val pings = mutableListOf<Double>()
-
-        for (i in 1..OOKLA_PING_COUNT) {
-            if (cancelled.get()) break
-            try {
-                val req = Request.Builder()
-                    .url("${baseUrl}latency.txt?r=${System.nanoTime()}")
-                    .header("Cache-Control", "no-cache")
-                    .header("User-Agent", OOKLA_USER_AGENT)
-                    .build()
-                val t0 = System.nanoTime()
-                val resp = client.newCall(req).execute()
-                val ms = (System.nanoTime() - t0) / 1_000_000.0
-                resp.body?.close(); resp.close()
-                pings.add(ms)
-                ui { logConsole(getString(R.string.speedtest_ping_attempt_fmt, i, ms)) }
-            } catch (e: Exception) {
-                if (cancelled.get()) break
-                ui { logConsole(getString(R.string.speedtest_ping_fail_fmt, i)) }
-            }
-        }
-        shutdown(client)
-
-        if (pings.isNotEmpty() && !cancelled.get()) {
-            val avg = pings.average()
-            val jitter = if (pings.size > 1)
-                pings.zipWithNext { a, b -> abs(b - a) }.average() else 0.0
-            ui {
-                tvPing.text = "${"%.1f".format(avg)} ms"
-                tvJitter.text = "${"%.1f".format(jitter)} ms"
-                logConsole(getString(R.string.speedtest_ping_avg_fmt, avg, jitter))
-            }
-        }
-    }
-
-    private fun runOoklaDownload(server: OoklaServer) {
-        ui { logConsole(getString(R.string.speedtest_dl_section_fmt, getString(R.string.speedtest_ookla_title), OOKLA_DL_CONNECTIONS, OOKLA_DL_DURATION_SEC)) }
-
-        val baseUrl = ooklaBaseUrl(server.url)
-        val totalBytes = AtomicLong(0)
-        val t0 = System.nanoTime()
-        val deadline = t0 + OOKLA_DL_DURATION_SEC * 1_000_000_000L
-
-        val workers = (0 until OOKLA_DL_CONNECTIONS).map {
-            Thread {
-                val c = plainClient(OOKLA_DL_DURATION_SEC.toLong() + 5)
-                try {
-                    while (!cancelled.get() && System.nanoTime() < deadline) {
-                        val req = Request.Builder()
-                            .url("${baseUrl}random4000x4000.jpg?r=${System.nanoTime()}")
-                            .header("Cache-Control", "no-store, no-cache")
-                            .header("User-Agent", OOKLA_USER_AGENT)
-                            .build()
-                        val resp = c.newCall(req).execute()
-                        if (resp.isSuccessful) {
-                            resp.body?.byteStream()?.use { stream ->
-                                val buf = ByteArray(65536)
-                                while (!cancelled.get() && System.nanoTime() < deadline) {
-                                    val n = stream.read(buf)
-                                    if (n == -1) break
-                                    totalBytes.addAndGet(n.toLong())
-                                }
-                            }
-                        }
-                        resp.close()
-                    }
-                } catch (_: Exception) {
-                } finally { shutdown(c) }
-            }.also { it.isDaemon = true; it.start() }
-        }
-
-        monitorProgress(totalBytes, t0, deadline, OOKLA_DL_DURATION_SEC) { mbps, progress ->
-            tvDownload.text = "${"%.2f".format(mbps)} Mbps"
-            pbDownload.progress = progress
-        }
-
-        workers.forEach { it.join(2000); if (it.isAlive) it.interrupt() }
-
-        if (!cancelled.get()) {
-            val elapsed = (System.nanoTime() - t0) / 1e9
-            val bytes = totalBytes.get()
-            val mbps = if (elapsed > 0) (bytes * 8.0) / (elapsed * 1e6) else 0.0
-            ui {
-                tvDownload.text = "${"%.2f".format(mbps)} Mbps"; pbDownload.progress = 1000
-                logConsole(getString(R.string.speedtest_mbps_fmt, mbps, bytes / 1_048_576.0, elapsed))
-            }
-        }
-    }
-
-    private fun runOoklaUpload(server: OoklaServer) {
-        ui { logConsole(getString(R.string.speedtest_ul_section_fmt, getString(R.string.speedtest_ookla_title), OOKLA_UL_CONNECTIONS, OOKLA_UL_DURATION_SEC)) }
-
-        val ulUrl = server.url  // server.url is already the upload.php endpoint
-        val totalBytes = AtomicLong(0)
-        val t0 = System.nanoTime()
-        val deadline = t0 + OOKLA_UL_DURATION_SEC * 1_000_000_000L
-        val payload = ByteArray(OOKLA_UL_PAYLOAD_SIZE) { (it % 256).toByte() }
-
-        val workers = (0 until OOKLA_UL_CONNECTIONS).map {
-            Thread {
-                val c = plainClient(OOKLA_UL_DURATION_SEC.toLong() + 5)
-                try {
-                    while (!cancelled.get() && System.nanoTime() < deadline) {
-                        val body = object : okhttp3.RequestBody() {
-                            override fun contentType() = "application/octet-stream".toMediaType()
-                            override fun contentLength() = payload.size.toLong()
-                            override fun writeTo(sink: okio.BufferedSink) {
-                                var off = 0; val chunk = 65536
-                                while (off < payload.size && !cancelled.get() && System.nanoTime() < deadline) {
-                                    val len = minOf(chunk, payload.size - off)
-                                    sink.write(payload, off, len)
-                                    sink.flush()
-                                    totalBytes.addAndGet(len.toLong())
-                                    off += len
-                                }
-                            }
-                        }
-                        val req = Request.Builder()
-                            .url("$ulUrl?r=${System.nanoTime()}")
-                            .post(body)
-                            .header("User-Agent", OOKLA_USER_AGENT)
-                            .build()
-                        try {
-                            c.newCall(req).execute().close()
-                        } catch (_: Exception) {
-                        }
-                    }
-                } catch (_: Exception) {
-                } finally { shutdown(c) }
-            }.also { it.isDaemon = true; it.start() }
-        }
-
-        monitorProgress(totalBytes, t0, deadline, OOKLA_UL_DURATION_SEC) { mbps, progress ->
             tvUpload.text = "${"%.2f".format(mbps)} Mbps"
             pbUpload.progress = progress
         }
@@ -1365,14 +1003,6 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     private fun shutdown(c: OkHttpClient) {
         try { c.dispatcher.executorService.shutdown(); c.connectionPool.evictAll() }
         catch (_: Exception) {}
-    }
-
-    /** Extract Ookla base URL from upload.php URL (e.g. "http://host:8080/speedtest/upload.php" → "http://host:8080/speedtest/"). */
-    private fun ooklaBaseUrl(url: String): String {
-        // Ookla url field is like "http://host:port/speedtest/upload.php"
-        // We need the directory: "http://host:port/speedtest/"
-        val idx = url.lastIndexOf('/')
-        return if (idx > 8) url.substring(0, idx + 1) else "$url/"
     }
 
 }

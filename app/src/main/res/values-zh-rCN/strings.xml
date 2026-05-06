@@ -418,9 +418,6 @@
     <string name="share_exp_24h">24 h</string>
     <string name="share_exp_72h">72 h</string>
     <string name="speedtest_adv_title">互联网速度测试</string>
-    <string name="speedtest_server_loading">🌐  服务器: 加载中…</string>
-    <string name="speedtest_server_fmt">🌐  服务器: %1$s</string>
-    <string name="speedtest_server_none">🌐  服务器: 无</string>
     <string name="speedtest_start">开始测试</string>
     <string name="speedtest_log">测试日志</string>
     <string name="speedtest_waiting">等待中… </string>
@@ -431,13 +428,6 @@
     <string name="speedtest_stopping_msg">正在停止测试…</string>
     <string name="speedtest_interrupted">测试已中断。</string>
     <string name="speedtest_error_fmt">错误: %1$s</string>
-    <string name="speedtest_ookla_loading">加载 Ookla 服务器列表中…</string>
-    <string name="speedtest_ookla_latency">测试 Ookla 服务器延迟…</string>
-    <string name="speedtest_ookla_loaded_fmt">已加载 %1$d 个 Ookla 服务器。</string>
-    <string name="speedtest_ookla_err_code_fmt">Ookla 服务器错误: %1$d</string>
-    <string name="speedtest_ookla_err_load_fmt">Ookla 加载错误: %1$s</string>
-    <string name="speedtest_ookla_none">没有可用的 Ookla 服务器。</string>
-    <string name="speedtest_ookla_not_selected">未选择 Ookla 服务器。</string>
     <string name="speedtest_ping_section_fmt"> --- Ping %1$s (%2$d 次请求) ---</string>
     <string name="speedtest_ping_attempt_fmt">  #%1$d : %2$.1f ms</string>
     <string name="speedtest_ping_fail_fmt">  #%1$d: 失败</string>
@@ -449,7 +439,6 @@
     <string name="speedtest_ip_none">IP : --</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
     <string name="speedtest_cloudflare_title">Cloudflare</string>
-    <string name="speedtest_ookla_title">Ookla</string>
     <string name="report_conn_fmt">连接: %1$s</string>
     <string name="report_carrier_fmt">运营商: %1$s</string>
     <string name="report_isp_fmt">ISP: %1$s</string>
@@ -521,7 +510,6 @@
     <string name="split_tunnel_search_min_chars">至少输入 2 个字符…</string>
     <string name="split_tunnel_all_apps_label">所有应用</string>    <string name="primary_dns_invalid">主 DNS 无效。请根据所选协议检查格式。</string>    <string name="update_signature_mismatch">错误：APK 签名不匹配，更新已中止。</string>    <string name="btn_stop">⏹ 停止</string>
     <string name="speedtest_stop">停止</string>
-    <string name="speedtest_pick_ookla_title">选择 Ookla 服务器</string>
     <string name="speedtest_fast_urls_loaded_fmt">已加载 %1$d 个测试 URL。</string>
     <string name="speedtest_upload_unsupported">--- 上传：不支持 (N/A) ---</string>
     <string name="speedtest_providers_count_fmt">%1$d 家服务商</string>

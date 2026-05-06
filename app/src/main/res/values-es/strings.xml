@@ -418,9 +418,6 @@
     <string name="share_exp_24h">24 h</string>
     <string name="share_exp_72h">72 h</string>
     <string name="speedtest_adv_title">Prueba de velocidad de Internet</string>
-    <string name="speedtest_server_loading">🌐  Servidor: cargando…</string>
-    <string name="speedtest_server_fmt">🌐  Servidor: %1$s</string>
-    <string name="speedtest_server_none">🌐  Servidor: ninguno</string>
     <string name="speedtest_start">Iniciar prueba</string>
     <string name="speedtest_log">Registro de prueba</string>
     <string name="speedtest_waiting">Esperando… </string>
@@ -431,13 +428,6 @@
     <string name="speedtest_stopping_msg">Deteniendo prueba…</string>
     <string name="speedtest_interrupted">Prueba interrumpida.</string>
     <string name="speedtest_error_fmt">Error: %1$s</string>
-    <string name="speedtest_ookla_loading">Cargando lista de servidores Ookla…</string>
-    <string name="speedtest_ookla_latency">Probando latencia de servidores Ookla…</string>
-    <string name="speedtest_ookla_loaded_fmt">%1$d servidor(es) Ookla cargado(s).</string>
-    <string name="speedtest_ookla_err_code_fmt">Error servidor Ookla: %1$d</string>
-    <string name="speedtest_ookla_err_load_fmt">Error de carga Ookla: %1$s</string>
-    <string name="speedtest_ookla_none">Ningún servidor Ookla disponible.</string>
-    <string name="speedtest_ookla_not_selected">Ningún servidor Ookla seleccionado.</string>
     <string name="speedtest_ping_section_fmt"> --- Ping %1$s (%2$d peticiones) ---</string>
     <string name="speedtest_ping_attempt_fmt">  #%1$d : %2$.1f ms</string>
     <string name="speedtest_ping_fail_fmt">  #%1$d: fallo</string>
@@ -449,7 +439,6 @@
     <string name="speedtest_ip_none">IP : --</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
     <string name="speedtest_cloudflare_title">Cloudflare</string>
-    <string name="speedtest_ookla_title">Ookla</string>
     <string name="report_conn_fmt">Conexión: %1$s</string>
     <string name="report_carrier_fmt">Operador: %1$s</string>
     <string name="report_isp_fmt">ISP: %1$s</string>
@@ -521,7 +510,6 @@
     <string name="split_tunnel_search_min_chars">Escriba al menos 2 caracteres…</string>
     <string name="split_tunnel_all_apps_label">Todas las aplicaciones</string>    <string name="primary_dns_invalid">DNS principal no válido. Compruebe el formato según el protocolo elegido.</string>    <string name="update_signature_mismatch">Error: la firma del APK no coincide. Actualización cancelada.</string>    <string name="btn_stop">⏹ Detener</string>
     <string name="speedtest_stop">Detener</string>
-    <string name="speedtest_pick_ookla_title">Elegir un servidor Ookla</string>
     <string name="speedtest_fast_urls_loaded_fmt">%1$d URL(s) de prueba cargadas.</string>
     <string name="speedtest_upload_unsupported">--- Subida: no admitida (N/A) ---</string>
     <string name="speedtest_providers_count_fmt">%1$d proveedores</string>
