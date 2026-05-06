@@ -549,7 +549,7 @@ class MainActivity : AppCompatActivity() {
         }
         isGenerating = true
         reportGenerated = false
-        btnGenerateReport.text = "\u23F9 Stop"
+        btnGenerateReport.text = "⏹ Stop"
         btnGenerateReport.setBackgroundResource(R.drawable.pdm_btn_danger)
         btnShareReport.isEnabled = false
         btnShareReport.setBackgroundResource(R.drawable.pdm_btn_danger)
@@ -560,22 +560,28 @@ class MainActivity : AppCompatActivity() {
         lastIpv4 = null
         lastIpv6 = null
 
-        // Un seul gros TextView (tvReportContent). 3 sections s\u00e9par\u00e9es par lignes vides
-        // avec titres bold via SpannableStringBuilder.
-        val display = android.text.SpannableStringBuilder()
-        appendBoldTitle(display, getString(R.string.share_toggle_blocking))
-        runOnUiThread {
-            tvReportContent.setTextColor(pdmTextSecondary())
-            tvReportContent.text = android.text.SpannableStringBuilder(display).append("\n\u23F3 ${getString(R.string.report_progress_blocking)}")
-        }
+        // Capture les titres ici (UI thread, getString safe) pour les passer au worker
+        // qui les marquera bold via renderReport().
+        val titleBlocking = getString(R.string.share_toggle_blocking)
+        val titleLeak = getString(R.string.share_toggle_leak)
+        val titleSpeedtest = getString(R.string.share_toggle_speedtest)
+
+        tvReportContent.setTextColor(pdmTextSecondary())
+        tvReportContent.text = renderReport("$titleBlocking\n⏳ ${getString(R.string.report_progress_blocking)}", titleBlocking, titleLeak, titleSpeedtest)
 
         generatingThread = Thread {
             val t = Thread.currentThread()
 
-            // Refresh status panel \u2014 peuple lastIpv4/etc. utilis\u00e9s par uploadReport()
+            // Refresh status panel — peuple lastIpv4/etc. utilisés par uploadReport()
             refreshIpDisplay()
 
-            // \u2500\u2500 Section 1 : URL Blocking test (multi-domain) \u2500\u2500
+            // display: StringBuilder est purement thread-local (créé ici dans le worker).
+            // Pour les updates UI on snapshot via .toString() et on applique le bold via
+            // renderReport() exécuté sur le UI thread → aucun partage de mutable state.
+            val display = StringBuilder()
+            display.append(titleBlocking)
+
+            // ── Section 1 : URL Blocking test ──
             if (t.isInterrupted) return@Thread
             val testDomains = loadTestDomains()
             val allBlockingResults = mutableListOf<UrlBlockingTester.BlockingResult>()
@@ -585,32 +591,31 @@ class MainActivity : AppCompatActivity() {
                     val blocking = UrlBlockingTester.testBeforeAfter(this@MainActivity, domain)
                     allBlockingResults.add(blocking)
                     display.append("\n${blocking.domain} :")
-                    val ispIcon = if (blocking.ispDns.isBlocked) "\u274c" else "\u2705"
+                    val ispIcon = if (blocking.ispDns.isBlocked) "❌" else "✅"
                     val ispIp = blocking.ispDns.ip ?: blocking.ispDns.error ?: "N/A"
-                    val ispAuth = blocking.ispDns.authorityLabel?.let { " \u2014 $it" } ?: ""
+                    val ispAuth = blocking.ispDns.authorityLabel?.let { " — $it" } ?: ""
                     display.append("\n  ${getString(R.string.report_isp_dns_label)} : $ispIcon $ispIp$ispAuth")
-                    val activeIcon = if (blocking.activeDns.isBlocked) "\u274c" else "\u2705"
+                    val activeIcon = if (blocking.activeDns.isBlocked) "❌" else "✅"
                     val activeIp = blocking.activeDns.ip ?: blocking.activeDns.error ?: "N/A"
-                    val activeAuth = blocking.activeDns.authorityLabel?.let { " \u2014 $it" } ?: ""
+                    val activeAuth = blocking.activeDns.authorityLabel?.let { " — $it" } ?: ""
                     display.append("\n  ${getString(R.string.report_active_dns_label)} : $activeIcon $activeIp$activeAuth")
                     if (blocking.ispDns.isBlocked && !blocking.activeDns.isBlocked) {
-                        display.append("\n  \u2192 ${getString(R.string.report_dns_unblocks)}")
+                        display.append("\n  → ${getString(R.string.report_dns_unblocks)}")
                     }
                 } catch (e: Exception) {
-                    display.append("\n$domain : \u274c ${e.message}")
+                    display.append("\n$domain : ❌ ${e.message}")
                 }
-                runOnUiThread {
-                    tvReportContent.text = android.text.SpannableStringBuilder(display).append("\n\u23F3 ${getString(R.string.report_testing_blocking)}")
-                }
+                val snapshot = display.toString() + "\n⏳ ${getString(R.string.report_testing_blocking)}"
+                runOnUiThread { tvReportContent.text = renderReport(snapshot, titleBlocking, titleLeak, titleSpeedtest) }
             }
             lastBlockingResult = allBlockingResults.firstOrNull()
 
-            // \u2500\u2500 Section 2 : DNS Leak test \u2500\u2500
+            // ── Section 2 : DNS Leak test ──
             if (t.isInterrupted) return@Thread
-            display.append("\n\n")
-            appendBoldTitle(display, getString(R.string.share_toggle_leak))
-            runOnUiThread {
-                tvReportContent.text = android.text.SpannableStringBuilder(display).append("\n\u23F3 ${getString(R.string.report_progress_leak)}")
+            display.append("\n\n").append(titleLeak)
+            run {
+                val snap = display.toString() + "\n⏳ ${getString(R.string.report_progress_leak)}"
+                runOnUiThread { tvReportContent.text = renderReport(snap, titleBlocking, titleLeak, titleSpeedtest) }
             }
             try {
                 val leakComparison = DnsLeakTester.runLeakTestComparison(this@MainActivity)
@@ -618,59 +623,59 @@ class MainActivity : AppCompatActivity() {
                 lastLeakResult = leakComparison.vpnResult
                 display.append("\n${getString(R.string.dns_leak_isp_label)} :")
                 if (leakComparison.ispResult.error != null) {
-                    display.append("\n  \u274c ${leakComparison.ispResult.error}")
+                    display.append("\n  ❌ ${leakComparison.ispResult.error}")
                 } else {
                     for (r in leakComparison.ispResult.resolverIps) {
-                        display.append("\n  \u2022 ${r.ip}")
-                        if (r.country != null) display.append(" \u2014 ${r.country}")
+                        display.append("\n  • ${r.ip}")
+                        if (r.country != null) display.append(" — ${r.country}")
                         if (r.isp != null) display.append(" (${r.isp})")
                     }
                 }
                 display.append("\n${getString(R.string.dns_leak_vpn_label)} :")
                 if (leakComparison.vpnResult.error != null) {
-                    display.append("\n  \u274c ${leakComparison.vpnResult.error}")
+                    display.append("\n  ❌ ${leakComparison.vpnResult.error}")
                 } else {
                     for (r in leakComparison.vpnResult.resolverIps) {
-                        display.append("\n  \u2022 ${r.ip}")
-                        if (r.country != null) display.append(" \u2014 ${r.country}")
+                        display.append("\n  • ${r.ip}")
+                        if (r.country != null) display.append(" — ${r.country}")
                         if (r.isp != null) display.append(" (${r.isp})")
                     }
                 }
                 val ispIps = leakComparison.ispResult.resolverIps.map { it.ip }.toSet()
                 val vpnIps = leakComparison.vpnResult.resolverIps.map { it.ip }.toSet()
                 if (ispIps.isNotEmpty() && vpnIps.isNotEmpty() && ispIps != vpnIps) {
-                    display.append("\n\u2705 ${getString(R.string.report_no_leak)}")
+                    display.append("\n✅ ${getString(R.string.report_no_leak)}")
                 } else if (ispIps.isNotEmpty() && ispIps == vpnIps) {
-                    display.append("\n\u26a0\ufe0f ${getString(R.string.report_leak_detected)}")
+                    display.append("\n⚠️ ${getString(R.string.report_leak_detected)}")
                 }
             } catch (e: Exception) {
-                display.append("\n\u274c ${e.message}")
+                display.append("\n❌ ${e.message}")
             }
 
-            // \u2500\u2500 Section 3 : Speedtest (basique) \u2500\u2500
+            // ── Section 3 : Speedtest (basique) ──
             if (t.isInterrupted) return@Thread
-            display.append("\n\n")
-            appendBoldTitle(display, getString(R.string.share_toggle_speedtest))
-            runOnUiThread {
-                tvReportContent.text = android.text.SpannableStringBuilder(display).append("\n\u23F3 ${getString(R.string.report_progress_speedtest)}")
+            display.append("\n\n").append(titleSpeedtest)
+            run {
+                val snap = display.toString() + "\n⏳ ${getString(R.string.report_progress_speedtest)}"
+                runOnUiThread { tvReportContent.text = renderReport(snap, titleBlocking, titleLeak, titleSpeedtest) }
             }
             try {
                 val speed = SpeedTester.runFullTest { progress ->
-                    runOnUiThread {
-                        tvReportContent.text = android.text.SpannableStringBuilder(display).append("\n\u23F3 $progress")
-                    }
+                    val snap = display.toString() + "\n⏳ $progress"
+                    runOnUiThread { tvReportContent.text = renderReport(snap, titleBlocking, titleLeak, titleSpeedtest) }
                 }
                 lastSpeedResult = speed
                 if (speed.pingMs >= 0) display.append("\nPing : ${speed.pingMs} ms")
-                display.append("\n\u2193 Download : ${String.format("%.1f", speed.downloadMbps)} Mbps")
-                display.append("\n\u2191 Upload : ${String.format("%.1f", speed.uploadMbps)} Mbps")
+                display.append("\n↓ Download : ${String.format("%.1f", speed.downloadMbps)} Mbps")
+                display.append("\n↑ Upload : ${String.format("%.1f", speed.uploadMbps)} Mbps")
             } catch (e: Exception) {
-                display.append("\n\u274c ${e.message}")
+                display.append("\n❌ ${e.message}")
             }
 
             if (t.isInterrupted) return@Thread
             reportGenerated = true
 
+            val finalSnap = display.toString()
             runOnUiThread {
                 isGenerating = false
                 generatingThread = null
@@ -678,22 +683,33 @@ class MainActivity : AppCompatActivity() {
                 btnGenerateReport.setBackgroundResource(R.drawable.pdm_btn_primary)
                 btnShareReport.isEnabled = true
                 btnShareReport.setBackgroundResource(R.drawable.pdm_btn_primary)
-                tvReportContent.text = display
+                tvReportContent.text = renderReport(finalSnap, titleBlocking, titleLeak, titleSpeedtest)
                 Toast.makeText(this, getString(R.string.report_complete), Toast.LENGTH_SHORT).show()
             }
         }
         generatingThread!!.start()
     }
 
-    /** Append un titre de section (bold) \u00e0 un SpannableStringBuilder. */
-    private fun appendBoldTitle(sb: android.text.SpannableStringBuilder, title: String) {
-        val start = sb.length
-        sb.append(title)
-        sb.setSpan(
-            android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-            start, sb.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+    /**
+     * Convertit une string brute en SpannableStringBuilder avec les 3 titres
+     * de section (Blocking / Leak / Speedtest) en gras. Appelé uniquement sur
+     * UI thread — pas de problème de concurrence avec le StringBuilder du worker.
+     */
+    private fun renderReport(raw: String, vararg titles: String): CharSequence {
+        val sb = android.text.SpannableStringBuilder(raw)
+        for (title in titles) {
+            var idx = raw.indexOf(title)
+            while (idx >= 0) {
+                sb.setSpan(
+                    android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                    idx, idx + title.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                idx = raw.indexOf(title, idx + title.length)
+            }
+        }
+        return sb
     }
+
 
     private fun shareReport() {
         if (!reportGenerated) {
