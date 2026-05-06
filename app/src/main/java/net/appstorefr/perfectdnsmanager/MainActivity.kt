@@ -821,6 +821,10 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, getString(R.string.report_generating), Toast.LENGTH_SHORT).show()
         btnShareReport.isEnabled = false
         btnShareReport.setBackgroundResource(R.drawable.pdm_btn_danger)
+        // Capture tvStatusInfo.text sur UI thread AVANT le launch IO — read direct
+        // sur worker thread peut crasher selon la version Android.
+        val statusFirstLineSnapshot = (tvStatusInfo.text?.toString() ?: getString(R.string.no_active_dns))
+            .lineSequence().firstOrNull() ?: getString(R.string.no_active_dns)
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val appVersion = try {
@@ -874,10 +878,8 @@ class MainActivity : AppCompatActivity() {
                         appendLine("| **IPv4** | `${lastIpv4 ?: "N/A"}` |")
                         val ipv6Status = lastIpv6 ?: "${getString(R.string.wan_ipv6_blocked)}"
                         appendLine("| **IPv6** | `$ipv6Status` |")
-                        // tvStatusInfo contient le bloc complet status (DNS + connexion + hardware) ;
-                        // pour la cellule MD on extrait juste la 1re ligne (= ligne DNS actif).
-                        val dnsStatusClean = (tvStatusInfo.text?.toString() ?: getString(R.string.no_active_dns)).lineSequence().firstOrNull() ?: getString(R.string.no_active_dns)
-                        appendLine("| **${getString(R.string.md_active_dns)}** | `$dnsStatusClean` |")
+                        // Snapshot capturé sur UI thread avant le launch — pas de read direct ici
+                        appendLine("| **${getString(R.string.md_active_dns)}** | `$statusFirstLineSnapshot` |")
                         appendLine("| **${getString(R.string.report_label_profile)}** | ${selectedProfile?.let { "${it.providerName} - ${it.name}" } ?: getString(R.string.report_label_none)} |")
                         appendLine("| **${getString(R.string.md_date)}** | ${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.US).format(java.util.Date())} |")
                         appendLine()
