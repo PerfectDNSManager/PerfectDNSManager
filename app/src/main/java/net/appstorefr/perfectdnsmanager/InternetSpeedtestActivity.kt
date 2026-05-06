@@ -161,10 +161,22 @@ class InternetSpeedtestActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Focus initial systématiquement sur Démarrer le test, à chaque
-        // arrivée sur l'écran (cold start ou retour depuis sub-activity).
-        // Le post() laisse le temps au view tree d'être prêt.
         btnStartStop.post { btnStartStop.requestFocus() }
+    }
+
+    /**
+     * Filet de sécurité pour le focus initial : à chaque fois que la fenêtre
+     * gagne le focus (cold start ou retour de sub-activity), on s'assure que
+     * btnStartStop a bien le focus. onResume() seul ne suffit pas toujours :
+     * sur certaines TV box, le système attend d'avoir le window focus avant
+     * d'appliquer requestFocus(), et un autre élément peut grappiller entre
+     * les deux. Cette callback est garantie d'arriver après la stabilisation.
+     */
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus && !btnStartStop.isFocused) {
+            btnStartStop.requestFocus()
+        }
     }
 
     override fun onDestroy() {
@@ -184,6 +196,13 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         rootScroll = ScrollView(this).apply {
             setBackgroundColor(COLOR_BG)
             isFillViewport = true
+            // ScrollView est focusable par défaut → il pouvait capter le focus
+            // initial à la place de btnStartStop, et DPAD DOWN depuis le
+            // bouton tombait dans une zone "vide" focusable. On désactive
+            // sa focusabilité directe et on laisse le focus aller aux enfants.
+            isFocusable = false
+            isFocusableInTouchMode = false
+            descendantFocusability = android.view.ViewGroup.FOCUS_AFTER_DESCENDANTS
         }
 
         mainColumn = LinearLayout(this).apply {
@@ -350,6 +369,9 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         }
         btnServerPicker.nextFocusDownId = btnStartStop.id
         btnStartStop.nextFocusUpId = btnServerPicker.id
+        // DPAD DOWN sur btnStartStop : on bloque sur place. Sinon le focus
+        // partait dans le ScrollView console et disparaissait.
+        btnStartStop.nextFocusDownId = btnStartStop.id
         mainColumn.addView(btnStartStop)
 
         // ── Results card ─────────────────────────────────────────────────
@@ -437,11 +459,17 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             background = GradientDrawable().apply {
                 setColor(pdmSurfaceInput()); cornerRadius = dp(8).toFloat()
             }
+            // C'est un log de diagnostic en lecture seule — ne doit pas être
+            // focusable au DPAD (sinon le curseur disparaît dans la console).
+            isFocusable = false
+            isFocusableInTouchMode = false
+            descendantFocusability = android.view.ViewGroup.FOCUS_BLOCK_DESCENDANTS
         }
         tvConsole = TextView(this).apply {
             setTextColor(COLOR_LIGHT_GREY); textSize = 11f
             setPadding(dp(8), dp(6), dp(8), dp(6))
             text = getString(R.string.speedtest_waiting)
+            isFocusable = false
         }
         scrollConsole.addView(tvConsole)
         mainColumn.addView(scrollConsole)
