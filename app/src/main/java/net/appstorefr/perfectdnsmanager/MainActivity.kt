@@ -299,13 +299,19 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.device_type_tablet)
         } else getString(R.string.device_type_phone)
 
-        // Rendu immédiat avec placeholders "…" pour ipv4/ipv6/ispInfo
-        renderStatus(
-            dnsStatusText, dnsActive, connType, carrierName,
-            ispInfo = "", localIp = localIp,
-            ipv4Display = "…", ipv6Display = "…",
-            devType = devType
-        )
+        // Rendu immédiat avec placeholders "…" pour ipv4/ipv6/ispInfo.
+        // runOnUiThread défensif : si refreshIpDisplay() est appelé depuis un
+        // worker (cf generateReport), l'accès direct à tvStatusInfo.text crash
+        // en CalledFromWrongThreadException. runOnUiThread est instantané quand
+        // le caller est déjà UI thread.
+        runOnUiThread {
+            renderStatus(
+                dnsStatusText, dnsActive, connType, carrierName,
+                ispInfo = "", localIp = localIp,
+                ipv4Display = "…", ipv6Display = "…",
+                devType = devType
+            )
+        }
 
         // ── Phase 2 : IO réseau (parallèle) puis update final ──
         lifecycleScope.launch(Dispatchers.IO) {
