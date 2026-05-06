@@ -392,20 +392,31 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         }
         mainColumn.addView(tvConsoleLabel)
 
-        // Console : encart focusable + scrollable. Hauteur calibrée pour
-        // que tout l'écran tienne en une page sans scroll global (chips +
-        // Démarrer + résultats + log = ~1 écran). DPAD-DOWN dans le log
-        // pour scroller le contenu si besoin de voir plus de lignes.
-        scrollConsole = ScrollView(this).apply {
+        // Console : pattern FrameLayout wrapper (focusable, foreground border)
+        // + ScrollView interne (focusable=false, scrollbars visibles).
+        // Identique au wrapStatus/wrapReport de l'écran principal.
+        // Le foregroundGravity="fill" garantit que le cadre vert épouse les
+        // bounds réelles du wrapper (le bug en beta.101 venait du foreground
+        // posé sur le ScrollView qui ne tracait pas correctement le cadre).
+        val consoleWrapper = android.widget.FrameLayout(this).apply {
             id = View.generateViewId()
             layoutParams = lp(matchParent, dp(130))
             background = GradientDrawable().apply {
                 setColor(pdmSurfaceInput()); cornerRadius = dp(8).toFloat()
             }
             foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+            foregroundGravity = Gravity.FILL
             isFocusable = true
             isFocusableInTouchMode = false
             descendantFocusability = android.view.ViewGroup.FOCUS_BLOCK_DESCENDANTS
+        }
+        scrollConsole = ScrollView(this).apply {
+            layoutParams = android.widget.FrameLayout.LayoutParams(
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+            )
+            isFillViewport = false
+            isFocusable = false
             isScrollbarFadingEnabled = false
             scrollBarStyle = ScrollView.SCROLLBARS_INSIDE_OVERLAY
         }
@@ -416,14 +427,13 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             isFocusable = false
         }
         scrollConsole.addView(tvConsole)
-        mainColumn.addView(scrollConsole)
+        consoleWrapper.addView(scrollConsole)
+        mainColumn.addView(consoleWrapper)
 
-        // Maintenant que scrollConsole a son id, on ferme la chaîne DPAD :
-        // btnStartStop ↓ scrollConsole · scrollConsole ↑ btnStartStop ·
-        // scrollConsole ↓ lui-même (rien de focusable en dessous).
-        btnStartStop.nextFocusDownId = scrollConsole.id
-        scrollConsole.nextFocusUpId = btnStartStop.id
-        scrollConsole.nextFocusDownId = scrollConsole.id
+        // Chaîne DPAD : btnStartStop ↔ consoleWrapper · consoleWrapper ↓ lui.
+        btnStartStop.nextFocusDownId = consoleWrapper.id
+        consoleWrapper.nextFocusUpId = btnStartStop.id
+        consoleWrapper.nextFocusDownId = consoleWrapper.id
 
         rootScroll.addView(mainColumn)
         // Focus on Start button, scroll to top
