@@ -11,10 +11,15 @@
     android:focusable="false"
     android:descendantFocusability="afterDescendants">
 
-    <!-- Row 1: Icon + Blue name button + Green connect button -->
+    <!-- Row 1: Icon + Blue name button + Green connect button.
+         minHeight assure que toutes les cartes ont la même hauteur de
+         rangée, peu importe que le badge vert wrappe ou non sur 2/3 lignes
+         (problème vu sur mobile : "DoH · Standard" wrap → carte plus haute
+         que "DoH" qui tient sur 1 ligne). -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="56dp"
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
@@ -22,7 +27,7 @@
         <LinearLayout
             android:id="@+id/layoutProviderButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:gravity="center_vertical"
@@ -56,17 +61,24 @@
                 android:ellipsize="end" />
         </LinearLayout>
 
-        <!-- Green button: X profils / types → quick connect -->
+        <!-- Green button: X profils / types → quick connect.
+             minLines=2 + maxLines=2 lock le badge à exactement 2 lignes :
+             pas d'effet escalier quand "DoH · Standard" wrap vs "DoH" seul.
+             minWidth=95dp donne assez d'espace pour que "DoH · Standard"
+             tienne sur 1 ligne dans la majorité des cas. -->
         <TextView
             android:id="@+id/tvType"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:textSize="10sp"
             android:textColor="@color/pdm_text_primary"
             android:paddingHorizontal="10dp"
             android:paddingVertical="4dp"
             android:background="@drawable/btn_green_connect"
-            android:minWidth="70dp"
+            android:minWidth="95dp"
+            android:minLines="2"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:gravity="center"
             android:focusable="true"
             android:clickable="true"
