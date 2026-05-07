@@ -9,18 +9,12 @@
 
     <Button
         android:id="@+id/btnBack"
+        style="@style/PDMBackButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/back_arrow"
-        android:textSize="18sp"
-        android:padding="12dp"
-        android:minHeight="48dp"
-        android:backgroundTint="@color/pdm_surface_elevated"
-        android:foreground="@drawable/btn_focus_foreground"
-        android:textColor="@color/pdm_text_primary"
         android:layout_gravity="start"
         android:layout_marginBottom="12dp"
-        android:focusable="true"
         android:nextFocusDown="@id/btnSelectCrypto"/>
 
     <TextView

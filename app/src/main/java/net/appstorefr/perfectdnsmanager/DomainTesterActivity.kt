@@ -70,13 +70,19 @@ class DomainTesterActivity : AppCompatActivity() {
             orientation = LinearLayout.HORIZONTAL
             gravity = android.view.Gravity.CENTER_VERTICAL
         }
+        // Bouton RETOUR uniforme avec PDMBackButton (13sp + paddings serrés).
+        // setPadding prend des PIXELS donc on convertit dp → px via density.
+        val d = resources.displayMetrics.density
         val btnBack = Button(this).apply {
             text = getString(R.string.back_arrow)
             setTextColor(pdmTextPrimary())
             setBackgroundResource(R.drawable.focusable_item_background)
             foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             isFocusable = true
-            setPadding(20, 10, 20, 10)
+            textSize = 13f
+            minWidth = 0
+            minHeight = 0
+            setPadding((10 * d).toInt(), (6 * d).toInt(), (10 * d).toInt(), (6 * d).toInt())
             setOnClickListener { finish() }
         }
         header.addView(btnBack)

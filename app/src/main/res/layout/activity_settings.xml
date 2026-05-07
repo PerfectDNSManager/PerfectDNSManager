@@ -20,16 +20,10 @@
         android:layout_marginBottom="10dp">
         <Button
             android:id="@+id/btnBack"
+            style="@style/PDMBackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/back_arrow"
-            android:background="@drawable/focusable_item_background"
-            android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="@color/pdm_item_text"
-            android:textSize="18sp"
-            android:padding="12dp"
-            android:minHeight="48dp"
-            android:focusable="true" />
+            android:text="@string/back_arrow" />
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -15,17 +15,11 @@
 
         <Button
             android:id="@+id/btnBack"
+            style="@style/PDMBackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
             android:text="@string/back_arrow"
-            android:textSize="18sp"
-            android:padding="12dp"
-            android:minHeight="48dp"
-            android:background="@drawable/focusable_item_background"
-            android:foreground="@drawable/btn_focus_foreground"
-            android:textColor="@color/pdm_item_text"
-            android:focusable="true"
             android:nextFocusDown="@id/rvProfiles"
             android:nextFocusRight="@id/rvProfiles"/>
 

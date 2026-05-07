@@ -227,15 +227,18 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             layoutParams = lp(matchParent, wrapContent).apply { bottomMargin = dp(6) }
         }
 
+        // Uniforme avec PDMBackButton (13sp + paddings 10dp/6dp).
         val btnBack = Button(this).apply {
             id = View.generateViewId()
             text = getString(R.string.back_arrow)
             setTextColor(COLOR_WHITE)
-            textSize = 18f
+            textSize = 13f
             setBackgroundResource(R.drawable.focusable_item_background)
             foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             isFocusable = true
-            setPadding(dp(24), dp(14), dp(24), dp(14))
+            minWidth = 0
+            minHeight = 0
+            setPadding(dp(10), dp(6), dp(10), dp(6))
             setOnClickListener { finish() }
         }
         header.addView(btnBack)
