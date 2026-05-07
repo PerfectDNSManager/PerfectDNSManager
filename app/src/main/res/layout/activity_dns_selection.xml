@@ -6,17 +6,20 @@
     android:background="@color/pdm_background"
     android:padding="16dp">
 
-    <!-- Header -->
-    <FrameLayout
+    <!-- Header : LinearLayout horizontal pour que le titre n'overlap pas le
+         bouton RETOUR sur mobile (le FrameLayout précédent centrait le titre
+         dans tout le parent et il passait par-dessus le bouton). -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:layout_marginBottom="8dp">
 
         <Button
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
             android:text="@string/back_arrow"
             android:background="@drawable/focusable_item_background"
             android:foreground="@drawable/btn_focus_foreground"
@@ -28,15 +31,19 @@
             android:nextFocusDown="@id/btnSpeedtest" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_weight="1"
             android:text="@string/choose_dns_server"
             android:textColor="@color/pdm_text_primary"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:gravity="center" />
-    </FrameLayout>
+            android:gravity="center"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
+    </LinearLayout>
 
     <!-- Info méthode -->
     <TextView
