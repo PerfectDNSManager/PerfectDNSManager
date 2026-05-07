@@ -148,6 +148,20 @@ jobs:
           path: ${{ steps.apk.outputs.path }}
           retention-days: 30
 
+      # Pour les stables : copie l'APK sous le nom fixe `latest.apk` afin que
+      # le code Downloader AFTVnews (2759555) et tout lien externe pointant
+      # vers `releases/latest/download/latest.apk` continue de fonctionner.
+      # GitHub route automatiquement `releases/latest/...` vers la release
+      # marquée isLatest=true (par défaut, la dernière non-prerelease).
+      - name: Stage stable-name APK for latest.apk pointer
+        if: steps.meta.outputs.prerelease != 'true' && (github.event_name == 'push' || github.event.inputs.create_release == 'true')
+        id: stable_apk
+        run: |
+          STABLE_NAME="latest.apk"
+          STABLE_PATH="app/build/outputs/apk/release/$STABLE_NAME"
+          cp "${{ steps.apk.outputs.path }}" "$STABLE_PATH"
+          echo "path=$STABLE_PATH" >> "$GITHUB_OUTPUT"
+
       - name: Create GitHub Release
         if: github.event_name == 'push' || github.event.inputs.create_release == 'true'
         uses: softprops/action-gh-release@v2
@@ -155,7 +169,9 @@ jobs:
           tag_name: ${{ steps.meta.outputs.tag_name }}
           name: ${{ steps.meta.outputs.release_name }}
           prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
-          files: ${{ steps.apk.outputs.path }}
+          files: |
+            ${{ steps.apk.outputs.path }}
+            ${{ steps.stable_apk.outputs.path }}
           generate_release_notes: true
 
       - name: Stage stable-name APK for latest-beta pointer
