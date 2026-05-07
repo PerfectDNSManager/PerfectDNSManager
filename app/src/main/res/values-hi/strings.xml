@@ -167,7 +167,7 @@
     <string name="adb_keys_reset">ADB कुंजियाँ रीसेट की गईं। पुनः प्रयास करें।</string>
 
     <!-- DnsSelection -->
-    <string name="choose_dns_server">एक DNS सर्वर चुनें</string>
+    <string name="choose_dns_server">DNS सर्वर चुनें</string>
     <string name="edit_button">✏️ संपादित करें</string>
     <string name="delete_button">🗑️ हटाएँ</string>
     <string name="delete_profile_title">यह प्रोफ़ाइल हटाएँ?</string>

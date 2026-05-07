@@ -167,7 +167,7 @@
     <string name="adb_keys_reset">ADB-Schlüssel zurückgesetzt. Versuchen Sie es erneut.</string>
 
     <!-- DnsSelection -->
-    <string name="choose_dns_server">DNS-Server auswählen</string>
+    <string name="choose_dns_server">DNS-Server wählen</string>
     <string name="edit_button">✏️ Bearbeiten</string>
     <string name="delete_button">🗑️ Löschen</string>
     <string name="delete_profile_title">Dieses Profil löschen?</string>

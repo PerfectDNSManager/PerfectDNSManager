@@ -167,7 +167,7 @@
     <string name="adb_keys_reset">ADB キーをリセットしました。再試行してください。</string>
 
     <!-- DnsSelection -->
-    <string name="choose_dns_server">DNS サーバーを選択</string>
+    <string name="choose_dns_server">DNSサーバー選択</string>
     <string name="edit_button">✏️ 編集</string>
     <string name="delete_button">🗑️ 削除</string>
     <string name="delete_profile_title">このプロファイルを削除しますか？</string>

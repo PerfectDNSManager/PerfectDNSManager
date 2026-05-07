@@ -167,7 +167,7 @@
     <string name="adb_keys_reset">Chaves ADB redefinidas. Tente novamente.</string>
 
     <!-- DnsSelection -->
-    <string name="choose_dns_server">Escolher um servidor DNS</string>
+    <string name="choose_dns_server">Escolher servidor DNS</string>
     <string name="edit_button">✏️ Editar</string>
     <string name="delete_button">🗑️ Excluir</string>
     <string name="delete_profile_title">Excluir este perfil?</string>

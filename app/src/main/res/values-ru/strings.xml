@@ -167,7 +167,7 @@
     <string name="adb_keys_reset">Ключи ADB сброшены. Попробуйте снова.</string>
 
     <!-- DnsSelection -->
-    <string name="choose_dns_server">Выбрать DNS-сервер</string>
+    <string name="choose_dns_server">Выбор DNS-сервера</string>
     <string name="edit_button">✏️ Редактировать</string>
     <string name="delete_button">🗑️ Удалить</string>
     <string name="delete_profile_title">Удалить этот профиль?</string>

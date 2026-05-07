@@ -167,7 +167,7 @@
     <string name="adb_keys_reset">Claves ADB restablecidas. Inténtalo de nuevo.</string>
 
     <!-- DnsSelection -->
-    <string name="choose_dns_server">Elegir un servidor DNS</string>
+    <string name="choose_dns_server">Elegir servidor DNS</string>
     <string name="edit_button">✏️ Editar</string>
     <string name="delete_button">🗑️ Eliminar</string>
     <string name="delete_profile_title">¿Eliminar este perfil?</string>

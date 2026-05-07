@@ -167,7 +167,7 @@
     <string name="adb_keys_reset">ADB কী রিসেট করা হয়েছে। আবার চেষ্টা করুন।</string>
 
     <!-- DnsSelection -->
-    <string name="choose_dns_server">একটি DNS সার্ভার নির্বাচন করুন</string>
+    <string name="choose_dns_server">DNS সার্ভার নির্বাচন</string>
     <string name="edit_button">✏️ সম্পাদনা করুন</string>
     <string name="delete_button">🗑️ মুছে ফেলুন</string>
     <string name="delete_profile_title">এই প্রোফাইল মুছে ফেলবেন?</string>

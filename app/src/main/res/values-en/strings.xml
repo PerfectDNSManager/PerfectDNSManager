@@ -174,7 +174,7 @@
     <string name="adb_keys_reset">ADB keys reset. Try again.</string>
 
     <!-- DnsSelection -->
-    <string name="choose_dns_server">Choose a DNS server</string>
+    <string name="choose_dns_server">Choose DNS server</string>
     <string name="edit_button">✏️ Edit</string>
     <string name="delete_button">🗑️ Delete</string>
     <string name="delete_profile_title">Delete this profile?</string>
