@@ -148,19 +148,24 @@ jobs:
           path: ${{ steps.apk.outputs.path }}
           retention-days: 30
 
-      # Pour les stables : copie l'APK sous le nom fixe `latest.apk` afin que
-      # le code Downloader AFTVnews (2759555) et tout lien externe pointant
-      # vers `releases/latest/download/latest.apk` continue de fonctionner.
-      # GitHub route automatiquement `releases/latest/...` vers la release
+      # Pour les stables : on duplique l'APK sous deux noms fixes joints à la
+      # release. GitHub route `releases/latest/download/X` vers la release
       # marquée isLatest=true (par défaut, la dernière non-prerelease).
-      - name: Stage stable-name APK for latest.apk pointer
+      #   • PerfectDNSManager-latest.apk : nom self-documenting (préféré).
+      #   • latest.apk : conservé pour compat Downloader AFTVnews 2759555 +
+      #     tout vieux lien externe. À retirer le jour où le code Downloader
+      #     pointe vers le nom long.
+      - name: Stage stable-name APK aliases
         if: steps.meta.outputs.prerelease != 'true' && (github.event_name == 'push' || github.event.inputs.create_release == 'true')
         id: stable_apk
         run: |
-          STABLE_NAME="latest.apk"
-          STABLE_PATH="app/build/outputs/apk/release/$STABLE_NAME"
-          cp "${{ steps.apk.outputs.path }}" "$STABLE_PATH"
-          echo "path=$STABLE_PATH" >> "$GITHUB_OUTPUT"
+          OUT_DIR="app/build/outputs/apk/release"
+          PRETTY_PATH="$OUT_DIR/PerfectDNSManager-latest.apk"
+          LEGACY_PATH="$OUT_DIR/latest.apk"
+          cp "${{ steps.apk.outputs.path }}" "$PRETTY_PATH"
+          cp "${{ steps.apk.outputs.path }}" "$LEGACY_PATH"
+          echo "pretty=$PRETTY_PATH" >> "$GITHUB_OUTPUT"
+          echo "legacy=$LEGACY_PATH" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
         if: github.event_name == 'push' || github.event.inputs.create_release == 'true'
@@ -171,7 +176,8 @@ jobs:
           prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
           files: |
             ${{ steps.apk.outputs.path }}
-            ${{ steps.stable_apk.outputs.path }}
+            ${{ steps.stable_apk.outputs.pretty }}
+            ${{ steps.stable_apk.outputs.legacy }}
           generate_release_notes: true
 
       - name: Stage stable-name APK for latest-beta pointer
