@@ -152,9 +152,9 @@ jobs:
       # release. GitHub route `releases/latest/download/X` vers la release
       # marquée isLatest=true (par défaut, la dernière non-prerelease).
       #   • PerfectDNSManager-latest.apk : nom self-documenting (préféré).
-      #   • latest.apk : conservé pour compat Downloader AFTVnews 2759555 +
-      #     tout vieux lien externe. À retirer le jour où le code Downloader
-      #     pointe vers le nom long.
+      #     Code Downloader AFTVnews 9909387 pointe vers ce fichier.
+      #   • latest.apk : conservé pour compat Downloader AFTVnews 2759555
+      #     (legacy) + tout vieux lien externe. À retirer si on retire 2759555.
       - name: Stage stable-name APK aliases
         if: steps.meta.outputs.prerelease != 'true' && (github.event_name == 'push' || github.event.inputs.create_release == 'true')
         id: stable_apk
