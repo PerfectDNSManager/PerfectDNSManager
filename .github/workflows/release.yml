@@ -141,12 +141,10 @@ jobs:
           BT_DIR=$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -n1)
           "$ANDROID_HOME/build-tools/$BT_DIR/apksigner" verify --verbose "${{ steps.apk.outputs.path }}" | head -30
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.apk.outputs.name }}
-          path: ${{ steps.apk.outputs.path }}
-          retention-days: 30
+      # Plus d'upload-artifact ici : l'APK est déjà attaché à la GitHub
+      # Release (étape "Create GitHub Release" ci-dessous). Doubler le
+      # stockage en artifact + release fait sauter le free tier 500MB
+      # Actions storage en quelques semaines de builds.
 
       # Pour les stables : on duplique l'APK sous deux noms fixes joints à la
       # release. GitHub route `releases/latest/download/X` vers la release
