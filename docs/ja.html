@@ -293,10 +293,10 @@
     <div style="max-width:420px;width:100%;margin:0 auto 20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 20px;text-align:center;">
         <a href="#changelog" style="text-decoration:none;"><div class="version-badge">v1.0.82 &mdash; Build 82</div></a>
         <br>
-        <a href="https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/latest.apk" class="dl-btn" style="width:100%;justify-content:center;">
+        <a href="https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/PerfectDNSManager-latest.apk" class="dl-btn" style="width:100%;justify-content:center;">
             &#x2B07;&#xFE0F; APKをダウンロード <span id="apk-size" style="opacity:0.7;font-weight:400;font-size:0.85em;"></span>
         </a>
-        <a href="https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/latest.apk" style="font-size:0.78em;color:rgba(255,255,255,0.35);word-break:break-all;font-family:monospace;display:block;margin-bottom:14px;">https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/latest.apk</a>
+        <a href="https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/PerfectDNSManager-latest.apk" style="font-size:0.78em;color:rgba(255,255,255,0.35);word-break:break-all;font-family:monospace;display:block;margin-bottom:14px;">https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/PerfectDNSManager-latest.apk</a>
         <div style="display:flex;align-items:center;gap:12px;justify-content:center;">
             <span style="font-size:0.82em;color:rgba(255,255,255,0.5);">ダウンローダーコード（AFTVnews）：</span>
             <span style="font-size:1.3em;font-weight:700;font-family:monospace;color:var(--accent);letter-spacing:2px;">9909387</span>
@@ -738,11 +738,22 @@
 fetch('https://api.github.com/repos/appstorefr/PerfectDNSManager/releases/latest')
   .then(r => r.json())
   .then(data => {
-    const apk = data.assets && data.assets.find(a => a.name === 'latest.apk');
+    const apk = data.assets && data.assets.find(a => a.name === 'PerfectDNSManager-latest.apk')
+              || data.assets && data.assets.find(a => a.name === 'latest.apk');
     if (apk) {
       const sizeMB = (apk.size / 1048576).toFixed(1);
       const el = document.getElementById('apk-size');
       if (el) el.textContent = '(' + sizeMB + ' MB)';
+    }
+    // Met à jour tous les badges version (le tag stable pour la branche
+    // courante, ex: v1.1.116). Le build number = même chose en mineur.
+    if (data.tag_name) {
+      const ver = data.tag_name;
+      const buildMatch = ver.match(/v?\d+\.\d+\.(\d+)/);
+      const build = buildMatch ? buildMatch[1] : '';
+      document.querySelectorAll('.version-badge').forEach(el => {
+        el.textContent = ver + (build ? ' \u2014 Build ' + build : '');
+      });
     }
   }).catch(() => {});
 </script>

@@ -6,9 +6,10 @@
     android:background="@color/pdm_background"
     android:padding="16dp">
 
-    <!-- Header : LinearLayout horizontal pour que le titre n'overlap pas le
-         bouton RETOUR sur mobile (le FrameLayout précédent centrait le titre
-         dans tout le parent et il passait par-dessus le bouton). -->
+    <!-- Header : btnBack (start) + tvTitle (centré écran via spacer miroir
+         à droite de même largeur). Sans le spacer, le titre se centre dans
+         l'espace restant et apparaît décalé à droite par rapport au centre
+         visuel de l'écran. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,13 +21,14 @@
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minWidth="0dp"
             android:text="@string/back_arrow"
             android:background="@drawable/focusable_item_background"
             android:foreground="@drawable/btn_focus_foreground"
             android:textColor="@color/pdm_item_text"
-            android:textSize="18sp"
-            android:padding="12dp"
-            android:minHeight="48dp"
+            android:textSize="14sp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="6dp"
             android:focusable="true"
             android:nextFocusDown="@id/btnSpeedtest" />
 
@@ -41,8 +43,22 @@
             android:gravity="center"
             android:maxLines="1"
             android:ellipsize="end"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp" />
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp" />
+
+        <!-- Spacer miroir : même largeur visuelle que btnBack, invisible.
+             Permet au titre (weight=1, gravity center) d'être réellement
+             centré sur l'écran et pas décalé à droite. -->
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:text="@string/back_arrow"
+            android:textSize="14sp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="6dp"
+            android:visibility="invisible"
+            android:focusable="false" />
     </LinearLayout>
 
     <!-- Info méthode -->
