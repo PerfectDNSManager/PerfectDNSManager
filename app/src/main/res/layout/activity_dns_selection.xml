@@ -6,21 +6,21 @@
     android:background="@color/pdm_background"
     android:padding="16dp">
 
-    <!-- Header : btnBack (start) + tvTitle (centré écran via spacer miroir
-         à droite de même largeur). Sans le spacer, le titre se centre dans
-         l'espace restant et apparaît décalé à droite par rapport au centre
-         visuel de l'écran. -->
-    <LinearLayout
+    <!-- Header : FrameLayout pour titre VRAIMENT centré sur l'écran sans
+         bouffer d'espace par un spacer miroir. Le bouton RETOUR est en
+         layout_gravity=start, le titre en layout_gravity=center. Le titre
+         peut overlap visuellement le bouton sur très petit écran si vraiment
+         long, mais on accepte (préférable à la troncature ellipsize). -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:layout_marginBottom="8dp">
 
         <Button
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
             android:minWidth="0dp"
             android:text="@string/back_arrow"
             android:background="@drawable/focusable_item_background"
@@ -33,33 +33,16 @@
             android:nextFocusDown="@id/btnSpeedtest" />
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center"
             android:text="@string/choose_dns_server"
             android:textColor="@color/pdm_text_primary"
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp" />
-
-        <!-- Spacer miroir : même largeur visuelle que btnBack, invisible.
-             Permet au titre (weight=1, gravity center) d'être réellement
-             centré sur l'écran et pas décalé à droite. -->
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="0dp"
-            android:text="@string/back_arrow"
-            android:textSize="14sp"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="6dp"
-            android:visibility="invisible"
-            android:focusable="false" />
-    </LinearLayout>
+            android:maxLines="1" />
+    </FrameLayout>
 
     <!-- Info méthode -->
     <TextView
