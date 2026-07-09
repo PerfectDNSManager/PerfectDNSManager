@@ -8,7 +8,6 @@ local.properties
 .DS_Store
 captures/
 *.apk
-!latest.apk
 *.ap_
 *.aab
 

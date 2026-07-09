@@ -208,11 +208,11 @@
 
     <div style="max-width:420px;width:100%;margin:0 auto 32px;background:var(--card);border:1px solid #333;border-radius:16px;padding:28px 24px;text-align:center;">
         <div id="version-badge" style="display:inline-block;background:var(--accent);color:#000;padding:5px 16px;border-radius:20px;font-weight:700;font-size:0.9em;margin-bottom:18px;"></div>
-        <a href="https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/latest.apk" class="dl-btn" style="margin-bottom:20px;width:100%;justify-content:center;">
+        <a href="https://github.com/PerfectDNSManager/PerfectDNSManager/releases/latest/download/latest.apk" class="dl-btn" style="margin-bottom:20px;width:100%;justify-content:center;">
             <span class="dl-icon">&#x2B07;&#xFE0F;</span>
             Download APK <span id="apk-size" style="opacity:0.7;font-weight:400;font-size:0.85em;"></span>
         </a>
-        <a href="https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/latest.apk" style="font-size:0.78em;color:rgba(255,255,255,0.35);word-break:break-all;font-family:monospace;display:block;margin-bottom:14px;">https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/latest.apk</a>
+        <a href="https://github.com/PerfectDNSManager/PerfectDNSManager/releases/latest/download/latest.apk" style="font-size:0.78em;color:rgba(255,255,255,0.35);word-break:break-all;font-family:monospace;display:block;margin-bottom:14px;">https://github.com/PerfectDNSManager/PerfectDNSManager/releases/latest/download/latest.apk</a>
         <div style="display:flex;align-items:center;gap:12px;justify-content:center;">
             <span style="font-size:0.82em;color:rgba(255,255,255,0.5);">Code Downloader (AFTVnews):</span>
             <span style="font-size:1.3em;font-weight:700;font-family:monospace;color:var(--accent);letter-spacing:2px;">9909387</span>
@@ -241,9 +241,9 @@
 &#x2705; 12 langues, open source, gratuit<br>
 &#x2705; Speedtest DNS, test de fuite DNS, test de blocage<br>
 &#x2705; Split tunneling par application<br><br>
-&#x1F4F2; T&eacute;l&eacute;charger : https://appstorefr.github.io/PerfectDNSManager<br>
+&#x1F4F2; T&eacute;l&eacute;charger : https://www.perfectdnsmanager.app<br>
 &#x1F4E5; Code Downloader (AFTVnews) : 9909387<br><br>
-&#x1F4B0; Soutenir le projet : https://appstorefr.github.io/PerfectDNSManager/support.html<br><br>
+&#x1F4B0; Soutenir le projet : https://www.perfectdnsmanager.app/support.html<br><br>
 &#x2764;&#xFE0F; Soutenez le projet en partageant ! Chaque partage compte.
         </div>
         <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
@@ -260,7 +260,7 @@
     </footer>
 
 <script>
-fetch('https://api.github.com/repos/appstorefr/PerfectDNSManager/releases/latest')
+fetch('https://api.github.com/repos/PerfectDNSManager/PerfectDNSManager/releases/latest')
   .then(r => r.json())
   .then(data => {
     const apk = data.assets && data.assets.find(a => a.name === 'latest.apk');
@@ -278,10 +278,10 @@ fetch('https://api.github.com/repos/appstorefr/PerfectDNSManager/releases/latest
   }).catch(() => {});
 
 // Share text
-const shareMsg = "\uD83D\uDD10 Perfect DNS Manager v1.0.80 \u2014 Prot\u00E9gez votre vie priv\u00E9e DNS !\n\n\u2705 DNS chiffr\u00E9 (DoH / DoT / DoQ)\n\u2705 Compatible Android, Fire TV, Android TV\n\u2705 12 langues, open source, gratuit\n\u2705 Speedtest DNS, test de fuite DNS, test de blocage\n\u2705 Split tunneling par application\n\n\uD83D\uDCF2 T\u00E9l\u00E9charger : https://appstorefr.github.io/PerfectDNSManager\n\uD83D\uDCE5 Code Downloader (AFTVnews) : 9909387\n\n\uD83D\uDCB0 Soutenir le projet : https://appstorefr.github.io/PerfectDNSManager/support.html\n\n\u2764\uFE0F Soutenez le projet en partageant ! Chaque partage compte.";
+const shareMsg = "\uD83D\uDD10 Perfect DNS Manager v1.0.80 \u2014 Prot\u00E9gez votre vie priv\u00E9e DNS !\n\n\u2705 DNS chiffr\u00E9 (DoH / DoT / DoQ)\n\u2705 Compatible Android, Fire TV, Android TV\n\u2705 12 langues, open source, gratuit\n\u2705 Speedtest DNS, test de fuite DNS, test de blocage\n\u2705 Split tunneling par application\n\n\uD83D\uDCF2 T\u00E9l\u00E9charger : https://www.perfectdnsmanager.app\n\uD83D\uDCE5 Code Downloader (AFTVnews) : 9909387\n\n\uD83D\uDCB0 Soutenir le projet : https://www.perfectdnsmanager.app/support.html\n\n\u2764\uFE0F Soutenez le projet en partageant ! Chaque partage compte.";
 
 document.getElementById('whatsappBtn').href = 'https://wa.me/?text=' + encodeURIComponent(shareMsg);
-document.getElementById('telegramBtn').href = 'https://t.me/share/url?url=' + encodeURIComponent('https://appstorefr.github.io/PerfectDNSManager') + '&text=' + encodeURIComponent(shareMsg);
+document.getElementById('telegramBtn').href = 'https://t.me/share/url?url=' + encodeURIComponent('https://www.perfectdnsmanager.app') + '&text=' + encodeURIComponent(shareMsg);
 
 function copyShareText() {
     navigator.clipboard.writeText(shareMsg).then(() => {

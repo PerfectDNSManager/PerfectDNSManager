@@ -7,14 +7,14 @@
 **Free, open-source encrypted DNS manager for Android, Android TV, Fire TV and Formuler boxes.**
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
-[![GitHub release](https://img.shields.io/github/v/release/appstorefr/PerfectDNSManager?label=latest)](https://github.com/appstorefr/PerfectDNSManager/releases/latest)
-[![Android](https://img.shields.io/badge/Android-5.0%2B-3DDC84?logo=android&logoColor=white)](https://github.com/appstorefr/PerfectDNSManager/releases/latest)
+[![GitHub release](https://img.shields.io/github/v/release/PerfectDNSManager/PerfectDNSManager?label=latest)](https://github.com/PerfectDNSManager/PerfectDNSManager/releases/latest)
+[![Android](https://img.shields.io/badge/Android-5.0%2B-3DDC84?logo=android&logoColor=white)](https://github.com/PerfectDNSManager/PerfectDNSManager/releases/latest)
 [![Languages](https://img.shields.io/badge/i18n-12%20languages-FFD700)](#-internationalization)
 
-[Website](https://pdm.appstorefr.net) ·
-[Download APK](https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/PerfectDNSManager-latest.apk) ·
-[Privacy Policy](https://pdm.appstorefr.net/privacy) ·
-[Releases](https://github.com/appstorefr/PerfectDNSManager/releases)
+[Website](https://perfectdnsmanager.app) ·
+[Download APK](https://github.com/PerfectDNSManager/PerfectDNSManager/releases/latest/download/PerfectDNSManager-latest.apk) ·
+[Privacy Policy](https://perfectdnsmanager.app/privacy) ·
+[Releases](https://github.com/PerfectDNSManager/PerfectDNSManager/releases)
 
 </div>
 
@@ -52,13 +52,13 @@ Perfect DNS Manager (PDM) is a TV-first, mobile-friendly DNS configuration tool 
 - **Zero telemetry, zero analytics, zero ads**
 - 100% open source (GPL v3)
 - Local-only settings (Android `SharedPreferences`)
-- See [Privacy Policy](https://pdm.appstorefr.net/privacy)
+- See [Privacy Policy](https://perfectdnsmanager.app/privacy)
 
 ## 📥 Installation
 
 ### Direct download
 ```
-https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/PerfectDNSManager-latest.apk
+https://github.com/PerfectDNSManager/PerfectDNSManager/releases/latest/download/PerfectDNSManager-latest.apk
 ```
 
 ### Fire TV / Android TV (Downloader app)
@@ -66,7 +66,7 @@ Open the **Downloader** app and enter code **`9909387`**.
 
 ### Quick link (TV browsers)
 ```
-pdm.appstorefr.net/apk
+perfectdnsmanager.app/apk
 ```
 
 Compatible with **Android 5.0+** (API 21).
@@ -79,7 +79,7 @@ Requirements:
 - A keystore for release signing
 
 ```bash
-git clone https://github.com/appstorefr/PerfectDNSManager.git
+git clone https://github.com/PerfectDNSManager/PerfectDNSManager.git
 cd PerfectDNSManager
 ./gradlew :app:assembleRelease
 ```
@@ -90,7 +90,7 @@ For CI builds, the release pipeline is defined in [`.github/workflows/release.ym
 
 ## 📡 Backend infrastructure
 
-The optional online features (IP/ISP detection, encrypted config sharing) are served by a Cloudflare Worker that lives at [pdm.appstorefr.net](https://pdm.appstorefr.net). Its source lives in a separate repo. Endpoints used:
+The optional online features (IP/ISP detection, encrypted config sharing) are served by a Cloudflare Worker that lives at [perfectdnsmanager.app](https://perfectdnsmanager.app). Endpoints used:
 
 - `GET /api/whoami` — returns public IP + ISP from Cloudflare edge metadata
 - `GET /api/challenge` — ephemeral HMAC-SHA256 nonce (TTL 90s, IP-bound)
@@ -101,10 +101,10 @@ All sensitive operations are end-to-end encrypted; the worker never sees plainte
 
 ## 🌐 Sites
 
-- Main landing & changelog: <https://pdm.appstorefr.net>
-- Locale-specific pages: <https://appstorefr.github.io/PerfectDNSManager/>
-- Direct APK redirect: <https://pdm.appstorefr.net/apk>
-- Privacy: <https://pdm.appstorefr.net/privacy>
+- Main landing & changelog: <https://perfectdnsmanager.app>
+- Locale-specific pages: <https://www.perfectdnsmanager.app/>
+- Direct APK redirect: <https://perfectdnsmanager.app/apk>
+- Privacy: <https://perfectdnsmanager.app/privacy>
 
 ## 🤝 Contributing
 
@@ -123,13 +123,13 @@ This means: you can use it, modify it, distribute it, but if you redistribute a 
 ## 💖 Support
 
 If you find PDM useful, you can support the project here:
-👉 <https://appstorefr.github.io/PerfectDNSManager/support.html>
+👉 <https://perfectdnsmanager.app/support>
 
 ---
 
 <div align="center">
 
-**Perfect DNS Manager** © 2026 [AppstoreFR](mailto:appstorefr@ik.me)
+**Perfect DNS Manager** © 2026 [Perfect DNS Manager](mailto:perfectdnsmanager@proton.me)
 Built with ❤️ for the open-source TV community.
 
 </div>

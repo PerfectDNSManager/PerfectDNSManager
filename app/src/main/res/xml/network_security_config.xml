@@ -6,7 +6,7 @@
   Ookla speedtest qui sont presque tous en HTTP (port 8080) — ils n'ont
   pas tous de cert HTTPS valide. Compromise acceptable car :
 
-  - Les endpoints sensibles (pdm.appstorefr.net, GitHub Releases, Cloudflare
+  - Les endpoints sensibles (perfectdnsmanager.app, GitHub Releases, Cloudflare
     speedtest, Fast.com) sont en HTTPS strict via leurs URLs.
   - Le speedtest n'envoie pas de données privées — random bytes.
   - Sans ça, Ookla serait inutilisable.

@@ -62,7 +62,7 @@
     <string name="upload_error">Sendefehler: %1$s</string>
     <string name="export_error">Exportfehler: %1$s</string>
     <string name="import_from_code_title">🔒 Import einer verschlüsselten Konfiguration</string>
-    <string name="import_code_explain">Erstellen Sie diesen Code über Exportieren in den Einstellungen.\n\nDie Datei wird automatisch heruntergeladen und entschlüsselt.\n\nÜberprüfung: https://appstorefr.github.io/PerfectDNSManager/decrypt.html</string>
+    <string name="import_code_explain">Erstellen Sie diesen Code über Exportieren in den Einstellungen.\n\nDie Datei wird automatisch heruntergeladen und entschlüsselt.\n\nÜberprüfung: https://perfectdnsmanager.app/decrypt.html</string>
     <string name="download_button">Herunterladen</string>
     <string name="downloading">Wird heruntergeladen…</string>
     <string name="read_error">Lesefehler: %1$s</string>
@@ -198,7 +198,7 @@
     <string name="howto_note_tv_title">💡 Hinweis für Thomson-Boxen / Android TV</string>
     <string name="howto_note_tv_desc">Bei den meisten Android TV-Boxen ist der ADB-Port 5555 lokal zugänglich. Es genügt, ADB-Debugging in den Entwickleroptionen zu aktivieren — kein USB-Kabel oder PC nötig.</string>
     <string name="howto_firestick_title">🔥 Firestick / Fire TV</string>
-    <string name="howto_firestick_desc">Auf dem Firestick funktioniert die ADB-Autoverbindung häufig nicht. Es wird empfohlen, die VPN-Methode zu verwenden, die ohne Konfiguration funktioniert.\n\nWenn Sie dennoch ADB verwenden möchten:\n1. Installieren Sie ADB auf einem PC (platform-tools)\n2. Verbinden Sie sich mit dem Firestick:\n   adb connect IP_FIRESTICK:5555\n3. Erteilen Sie die Berechtigung:\n   adb shell pm grant net.appstorefr.perfectdnsmanager android.permission.WRITE_SECURE_SETTINGS\n4. Danach kann die App den DNS direkt ändern.</string>
+    <string name="howto_firestick_desc">Auf dem Firestick funktioniert die ADB-Autoverbindung häufig nicht. Es wird empfohlen, die VPN-Methode zu verwenden, die ohne Konfiguration funktioniert.\n\nWenn Sie dennoch ADB verwenden möchten:\n1. Installieren Sie ADB auf einem PC (platform-tools)\n2. Verbinden Sie sich mit dem Firestick:\n   adb connect IP_FIRESTICK:5555\n3. Erteilen Sie die Berechtigung:\n   adb shell pm grant app.perfectdnsmanager android.permission.WRITE_SECURE_SETTINGS\n4. Danach kann die App den DNS direkt ändern.</string>
     <string name="howto_recommendation_title">✅ Empfehlung</string>
     <string name="howto_recommendation_desc">Die VPN-Methode ist die einfachste: Sie funktioniert auf allen Geräten ohne spezielle Konfiguration. Sie erstellt ein lokales VPN, das nur DNS-Anfragen an den Server Ihrer Wahl weiterleitet.</string>
 
@@ -277,7 +277,7 @@
 
     <!-- DNS Rewrite screen -->
 <string name="show_doq_dns">DNS over QUIC (DoQ) anzeigen</string>
-    <string name="gpl_license_text">Heute frei. Morgen frei. Man kann eine Straße blockieren, nicht die Freiheit!\nDer Quellcode ist offen, jede Weiterverteilung muss Open Source bleiben.\nGPL v3 Lizenz\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
+    <string name="gpl_license_text">Heute frei. Morgen frei. Man kann eine Straße blockieren, nicht die Freiheit!\nDer Quellcode ist offen, jede Weiterverteilung muss Open Source bleiben.\nGPL v3 Lizenz\n\nhttps://github.com/PerfectDNSManager/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
 
@@ -488,7 +488,7 @@
     <string name="dns_desc_nextdns_custom">NextDNS Benutzerprofil</string>
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
     <string name="import_link_label">Kurzlink (oder 8-Zeichen-Code):</string>
-    <string name="import_link_hint">pdm.appstorefr.net/d/…</string>
+    <string name="import_link_hint">perfectdnsmanager.app/d/…</string>
     <string name="import_password_label">Passwort (6 Zeichen):</string>
     <string name="no_search_results_fmt">Keine Ergebnisse für "%1$s"</string>
     <string name="result_error">Fehler</string>

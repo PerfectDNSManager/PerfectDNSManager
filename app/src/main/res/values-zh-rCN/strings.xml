@@ -62,7 +62,7 @@
     <string name="upload_error">上传错误：%1$s</string>
     <string name="export_error">导出错误：%1$s</string>
     <string name="import_from_code_title">🔒 导入加密配置</string>
-    <string name="import_code_explain">通过设置中的导出功能生成此代码。\n\n文件将自动下载并解密。\n\n验证：https://appstorefr.github.io/PerfectDNSManager/decrypt.html</string>
+    <string name="import_code_explain">通过设置中的导出功能生成此代码。\n\n文件将自动下载并解密。\n\n验证：https://perfectdnsmanager.app/decrypt.html</string>
     <string name="download_button">下载</string>
     <string name="downloading">正在下载…</string>
     <string name="read_error">读取错误：%1$s</string>
@@ -198,7 +198,7 @@
     <string name="howto_note_tv_title">💡 Thomson 电视盒子 / Android TV 注意事项</string>
     <string name="howto_note_tv_desc">在大多数 Android TV 盒子上，ADB 端口 5555 可在本地访问。只需在开发者选项中启用 ADB 调试 — 无需 USB 线缆或电脑。</string>
     <string name="howto_firestick_title">🔥 Firestick / Fire TV</string>
-    <string name="howto_firestick_desc">在 Firestick 上，ADB 自动连接方式通常无法使用。建议使用 VPN 方式，无需任何配置即可使用。\n\n如果您仍想使用 ADB：\n1. 在电脑上安装 ADB（platform-tools）\n2. 连接到 Firestick：\n   adb connect FIRESTICK_IP:5555\n3. 授予权限：\n   adb shell pm grant net.appstorefr.perfectdnsmanager android.permission.WRITE_SECURE_SETTINGS\n4. 之后应用即可直接更改 DNS。</string>
+    <string name="howto_firestick_desc">在 Firestick 上，ADB 自动连接方式通常无法使用。建议使用 VPN 方式，无需任何配置即可使用。\n\n如果您仍想使用 ADB：\n1. 在电脑上安装 ADB（platform-tools）\n2. 连接到 Firestick：\n   adb connect FIRESTICK_IP:5555\n3. 授予权限：\n   adb shell pm grant app.perfectdnsmanager android.permission.WRITE_SECURE_SETTINGS\n4. 之后应用即可直接更改 DNS。</string>
     <string name="howto_recommendation_title">✅ 建议</string>
     <string name="howto_recommendation_desc">VPN 方式最为简单：无需任何特殊配置即可在所有设备上使用。它创建一个本地 VPN，仅将 DNS 请求重定向到您选择的服务器。</string>
 
@@ -277,7 +277,7 @@
 
     <!-- DNS Rewrite screen -->
 <string name="show_doq_dns">显示 DNS over QUIC (DoQ)</string>
-    <string name="gpl_license_text">今天自由。明天自由。可以封路，但不能封自由！\n源代码开放，任何再发布必须保持开源。\nGPL v3 许可证\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
+    <string name="gpl_license_text">今天自由。明天自由。可以封路，但不能封自由！\n源代码开放，任何再发布必须保持开源。\nGPL v3 许可证\n\nhttps://github.com/PerfectDNSManager/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
 
@@ -488,7 +488,7 @@
     <string name="dns_desc_nextdns_custom">NextDNS 自定义配置</string>
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
     <string name="import_link_label">短链接（或8位代码）：</string>
-    <string name="import_link_hint">pdm.appstorefr.net/d/…</string>
+    <string name="import_link_hint">perfectdnsmanager.app/d/…</string>
     <string name="import_password_label">密码（6位字符）：</string>
     <string name="no_search_results_fmt">"%1$s" 无结果</string>
     <string name="result_error">错误</string>

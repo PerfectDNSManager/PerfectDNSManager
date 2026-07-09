@@ -62,7 +62,7 @@
     <string name="upload_error">送信エラー: %1$s</string>
     <string name="export_error">エクスポートエラー: %1$s</string>
     <string name="import_from_code_title">🔒 暗号化された設定をインポート</string>
-    <string name="import_code_explain">設定のエクスポートからこのコードを生成してください。\n\nファイルは自動的にダウンロードされ、復号されます。\n\n検証: https://appstorefr.github.io/PerfectDNSManager/decrypt.html</string>
+    <string name="import_code_explain">設定のエクスポートからこのコードを生成してください。\n\nファイルは自動的にダウンロードされ、復号されます。\n\n検証: https://perfectdnsmanager.app/decrypt.html</string>
     <string name="download_button">ダウンロード</string>
     <string name="downloading">ダウンロード中…</string>
     <string name="read_error">読み取りエラー: %1$s</string>
@@ -198,7 +198,7 @@
     <string name="howto_note_tv_title">💡 Thomson ボックス / Android TV に関する注意</string>
     <string name="howto_note_tv_desc">ほとんどの Android TV ボックスでは、ADB ポート 5555 がローカルでアクセス可能です。開発者オプションで ADB デバッグを有効にするだけで十分です — USB ケーブルや PC は不要です。</string>
     <string name="howto_firestick_title">🔥 Firestick / Fire TV</string>
-    <string name="howto_firestick_desc">Firestick では、ADB 自動接続メソッドが機能しないことがよくあります。設定なしで動作する VPN メソッドの使用を推奨します。\n\nそれでも ADB を使用したい場合：\n1. PC に ADB をインストール（platform-tools）\n2. Firestick に接続：\n   adb connect IP_FIRESTICK:5555\n3. 権限を付与：\n   adb shell pm grant net.appstorefr.perfectdnsmanager android.permission.WRITE_SECURE_SETTINGS\n4. その後、アプリから直接 DNS を変更できるようになります。</string>
+    <string name="howto_firestick_desc">Firestick では、ADB 自動接続メソッドが機能しないことがよくあります。設定なしで動作する VPN メソッドの使用を推奨します。\n\nそれでも ADB を使用したい場合：\n1. PC に ADB をインストール（platform-tools）\n2. Firestick に接続：\n   adb connect IP_FIRESTICK:5555\n3. 権限を付与：\n   adb shell pm grant app.perfectdnsmanager android.permission.WRITE_SECURE_SETTINGS\n4. その後、アプリから直接 DNS を変更できるようになります。</string>
     <string name="howto_recommendation_title">✅ 推奨事項</string>
     <string name="howto_recommendation_desc">VPN メソッドが最も簡単です：特別な設定なしですべてのデバイスで動作します。DNS リクエストのみを選択したサーバーにリダイレクトするローカル VPN を作成します。</string>
 
@@ -277,7 +277,7 @@
 
     <!-- DNS Rewrite screen -->
 <string name="show_doq_dns">DNS over QUIC (DoQ) を表示</string>
-    <string name="gpl_license_text">今日も自由。明日も自由。道は塞げても、自由は塞げない！\nソースコードは公開されており、再配布はオープンソースのままでなければなりません。\nGPL v3 ライセンス\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
+    <string name="gpl_license_text">今日も自由。明日も自由。道は塞げても、自由は塞げない！\nソースコードは公開されており、再配布はオープンソースのままでなければなりません。\nGPL v3 ライセンス\n\nhttps://github.com/PerfectDNSManager/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
 
@@ -488,7 +488,7 @@
     <string name="dns_desc_nextdns_custom">NextDNS カスタムプロファイル</string>
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
     <string name="import_link_label">短縮リンク（または8文字コード）：</string>
-    <string name="import_link_hint">pdm.appstorefr.net/d/…</string>
+    <string name="import_link_hint">perfectdnsmanager.app/d/…</string>
     <string name="import_password_label">パスワード（6文字）：</string>
     <string name="no_search_results_fmt">"%1$s" の結果なし</string>
     <string name="result_error">エラー</string>

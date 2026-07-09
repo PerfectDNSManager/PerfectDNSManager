@@ -62,7 +62,7 @@
     <string name="upload_error">خطأ في الرفع: %1$s</string>
     <string name="export_error">خطأ في التصدير: %1$s</string>
     <string name="import_from_code_title">🔒 استيراد تكوين مشفر</string>
-    <string name="import_code_explain">قم بإنشاء هذا الرمز عبر التصدير في الإعدادات.\n\nسيتم تنزيل الملف وفك تشفيره تلقائيًا.\n\nالتحقق: https://appstorefr.github.io/PerfectDNSManager/decrypt.html</string>
+    <string name="import_code_explain">قم بإنشاء هذا الرمز عبر التصدير في الإعدادات.\n\nسيتم تنزيل الملف وفك تشفيره تلقائيًا.\n\nالتحقق: https://perfectdnsmanager.app/decrypt.html</string>
     <string name="download_button">تنزيل</string>
     <string name="downloading">جارٍ التنزيل…</string>
     <string name="read_error">خطأ في القراءة: %1$s</string>
@@ -198,7 +198,7 @@
     <string name="howto_note_tv_title">💡 ملاحظة لأجهزة Thomson / Android TV</string>
     <string name="howto_note_tv_desc">في معظم أجهزة Android TV، منفذ ADB 5555 متاح محليًا. يكفي تفعيل تصحيح ADB في خيارات المطور — لا حاجة لكابل USB أو كمبيوتر.</string>
     <string name="howto_firestick_title">🔥 Firestick / Fire TV</string>
-    <string name="howto_firestick_desc">على Firestick، طريقة الاتصال التلقائي بـ ADB غالبًا لا تعمل. يُنصح باستخدام طريقة VPN التي تعمل بدون أي إعداد.\n\nإذا كنت تريد استخدام ADB:\n1. ثبّت ADB على الكمبيوتر (platform-tools)\n2. اتصل بـ Firestick:\n   adb connect IP_FIRESTICK:5555\n3. امنح الإذن:\n   adb shell pm grant net.appstorefr.perfectdnsmanager android.permission.WRITE_SECURE_SETTINGS\n4. بعد ذلك، سيتمكن التطبيق من تغيير DNS مباشرة.</string>
+    <string name="howto_firestick_desc">على Firestick، طريقة الاتصال التلقائي بـ ADB غالبًا لا تعمل. يُنصح باستخدام طريقة VPN التي تعمل بدون أي إعداد.\n\nإذا كنت تريد استخدام ADB:\n1. ثبّت ADB على الكمبيوتر (platform-tools)\n2. اتصل بـ Firestick:\n   adb connect IP_FIRESTICK:5555\n3. امنح الإذن:\n   adb shell pm grant app.perfectdnsmanager android.permission.WRITE_SECURE_SETTINGS\n4. بعد ذلك، سيتمكن التطبيق من تغيير DNS مباشرة.</string>
     <string name="howto_recommendation_title">✅ توصية</string>
     <string name="howto_recommendation_desc">طريقة VPN هي الأبسط: تعمل على جميع الأجهزة بدون أي إعداد خاص. تنشئ VPN محلي يعيد توجيه طلبات DNS فقط إلى الخادم الذي تختاره.</string>
 
@@ -277,7 +277,7 @@
 
     <!-- DNS Rewrite screen -->
 <string name="show_doq_dns">إظهار DNS over QUIC (DoQ)</string>
-    <string name="gpl_license_text">حر اليوم. حر غداً. يمكن إغلاق طريق، لكن لا يمكن إغلاق الحرية!\nالشفرة المصدرية مفتوحة، أي إعادة توزيع يجب أن تبقى مفتوحة المصدر.\nرخصة GPL v3\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
+    <string name="gpl_license_text">حر اليوم. حر غداً. يمكن إغلاق طريق، لكن لا يمكن إغلاق الحرية!\nالشفرة المصدرية مفتوحة، أي إعادة توزيع يجب أن تبقى مفتوحة المصدر.\nرخصة GPL v3\n\nhttps://github.com/PerfectDNSManager/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
 
@@ -488,7 +488,7 @@
     <string name="dns_desc_nextdns_custom">ملف NextDNS مخصص</string>
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
     <string name="import_link_label">رابط قصير (أو رمز من 8 أحرف):</string>
-    <string name="import_link_hint">pdm.appstorefr.net/d/…</string>
+    <string name="import_link_hint">perfectdnsmanager.app/d/…</string>
     <string name="import_password_label">كلمة المرور (6 أحرف):</string>
     <string name="no_search_results_fmt">لا نتائج لـ "%1$s"</string>
     <string name="result_error">خطأ</string>

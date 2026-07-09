@@ -62,7 +62,7 @@
     <string name="upload_error">পাঠাতে ত্রুটি: %1$s</string>
     <string name="export_error">রপ্তানিতে ত্রুটি: %1$s</string>
     <string name="import_from_code_title">🔒 একটি এনক্রিপ্টেড কনফিগারেশন আমদানি করুন</string>
-    <string name="import_code_explain">সেটিংসে রপ্তানি এর মাধ্যমে এই কোডটি তৈরি করুন।\n\nফাইলটি স্বয়ংক্রিয়ভাবে ডাউনলোড এবং ডিক্রিপ্ট হবে।\n\nযাচাইকরণ: https://appstorefr.github.io/PerfectDNSManager/decrypt.html</string>
+    <string name="import_code_explain">সেটিংসে রপ্তানি এর মাধ্যমে এই কোডটি তৈরি করুন।\n\nফাইলটি স্বয়ংক্রিয়ভাবে ডাউনলোড এবং ডিক্রিপ্ট হবে।\n\nযাচাইকরণ: https://perfectdnsmanager.app/decrypt.html</string>
     <string name="download_button">ডাউনলোড করুন</string>
     <string name="downloading">ডাউনলোড হচ্ছে…</string>
     <string name="read_error">পড়তে ত্রুটি: %1$s</string>
@@ -198,7 +198,7 @@
     <string name="howto_note_tv_title">💡 Thomson / Android TV বক্সের জন্য নোট</string>
     <string name="howto_note_tv_desc">বেশিরভাগ Android TV বক্সে, ADB পোর্ট 5555 স্থানীয়ভাবে অ্যাক্সেসযোগ্য। ডেভেলপার অপশনে ADB ডিবাগিং সক্রিয় থাকলেই যথেষ্ট — USB কেবল বা PC এর প্রয়োজন নেই।</string>
     <string name="howto_firestick_title">🔥 Firestick / Fire TV</string>
-    <string name="howto_firestick_desc">Firestick এ, ADB স্বয়ংক্রিয়-সংযোগ পদ্ধতি প্রায়ই কাজ করে না। কোনো কনফিগারেশন ছাড়াই কাজ করে এমন VPN পদ্ধতি ব্যবহার করার পরামর্শ দেওয়া হচ্ছে।\n\nআপনি যদি তবুও ADB ব্যবহার করতে চান:\n1. PC তে ADB ইনস্টল করুন (platform-tools)\n2. Firestick এ সংযোগ করুন:\n   adb connect IP_FIRESTICK:5555\n3. অনুমতি দিন:\n   adb shell pm grant net.appstorefr.perfectdnsmanager android.permission.WRITE_SECURE_SETTINGS\n4. এরপর, অ্যাপ সরাসরি DNS পরিবর্তন করতে পারবে।</string>
+    <string name="howto_firestick_desc">Firestick এ, ADB স্বয়ংক্রিয়-সংযোগ পদ্ধতি প্রায়ই কাজ করে না। কোনো কনফিগারেশন ছাড়াই কাজ করে এমন VPN পদ্ধতি ব্যবহার করার পরামর্শ দেওয়া হচ্ছে।\n\nআপনি যদি তবুও ADB ব্যবহার করতে চান:\n1. PC তে ADB ইনস্টল করুন (platform-tools)\n2. Firestick এ সংযোগ করুন:\n   adb connect IP_FIRESTICK:5555\n3. অনুমতি দিন:\n   adb shell pm grant app.perfectdnsmanager android.permission.WRITE_SECURE_SETTINGS\n4. এরপর, অ্যাপ সরাসরি DNS পরিবর্তন করতে পারবে।</string>
     <string name="howto_recommendation_title">✅ সুপারিশ</string>
     <string name="howto_recommendation_desc">VPN পদ্ধতি সবচেয়ে সহজ: এটি কোনো বিশেষ কনফিগারেশন ছাড়াই সব ডিভাইসে কাজ করে। এটি একটি স্থানীয় VPN তৈরি করে যা শুধুমাত্র DNS অনুরোধগুলি আপনার পছন্দের সার্ভারে পুনঃনির্দেশ করে।</string>
 
@@ -277,7 +277,7 @@
 
     <!-- DNS Rewrite screen -->
 <string name="show_doq_dns">DNS over QUIC (DoQ) দেখান</string>
-    <string name="gpl_license_text">আজ মুক্ত। আগামীকাল মুক্ত। পথ আটকানো যায়, স্বাধীনতা নয়!\nসোর্স কোড উন্মুক্ত, যেকোনো পুনর্বিতরণ ওপেন সোর্স থাকতে হবে।\nGPL v3 লাইসেন্স\n\nhttps://github.com/appstorefr/PerfectDNSManager</string>
+    <string name="gpl_license_text">আজ মুক্ত। আগামীকাল মুক্ত। পথ আটকানো যায়, স্বাধীনতা নয়!\nসোর্স কোড উন্মুক্ত, যেকোনো পুনর্বিতরণ ওপেন সোর্স থাকতে হবে।\nGPL v3 লাইসেন্স\n\nhttps://github.com/PerfectDNSManager/PerfectDNSManager</string>
 
     <!-- Speedtest Internet -->
 
@@ -488,7 +488,7 @@
     <string name="dns_desc_nextdns_custom">NextDNS কাস্টম প্রোফাইল</string>
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
     <string name="import_link_label">সংক্ষিপ্ত লিঙ্ক (বা ৮-অক্ষরের কোড):</string>
-    <string name="import_link_hint">pdm.appstorefr.net/d/…</string>
+    <string name="import_link_hint">perfectdnsmanager.app/d/…</string>
     <string name="import_password_label">পাসওয়ার্ড (৬ অক্ষর):</string>
     <string name="no_search_results_fmt">"%1$s" এর জন্য কোনো ফলাফল নেই</string>
     <string name="result_error">ত্রুটি</string>

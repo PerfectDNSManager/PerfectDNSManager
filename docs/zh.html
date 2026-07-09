@@ -291,10 +291,10 @@
     <div style="max-width:420px;width:100%;margin:0 auto 20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 20px;text-align:center;">
         <a href="#changelog" style="text-decoration:none;"><div class="version-badge">v1.0.82 &mdash; Build 82</div></a>
         <br>
-        <a href="https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/PerfectDNSManager-latest.apk" class="dl-btn" style="width:100%;justify-content:center;">
+        <a href="https://github.com/PerfectDNSManager/PerfectDNSManager/releases/latest/download/PerfectDNSManager-latest.apk" class="dl-btn" style="width:100%;justify-content:center;">
             ⬇️ 下载 APK <span id="apk-size" style="opacity:0.7;font-weight:400;font-size:0.85em;"></span>
         </a>
-        <a href="https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/PerfectDNSManager-latest.apk" style="font-size:0.78em;color:rgba(255,255,255,0.35);word-break:break-all;font-family:monospace;display:block;margin-bottom:14px;">https://github.com/appstorefr/PerfectDNSManager/releases/latest/download/PerfectDNSManager-latest.apk</a>
+        <a href="https://github.com/PerfectDNSManager/PerfectDNSManager/releases/latest/download/PerfectDNSManager-latest.apk" style="font-size:0.78em;color:rgba(255,255,255,0.35);word-break:break-all;font-family:monospace;display:block;margin-bottom:14px;">https://github.com/PerfectDNSManager/PerfectDNSManager/releases/latest/download/PerfectDNSManager-latest.apk</a>
         <div style="display:flex;align-items:center;gap:12px;justify-content:center;">
             <span style="font-size:0.82em;color:rgba(255,255,255,0.5);">Downloader 代码 (AFTVnews)：</span>
             <span style="font-size:1.3em;font-weight:700;font-family:monospace;color:var(--accent);letter-spacing:2px;">9909387</span>
@@ -430,7 +430,7 @@
             <span class="date">2026年3月1日</span>
             <ul>
                 <li>分享链接自动过期（报告: 24h，配置: 1h）</li>
-                <li>简化解密URL: pdm.appstorefr.net/decrypt</li>
+                <li>简化解密URL: perfectdnsmanager.app/decrypt</li>
             </ul>
         </div>
 <div class="changelog-item">
@@ -687,10 +687,10 @@
             <div class="badge">&#x1F49C; 为社区而生</div>
         </div>
         <p style="margin-top: 20px; color: var(--text-dim);">
-            由 <strong>AppstoreFR</strong> 开发 — 联系方式：<a href="mailto:contact@appstorefr.net">contact@appstorefr.net</a>
+            由 <strong>Perfect DNS Manager</strong> 开发 — 联系方式：<a href="mailto:perfectdnsmanager@proton.me">perfectdnsmanager@proton.me</a>
         </p>
         <p style="margin-top: 8px; color: var(--text-dim);">
-            源代码：<a href="https://github.com/appstorefr/PerfectDNSManager">github.com/appstorefr/PerfectDNSManager</a>
+            源代码：<a href="https://github.com/PerfectDNSManager/PerfectDNSManager">github.com/PerfectDNSManager/PerfectDNSManager</a>
         </p>
     </div>
 </section>
@@ -710,8 +710,8 @@
 <section style="text-align: center; padding: 32px 20px 16px;">
     <p style="color: var(--text-dim); font-size: 0.9em;">
         &#x1F30D; 翻译有误？帮助我们修正！<br>
-        下载<a href="https://github.com/appstorefr/PerfectDNSManager/blob/main/app/src/main/res/values-zh-rCN/strings.xml">翻译文件</a>，
-        编辑后通过<a href="mailto:contact@appstorefr.net">邮件</a>或<a href="https://github.com/appstorefr/PerfectDNSManager">GitHub</a>发送给我们。
+        下载<a href="https://github.com/PerfectDNSManager/PerfectDNSManager/blob/main/app/src/main/res/values-zh-rCN/strings.xml">翻译文件</a>，
+        编辑后通过<a href="mailto:perfectdnsmanager@proton.me">邮件</a>或<a href="https://github.com/PerfectDNSManager/PerfectDNSManager">GitHub</a>发送给我们。
     </p>
 </section>
 
@@ -719,7 +719,7 @@
     <h2 style="color: #4CAF50;">&#x1F513; GPL v3 许可证</h2>
     <p style="font-style: italic; color: #81C784;">此应用程序是自由的。没有任何事物能禁止一个自由的应用程序。</p>
     <p>源代码开放 &mdash; 任何再发布必须保持开源。</p>
-    <p><a href="https://github.com/appstorefr/PerfectDNSManager" style="color: #4CAF50;">&#x1F4E6; GitHub 源代码</a></p>
+    <p><a href="https://github.com/PerfectDNSManager/PerfectDNSManager" style="color: #4CAF50;">&#x1F4E6; GitHub 源代码</a></p>
 </section>
 
 <!-- Footer -->
@@ -730,7 +730,7 @@
 
 
 <script>
-fetch('https://api.github.com/repos/appstorefr/PerfectDNSManager/releases/latest')
+fetch('https://api.github.com/repos/PerfectDNSManager/PerfectDNSManager/releases/latest')
   .then(r => r.json())
   .then(data => {
     const apk = data.assets && data.assets.find(a => a.name === 'PerfectDNSManager-latest.apk')

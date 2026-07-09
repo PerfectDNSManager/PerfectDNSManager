@@ -27,11 +27,11 @@ val computedVersionName = if (vSuffix.isNotEmpty()) "$vMajor.$vMinor.$vBuild-$vS
 val buildTimestamp = SimpleDateFormat("yyyyMMdd-HHmm", Locale.US).format(Date())
 
 android {
-    namespace = "net.appstorefr.perfectdnsmanager"
+    namespace = "app.perfectdnsmanager"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "net.appstorefr.perfectdnsmanager"
+        applicationId = "app.perfectdnsmanager"
         minSdk = 21
         targetSdk = 34
         versionCode = computedVersionCode

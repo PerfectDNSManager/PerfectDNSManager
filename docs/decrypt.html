@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src https://pdm.appstorefr.net; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src https://perfectdnsmanager.app; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
     <title>Perfect DNS Manager - Decrypt</title>
     <script src="https://cdn.jsdelivr.net/npm/argon2-browser@1.18.0/dist/argon2-bundled.min.js"
             integrity="sha384-XOR3aNvHciLPIf6r+2glkrmbBbLmIJ1EChMXjw8eBKBf8gE0rDq1TyUNuRdorOqi"
@@ -69,12 +69,12 @@
         </div>
 
         <div class="footer">
-            <a href="https://appstorefr.github.io/PerfectDNSManager/">Perfect DNS Manager</a> &mdash; Open source DNS manager for Android
+            <a href="https://www.perfectdnsmanager.app/">Perfect DNS Manager</a> &mdash; Open source DNS manager for Android
         </div>
     </div>
 
 <script>
-    const PDM_BASE = 'https://pdm.appstorefr.net';
+    const PDM_BASE = 'https://perfectdnsmanager.app';
     let currentPlaintext = null;
 
     // Argon2id — doivent matcher EncryptedSharer.kt côté app (format v2)
@@ -105,7 +105,7 @@
         const trimmed = input.trim();
         try {
             const u = new URL(trimmed);
-            if (u.hostname === 'pdm.appstorefr.net') {
+            if (u.hostname === 'perfectdnsmanager.app') {
                 return u.pathname.replace(/^\/(d\/|decrypt\/|r\/)?/, '').replace(/\/$/, '').split('?')[0];
             }
         } catch (e) { /* not a URL */ }
