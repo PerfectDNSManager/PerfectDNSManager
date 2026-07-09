@@ -201,7 +201,7 @@ jobs:
 
             Installation :
             ```
-            https://github.com/appstorefr/PerfectDNSManager/releases/download/latest-beta/PerfectDNSManager-latest-beta.apk
+            https://github.com/PerfectDNSManager/PerfectDNSManager/releases/download/latest-beta/PerfectDNSManager-latest-beta.apk
             ```
           files: ${{ steps.beta_apk.outputs.path }}
 
