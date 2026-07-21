@@ -95,7 +95,9 @@ data class DnsProfile(
          * immuable ([listOf]) et aucun appelant ne la mute (vérifié), donc on
          * peut partager la même instance sans copie défensive.
          */
-        private val defaultPresets: List<DnsProfile> by lazy {
+        // Nom distinct de getDefaultPresets() : sinon le getter Kotlin de la
+        // propriété entre en collision de signature JVM avec la fonction.
+        private val cachedDefaultPresets: List<DnsProfile> by lazy {
             listOf(
 
             // ══════════════════════════════════════════════════════
@@ -375,6 +377,6 @@ data class DnsProfile(
             )
         }
 
-        fun getDefaultPresets(): List<DnsProfile> = defaultPresets
+        fun getDefaultPresets(): List<DnsProfile> = cachedDefaultPresets
     }
 }
