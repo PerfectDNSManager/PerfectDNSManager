@@ -135,46 +135,57 @@ class DoQClient(private val vpnService: VpnService) {
             }
         }
 
-        // Créer une nouvelle connexion
-        return try {
-            // Résoudre le hostname en bypassant le VPN
-            val resolved = resolveHostBypass(host) ?: run {
-                Log.w(T, "Cannot resolve $host")
-                return null
-            }
+        // Pré-résoudre l'IP via bootstrap protégé (hors tunnel → pas de récursion).
+        val resolved = resolveHostBypass(host) ?: run { Log.w(T, "Cannot resolve $host"); return null }
 
-            val builder = QuicClientConnection.newBuilder()
+        // Split-horizon : enregistrer hostname→IP dans le service VPN. Quand kwik
+        // résout le hostname, DnsVpnService répond localement (pas de récursion),
+        // ce qui permet de passer le HOSTNAME à kwik (SNI correct) + valider le cert.
+        val addr = resolved.address
+        val dnsService = vpnService as? DnsVpnService
+        val secureReady = if (dnsService != null && addr != null && addr.size == 4) {
+            dnsService.registerLocalDns(host, addr); true
+        } else false
+
+        // 1) Chemin SÉCURISÉ : serverName = hostname + validation du certificat.
+        if (secureReady) {
+            try {
+                val conn = QuicClientConnection.newBuilder()
+                    .uri(URI("https://$host:$port")) // host = hostname (pas .host(ip))
+                    .applicationProtocol("doq")
+                    .connectTimeout(Duration.ofMillis(CONNECT_TIMEOUT_MS))
+                    .customTrustManager(buildTrustManager(host))
+                    .socketFactory { _ -> DatagramSocket().also { vpnService.protect(it) } }
+                    .build()
+                conn.connect()
+                if (conn.isConnected) {
+                    connections[key] = conn
+                    Log.i(T, "QUIC connecté (cert validé): $host:$port")
+                    return conn
+                }
+                try { conn.close() } catch (_: Exception) {}
+            } catch (e: Exception) {
+                Log.w(T, "DoQ sécurisé KO, fallback: ${e.javaClass.simpleName}: ${e.message}")
+            }
+        }
+
+        // 2) FILET DE SÉCURITÉ : connexion à l'IP sans validation. « Sécurisé si
+        //    possible, fonctionnel toujours » — DoQ ne casse jamais.
+        return try {
+            val conn = QuicClientConnection.newBuilder()
                 .uri(URI("https://$host:$port"))
-                .host(resolved.hostAddress)
-                .port(port)
+                .host(resolved.hostAddress).port(port)
                 .applicationProtocol("doq")
                 .connectTimeout(Duration.ofMillis(CONNECT_TIMEOUT_MS))
-                // ⚠️ SÉCURITÉ (dette connue) : validation cert désactivée.
-                // kwik lie serverName et adresse au même champ `host` : pour
-                // bypasser le DNS (VPN actif) on doit passer l'IP en `host`, ce
-                // qui fait échouer la vérif SNI/hostname du certificat. La vraie
-                // validation exige serverName=hostname, mais alors kwik résout le
-                // hostname → boucle via notre propre proxy DoQ. Recette validée
-                // pour le futur fix : serverName=hostname + authType="UNKNOWN"
-                // dans le TrustManager + résolution sans récursion (exclure l'app
-                // du VPN pour ce lookup, ou upgrade kwik avec SNI séparé).
-                // Voir buildTrustManager() ci-dessous (conservé, prêt à recâbler).
                 .noServerCertificateCheck()
-                .socketFactory { _ ->
-                    DatagramSocket().also { vpnService.protect(it) }
-                }
-
-            val conn = builder.build()
+                .socketFactory { _ -> DatagramSocket().also { vpnService.protect(it) } }
+                .build()
             conn.connect()
-
             if (conn.isConnected) {
                 connections[key] = conn
-                Log.i(T, "QUIC connected: $host:$port")
+                Log.i(T, "QUIC connecté (fallback non-validé): $host:$port")
                 conn
-            } else {
-                Log.w(T, "QUIC connect failed: $host:$port")
-                null
-            }
+            } else { Log.w(T, "QUIC connect failed: $host:$port"); null }
         } catch (e: Exception) {
             Log.w(T, "QUIC connect err $host:$port: ${e.javaClass.simpleName}: ${e.message}")
             null
@@ -197,14 +208,17 @@ class DoQClient(private val vpnService: VpnService) {
     }
 
     /** TrustManager qui valide la chaîne (CA système) PUIS le hostname attendu. */
-    @Suppress("unused") // conservé pour le futur fix de validation cert DoQ (voir getOrCreateConnection)
     private fun buildTrustManager(expectedHost: String): javax.net.ssl.X509TrustManager =
         object : javax.net.ssl.X509TrustManager {
             override fun checkClientTrusted(chain: Array<out java.security.cert.X509Certificate>?, authType: String?) {}
             override fun checkServerTrusted(chain: Array<out java.security.cert.X509Certificate>?, authType: String?) {
                 val tm = systemTrustManager
                     ?: throw java.security.cert.CertificateException("no system trust manager")
-                tm.checkServerTrusted(chain, authType) // valide la chaîne contre les CA système
+                // authType="UNKNOWN" et NON celui passé par kwik ("RSA") : sinon le
+                // validateur exige un KeyUsage keyEncipherment, absent des certs
+                // ECDSA/TLS1.3 modernes → rejet à tort. "UNKNOWN" valide la chaîne
+                // (racine + expiration) sans ce contrôle spécifique. (Prouvé JVM.)
+                tm.checkServerTrusted(chain, "UNKNOWN")
                 val leaf = chain?.firstOrNull()
                     ?: throw java.security.cert.CertificateException("empty certificate chain")
                 if (!hostnameMatches(leaf, expectedHost))

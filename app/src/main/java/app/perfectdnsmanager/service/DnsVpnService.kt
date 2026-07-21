@@ -73,6 +73,20 @@ class DnsVpnService : VpnService() {
     /** Purge périodique de `pending` (pas à chaque paquet — chemin chaud). */
     private val cleanupCounter = java.util.concurrent.atomic.AtomicInteger(0)
 
+    /**
+     * Split-horizon DNS : hostname (lowercase) → IPv4 (4 octets) du/des serveur(s)
+     * DoQ, pré-résolus via bootstrap protégé. Quand kwik résout le hostname du
+     * serveur DoQ, la requête tombe ici (onTunPacket) et on répond DIRECTEMENT
+     * depuis cette map au lieu de la forwarder → pas de récursion → kwik peut
+     * valider le certificat contre le hostname (SNI correct). Cf. DoQClient.
+     */
+    private val localDnsMap = ConcurrentHashMap<String, ByteArray>()
+
+    /** Enregistre une résolution locale (appelé par DoQClient avant de connecter). */
+    fun registerLocalDns(hostname: String, ipv4: ByteArray) {
+        if (ipv4.size == 4) localDnsMap[hostname.lowercase()] = ipv4
+    }
+
     /** OkHttpClient with protected sockets (bypass VPN) and custom DNS resolver */
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
@@ -379,6 +393,19 @@ class DnsVpnService : VpnService() {
             var wasRewritten = false
             var originalQnameEncoded: ByteArray? = null
             val (qname, modifiedQuery) = getQNameAndApplyRewrite(query)
+
+            // Split-horizon : si la requête vise le hostname d'un serveur DoQ
+            // (pré-résolu via bootstrap), on répond localement au lieu de la
+            // forwarder → kwik obtient l'IP sans récursion et valide le cert.
+            if (localDnsMap.isNotEmpty()) {
+                val ip = localDnsMap[qname.lowercase()]
+                if (ip != null) {
+                    val resp = synthesizeDnsResponse(query, ip)
+                    writeTun(Pending(srcIp, dstIp, srcPort, System.currentTimeMillis(), false, null, origId), resp)
+                    return
+                }
+            }
+
             if (modifiedQuery != null) {
                 // (sécurité) ne PAS logger le domaine interrogé
                 Log.i(T, "DNS Rewrite rule matched")
@@ -549,6 +576,37 @@ class DnsVpnService : VpnService() {
         buffer.put(0.toByte())
         buffer.put(qtypeClass)
         return buffer.array().copyOf(buffer.position())
+    }
+
+    /** Construit une réponse DNS locale : A→IP pour un type A, NODATA sinon. */
+    private fun synthesizeDnsResponse(query: ByteArray, ipv4: ByteArray): ByteArray {
+        val qnameLen = getQNameLength(query, 12)
+        val qEnd = 12 + qnameLen + 4 // fin de la section question
+        val qtype = if (qEnd <= query.size)
+            ((query[12 + qnameLen].toInt() and 0xFF) shl 8) or (query[12 + qnameLen + 1].toInt() and 0xFF)
+        else 0
+        val isA = qtype == 1 && ipv4.size == 4
+        val out = java.io.ByteArrayOutputStream()
+        // Header
+        out.write(query[0].toInt() and 0xFF); out.write(query[1].toInt() and 0xFF) // ID
+        out.write(0x81); out.write(0x80)                        // QR=1, RD=1, RA=1
+        out.write(0x00); out.write(0x01)                        // QDCOUNT=1
+        out.write(0x00); out.write(if (isA) 0x01 else 0x00)    // ANCOUNT
+        out.write(0x00); out.write(0x00)                        // NSCOUNT
+        out.write(0x00); out.write(0x00)                        // ARCOUNT
+        // Question recopiée
+        val qLen = (qEnd - 12).coerceAtMost(query.size - 12)
+        if (qLen > 0) out.write(query, 12, qLen)
+        // Réponse (type A uniquement ; sinon NODATA = pas de section answer)
+        if (isA) {
+            out.write(0xC0); out.write(0x0C)                    // pointeur vers qname (offset 12)
+            out.write(0x00); out.write(0x01)                    // TYPE A
+            out.write(0x00); out.write(0x01)                    // CLASS IN
+            out.write(0x00); out.write(0x00); out.write(0x00); out.write(0x3C) // TTL 60s
+            out.write(0x00); out.write(0x04)                    // RDLENGTH 4
+            out.write(ipv4, 0, 4)                               // RDATA
+        }
+        return out.toByteArray()
     }
 
     // ── DoH via OkHttp (HTTP/2) ─────────────────────────────────────────
@@ -748,7 +806,7 @@ class DnsVpnService : VpnService() {
         try { tunReaderThread?.join(1000) } catch (_: InterruptedException) {}
         try { dnsReceiverThread?.join(1000) } catch (_: InterruptedException) {}
         try { queryExecutor?.shutdownNow() } catch (_: Exception) {}; queryExecutor = null
-        pending.clear(); udpUpstreamIps.clear(); rewriteRules = emptyList()
+        pending.clear(); udpUpstreamIps.clear(); localDnsMap.clear(); rewriteRules = emptyList()
         try { doqClient?.closeAll() } catch (_: Exception) {}; doqClient = null
         try { dnsSocket?.close() } catch (_: Exception) {}
         synchronized(tunOutLock) { try { tunOut?.close() } catch (_: Exception) {} }
