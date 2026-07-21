@@ -28,9 +28,23 @@ class DoQClient(private val vpnService: VpnService) {
         private const val T = "DoQClient"
         private const val DEFAULT_PORT = 853
         private const val CONNECT_TIMEOUT_MS = 5000L
+        private const val MAX_IDLE_MS = 15_000L      // ferme une connexion QUIC oisive
+        private const val QUERY_TIMEOUT_MS = 5000L   // deadline par requête (watchdog)
+        private const val MAX_RESP_BYTES = 8192      // réponse DNS plausible (anti-oversize)
     }
 
     private val connections = ConcurrentHashMap<String, QuicClientConnection>()
+    private val connLock = Any()
+    /** Watchdog : ferme un stream/conn bloqué en lecture (kwik n'a pas de read-timeout). */
+    private val watchdog = java.util.concurrent.Executors.newSingleThreadScheduledExecutor { r ->
+        Thread(r, "DoQWatchdog").apply { isDaemon = true }
+    }
+
+    /** Masque le label gauche du hostname (souvent l'ID de compte NextDNS/ControlD). */
+    private fun redactHost(h: String): String {
+        val dot = h.indexOf('.')
+        return if (dot > 0) "***" + h.substring(dot) else "***"
+    }
 
     /**
      * Envoie une requête DNS via QUIC (DoQ).
@@ -66,11 +80,22 @@ class DoQClient(private val vpnService: VpnService) {
 
             // 6. Ouvrir un stream bidirectionnel, écrire, lire
             val stream: QuicStream = conn.createStream(true)
-            stream.outputStream.write(wireMsgBytes)
-            stream.outputStream.close()
-
-            // Lire la réponse
-            val response = readFully(stream)
+            // Watchdog : kwik n'a PAS de read-timeout. Sans ça, un serveur (ou MITM)
+            // qui accepte le stream sans jamais répondre bloque `read()` à l'infini →
+            // les threads du pool queryExecutor se remplissent → « plus d'internet ».
+            val wd = watchdog.schedule({
+                try { stream.abortReading(0) } catch (_: Throwable) {}
+                try { stream.resetStream(0) } catch (_: Throwable) {}
+                try { connections.remove(key)?.close() } catch (_: Throwable) {}
+            }, QUERY_TIMEOUT_MS, java.util.concurrent.TimeUnit.MILLISECONDS)
+            val response = try {
+                stream.outputStream.write(wireMsgBytes)
+                stream.outputStream.close()
+                readFully(stream)
+            } finally {
+                wd.cancel(false)
+                try { stream.inputStream.close() } catch (_: Exception) {}
+            }
             if (response == null || response.size < 14) {
                 Log.w(T, "DoQ: response too short (${response?.size ?: 0} bytes)")
                 return null
@@ -112,13 +137,16 @@ class DoQClient(private val vpnService: VpnService) {
         val baos = ByteArrayOutputStream()
         val buf = ByteArray(4096)
         var totalRead = 0
-        while (totalRead < 65535) {
+        while (totalRead <= MAX_RESP_BYTES) {
             val n = inputStream.read(buf)
             if (n < 0) break
             baos.write(buf, 0, n)
             totalRead += n
         }
-        baos.toByteArray()
+        // Réponse DNS surdimensionnée (serveur/MITM malveillant) → rejet, sinon
+        // buildPkt déborderait le champ Total Length IPv4 16 bits.
+        if (totalRead > MAX_RESP_BYTES) { Log.w(T, "DoQ: réponse trop grande ($totalRead o) — rejet"); null }
+        else baos.toByteArray()
     } catch (e: Exception) {
         Log.w(T, "readFully err: ${e.message}")
         null
@@ -135,68 +163,59 @@ class DoQClient(private val vpnService: VpnService) {
             }
         }
 
-        // Pré-résoudre l'IP via bootstrap protégé (hors tunnel → pas de récursion).
-        val resolved = resolveHostBypass(host) ?: run { Log.w(T, "Cannot resolve $host"); return null }
+        // Sérialise la CRÉATION (le fast-path ci-dessus reste hors verrou) : sinon
+        // plusieurs threads du pool créent des connexions concurrentes vers le même
+        // serveur, la dernière écrase les autres → connexions QUIC fuitées.
+        synchronized(connLock) {
+            connections[key]?.let { c ->
+                if (c.isConnected) return c
+                connections.remove(key); try { c.close() } catch (_: Exception) {}
+            }
 
-        // Split-horizon : enregistrer hostname→IP dans le service VPN. Quand kwik
-        // résout le hostname, DnsVpnService répond localement (pas de récursion),
-        // ce qui permet de passer le HOSTNAME à kwik (SNI correct) + valider le cert.
-        val addr = resolved.address
-        val dnsService = vpnService as? DnsVpnService
-        val secureReady = if (dnsService != null && addr != null && addr.size == 4) {
-            dnsService.registerLocalDns(host, addr); true
-        } else false
+            // Pré-résoudre l'IP via bootstrap protégé (hors tunnel → pas de récursion).
+            val resolved = resolveHostBypass(host) ?: run { Log.w(T, "Cannot resolve ${redactHost(host)}"); return null }
 
-        // 1) Chemin SÉCURISÉ : serverName = hostname + validation du certificat.
-        if (secureReady) {
-            try {
+            // Split-horizon : hostname→IP dans le service VPN → kwik résout localement
+            // (pas de récursion) → on passe le HOSTNAME à kwik (SNI correct) + valide le cert.
+            val addr = resolved.address
+            val dnsService = vpnService as? DnsVpnService
+            if (dnsService == null || addr == null || addr.size != 4) {
+                // Sans split-horizon (serveur IPv6-only, ou contexte inattendu) on ne
+                // peut PAS valider → on REFUSE (fail-closed). Jamais de connexion non
+                // validée, même en secours : ce serait un vecteur de downgrade MITM.
+                Log.w(T, "DoQ: split-horizon indisponible → refus (fail-closed): ${redactHost(host)}")
+                return null
+            }
+            dnsService.registerLocalDns(host, addr)
+
+            // Unique chemin : serverName = hostname + validation cert. FAIL-CLOSED
+            // pour TOUT échec (réseau OU cert) : un attaquant on-path pourrait sinon
+            // forcer un repli non validé en coupant la 1re connexion (downgrade).
+            return try {
                 val conn = QuicClientConnection.newBuilder()
                     .uri(URI("https://$host:$port")) // host = hostname (pas .host(ip))
                     .applicationProtocol("doq")
                     .connectTimeout(Duration.ofMillis(CONNECT_TIMEOUT_MS))
+                    .maxIdleTimeout(Duration.ofMillis(MAX_IDLE_MS)) // borne les hangs
                     .customTrustManager(buildTrustManager(host))
                     .socketFactory { _ -> DatagramSocket().also { vpnService.protect(it) } }
                     .build()
                 conn.connect()
                 if (conn.isConnected) {
                     connections[key] = conn
-                    Log.i(T, "QUIC connecté (cert validé): $host:$port")
-                    return conn
+                    Log.i(T, "QUIC connecté (cert validé): ${redactHost(host)}:$port")
+                    conn
+                } else {
+                    try { conn.close() } catch (_: Exception) {}
+                    Log.w(T, "DoQ non connecté: ${redactHost(host)}:$port"); null
                 }
-                try { conn.close() } catch (_: Exception) {}
             } catch (e: Exception) {
-                if (isCertificateFailure(e)) {
-                    // Échec de VALIDATION du certificat = MITM possible → FAIL-CLOSED.
-                    // Surtout PAS de fallback ici : sinon un attaquant présentant un
-                    // mauvais cert forcerait le repli en connexion non validée
-                    // (downgrade attack qui annulerait tout l'intérêt du fix).
-                    Log.w(T, "DoQ : validation certificat ÉCHOUÉE (MITM possible) — refus: ${e.message}")
-                    return null
-                }
-                Log.w(T, "DoQ sécurisé KO (non-cert), fallback: ${e.javaClass.simpleName}: ${e.message}")
+                if (isCertificateFailure(e))
+                    Log.w(T, "DoQ: validation certificat ÉCHOUÉE (MITM possible) — refus")
+                else
+                    Log.w(T, "DoQ connexion KO (fail-closed): ${e.javaClass.simpleName}")
+                null
             }
-        }
-
-        // 2) FILET DE SÉCURITÉ : connexion à l'IP sans validation. « Sécurisé si
-        //    possible, fonctionnel toujours » — DoQ ne casse jamais.
-        return try {
-            val conn = QuicClientConnection.newBuilder()
-                .uri(URI("https://$host:$port"))
-                .host(resolved.hostAddress).port(port)
-                .applicationProtocol("doq")
-                .connectTimeout(Duration.ofMillis(CONNECT_TIMEOUT_MS))
-                .noServerCertificateCheck()
-                .socketFactory { _ -> DatagramSocket().also { vpnService.protect(it) } }
-                .build()
-            conn.connect()
-            if (conn.isConnected) {
-                connections[key] = conn
-                Log.i(T, "QUIC connecté (fallback non-validé): $host:$port")
-                conn
-            } else { Log.w(T, "QUIC connect failed: $host:$port"); null }
-        } catch (e: Exception) {
-            Log.w(T, "QUIC connect err $host:$port: ${e.javaClass.simpleName}: ${e.message}")
-            null
         }
     }
 
@@ -243,6 +262,11 @@ class DoQClient(private val vpnService: VpnService) {
                 tm.checkServerTrusted(chain, "UNKNOWN")
                 val leaf = chain?.firstOrNull()
                     ?: throw java.security.cert.CertificateException("empty certificate chain")
+                // Compense le "UNKNOWN" (qui saute le contrôle EKU) : on exige
+                // explicitement l'usage serverAuth (ou aucun EKU) sur le leaf.
+                val eku = try { leaf.extendedKeyUsage } catch (_: Exception) { null }
+                if (eku != null && !eku.contains("1.3.6.1.5.5.7.3.1") && !eku.contains("2.5.29.37.0"))
+                    throw java.security.cert.CertificateException("cert non destiné à l'auth serveur (EKU)")
                 if (!hostnameMatches(leaf, expectedHost))
                     throw java.security.cert.CertificateException("DoQ hostname mismatch for $expectedHost")
             }
@@ -367,10 +391,11 @@ class DoQClient(private val vpnService: VpnService) {
 
     /** Ferme toutes les connexions QUIC */
     fun closeAll() {
-        for ((key, conn) in connections) {
+        for ((_, conn) in connections) {
             try { conn.close() } catch (_: Exception) {}
         }
         connections.clear()
+        try { watchdog.shutdownNow() } catch (_: Exception) {}
         Log.i(T, "All QUIC connections closed")
     }
 }

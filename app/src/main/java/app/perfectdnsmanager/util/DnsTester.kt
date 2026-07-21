@@ -19,32 +19,22 @@ object DnsTester {
 
     fun execute(server: String, domain: String): DnsResult? {
         return try {
-            val socket = DatagramSocket()
-            socket.soTimeout = 5000
-
-            // 1. Build Query
-            val queryBuffer = buildQuery(domain)
-
-            // 2. Send Query
-            val serverAddress = InetAddress.getByName(server)
-            val requestPacket = DatagramPacket(queryBuffer.array(), queryBuffer.limit(), serverAddress, 53)
-            socket.send(requestPacket)
-
-            // 3. Receive Response
-            val responseBytes = ByteArray(1024)
-            val responsePacket = DatagramPacket(responseBytes, responseBytes.size)
-            socket.receive(responsePacket)
-
-            // 4. Parse Response
-            val resultIp = parseResponse(responsePacket.data, responsePacket.length)
-
-            socket.close()
-
-            if (resultIp != null) {
-                val isBlocked = resultIp == "127.0.0.1" || resultIp == "54.246.190.12"
-                DnsResult(resultIp, isBlocked)
-            } else {
-                null
+            // .use{} ferme le socket MÊME sur receive() timeout (cas fréquent),
+            // sinon un FD fuite à chaque test raté — et ça tourne en boucle.
+            DatagramSocket().use { socket ->
+                socket.soTimeout = 5000
+                val queryBuffer = buildQuery(domain)
+                val serverAddress = InetAddress.getByName(server)
+                val requestPacket = DatagramPacket(queryBuffer.array(), queryBuffer.limit(), serverAddress, 53)
+                socket.send(requestPacket)
+                val responseBytes = ByteArray(1024)
+                val responsePacket = DatagramPacket(responseBytes, responseBytes.size)
+                socket.receive(responsePacket)
+                val resultIp = parseResponse(responsePacket.data, responsePacket.length)
+                if (resultIp != null) {
+                    val isBlocked = resultIp == "127.0.0.1" || resultIp == "54.246.190.12"
+                    DnsResult(resultIp, isBlocked)
+                } else null
             }
         } catch (e: Exception) {
             Log.e(TAG, "DNS test failed for server $server, domain $domain", e)
@@ -81,21 +71,18 @@ object DnsTester {
      */
     fun measureLatency(server: String, domain: String = "google.com"): Long? {
         return try {
-            val socket = DatagramSocket()
-            socket.soTimeout = 5000
-            val queryBuffer = buildQuery(domain)
-            val serverAddress = InetAddress.getByName(server)
-            val requestPacket = DatagramPacket(queryBuffer.array(), queryBuffer.limit(), serverAddress, 53)
-
-            val start = System.currentTimeMillis()
-            socket.send(requestPacket)
-            val responseBytes = ByteArray(1024)
-            val responsePacket = DatagramPacket(responseBytes, responseBytes.size)
-            socket.receive(responsePacket)
-            val elapsed = System.currentTimeMillis() - start
-
-            socket.close()
-            elapsed
+            DatagramSocket().use { socket ->
+                socket.soTimeout = 5000
+                val queryBuffer = buildQuery(domain)
+                val serverAddress = InetAddress.getByName(server)
+                val requestPacket = DatagramPacket(queryBuffer.array(), queryBuffer.limit(), serverAddress, 53)
+                val start = System.currentTimeMillis()
+                socket.send(requestPacket)
+                val responseBytes = ByteArray(1024)
+                val responsePacket = DatagramPacket(responseBytes, responseBytes.size)
+                socket.receive(responsePacket)
+                System.currentTimeMillis() - start
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Latency test failed for $server", e)
             null
@@ -128,11 +115,10 @@ object DnsTester {
                 .build()
 
             val start = System.currentTimeMillis()
-            val response = client.newCall(request).execute()
-            val elapsed = System.currentTimeMillis() - start
-            response.close()
-
-            if (response.isSuccessful) elapsed else null
+            client.newCall(request).execute().use { response ->
+                val elapsed = System.currentTimeMillis() - start
+                if (response.isSuccessful) elapsed else null
+            }
         } catch (e: Exception) {
             Log.e(TAG, "DoH latency test failed for $url", e)
             null
@@ -174,20 +160,19 @@ object DnsTester {
                 .noServerCertificateCheck()
                 .build()
 
-            val start = System.currentTimeMillis()
-            conn.connect()
-            val stream = conn.createStream(true)
-            stream.outputStream.write(wireMsgBytes)
-            stream.outputStream.close()
-
-            // Lire la réponse
-            val buf = ByteArray(4096)
-            val n = stream.inputStream.read(buf)
-            val elapsed = System.currentTimeMillis() - start
-
-            try { conn.close() } catch (_: Exception) {}
-
-            if (n > 12) elapsed else null
+            try {
+                val start = System.currentTimeMillis()
+                conn.connect()
+                val stream = conn.createStream(true)
+                stream.outputStream.write(wireMsgBytes)
+                stream.outputStream.close()
+                val buf = ByteArray(4096)
+                val n = stream.inputStream.read(buf)
+                val elapsed = System.currentTimeMillis() - start
+                if (n > 12) elapsed else null
+            } finally {
+                try { conn.close() } catch (_: Exception) {} // finally → pas de fuite sur exception
+            }
         } catch (e: Exception) {
             Log.e(TAG, "DoQ latency test failed for $url", e)
             null
@@ -212,26 +197,22 @@ object DnsTester {
 
             val sslFactory = javax.net.ssl.SSLSocketFactory.getDefault() as javax.net.ssl.SSLSocketFactory
             val start = System.currentTimeMillis()
-            val socket = sslFactory.createSocket(hostname, 853) as javax.net.ssl.SSLSocket
-            socket.soTimeout = 5000
-            socket.startHandshake()
-
-            socket.outputStream.write(wireMsgBytes)
-            socket.outputStream.flush()
-
-            // Lire la réponse (2 octets longueur + payload)
-            val lenBuf = ByteArray(2)
-            val inp = socket.inputStream
-            var read = 0
-            while (read < 2) { val n = inp.read(lenBuf, read, 2 - read); if (n < 0) break; read += n }
-            val respLen = ((lenBuf[0].toInt() and 0xFF) shl 8) or (lenBuf[1].toInt() and 0xFF)
-            val resp = ByteArray(respLen)
-            read = 0
-            while (read < respLen) { val n = inp.read(resp, read, respLen - read); if (n < 0) break; read += n }
-            val elapsed = System.currentTimeMillis() - start
-
-            socket.close()
-            if (read >= 12) elapsed else null
+            (sslFactory.createSocket(hostname, 853) as javax.net.ssl.SSLSocket).use { socket ->
+                socket.soTimeout = 5000
+                socket.startHandshake()
+                socket.outputStream.write(wireMsgBytes)
+                socket.outputStream.flush()
+                val lenBuf = ByteArray(2)
+                val inp = socket.inputStream
+                var read = 0
+                while (read < 2) { val n = inp.read(lenBuf, read, 2 - read); if (n < 0) break; read += n }
+                val respLen = ((lenBuf[0].toInt() and 0xFF) shl 8) or (lenBuf[1].toInt() and 0xFF)
+                val resp = ByteArray(respLen)
+                read = 0
+                while (read < respLen) { val n = inp.read(resp, read, respLen - read); if (n < 0) break; read += n }
+                val elapsed = System.currentTimeMillis() - start
+                if (read >= 12) elapsed else null
+            }
         } catch (e: Exception) {
             Log.e(TAG, "DoT latency test failed for $hostname", e)
             null

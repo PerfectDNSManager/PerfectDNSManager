@@ -41,8 +41,10 @@ class DotMonitorService : Service() {
         const val EXTRA_LABEL = "dot_label"
 
         private const val T = "DotMonitor"
-        private const val CH_ID = "dot_monitor_channel"
+        private const val CH_ID = "dot_monitor_channel"        // persistante, IMPORTANCE_LOW
+        private const val CH_ID_ALERT = "dot_alert_channel"    // alertes, IMPORTANCE_HIGH (heads-up)
         private const val NOTIF_ID = 1002
+        private const val NOTIF_ID_ALERT = 1003
         private const val CHECK_INTERVAL_MS = 60_000L
         private const val CHECK_TIMEOUT_S = 6L
         private const val MAX_FAILURES = 2 // ~2 min avant auto-repli
@@ -60,11 +62,16 @@ class DotMonitorService : Service() {
 
     private var hostname: String = ""
     private var label: String = ""
-    private val handler by lazy { Handler(Looper.getMainLooper()) }
+    // Handler sur un thread de FOND (pas le main looper) : le health-check bloque
+    // jusqu'à CHECK_TIMEOUT_S — sur le main thread ça déclencherait un ANR (>5s).
+    private val bgThread = android.os.HandlerThread("DotMonitor").apply { start() }
+    private val handler by lazy { Handler(bgThread.looper) }
     private val probeExecutor = Executors.newSingleThreadExecutor()
     @Volatile private var monitoring = false
-    private var failures = 0
-    private var probeIndex = 0
+    /** Garantit qu'une seule séquence disable/stop s'exécute (anti double-repli). */
+    private val stopping = java.util.concurrent.atomic.AtomicBoolean(false)
+    @Volatile private var failures = 0
+    @Volatile private var probeIndex = 0
 
     override fun onBind(intent: Intent?) = null
 
@@ -109,7 +116,10 @@ class DotMonitorService : Service() {
             } else {
                 failures++
                 Log.w(T, "DNS probe failed ($failures/$MAX_FAILURES)")
-                if (failures == 1) notify(buildNotif(warning = true)) // avertir dès le 1er échec
+                if (failures == 1) { // avertir dès le 1er échec : persistante MAJ + heads-up
+                    notify(buildNotif(warning = true))
+                    postAlert(getString(R.string.dot_warning_unreachable))
+                }
                 if (failures >= MAX_FAILURES) { autoFallback(); return@postDelayed }
             }
             scheduleCheck()
@@ -119,30 +129,30 @@ class DotMonitorService : Service() {
     /** Résolution DNS (= via le serveur DoT en mode strict) avec timeout borné. */
     private fun probeDnsWithTimeout(): Boolean {
         val host = PROBES[probeIndex % PROBES.size]; probeIndex++
+        val f = probeExecutor.submit<Boolean> {
+            try { InetAddress.getAllByName(host).isNotEmpty() } catch (_: Exception) { false }
+        }
         return try {
-            val f = probeExecutor.submit<Boolean> {
-                try { InetAddress.getAllByName(host).isNotEmpty() } catch (_: Exception) { false }
-            }
             f.get(CHECK_TIMEOUT_S, TimeUnit.SECONDS)
         } catch (_: Exception) {
-            false // timeout ou erreur = DNS considéré indisponible
+            f.cancel(true) // sinon la tâche bloquée occupe le thread unique du pool
+            false          // timeout ou erreur = DNS considéré indisponible
         }
     }
 
     /** B : le DNS ne répond plus → prévenir + désactiver pour rétablir internet. */
     private fun autoFallback() {
         monitoring = false
+        if (!stopping.compareAndSet(false, true)) return // déjà en cours (ex. tap "Désactiver")
         Thread {
             val disabled = try { AdbDnsManager(this).disablePrivateDns() } catch (_: Exception) { false }
             Log.i(T, "Auto-fallback: private DNS disabled=$disabled")
             handler.post {
                 getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
                     .putBoolean("dot_active", false).apply()
-                // Notification informative (non-ongoing) qui explique l'auto-repli.
-                val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                nm.notify(NOTIF_ID, buildInfoNotif(getString(R.string.dot_autodisabled)))
                 isRunning = false
-                stopForegroundCompat(removeNotif = false) // garder la notif info
+                stopForegroundCompat(removeNotif = true) // retirer la persistante…
+                postAlert(getString(R.string.dot_autodisabled)) // …et heads-up d'info (channel HIGH)
                 stopSelf()
             }
         }.start()
@@ -151,6 +161,7 @@ class DotMonitorService : Service() {
     /** A : l'utilisateur a tapé « Désactiver ». */
     private fun disableAndStop() {
         monitoring = false
+        if (!stopping.compareAndSet(false, true)) return // déjà en cours (ex. auto-repli)
         Thread {
             try { AdbDnsManager(this).disablePrivateDns() } catch (_: Exception) {}
             handler.post {
@@ -175,10 +186,32 @@ class DotMonitorService : Service() {
 
     private fun ensureChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getSystemService(NotificationManager::class.java).createNotificationChannel(
+            val nm = getSystemService(NotificationManager::class.java)
+            nm.createNotificationChannel(
                 NotificationChannel(CH_ID, "DNS privé (DoT)", NotificationManager.IMPORTANCE_LOW)
             )
+            // Channel séparé HIGH : sinon l'importance LOW du channel écrase la
+            // PRIORITY_HIGH → l'alerte « DNS injoignable » ne ferait ni heads-up ni son.
+            nm.createNotificationChannel(
+                NotificationChannel(CH_ID_ALERT, "Alerte DNS privé", NotificationManager.IMPORTANCE_HIGH)
+            )
         }
+    }
+
+    /** Poste une alerte (heads-up) sur le channel HIGH, en plus de la notif persistante. */
+    private fun postAlert(text: String) {
+        ensureChannel()
+        val n = NotificationCompat.Builder(this, CH_ID_ALERT)
+            .setContentTitle(getString(R.string.app_name))
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentIntent(contentPi())
+            .addAction(disableAction())
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(NOTIF_ID_ALERT, n)
     }
 
     private fun disableAction(): NotificationCompat.Action {
@@ -211,20 +244,6 @@ class DotMonitorService : Service() {
             .build()
     }
 
-    private fun buildInfoNotif(text: String): Notification {
-        ensureChannel()
-        return NotificationCompat.Builder(this, CH_ID)
-            .setContentTitle(getString(R.string.app_name))
-            .setContentText(text)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentIntent(contentPi())
-            .setOngoing(false)
-            .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .build()
-    }
-
     private fun notify(n: Notification) {
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(NOTIF_ID, n)
     }
@@ -238,6 +257,7 @@ class DotMonitorService : Service() {
     override fun onDestroy() {
         monitoring = false
         probeExecutor.shutdownNow()
+        try { bgThread.quitSafely() } catch (_: Exception) {}
         isRunning = false
         super.onDestroy()
     }

@@ -307,11 +307,13 @@ class DnsVpnService : VpnService() {
             dnsSocket = DatagramSocket().also { protect(it) }
             doqClient = DoQClient(this)
             tunOut = FileOutputStream(vpnInterface!!.fileDescriptor)
-            // Pool borné : 16 requêtes upstream simultanées max, file d'attente
-            // bornée qui rejette (CallerRuns) plutôt que d'accumuler à l'infini.
+            // Pool borné : 16 requêtes upstream simultanées max, file de 512. Si
+            // saturée (flood DNS extrême), DiscardOldestPolicy jette la requête la
+            // plus ANCIENNE en attente (le stub client re-tentera après timeout) —
+            // préférable à CallerRuns qui bloquerait le TunReader.
             queryExecutor = java.util.concurrent.ThreadPoolExecutor(
                 4, 16, 30, TimeUnit.SECONDS,
-                java.util.concurrent.LinkedBlockingQueue(256),
+                java.util.concurrent.LinkedBlockingQueue(512),
                 java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy()
             )
             udpUpstreamIps.clear()
