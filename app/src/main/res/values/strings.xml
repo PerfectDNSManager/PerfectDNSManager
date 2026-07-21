@@ -560,4 +560,9 @@
         <item quantity="one">%1$s débloque le contenu</item>
         <item quantity="other">%1$s débloquent le contenu</item>
     </plurals>
+    <!-- Moniteur DNS privé (DoT) -->
+    <string name="dot_active_fmt">DNS privé actif : %1$s. Appuyez sur « Désactiver » si vous perdez internet.</string>
+    <string name="dot_warning_unreachable">⚠ Le serveur DNS privé ne répond plus — internet risque d\'être coupé. Désactivation automatique en cours…</string>
+    <string name="dot_autodisabled">DNS privé désactivé automatiquement (serveur injoignable). Internet rétabli. Vous pouvez le réactiver depuis l\'app.</string>
+    <string name="dot_disable_action">Désactiver</string>
 </resources>

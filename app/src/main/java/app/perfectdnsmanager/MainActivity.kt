@@ -6,6 +6,7 @@ import app.perfectdnsmanager.util.pdmAccent
 import app.perfectdnsmanager.util.pdmAccentAlt
 import app.perfectdnsmanager.util.pdmAccentGold
 import app.perfectdnsmanager.util.pdmDanger
+import android.os.Build
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -143,6 +144,7 @@ class MainActivity : AppCompatActivity() {
                             getString(R.string.switching_disabling_dot),
                             Toast.LENGTH_SHORT
                         ).show()
+                        stopDotMonitor()
                         lifecycleScope.launch(Dispatchers.IO) {
                             adbManager.disablePrivateDns()
                             runOnUiThread { setInactiveStatus(); applyDns() }
@@ -186,6 +188,12 @@ class MainActivity : AppCompatActivity() {
 
         prefs = getSharedPreferences("prefs", MODE_PRIVATE)
         adbManager = AdbDnsManager(this)
+
+        // API 33+ : les notifications (moniteur DoT, VPN) exigent cette permission runtime.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            try { requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 9911) } catch (_: Exception) {}
+        }
 
         // Premier lancement : si pas de langue choisie, définir la langue du système
         if (prefs.getString("language", null) == null) {
@@ -1283,6 +1291,8 @@ class MainActivity : AppCompatActivity() {
                     val method = adbManager.lastMethod.ifEmpty { "ADB" }
                     prefs.edit().putString("last_method", method).apply()
                     setActiveStatus(true, "DNS via DoT ($method): ${profile.providerName}\n${profile.primary}")
+                    // Moniteur DoT : notif "Désactiver" (A) + health-check auto-repli (B).
+                    startDotMonitor(profile.primary, profile.providerName)
                     // Auto-refresh IP display after ADB activation
                     btnToggle.postDelayed({ refreshIpDisplay() }, 3000)
                 } else showAdbErrorDialog()
@@ -1290,10 +1300,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun startDotMonitor(hostname: String, label: String) {
+        val i = Intent(this, app.perfectdnsmanager.service.DotMonitorService::class.java).apply {
+            action = app.perfectdnsmanager.service.DotMonitorService.ACTION_START
+            putExtra(app.perfectdnsmanager.service.DotMonitorService.EXTRA_HOSTNAME, hostname)
+            putExtra(app.perfectdnsmanager.service.DotMonitorService.EXTRA_LABEL, label)
+        }
+        androidx.core.content.ContextCompat.startForegroundService(this, i)
+    }
+
+    private fun stopDotMonitor() {
+        try { stopService(Intent(this, app.perfectdnsmanager.service.DotMonitorService::class.java)) } catch (_: Exception) {}
+    }
+
     private fun applyDnsViaVpn(profile: DnsProfile) {
         // Stopper ADB/DoT s'il est actif avant d'activer VPN (évite conflit DoT+DoH)
         val adbIsActive = adbManager.getCurrentPrivateDnsMode()?.contains("hostname") == true
         if (adbIsActive) {
+            stopDotMonitor()
             lifecycleScope.launch(Dispatchers.IO) { adbManager.disablePrivateDns() }
         }
         isActivating = true
@@ -1357,6 +1381,7 @@ class MainActivity : AppCompatActivity() {
         }
         // Stopper ADB si actif
         if (adbIsActive) {
+            stopDotMonitor()
             lifecycleScope.launch(Dispatchers.IO) {
                 adbManager.disablePrivateDns()
                 runOnUiThread { setInactiveStatus(); onDone() }
