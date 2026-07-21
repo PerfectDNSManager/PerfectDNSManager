@@ -149,11 +149,17 @@ class DoQClient(private val vpnService: VpnService) {
                 .port(port)
                 .applicationProtocol("doq")
                 .connectTimeout(Duration.ofMillis(CONNECT_TIMEOUT_MS))
-                // SÉCURITÉ : on connecte à l'IP (résolue en bypass VPN) mais on
-                // VALIDE le certificat contre les CA système ET le hostname réel
-                // (`host`). Avant, `noServerCertificateCheck()` acceptait n'importe
-                // quel certificat → MITM total du DNS chiffré possible.
-                .customTrustManager(buildTrustManager(host))
+                // ⚠️ SÉCURITÉ (dette connue) : validation cert désactivée.
+                // kwik lie serverName et adresse au même champ `host` : pour
+                // bypasser le DNS (VPN actif) on doit passer l'IP en `host`, ce
+                // qui fait échouer la vérif SNI/hostname du certificat. La vraie
+                // validation exige serverName=hostname, mais alors kwik résout le
+                // hostname → boucle via notre propre proxy DoQ. Recette validée
+                // pour le futur fix : serverName=hostname + authType="UNKNOWN"
+                // dans le TrustManager + résolution sans récursion (exclure l'app
+                // du VPN pour ce lookup, ou upgrade kwik avec SNI séparé).
+                // Voir buildTrustManager() ci-dessous (conservé, prêt à recâbler).
+                .noServerCertificateCheck()
                 .socketFactory { _ ->
                     DatagramSocket().also { vpnService.protect(it) }
                 }
@@ -191,6 +197,7 @@ class DoQClient(private val vpnService: VpnService) {
     }
 
     /** TrustManager qui valide la chaîne (CA système) PUIS le hostname attendu. */
+    @Suppress("unused") // conservé pour le futur fix de validation cert DoQ (voir getOrCreateConnection)
     private fun buildTrustManager(expectedHost: String): javax.net.ssl.X509TrustManager =
         object : javax.net.ssl.X509TrustManager {
             override fun checkClientTrusted(chain: Array<out java.security.cert.X509Certificate>?, authType: String?) {}
