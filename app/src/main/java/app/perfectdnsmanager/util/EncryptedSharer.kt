@@ -48,7 +48,9 @@ class EncryptedSharer {
 
         private const val PDM_BASE_URL = "https://perfectdnsmanager.app"
 
-        private val SLUG_RE = Regex("^[0-9]{6}$|^[a-z0-9]{5,16}$")
+        // Slug raccourci à 4 caractères (worker allocateSlug(4)). Accepte 4-16
+        // pour rester compatible avec les anciens liens 8 chars.
+        private val SLUG_RE = Regex("^[a-z0-9]{4,16}$")
 
         // Alphabet sans caractères ambigus (0/O, 1/l/I exclus) pour dictée orale.
         private const val PWD_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789"
