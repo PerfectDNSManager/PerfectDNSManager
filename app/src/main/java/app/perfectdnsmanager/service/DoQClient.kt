@@ -34,7 +34,7 @@ class DoQClient(private val vpnService: VpnService) {
     }
 
     private val connections = ConcurrentHashMap<String, QuicClientConnection>()
-    private val connLock = Any()
+    private val connLock = java.util.concurrent.locks.ReentrantLock()
     /** Watchdog : ferme un stream/conn bloqué en lecture (kwik n'a pas de read-timeout). */
     private val watchdog = java.util.concurrent.Executors.newSingleThreadScheduledExecutor { r ->
         Thread(r, "DoQWatchdog").apply { isDaemon = true }
@@ -166,7 +166,13 @@ class DoQClient(private val vpnService: VpnService) {
         // Sérialise la CRÉATION (le fast-path ci-dessus reste hors verrou) : sinon
         // plusieurs threads du pool créent des connexions concurrentes vers le même
         // serveur, la dernière écrase les autres → connexions QUIC fuitées.
-        synchronized(connLock) {
+        // tryLock fail-fast : un seul thread établit la connexion (~2s) ; les autres
+        // n'attendent PAS (sinon 16 threads du pool bloqués = contention) — ils
+        // abandonnent cette requête (le stub client re-tentera → fast-path prêt).
+        if (!connLock.tryLock(300, java.util.concurrent.TimeUnit.MILLISECONDS)) {
+            return connections[key]?.takeIf { it.isConnected }
+        }
+        try {
             connections[key]?.let { c ->
                 if (c.isConnected) return c
                 connections.remove(key); try { c.close() } catch (_: Exception) {}
@@ -216,6 +222,8 @@ class DoQClient(private val vpnService: VpnService) {
                     Log.w(T, "DoQ connexion KO (fail-closed): ${e.javaClass.simpleName}")
                 null
             }
+        } finally {
+            connLock.unlock()
         }
     }
 
