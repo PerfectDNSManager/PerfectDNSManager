@@ -53,6 +53,26 @@ class DnsVpnService : VpnService() {
     private var doqClient: DoQClient? = null
     private val upstreamMap = ConcurrentHashMap<String, String>()
 
+    /**
+     * Pool BORNÉ pour les requêtes DoH/DoQ. Avant, chaque requête DNS créait
+     * un `Thread` brut : sous charge (apps bavardes, retries), le nombre de
+     * threads + connexions TLS explosait → épuisement mémoire/FD → plus aucune
+     * réponse DNS écrite → « plus d'internet ». Un pool fixe borne la
+     * concurrence et recycle les threads.
+     */
+    private var queryExecutor: java.util.concurrent.ThreadPoolExecutor? = null
+
+    /** Compteur pour attribuer un ID de transaction UNIQUE aux requêtes UDP
+     *  sortantes (évite les collisions sur l'ID 16 bits du client → réponses
+     *  mal routées) et permettre la validation source. */
+    private val txnCounter = java.util.concurrent.atomic.AtomicInteger(0)
+
+    /** IPs upstream autorisées à répondre sur le socket UDP (anti-spoofing). */
+    private val udpUpstreamIps = java.util.Collections.newSetFromMap(ConcurrentHashMap<String, Boolean>())
+
+    /** Purge périodique de `pending` (pas à chaque paquet — chemin chaud). */
+    private val cleanupCounter = java.util.concurrent.atomic.AtomicInteger(0)
+
     /** OkHttpClient with protected sockets (bypass VPN) and custom DNS resolver */
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
@@ -83,11 +103,16 @@ class DnsVpnService : VpnService() {
     // DNS Rewrite
     private var rewriteRules = listOf<DnsRewriteRule>()
 
-    // Pending: on stocke aussi le qname original encodé pour restaurer la réponse si rewrite
+    // Pending: on stocke aussi le qname original encodé pour restaurer la réponse si rewrite.
+    // origId = ID de transaction ORIGINAL du client (pour le restaurer sur le chemin UDP
+    // où l'ID sortant est réécrit en ID unique).
     data class Pending(
         val srcIp: ByteArray, val dstIp: ByteArray, val srcPort: Int,
-        val time: Long, val wasRewritten: Boolean, val originalQnameEncoded: ByteArray?
+        val time: Long, val wasRewritten: Boolean, val originalQnameEncoded: ByteArray?,
+        val origId: Int = 0
     )
+    // Clé = ID de transaction UNIQUE (uniquement pour le chemin UDP/Do53).
+    // DoH/DoQ n'utilisent plus cette map (réponse traitée dans la tâche même).
     private val pending = ConcurrentHashMap<Int, Pending>()
 
     companion object {
@@ -268,6 +293,14 @@ class DnsVpnService : VpnService() {
             dnsSocket = DatagramSocket().also { protect(it) }
             doqClient = DoQClient(this)
             tunOut = FileOutputStream(vpnInterface!!.fileDescriptor)
+            // Pool borné : 16 requêtes upstream simultanées max, file d'attente
+            // bornée qui rejette (CallerRuns) plutôt que d'accumuler à l'infini.
+            queryExecutor = java.util.concurrent.ThreadPoolExecutor(
+                4, 16, 30, TimeUnit.SECONDS,
+                java.util.concurrent.LinkedBlockingQueue(256),
+                java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy()
+            )
+            udpUpstreamIps.clear()
             isRunning = true; isVpnRunning = true; instance = this
 
             tunReaderThread = Thread({
@@ -293,7 +326,11 @@ class DnsVpnService : VpnService() {
                         val pkt = DatagramPacket(rbuf, rbuf.size)
                         dnsSocket?.soTimeout = 1000
                         dnsSocket?.receive(pkt)
-                        if (pkt.length > 12) onDnsResponse(rbuf.copyOf(pkt.length))
+                        // Anti-spoofing : n'accepter que les réponses venant d'une IP upstream connue.
+                        val srcAddr = pkt.address?.hostAddress
+                        if (pkt.length > 12 && srcAddr != null && udpUpstreamIps.contains(srcAddr)) {
+                            onDnsResponse(rbuf.copyOf(pkt.length))
+                        }
                     } catch (_: java.net.SocketTimeoutException) {
                     } catch (e: Exception) {
                         if (isRunning) Log.e(T, "DnsRecv err", e)
@@ -307,7 +344,7 @@ class DnsVpnService : VpnService() {
             dnsReceiverThread!!.start()
             // Mettre à jour la notification avec le vrai DNS (startForeground déjà appelé dans onStartCommand)
             val nm = getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
-            nm.notify(NOTIF_ID, mkNotif("DNS: $dnsServer"))
+            nm.notify(NOTIF_ID, mkNotif("DNS: ${redactDnsUrl(dnsServer)}"))
         } catch (e: Exception) {
             Log.e(T, "Start err", e); stopVpn(); stopSelf()
         }
@@ -316,69 +353,94 @@ class DnsVpnService : VpnService() {
     // ── Traitement paquet TUN → forward DNS ───────────────────────────────
 
     private fun onTunPacket(buf: ByteArray) {
-        // IPv4 only
-        if ((buf[0].toInt() and 0xF0) shr 4 != 4) return
-        val ihl = (buf[0].toInt() and 0x0F) * 4
-        // UDP (proto 17) vers port 53
-        if (buf.size < ihl + 8) return
-        if (buf[9].toInt() and 0xFF != 17) return
-        val dstPort = ((buf[ihl + 2].toInt() and 0xFF) shl 8) or (buf[ihl + 3].toInt() and 0xFF)
-        if (dstPort != 53) return
+        try {
+            // IPv4 only
+            if ((buf[0].toInt() and 0xF0) shr 4 != 4) return
+            val ihl = (buf[0].toInt() and 0x0F) * 4
+            // Header IPv4 minimal = 20 octets. Sans ce garde, un paquet malformé
+            // (ihl < 20) fait planter copyOfRange(12,16)/(16,20) → l'exception
+            // remonte, tue le TunReader et ARRÊTE le VPN (« plus d'internet »).
+            if (ihl < 20 || buf.size < ihl + 8) return
+            if (buf[9].toInt() and 0xFF != 17) return
+            val dstPort = ((buf[ihl + 2].toInt() and 0xFF) shl 8) or (buf[ihl + 3].toInt() and 0xFF)
+            if (dstPort != 53) return
 
-        val srcIp = buf.copyOfRange(12, 16)
-        val dstIp = buf.copyOfRange(16, 20)
-        val srcPort = (buf[ihl].toInt() and 0xFF) shl 8 or (buf[ihl + 1].toInt() and 0xFF)
-        val real = upstreamMap[ipStr(dstIp)] ?: return
+            val srcIp = buf.copyOfRange(12, 16)
+            val dstIp = buf.copyOfRange(16, 20)
+            val srcPort = (buf[ihl].toInt() and 0xFF) shl 8 or (buf[ihl + 1].toInt() and 0xFF)
+            val real = upstreamMap[ipStr(dstIp)] ?: return
 
-        val off = ihl + 8
-        if (buf.size - off < 12) return
-        var query = buf.copyOfRange(off, buf.size)
-        val id = (query[0].toInt() and 0xFF) shl 8 or (query[1].toInt() and 0xFF)
+            val off = ihl + 8
+            if (buf.size - off < 12) return
+            var query = buf.copyOfRange(off, buf.size)
+            val origId = (query[0].toInt() and 0xFF) shl 8 or (query[1].toInt() and 0xFF)
 
-        // Rewrite check
-        var wasRewritten = false
-        var originalQnameEncoded: ByteArray? = null
-        val (qname, modifiedQuery) = getQNameAndApplyRewrite(query)
-        if (modifiedQuery != null) {
-            Log.i(T, "DNS Rewrite: '$qname' → rule matched")
-            originalQnameEncoded = encodeQName(qname)
-            query = modifiedQuery
-            wasRewritten = true
-        }
+            // Rewrite check
+            var wasRewritten = false
+            var originalQnameEncoded: ByteArray? = null
+            val (qname, modifiedQuery) = getQNameAndApplyRewrite(query)
+            if (modifiedQuery != null) {
+                // (sécurité) ne PAS logger le domaine interrogé
+                Log.i(T, "DNS Rewrite rule matched")
+                originalQnameEncoded = encodeQName(qname)
+                query = modifiedQuery
+                wasRewritten = true
+            }
 
-        pending[id] = Pending(srcIp, dstIp, srcPort, System.currentTimeMillis(), wasRewritten, originalQnameEncoded)
+            val p = Pending(srcIp, dstIp, srcPort, System.currentTimeMillis(), wasRewritten, originalQnameEncoded, origId)
 
-        if (isDoH(real)) {
-            val q = query
-            Thread {
-                val resp = doH(q, real)
-                if (resp != null) {
-                    val p = pending.remove(id)
-                    if (p != null) writeTun(p, resp)
+            when {
+                // DoH/DoQ : la réponse est traitée dans la tâche même (closure sur `p`),
+                // plus besoin de la map `pending` → pas de collision d'ID possible.
+                isDoH(real) -> {
+                    val q = query
+                    submitQuery { val resp = doH(q, real); if (resp != null) writeTun(p, resp) }
                 }
-            }.start()
-        } else if (isDoQ(real)) {
-            val q = query
-            Thread {
-                val resp = doqClient?.query(q, real)
-                if (resp != null) {
-                    val p = pending.remove(id)
-                    if (p != null) writeTun(p, resp)
+                isDoQ(real) -> {
+                    val q = query
+                    submitQuery { val resp = doqClient?.query(q, real); if (resp != null) writeTun(p, resp) }
                 }
-            }.start()
-        } else {
-            try {
-                dnsSocket?.send(DatagramPacket(query, query.size, InetAddress.getByName(real), 53))
-            } catch (e: Exception) { Log.w(T, "UDP send: ${e.message}") }
-        }
+                else -> {
+                    // Chemin UDP/Do53 : ID de transaction UNIQUE côté sortie (évite
+                    // que deux apps avec le même ID s'écrasent) + IP upstream
+                    // enregistrée pour valider la source de la réponse.
+                    try {
+                        val upstreamAddr = InetAddress.getByName(real)
+                        upstreamAddr.hostAddress?.let { udpUpstreamIps.add(it) }
+                        val uniqueId = txnCounter.incrementAndGet() and 0xFFFF
+                        query[0] = (uniqueId shr 8).toByte()
+                        query[1] = (uniqueId and 0xFF).toByte()
+                        pending[uniqueId] = p
+                        dnsSocket?.send(DatagramPacket(query, query.size, upstreamAddr, 53))
+                    } catch (e: Exception) { Log.w(T, "UDP send: ${e.message}") }
+                }
+            }
 
-        // Cleanup vieilles requêtes
-        pending.entries.removeAll { System.currentTimeMillis() - it.value.time > 10_000 }
+            // Cleanup périodique (1 fois sur 256) au lieu d'un scan complet par paquet.
+            if (cleanupCounter.incrementAndGet() and 0xFF == 0) {
+                val now = System.currentTimeMillis()
+                pending.entries.removeAll { now - it.value.time > 10_000 }
+            }
+        } catch (e: Exception) {
+            if (isRunning) Log.w(T, "onTunPacket err: ${e.message}")
+        }
+    }
+
+    /** Soumet une requête upstream au pool borné (jamais un Thread brut). */
+    private fun submitQuery(task: () -> Unit) {
+        try {
+            queryExecutor?.execute {
+                try { task() } catch (e: Exception) { Log.w(T, "query task err: ${e.message}") }
+            }
+        } catch (e: Exception) { Log.w(T, "submitQuery rejected: ${e.message}") }
     }
 
     private fun onDnsResponse(resp: ByteArray) {
-        val id = (resp[0].toInt() and 0xFF) shl 8 or (resp[1].toInt() and 0xFF)
-        val p = pending.remove(id) ?: return
+        val uniqueId = (resp[0].toInt() and 0xFF) shl 8 or (resp[1].toInt() and 0xFF)
+        val p = pending.remove(uniqueId) ?: return
+        // Restaurer l'ID de transaction original attendu par le client.
+        resp[0] = (p.origId shr 8).toByte()
+        resp[1] = (p.origId and 0xFF).toByte()
         writeTun(p, resp)
     }
 
@@ -512,15 +574,17 @@ class DnsVpnService : VpnService() {
             .header("Accept", "application/dns-message")
             .build()
 
-        val response = okHttpClient.newCall(request).execute()
-        val responseBody = response.body?.bytes()
-        response.close()
-
-        if (response.isSuccessful && responseBody != null && responseBody.size >= 12) {
-            responseBody
-        } else {
-            Log.w(T, "DoH: HTTP ${response.code} body=${responseBody?.size ?: 0}")
-            null
+        // .use{} garantit la fermeture de la connexion MÊME si .bytes() throw
+        // (timeout/reset sous charge). Sans ça, chaque erreur fuit un FD → à
+        // terme épuisement des descripteurs → plus aucune résolution DoH.
+        okHttpClient.newCall(request).execute().use { response ->
+            val responseBody = response.body?.bytes()
+            if (response.isSuccessful && responseBody != null && responseBody.size >= 12) {
+                responseBody
+            } else {
+                Log.w(T, "DoH: HTTP ${response.code} body=${responseBody?.size ?: 0}")
+                null
+            }
         }
     } catch (e: Exception) { Log.w(T, "DoH err: ${e.javaClass.simpleName}: ${e.message}"); null }
 
@@ -683,7 +747,8 @@ class DnsVpnService : VpnService() {
         tunReaderThread?.interrupt(); dnsReceiverThread?.interrupt()
         try { tunReaderThread?.join(1000) } catch (_: InterruptedException) {}
         try { dnsReceiverThread?.join(1000) } catch (_: InterruptedException) {}
-        pending.clear(); rewriteRules = emptyList()
+        try { queryExecutor?.shutdownNow() } catch (_: Exception) {}; queryExecutor = null
+        pending.clear(); udpUpstreamIps.clear(); rewriteRules = emptyList()
         try { doqClient?.closeAll() } catch (_: Exception) {}; doqClient = null
         try { dnsSocket?.close() } catch (_: Exception) {}
         synchronized(tunOutLock) { try { tunOut?.close() } catch (_: Exception) {} }

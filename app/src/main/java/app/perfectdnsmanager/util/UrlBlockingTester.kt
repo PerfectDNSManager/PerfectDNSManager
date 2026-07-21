@@ -93,34 +93,38 @@ object UrlBlockingTester {
                 InetAddress.getByName("8.8.8.8")
             }
 
-            // Créer un socket : protégé si VPN actif, normal sinon
-            val socket = DatagramSocket()
-            if (vpnRunning) {
-                val isProtected = DnsVpnService.protectSocket(socket)
-                if (!isProtected) {
-                    Log.w(TAG, "Could not protect socket, using unprotected")
+            // Créer un socket : protégé si VPN actif, normal sinon.
+            // `use{}` ferme le socket MÊME sur SocketTimeoutException (cas très
+            // fréquent : DNS FAI qui ne répond pas) — sans ça, un FD fuitait à
+            // chaque timeout, et ce testeur tourne en boucle sur toute la liste
+            // de domaines → épuisement des descripteurs.
+            DatagramSocket().use { socket ->
+                if (vpnRunning) {
+                    val isProtected = DnsVpnService.protectSocket(socket)
+                    if (!isProtected) {
+                        Log.w(TAG, "Could not protect socket, using unprotected")
+                    }
                 }
-            }
-            // Sans VPN, le socket normal envoie directement via le réseau physique
-            socket.soTimeout = 5000
+                // Sans VPN, le socket normal envoie directement via le réseau physique
+                socket.soTimeout = 5000
 
-            // Construire et envoyer la requête DNS
-            val query = buildDnsQuery(domain)
-            socket.send(DatagramPacket(query, query.size, ispDnsServer, 53))
+                // Construire et envoyer la requête DNS
+                val query = buildDnsQuery(domain)
+                socket.send(DatagramPacket(query, query.size, ispDnsServer, 53))
 
-            // Recevoir la réponse
-            val buf = ByteArray(512)
-            val response = DatagramPacket(buf, buf.size)
-            socket.receive(response)
-            socket.close()
+                // Recevoir la réponse
+                val buf = ByteArray(512)
+                val response = DatagramPacket(buf, buf.size)
+                socket.receive(response)
 
-            // Parser la réponse
-            val ip = parseDnsResponseIp(buf, response.length)
-            if (ip != null) {
-                val ipStr = ip.hostAddress ?: ""
-                ResolutionResult(ipStr, isBlockedIp(ipStr), null)
-            } else {
-                null // UDP succeeded but no A record parsed
+                // Parser la réponse
+                val ip = parseDnsResponseIp(buf, response.length)
+                if (ip != null) {
+                    val ipStr = ip.hostAddress ?: ""
+                    ResolutionResult(ipStr, isBlockedIp(ipStr), null)
+                } else {
+                    null // UDP succeeded but no A record parsed
+                }
             }
         } catch (e: Exception) {
             Log.w(TAG, "Protected socket resolve $domain: ${e.message}")

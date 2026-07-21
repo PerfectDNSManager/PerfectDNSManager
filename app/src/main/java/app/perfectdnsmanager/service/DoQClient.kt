@@ -149,7 +149,11 @@ class DoQClient(private val vpnService: VpnService) {
                 .port(port)
                 .applicationProtocol("doq")
                 .connectTimeout(Duration.ofMillis(CONNECT_TIMEOUT_MS))
-                .noServerCertificateCheck()
+                // SÉCURITÉ : on connecte à l'IP (résolue en bypass VPN) mais on
+                // VALIDE le certificat contre les CA système ET le hostname réel
+                // (`host`). Avant, `noServerCertificateCheck()` acceptait n'importe
+                // quel certificat → MITM total du DNS chiffré possible.
+                .customTrustManager(buildTrustManager(host))
                 .socketFactory { _ ->
                     DatagramSocket().also { vpnService.protect(it) }
                 }
@@ -169,6 +173,72 @@ class DoQClient(private val vpnService: VpnService) {
             Log.w(T, "QUIC connect err $host:$port: ${e.javaClass.simpleName}: ${e.message}")
             null
         }
+    }
+
+    // ── Validation TLS du résolveur DoQ ──────────────────────────────────
+
+    /** TrustManager X509 système (CA de l'appareil), construit une fois. */
+    private val systemTrustManager: javax.net.ssl.X509TrustManager? by lazy {
+        try {
+            val tmf = javax.net.ssl.TrustManagerFactory.getInstance(
+                javax.net.ssl.TrustManagerFactory.getDefaultAlgorithm()
+            )
+            tmf.init(null as java.security.KeyStore?)
+            tmf.trustManagers.filterIsInstance<javax.net.ssl.X509TrustManager>().firstOrNull()
+        } catch (e: Exception) {
+            Log.w(T, "systemTrustManager init err: ${e.message}"); null
+        }
+    }
+
+    /** TrustManager qui valide la chaîne (CA système) PUIS le hostname attendu. */
+    private fun buildTrustManager(expectedHost: String): javax.net.ssl.X509TrustManager =
+        object : javax.net.ssl.X509TrustManager {
+            override fun checkClientTrusted(chain: Array<out java.security.cert.X509Certificate>?, authType: String?) {}
+            override fun checkServerTrusted(chain: Array<out java.security.cert.X509Certificate>?, authType: String?) {
+                val tm = systemTrustManager
+                    ?: throw java.security.cert.CertificateException("no system trust manager")
+                tm.checkServerTrusted(chain, authType) // valide la chaîne contre les CA système
+                val leaf = chain?.firstOrNull()
+                    ?: throw java.security.cert.CertificateException("empty certificate chain")
+                if (!hostnameMatches(leaf, expectedHost))
+                    throw java.security.cert.CertificateException("DoQ hostname mismatch for $expectedHost")
+            }
+            override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate> =
+                systemTrustManager?.acceptedIssuers ?: arrayOf()
+        }
+
+    /** Vérifie que le certificat couvre `host` (SAN dNSName, sinon CN), avec wildcard RFC 6125. */
+    private fun hostnameMatches(cert: java.security.cert.X509Certificate, host: String): Boolean {
+        val h = host.lowercase().trimEnd('.')
+        try {
+            val sans = cert.subjectAlternativeNames
+            if (sans != null) {
+                var hadDns = false
+                for (san in sans) {
+                    if (san.size >= 2 && (san[0] as? Int) == 2) { // 2 = dNSName
+                        hadDns = true
+                        val pattern = (san[1] as? String)?.lowercase()?.trimEnd('.') ?: continue
+                        if (matchesDnsName(h, pattern)) return true
+                    }
+                }
+                if (hadDns) return false // SAN présents mais aucun ne matche → rejet (RFC 6125)
+            }
+        } catch (_: Exception) {}
+        return try {
+            val cn = Regex("CN=([^,]+)").find(cert.subjectX500Principal.name)
+                ?.groupValues?.get(1)?.lowercase()?.trimEnd('.')
+            cn != null && matchesDnsName(h, cn)
+        } catch (_: Exception) { false }
+    }
+
+    private fun matchesDnsName(host: String, pattern: String): Boolean {
+        if (pattern == host) return true
+        if (pattern.startsWith("*.")) {
+            val suffix = pattern.substring(1) // ".example.com"
+            val idx = host.indexOf('.')
+            return idx > 0 && host.substring(idx) == suffix && !host.substring(0, idx).contains('*')
+        }
+        return false
     }
 
     /** Résoudre un hostname en bypassant le VPN (requête DNS directe UDP vers 8.8.8.8) */
