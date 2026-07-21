@@ -44,6 +44,7 @@ class ProviderAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val providerName = providers[position]
         val profiles = grouped[providerName] ?: return
+        val ctx = holder.itemView.context
 
         holder.tvProviderName.text = providerName
 
@@ -62,8 +63,8 @@ class ProviderAdapter(
         // Green button: 2 lines — profile count + colored type labels
         val types = profiles.map { it.type }.distinct()
         val count = profiles.size
-        val countLine = "$count profil${if (count > 1) "s" else ""}\n"
-        val typeParts = types.map { DnsColors.labelForType(it) to DnsColors.colorForType(it) }
+        val countLine = ctx.resources.getQuantityString(R.plurals.profile_count, count, count) + "\n"
+        val typeParts = types.map { DnsColors.labelForType(ctx, it) to DnsColors.colorForType(ctx, it) }
         val typesStr = typeParts.joinToString(" · ") { it.first }
         val fullText = "$countLine$typesStr"
         val spannable = SpannableString(fullText)
@@ -84,7 +85,6 @@ class ProviderAdapter(
         val rating = DnsProfile.providerRatings[actualProvider]
         if (rating != null && firstProfile?.isOperatorDns != true && firstProfile?.isCustom != true) {
             holder.layoutRatings.visibility = View.VISIBLE
-            val ctx = holder.itemView.context
             holder.tvSpeedLabel.text = ctx.getString(R.string.speed_label) + ": "
             holder.tvSpeedStars.text = starsText(rating.speed)
             holder.tvPrivacyLabel.text = ctx.getString(R.string.privacy_label) + ": "

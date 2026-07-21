@@ -1,6 +1,5 @@
 package app.perfectdnsmanager.util
 
-import android.util.Base64
 import android.util.Log
 import com.lambdapioneer.argon2kt.Argon2Kt
 import com.lambdapioneer.argon2kt.Argon2Mode
@@ -81,40 +80,46 @@ class EncryptedSharer {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(15, TimeUnit.SECONDS)
                 .build()
+            // Fermer le client dans finally : sinon son thread pool + connexions
+            // fuient (cf. BlockingAuthoritiesManager.syncFromRemote).
+            try {
+                // Token éphémère — pas de clé statique extractible de l'APK.
+                // Le worker rate-limite /api/challenge, donc un attaquant ne peut
+                // pas se pré-émettre un stock de tokens. TTL 5 min côté serveur.
+                val token = fetchUploadToken(client)
 
-            // Token éphémère — pas de clé statique extractible de l'APK.
-            // Le worker rate-limite /api/challenge, donc un attaquant ne peut
-            // pas se pré-émettre un stock de tokens. TTL 5 min côté serveur.
-            val token = fetchUploadToken(client)
+                val nameParam = java.net.URLEncoder.encode(fileName, "UTF-8")
+                val uploadUrl = "$PDM_BASE_URL/api/upload?expires_in=$expiresIn&name=$nameParam"
 
-            val nameParam = java.net.URLEncoder.encode(fileName, "UTF-8")
-            val uploadUrl = "$PDM_BASE_URL/api/upload?expires_in=$expiresIn&name=$nameParam"
+                val request = Request.Builder()
+                    .url(uploadUrl)
+                    .header("X-Upload-Token", token)
+                    .post(combined.toRequestBody("application/octet-stream".toMediaType()))
+                    .build()
 
-            val request = Request.Builder()
-                .url(uploadUrl)
-                .header("X-Upload-Token", token)
-                .post(combined.toRequestBody("application/octet-stream".toMediaType()))
-                .build()
+                if (BuildConfig.DEBUG) Log.d(TAG, "Uploading ${combined.size} bytes (Argon2id v2)")
+                val response = client.newCall(request).execute()
+                val body = response.body?.string()?.trim() ?: ""
+                response.close()
 
-            if (BuildConfig.DEBUG) Log.d(TAG, "Uploading ${combined.size} bytes (Argon2id v2)")
-            val response = client.newCall(request).execute()
-            val body = response.body?.string()?.trim() ?: ""
-            response.close()
+                if (!response.isSuccessful) throw Exception("Upload failed (${response.code})")
 
-            if (!response.isSuccessful) throw Exception("Upload failed (${response.code})")
+                val json = JSONObject(body)
+                val slug = json.optString("slug", "")
+                val shortUrl = json.optString("short_url", "")
+                val rawUrl = json.optString("raw_url", "")
+                if (slug.isBlank() || shortUrl.isBlank()) throw Exception("Upload response invalid")
 
-            val json = JSONObject(body)
-            val slug = json.optString("slug", "")
-            val shortUrl = json.optString("short_url", "")
-            val rawUrl = json.optString("raw_url", "")
-            if (slug.isBlank() || shortUrl.isBlank()) throw Exception("Upload response invalid")
-
-            return UploadResult(
-                shortCode = slug,
-                password = password,
-                fullUrl = shortUrl,
-                fileUrl = rawUrl
-            )
+                return UploadResult(
+                    shortCode = slug,
+                    password = password,
+                    fullUrl = shortUrl,
+                    fileUrl = rawUrl
+                )
+            } finally {
+                client.dispatcher.executorService.shutdown()
+                client.connectionPool.evictAll()
+            }
         }
 
         fun downloadAndDecrypt(context: android.content.Context, shortCodeOrUrl: String, password: String): String {
@@ -125,16 +130,23 @@ class EncryptedSharer {
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .readTimeout(15, TimeUnit.SECONDS)
                 .build()
-
-            val request = Request.Builder().url("$PDM_BASE_URL/r/$slug").build()
-            val response = client.newCall(request).execute()
-            if (!response.isSuccessful) {
-                val code = response.code
+            // Fermer le client dans finally : sinon son thread pool + connexions
+            // fuient (cf. BlockingAuthoritiesManager.syncFromRemote).
+            val bytes: ByteArray
+            try {
+                val request = Request.Builder().url("$PDM_BASE_URL/r/$slug").build()
+                val response = client.newCall(request).execute()
+                if (!response.isSuccessful) {
+                    val code = response.code
+                    response.close()
+                    throw Exception(context.getString(R.string.es_err_download_failed_fmt, code))
+                }
+                bytes = response.body?.bytes() ?: ByteArray(0)
                 response.close()
-                throw Exception(context.getString(R.string.es_err_download_failed_fmt, code))
+            } finally {
+                client.dispatcher.executorService.shutdown()
+                client.connectionPool.evictAll()
             }
-            val bytes = response.body?.bytes() ?: ByteArray(0)
-            response.close()
 
             if (bytes.isEmpty() || bytes[0] != FORMAT_VERSION) {
                 throw Exception(context.getString(R.string.es_err_format_unsupported))
@@ -208,22 +220,5 @@ class EncryptedSharer {
 
         private fun generatePassword(rng: SecureRandom, len: Int): String =
             (1..len).map { PWD_ALPHABET[rng.nextInt(PWD_ALPHABET.length)] }.joinToString("")
-
-        /**
-         * Entrée legacy (base64(IV||ct||tag) + clé) — conservée pour code interne.
-         */
-        fun decrypt(encryptedBase64: String, keyBase64: String): String {
-            val keyBytes = Base64.decode(keyBase64, Base64.URL_SAFE or Base64.NO_WRAP)
-            val secretKey: SecretKey = SecretKeySpec(keyBytes, "AES")
-
-            val combined = Base64.decode(encryptedBase64, Base64.NO_WRAP)
-            val iv = combined.copyOfRange(0, GCM_IV_SIZE)
-            val encrypted = combined.copyOfRange(GCM_IV_SIZE, combined.size)
-
-            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(GCM_TAG_SIZE, iv))
-            val decrypted = cipher.doFinal(encrypted)
-            return String(decrypted, Charsets.UTF_8)
-        }
     }
 }

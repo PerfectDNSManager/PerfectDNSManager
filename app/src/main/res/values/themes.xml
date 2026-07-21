@@ -12,6 +12,12 @@
         <item name="android:textColorHint">@color/pdm_text_disabled</item>
         <item name="android:statusBarColor">@color/pdm_background</item>
         <item name="android:navigationBarColor">@color/pdm_background</item>
+        <!-- Icônes des barres système sombres en thème clair (visibles sur fond
+             clair), claires en thème sombre. Piloté par @bool surchargé en
+             values-night (voir res/values/bools.xml + res/values-night/bools.xml).
+             windowLightNavigationBar est ignoré < API 27. -->
+        <item name="android:windowLightStatusBar">@bool/pdm_light_system_bars</item>
+        <item name="android:windowLightNavigationBar">@bool/pdm_light_system_bars</item>
         <item name="alertDialogTheme">@style/PDMAlertDialog</item>
         <!-- Contraste track toggle OFF : gris clair sur blanc (light mode) devenait invisible.
              colorControlNormal pilote la teinte de piste de toute checkbox/switch non cochée. -->

@@ -156,18 +156,18 @@ class DnsSelectionActivity : AppCompatActivity() {
                     val customProfiles = mutableListOf<DnsProfile>()
                     for (pid in savedIds.sorted()) {
                         customProfiles.add(DnsProfile(
-                            providerName = "NextDNS", name = "Profil $pid", type = DnsType.DOH,
+                            providerName = "NextDNS", name = getString(R.string.nextdns_profile_name_fmt, pid), type = DnsType.DOH,
                             primary = "https://dns.nextdns.io/$pid", descResId = R.string.dns_desc_nextdns_custom,
                             isCustom = true, testUrl = "https://test.nextdns.io/"
                         ))
                         customProfiles.add(DnsProfile(
-                            providerName = "NextDNS", name = "Profil $pid", type = DnsType.DOQ,
+                            providerName = "NextDNS", name = getString(R.string.nextdns_profile_name_fmt, pid), type = DnsType.DOQ,
                             primary = "quic://dns.nextdns.io/$pid", descResId = R.string.dns_desc_nextdns_custom,
                             isCustom = true, testUrl = "https://test.nextdns.io/"
                         ))
                         if (adbDotEnabled) {
                             customProfiles.add(DnsProfile(
-                                providerName = "NextDNS", name = "Profil $pid", type = DnsType.DOT,
+                                providerName = "NextDNS", name = getString(R.string.nextdns_profile_name_fmt, pid), type = DnsType.DOT,
                                 primary = "$pid.dns.nextdns.io", descResId = R.string.dns_desc_nextdns_custom,
                                 isCustom = true, testUrl = "https://test.nextdns.io/"
                             ))

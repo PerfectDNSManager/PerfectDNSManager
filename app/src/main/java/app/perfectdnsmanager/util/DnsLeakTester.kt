@@ -77,17 +77,6 @@ object DnsLeakTester {
         )
     }
 
-    /** Legacy method */
-    fun runLeakTest(): LeakResult {
-        val resolvers = detectResolversViaSystem()
-        if (resolvers.isEmpty()) return LeakResult(emptyList(), "Could not detect DNS resolvers")
-        val client = createClient()
-        val result = LeakResult(resolvers.map { lookupGeoIp(client, it) }, null)
-        client.dispatcher.executorService.shutdown()
-        client.connectionPool.evictAll()
-        return result
-    }
-
     /**
      * Détecte les résolveurs DNS via socket protégé (bypass VPN).
      * Utilise DnsVpnService.protectSocket() pour bypasser le tunnel VPN.
@@ -171,18 +160,26 @@ object DnsLeakTester {
     }
 
     private fun clearDnsCache() {
+        // Vide le cache DNS de la JVM par réflexion afin que le leak test
+        // reflète la résolution courante et non une entrée mise en cache. Un
+        // échec (API cachée modifiée/restreinte selon la ROM) fausse le test :
+        // on le loggue au lieu de l'avaler silencieusement.
         try {
             val f = InetAddress::class.java.getDeclaredField("addressCache")
             f.isAccessible = true
             val c = f.get(null)
             c?.javaClass?.getDeclaredMethod("clear")?.apply { isAccessible = true; invoke(c) }
-        } catch (_: Exception) {}
+        } catch (e: Exception) {
+            Log.w(TAG, "clearDnsCache(addressCache) failed: ${e.message}")
+        }
         try {
             val f = InetAddress::class.java.getDeclaredField("negativeCache")
             f.isAccessible = true
             val c = f.get(null)
             c?.javaClass?.getDeclaredMethod("clear")?.apply { isAccessible = true; invoke(c) }
-        } catch (_: Exception) {}
+        } catch (e: Exception) {
+            Log.w(TAG, "clearDnsCache(negativeCache) failed: ${e.message}")
+        }
     }
 
     private fun buildDnsQuery(host: String): ByteArray {

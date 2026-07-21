@@ -10,14 +10,28 @@ class ProfileManager(private val context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences("dns_profiles_v2", Context.MODE_PRIVATE)
 
-    private val gson = Gson()
+    // Cache mémoire de la liste parsée (voir companion `cache`). Process-wide :
+    // toutes les instances lisent/écrivent le MÊME fichier prefs, donc une
+    // écriture via n'importe quelle instance invalide le cache partagé — sinon
+    // une instance long-vécue (ex. DnsSelectionActivity) servirait des profils
+    // périmés après une modif faite ailleurs.
+
+    private val listType by lazy { object : TypeToken<List<DnsProfile>>() {}.type }
 
     fun saveProfiles(profiles: List<DnsProfile>) {
-        val json = gson.toJson(profiles)
+        val json = GSON.toJson(profiles)
         prefs.edit().putString("profiles", json).apply()
+        cache = profiles
     }
 
     fun loadProfiles(): List<DnsProfile> {
+        cache?.let { return it }
+        val merged = computeProfiles()
+        cache = merged
+        return merged
+    }
+
+    private fun computeProfiles(): List<DnsProfile> {
         val json = prefs.getString("profiles", null)
         if (json == null) {
             // Première utilisation : charger les presets
@@ -25,8 +39,7 @@ class ProfileManager(private val context: Context) {
             saveProfiles(defaults)
             return defaults
         }
-        val type = object : TypeToken<List<DnsProfile>>() {}.type
-        val saved = gson.fromJson<List<DnsProfile>>(json, type) ?: return DnsProfile.getDefaultPresets()
+        val saved = GSON.fromJson<List<DnsProfile>>(json, listType) ?: return DnsProfile.getDefaultPresets()
 
         // Auto-sync presets : mettre à jour les existants + injecter les manquants
         val defaults = DnsProfile.getDefaultPresets()
@@ -81,5 +94,12 @@ class ProfileManager(private val context: Context) {
     fun resetAll() {
         val defaults = DnsProfile.getDefaultPresets()
         saveProfiles(defaults)
+    }
+
+    companion object {
+        // Instance Gson partagée : évite d'en allouer une par ProfileManager.
+        private val GSON = Gson()
+        // Cache partagé process-wide, invalidé à chaque écriture (saveProfiles).
+        @Volatile private var cache: List<DnsProfile>? = null
     }
 }

@@ -32,6 +32,12 @@ object BlockingAuthoritiesManager {
         val country: String
     )
 
+    // Cache mémoire de la liste parsée : getAuthority/loadAuthorities/
+    // parseAuthorities relisaient les prefs (ou les assets) + reparsaient le JSON
+    // à CHAQUE lookup d'IP. Invalidé après syncFromRemote (seule écriture).
+    @Volatile
+    private var cache: List<BlockingAuthority>? = null
+
     /**
      * Retourne l'autorité de blocage pour une IP donnée, ou null si inconnue.
      */
@@ -53,13 +59,17 @@ object BlockingAuthoritiesManager {
      * 2. Fichier assets embarqué (fallback)
      */
     fun loadAuthorities(context: Context): List<BlockingAuthority> {
+        cache?.let { return it }
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val json = prefs.getString(KEY_JSON, null)
-        if (json != null) {
-            return parseAuthorities(json)
+        val loaded = if (json != null) {
+            parseAuthorities(json)
+        } else {
+            // Charger depuis le fichier assets embarqué
+            loadFromAssets(context)
         }
-        // Charger depuis le fichier assets embarqué
-        return loadFromAssets(context)
+        cache = loaded
+        return loaded
     }
 
     /**
@@ -95,6 +105,8 @@ object BlockingAuthoritiesManager {
                     .putString(KEY_JSON, body)
                     .putInt(KEY_VERSION, remoteVersion)
                     .apply()
+                // Invalider le cache : la prochaine lecture reparsera le nouveau JSON.
+                cache = null
                 Log.i(TAG, "Updated blocking authorities: v$localVersion -> v$remoteVersion")
             } else {
                 Log.i(TAG, "Blocking authorities up to date (v$localVersion)")

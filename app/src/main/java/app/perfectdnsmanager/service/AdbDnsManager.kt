@@ -63,15 +63,17 @@ class AdbDnsManager(private val context: Context) {
     // par la lib vendored, sans dépendance externe.
 
     fun enablePrivateDns(hostname: String): Boolean {
-        Log.i(TAG, "=== ACTIVATION DNS: $hostname ===")
+        Log.i(TAG, "=== ACTIVATION DNS: ${redactHost(hostname)} ===")
         lastError = ""
         lastMethod = ""
 
         // Durcissement : refuser tout hostname non-RFC1035 avant shell/ADB.
         // Empêche l'injection de commande via métachars (;, `, $, |, \n…).
         if (!isValidHostname(hostname)) {
+            // lastError garde le hostname en clair (feedback UI à l'utilisateur),
+            // mais on ne logge JAMAIS le hostname en clair (fuite via logcat).
             lastError = context.getString(R.string.adb_err_invalid_hostname_fmt, hostname)
-            Log.w(TAG, lastError)
+            Log.w(TAG, "Invalid hostname rejected: ${redactHost(hostname)}")
             return false
         }
 
@@ -384,7 +386,7 @@ class AdbDnsManager(private val context: Context) {
                 // Ouvrir un shell et envoyer chaque commande
                 shellStream = connection.open("shell:")
                 for (cmd in commands) {
-                    Log.i(TAG, "ADB shell: $cmd")
+                    Log.i(TAG, "ADB shell: ${redactCmd(cmd)}")
                     shellStream.write("$cmd\n".toByteArray(Charsets.UTF_8))
                     Thread.sleep(300)
                 }
@@ -469,9 +471,29 @@ class AdbDnsManager(private val context: Context) {
         try { Settings.Global.getString(context.contentResolver, KEY_DNS_SPECIFIER) ?: "" }
         catch (_: Exception) { "" }
 
-    fun getFullDnsReport(): String {
-        val mode = getCurrentPrivateDnsMode() ?: "inconnu"
-        val host = getCurrentPrivateDnsHost()
-        return "Mode: $mode\nServeur: ${host.ifEmpty { "(aucun)" }}"
+    // ─── Rédaction pour les logs ──────────────────────────────────────────────
+
+    /**
+     * Masque le sous-domaine le plus à gauche d'un hostname DNS avant de le
+     * logger. Le label de gauche contient souvent l'identifiant de compte
+     * (NextDNS / ControlD) qui ne doit PAS fuiter via logcat / extraction root.
+     * Ex. "abcdef.dns.nextdns.io" -> "***.dns.nextdns.io".
+     * Un hostname à un seul label (ou vide) est entièrement masqué.
+     */
+    private fun redactHost(host: String): String {
+        if (host.isBlank()) return host
+        val dot = host.indexOf('.')
+        return if (dot > 0) "***" + host.substring(dot) else "***"
+    }
+
+    /**
+     * Rédige une commande shell ADB avant de la logger : si elle écrit le
+     * spécificateur Private DNS, on masque la valeur hostname (dernier token).
+     */
+    private fun redactCmd(cmd: String): String {
+        if (!cmd.contains(KEY_DNS_SPECIFIER) || !cmd.contains("put")) return cmd
+        val value = cmd.substringAfterLast(' ')
+        if (value.isBlank() || !value.contains('.')) return cmd
+        return cmd.substring(0, cmd.length - value.length) + redactHost(value)
     }
 }

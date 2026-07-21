@@ -28,6 +28,7 @@
             android:paddingEnd="12dp"
             android:minWidth="56dp"
             android:focusable="true"
+            android:contentDescription="@string/choose_language_title"
             android:nextFocusRight="@id/btnSettings"
             android:nextFocusDown="@id/layoutSelectDns" />
 
@@ -49,8 +50,8 @@
 
         <ImageButton
             android:id="@+id/btnSettings"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/pdm_btn_secondary"

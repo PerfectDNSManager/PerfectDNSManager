@@ -154,8 +154,11 @@ class InternetSpeedtestActivity : AppCompatActivity() {
     // dialog, on ping tous les serveurs en parallèle pour afficher la
     // latence à côté de chaque option dans la colonne droite du dialog.
     private val ooklaServers = mutableListOf<OoklaServer>()
-    private var selectedOoklaServer: OoklaServer? = null
-    private val ooklaLatencies = mutableMapOf<Int, Double>()
+    // @Volatile : écrit sur le thread UI, lu sur le testThread → visibilité.
+    @Volatile private var selectedOoklaServer: OoklaServer? = null
+    // ConcurrentHashMap : clear() peut être appelé sur un thread IO pendant que
+    // le thread UI lit/écrit → accès concurrent sur une map non thread-safe sinon.
+    private val ooklaLatencies = java.util.concurrent.ConcurrentHashMap<Int, Double>()
 
     // ── Lifecycle ────────────────────────────────────────────────────────────
 

@@ -241,25 +241,38 @@ class DoQClient(private val vpnService: VpnService) {
         return false
     }
 
-    /** Résoudre un hostname en bypassant le VPN (requête DNS directe UDP vers 8.8.8.8) */
+    /**
+     * Résoudre un hostname en bypassant le VPN via une requête DNS UDP directe.
+     * Politique sans-Google : bootstrap sur Cloudflare (1.1.1.1) puis fallback
+     * Quad9 (9.9.9.9). Aligné sur DnsVpnService.resolveHostBypass.
+     */
     private fun resolveHostBypass(host: String): InetAddress? = try {
         if (host.matches(Regex("\\d+\\.\\d+\\.\\d+\\.\\d+"))) {
             InetAddress.getByName(host)
         } else {
-            val query = buildDnsQuery(host)
-            val sock = DatagramSocket()
-            vpnService.protect(sock)
-            sock.soTimeout = 3000
-            val googleDns = InetAddress.getByAddress(byteArrayOf(8, 8, 8, 8))
-            sock.send(DatagramPacket(query, query.size, googleDns, 53))
-            val resp = ByteArray(512)
-            val pkt = DatagramPacket(resp, resp.size)
-            sock.receive(pkt)
-            sock.close()
-            parseDnsResponseIp(resp, pkt.length)
+            queryBootstrapDns(host, byteArrayOf(1, 1, 1, 1))
+                ?: queryBootstrapDns(host, byteArrayOf(9, 9, 9, 9))
         }
     } catch (e: Exception) {
         Log.w(T, "resolveHostBypass: ${e.message}")
+        null
+    }
+
+    /** Une requête DNS UDP type A vers une IP de bootstrap, en bypass VPN. */
+    private fun queryBootstrapDns(host: String, serverIp: ByteArray): InetAddress? = try {
+        val query = buildDnsQuery(host)
+        val sock = DatagramSocket()
+        vpnService.protect(sock)
+        sock.soTimeout = 3000
+        val server = InetAddress.getByAddress(serverIp)
+        sock.send(DatagramPacket(query, query.size, server, 53))
+        val resp = ByteArray(512)
+        val pkt = DatagramPacket(resp, resp.size)
+        sock.receive(pkt)
+        sock.close()
+        parseDnsResponseIp(resp, pkt.length)
+    } catch (e: Exception) {
+        Log.w(T, "bootstrap DNS ${serverIp.joinToString(".") { (it.toInt() and 0xFF).toString() }} failed: ${e.message}")
         null
     }
 

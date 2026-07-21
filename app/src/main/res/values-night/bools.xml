@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Thème sombre : barres système en mode "dark" → icônes claires,
+         visibles sur le fond sombre. -->
+    <bool name="pdm_light_system_bars">false</bool>
+</resources>

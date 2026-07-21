@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:padding="32dp">
+        android:padding="16dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -23,7 +23,8 @@
 
         <Button
             android:id="@+id/btnFrancais"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
+            android:maxWidth="300dp"
             android:layout_height="56dp"
             android:text="@string/lang_francais"
             android:textSize="17sp"
@@ -35,7 +36,8 @@
 
         <Button
             android:id="@+id/btnEnglish"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
+            android:maxWidth="300dp"
             android:layout_height="56dp"
             android:text="@string/lang_english"
             android:textSize="17sp"
@@ -48,7 +50,8 @@
 
         <Button
             android:id="@+id/btnDeutsch"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
+            android:maxWidth="300dp"
             android:layout_height="56dp"
             android:text="@string/lang_deutsch"
             android:textSize="17sp"
@@ -61,7 +64,8 @@
 
         <Button
             android:id="@+id/btnEspanol"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
+            android:maxWidth="300dp"
             android:layout_height="56dp"
             android:text="@string/lang_espanol"
             android:textSize="17sp"
@@ -74,7 +78,8 @@
 
         <Button
             android:id="@+id/btnItaliano"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
+            android:maxWidth="300dp"
             android:layout_height="56dp"
             android:text="@string/lang_italiano"
             android:textSize="17sp"
@@ -87,7 +92,8 @@
 
         <Button
             android:id="@+id/btnPortugues"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
+            android:maxWidth="300dp"
             android:layout_height="56dp"
             android:text="@string/lang_portugues"
             android:textSize="17sp"
@@ -100,7 +106,8 @@
 
         <Button
             android:id="@+id/btnRussian"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
+            android:maxWidth="300dp"
             android:layout_height="56dp"
             android:text="@string/lang_russian"
             android:textSize="17sp"
@@ -113,7 +120,8 @@
 
         <Button
             android:id="@+id/btnChinese"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
+            android:maxWidth="300dp"
             android:layout_height="56dp"
             android:text="@string/lang_chinese"
             android:textSize="17sp"
@@ -126,7 +134,8 @@
 
         <Button
             android:id="@+id/btnArabic"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
+            android:maxWidth="300dp"
             android:layout_height="56dp"
             android:text="@string/lang_arabic"
             android:textSize="17sp"
@@ -139,7 +148,8 @@
 
         <Button
             android:id="@+id/btnHindi"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
+            android:maxWidth="300dp"
             android:layout_height="56dp"
             android:text="@string/lang_hindi"
             android:textSize="17sp"
@@ -152,7 +162,8 @@
 
         <Button
             android:id="@+id/btnBengali"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
+            android:maxWidth="300dp"
             android:layout_height="56dp"
             android:text="@string/lang_bengali"
             android:textSize="17sp"
@@ -165,7 +176,8 @@
 
         <Button
             android:id="@+id/btnJapanese"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
+            android:maxWidth="300dp"
             android:layout_height="56dp"
             android:text="@string/lang_japanese"
             android:textSize="17sp"

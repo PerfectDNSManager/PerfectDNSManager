@@ -98,61 +98,6 @@ class ConfigManager(private val context: Context) {
         return gson.newBuilder().setPrettyPrinting().create().toJson(root)
     }
 
-    fun exportConfig(): String {
-        val root = JsonObject()
-
-        // Version and date
-        root.addProperty("version", getAppVersion())
-        root.addProperty("exportDate", iso8601Now())
-
-        // Profiles from ProfileManager (SharedPrefs "dns_profiles_v2", key "profiles")
-        val profileManager = ProfileManager(context)
-        val profiles = profileManager.loadProfiles()
-        root.add("profiles", gson.toJsonTree(profiles))
-
-        // Selected profile from SharedPrefs "prefs"
-        val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        val selectedProfileJson = prefs.getString("selected_profile_json", null)
-        if (selectedProfileJson != null) {
-            root.add("selectedProfile", JsonParser.parseString(selectedProfileJson))
-        } else {
-            root.add("selectedProfile", null)
-        }
-
-        // Rewrite rules from DnsRewriteRepository (SharedPrefs "dns_rewrite_rules", key "rules")
-        val rewriteRepo = DnsRewriteRepository(context)
-        val rewriteRules = rewriteRepo.getAllRules()
-        root.add("rewriteRules", gson.toJsonTree(rewriteRules))
-
-        // NextDNS profile IDs from SharedPrefs "nextdns_profiles", key "profile_ids"
-        val nextDnsPrefs = context.getSharedPreferences("nextdns_profiles", Context.MODE_PRIVATE)
-        val nextDnsIds = nextDnsPrefs.getStringSet("profile_ids", emptySet()) ?: emptySet()
-        root.add("nextDnsProfiles", gson.toJsonTree(nextDnsIds.sorted()))
-
-        // Settings from SharedPrefs "prefs"
-        val settings = JsonObject()
-        settings.addProperty("auto_reconnect_dns", prefs.getBoolean("auto_reconnect_dns", false))
-        settings.addProperty("disable_ipv6", prefs.getBoolean("disable_ipv6", false))
-        settings.addProperty("adb_dot_enabled", prefs.getBoolean("adb_dot_enabled", false))
-        settings.addProperty("operator_dns_enabled", prefs.getBoolean("operator_dns_enabled", false))
-        settings.addProperty("advanced_features_enabled", prefs.getBoolean("advanced_features_enabled", false))
-        root.add("settings", settings)
-
-        // Test domains
-        val testDomainsJson = prefs.getString("test_domains_json", null)
-        if (testDomainsJson != null) {
-            root.add("testDomains", JsonParser.parseString(testDomainsJson))
-        }
-
-        // Excluded apps (split tunneling)
-        val excludedAppsJson = prefs.getString("excluded_apps_json", null)
-        if (excludedAppsJson != null) {
-            root.add("excludedApps", JsonParser.parseString(excludedAppsJson))
-        }
-
-        return gson.newBuilder().setPrettyPrinting().create().toJson(root)
-    }
-
     // ══════════════════════════════════════════════════════════════
     //  Import
     // ══════════════════════════════════════════════════════════════

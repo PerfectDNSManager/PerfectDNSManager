@@ -88,7 +88,15 @@ data class DnsProfile(
             else -> R.drawable.ic_dns_custom
         }
 
-        fun getDefaultPresets(): List<DnsProfile> = listOf(
+        /**
+         * Liste des profils built-in. Construite une seule fois (lazy) puis
+         * réutilisée : [getDefaultPresets] réallouait ~100 objets à chaque appel
+         * (appelé souvent : ProfileManager, speedtest, etc.). La liste est
+         * immuable ([listOf]) et aucun appelant ne la mute (vérifié), donc on
+         * peut partager la même instance sans copie défensive.
+         */
+        private val defaultPresets: List<DnsProfile> by lazy {
+            listOf(
 
             // ══════════════════════════════════════════════════════
             //  1. ControlD  ★ DoQ
@@ -364,6 +372,9 @@ data class DnsProfile(
             DnsProfile(id = 2005, providerName = "🇫🇷 OVH", name = "DNS OVH", type = DnsType.DEFAULT,
                 primary = "213.186.33.99", secondary = "213.251.128.140",
                 descResId = R.string.dns_desc_isp_fmt, descResIdArg = "OVH/OVHcloud", isOperatorDns = true)
-        )
+            )
+        }
+
+        fun getDefaultPresets(): List<DnsProfile> = defaultPresets
     }
 }

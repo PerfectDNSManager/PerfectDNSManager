@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Thème clair (défaut) : barres système en mode "light" → icônes sombres,
+         visibles sur le fond clair. Surchargé à false en values-night. -->
+    <bool name="pdm_light_system_bars">true</bool>
+</resources>

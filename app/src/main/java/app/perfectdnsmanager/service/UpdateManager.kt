@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -17,6 +19,15 @@ import java.io.File
 import java.security.MessageDigest
 
 class UpdateManager(private val context: Context) {
+
+    // [context] est souvent une Activity (dialog/Toast). Pour tout ce qui n'est
+    // pas de l'UI (prefs, cacheDir, PackageManager, FileProvider, lancement de
+    // l'intent d'install) on passe par l'applicationContext afin de ne pas
+    // retenir l'Activity dans les callbacks de download asynchrones.
+    private val appContext: Context = context.applicationContext
+
+    // Poster sur le main thread depuis un thread de fond, sans dépendre d'une Activity.
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     companion object {
         private const val TAG = "UpdateManager"
@@ -63,7 +74,7 @@ class UpdateManager(private val context: Context) {
     }
 
     private fun betaEnabled(): Boolean =
-        context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        appContext.getSharedPreferences("prefs", Context.MODE_PRIVATE)
             .getBoolean("beta_updates_enabled", false)
 
     /**
@@ -73,10 +84,10 @@ class UpdateManager(private val context: Context) {
         fetchBestRelease(githubRepo, betaEnabled()) { release ->
             if (release == null) return@fetchBestRelease
             if (compareVersions(release.version, currentVersion) > 0) {
-                showToastOnMainThread(context.getString(R.string.update_available, release.version))
+                showToastOnMainThread(appContext.getString(R.string.update_available, release.version))
                 downloadAndInstallUpdate(release.apkUrl)
             } else {
-                showToastOnMainThread(context.getString(R.string.app_up_to_date))
+                showToastOnMainThread(appContext.getString(R.string.app_up_to_date))
             }
         }
     }
@@ -86,7 +97,7 @@ class UpdateManager(private val context: Context) {
      * qu'une fois par version détectée.
      */
     fun checkOnLaunch(currentVersion: String) {
-        val prefs = context.getSharedPreferences("update_prefs", Context.MODE_PRIVATE)
+        val prefs = appContext.getSharedPreferences("update_prefs", Context.MODE_PRIVATE)
         val dismissedVersion = prefs.getString("dismissed_version", null)
 
         fetchBestRelease(GITHUB_REPO, betaEnabled()) { release ->
@@ -189,8 +200,8 @@ class UpdateManager(private val context: Context) {
     }
 
     private fun downloadAndInstallUpdate(apkUrl: String) {
-        showToastOnMainThread(context.getString(R.string.update_downloading))
-        val updatesDir = File(context.cacheDir, "updates").apply { mkdirs() }
+        showToastOnMainThread(appContext.getString(R.string.update_downloading))
+        val updatesDir = File(appContext.cacheDir, "updates").apply { mkdirs() }
         val destination = File(updatesDir, "update.apk")
 
         Fuel.download(apkUrl).fileDestination { _, _ -> destination }.response { _, _, result ->
@@ -201,37 +212,43 @@ class UpdateManager(private val context: Context) {
                 }
                 is Result.Failure -> {
                     Log.e(TAG, "Download error", result.getException())
-                    showToastOnMainThread(context.getString(R.string.update_download_error))
+                    showToastOnMainThread(appContext.getString(R.string.update_download_error))
                 }
             }
         }
     }
 
     private fun installApk(apkFile: File) {
-        try {
-            // Vérifier la signature AVANT de lancer l'install : si le compte
-            // GitHub PerfectDNSManager est compromis ou si on subit un MitM avec un
-            // cert custom installé sur l'appareil, l'APK téléchargé pourrait
-            // venir d'un attaquant. Comparer avec la signature du package
-            // courant ferme ce vecteur (PackageInstaller bloque ensuite tout
-            // mismatch côté système, mais on échoue plus tôt et plus clair).
-            if (!verifyApkSignature(apkFile)) {
-                Log.e(TAG, "APK signature mismatch — install aborted")
-                showToastOnMainThread(context.getString(R.string.update_signature_mismatch))
-                apkFile.delete()
-                return
+        // Le callback Fuel de download tourne sur le main thread : la vérif de
+        // signature (parse de l'APK + SHA-256) y provoquerait un ANR. On la fait
+        // sur un thread de fond et on ne repasse sur le main thread que pour
+        // lancer l'intent d'install et afficher les Toast.
+        Thread {
+            try {
+                // Vérifier la signature AVANT de lancer l'install : si le compte
+                // GitHub PerfectDNSManager est compromis ou si on subit un MitM avec un
+                // cert custom installé sur l'appareil, l'APK téléchargé pourrait
+                // venir d'un attaquant. Comparer avec la signature du package
+                // courant ferme ce vecteur (PackageInstaller bloque ensuite tout
+                // mismatch côté système, mais on échoue plus tôt et plus clair).
+                if (!verifyApkSignature(apkFile)) {
+                    Log.e(TAG, "APK signature mismatch — install aborted")
+                    showToastOnMainThread(appContext.getString(R.string.update_signature_mismatch))
+                    apkFile.delete()
+                    return@Thread
+                }
+                val uri = FileProvider.getUriForFile(appContext, "${appContext.packageName}.provider", apkFile)
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(uri, "application/vnd.android.package-archive")
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                runOnMainThread { appContext.startActivity(intent) }
+            } catch (e: Exception) {
+                Log.e(TAG, "APK install error", e)
+                showToastOnMainThread(appContext.getString(R.string.update_install_error))
             }
-            val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", apkFile)
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(uri, "application/vnd.android.package-archive")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            context.startActivity(intent)
-        } catch (e: Exception) {
-            Log.e(TAG, "APK install error", e)
-            showToastOnMainThread(context.getString(R.string.update_install_error))
-        }
+        }.start()
     }
 
     /**
@@ -242,7 +259,7 @@ class UpdateManager(private val context: Context) {
      */
     private fun verifyApkSignature(apkFile: File): Boolean {
         return try {
-            val pm = context.packageManager
+            val pm = appContext.packageManager
             val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 @Suppress("DEPRECATION")
                 PackageManager.GET_SIGNING_CERTIFICATES
@@ -252,7 +269,7 @@ class UpdateManager(private val context: Context) {
             }
             val downloadedInfo = pm.getPackageArchiveInfo(apkFile.absolutePath, flags)
                 ?: run { Log.e(TAG, "Cannot parse APK"); return false }
-            val installedInfo = pm.getPackageInfo(context.packageName, flags)
+            val installedInfo = pm.getPackageInfo(appContext.packageName, flags)
 
             val downloadedSigs = signaturesFor(downloadedInfo)
             val installedSigs = signaturesFor(installedInfo)
@@ -289,13 +306,15 @@ class UpdateManager(private val context: Context) {
 
     private fun showToastOnMainThread(message: String) {
         runOnMainThread {
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(appContext, message, Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun runOnMainThread(action: () -> Unit) {
-        if (context is Activity) {
-            context.runOnUiThread(action)
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            action()
+        } else {
+            mainHandler.post(action)
         }
     }
 }

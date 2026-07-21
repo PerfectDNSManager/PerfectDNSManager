@@ -50,4 +50,13 @@
     <!-- Piste d'un switch OFF. Light mode : gris moyen visible sur fond blanc.
          Surchargé en values-night/colors.xml pour le dark mode. -->
     <color name="pdm_toggle_off">#9AA0A6</color>
+
+    <!-- ─── Couleurs par type de DNS (light) ─── -->
+    <!-- Versions foncées, lisibles sur fond clair (#F7F8FA). Surchargées en
+         values-night pour des teintes plus vives lisibles sur fond sombre.
+         Remplacent les anciennes constantes fluo illisibles sur blanc. -->
+    <color name="dns_type_doh">#1B8F1B</color>
+    <color name="dns_type_doq">#5E4BC4</color>
+    <color name="dns_type_dot">#B37F00</color>
+    <color name="dns_type_default">#6B7280</color>
 </resources>

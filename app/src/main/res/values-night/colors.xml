@@ -41,4 +41,11 @@
 
     <!-- Dark mode : on garde la teinte system par défaut (suffisamment visible sur fond noir) -->
     <color name="pdm_toggle_off">#6B6F78</color>
+
+    <!-- ─── Couleurs par type de DNS (dark) ─── -->
+    <!-- Versions plus vives, lisibles sur fond sombre (#0E0F12). -->
+    <color name="dns_type_doh">#4CD964</color>
+    <color name="dns_type_doq">#9E8CFF</color>
+    <color name="dns_type_dot">#FFC947</color>
+    <color name="dns_type_default">#9AA0A6</color>
 </resources>

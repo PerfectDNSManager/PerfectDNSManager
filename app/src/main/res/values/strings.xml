@@ -194,6 +194,10 @@
     <!-- NextDNS -->
     <string name="add_nextdns_profile">➕ Ajouter un profil NextDNS</string>
     <string name="nextdns_id_required">Identifiant requis</string>
+    <string name="nextdns_profile_name_fmt">Profil %1$s</string>
+
+    <!-- DNS type labels -->
+    <string name="dns_type_standard">Standard</string>
 
     <!-- HowTo -->
     <string name="howto_title">🛠 Comment activer le débogage ADB</string>
