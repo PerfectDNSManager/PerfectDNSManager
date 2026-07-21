@@ -165,7 +165,15 @@ class DoQClient(private val vpnService: VpnService) {
                 }
                 try { conn.close() } catch (_: Exception) {}
             } catch (e: Exception) {
-                Log.w(T, "DoQ sécurisé KO, fallback: ${e.javaClass.simpleName}: ${e.message}")
+                if (isCertificateFailure(e)) {
+                    // Échec de VALIDATION du certificat = MITM possible → FAIL-CLOSED.
+                    // Surtout PAS de fallback ici : sinon un attaquant présentant un
+                    // mauvais cert forcerait le repli en connexion non validée
+                    // (downgrade attack qui annulerait tout l'intérêt du fix).
+                    Log.w(T, "DoQ : validation certificat ÉCHOUÉE (MITM possible) — refus: ${e.message}")
+                    return null
+                }
+                Log.w(T, "DoQ sécurisé KO (non-cert), fallback: ${e.javaClass.simpleName}: ${e.message}")
             }
         }
 
@@ -190,6 +198,20 @@ class DoQClient(private val vpnService: VpnService) {
             Log.w(T, "QUIC connect err $host:$port: ${e.javaClass.simpleName}: ${e.message}")
             null
         }
+    }
+
+    /** Détecte un échec dû à la validation du certificat (≠ erreur réseau/timeout). */
+    private fun isCertificateFailure(e: Throwable?): Boolean {
+        var t = e; var depth = 0
+        while (t != null && depth < 8) {
+            if (t is java.security.cert.CertificateException) return true
+            val n = t.javaClass.name.lowercase()
+            val m = (t.message ?: "").lowercase()
+            if (n.contains("certificate") || n.contains("badcertificate")) return true
+            if (m.contains("certificate") || m.contains("hostname mismatch") || m.contains("bad_certificate")) return true
+            t = t.cause; depth++
+        }
+        return false
     }
 
     // ── Validation TLS du résolveur DoQ ──────────────────────────────────
