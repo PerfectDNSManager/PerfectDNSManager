@@ -66,7 +66,13 @@ class DotMonitorService : Service() {
     // jusqu'à CHECK_TIMEOUT_S — sur le main thread ça déclencherait un ANR (>5s).
     private val bgThread = android.os.HandlerThread("DotMonitor").apply { start() }
     private val handler by lazy { Handler(bgThread.looper) }
-    private val probeExecutor = Executors.newSingleThreadExecutor()
+    // Pool (pas mono-thread) : InetAddress.getAllByName n'est PAS interruptible ; avec
+    // un seul thread, une résolution coincée empêcherait les sondes suivantes de
+    // DÉMARRER → f.get timeout sur une tâche jamais lancée → faux échecs → auto-repli
+    // à tort. Un pool laisse chaque sonde démarrer et refléter le vrai état du DNS.
+    private val probeExecutor = Executors.newCachedThreadPool { r ->
+        Thread(r, "DotProbe").apply { isDaemon = true }
+    }
     @Volatile private var monitoring = false
     /** Garantit qu'une seule séquence disable/stop s'exécute (anti double-repli). */
     private val stopping = java.util.concurrent.atomic.AtomicBoolean(false)
@@ -112,6 +118,8 @@ class DotMonitorService : Service() {
                 if (failures > 0) { // rétabli après un ou plusieurs échecs
                     failures = 0
                     notify(buildNotif(warning = false))
+                    // Annuler le heads-up « injoignable » périmé.
+                    (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(NOTIF_ID_ALERT)
                 }
             } else {
                 failures++
@@ -147,14 +155,14 @@ class DotMonitorService : Service() {
         Thread {
             val disabled = try { AdbDnsManager(this).disablePrivateDns() } catch (_: Exception) { false }
             Log.i(T, "Auto-fallback: private DNS disabled=$disabled")
-            handler.post {
-                getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
-                    .putBoolean("dot_active", false).apply()
-                isRunning = false
-                stopForegroundCompat(removeNotif = true) // retirer la persistante…
-                postAlert(getString(R.string.dot_autodisabled)) // …et heads-up d'info (channel HIGH)
-                stopSelf()
-            }
+            // Tout fait ICI (pas via handler) : si bgThread est déjà quitté, un post
+            // serait silencieusement perdu → `dot_active` resterait true (état zombie).
+            getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
+                .putBoolean("dot_active", false).apply()
+            isRunning = false
+            stopForegroundCompat(removeNotif = true) // retirer la persistante…
+            postAlert(getString(R.string.dot_autodisabled)) // …et heads-up d'info (channel HIGH)
+            stopSelf()
         }.start()
     }
 
@@ -164,13 +172,11 @@ class DotMonitorService : Service() {
         if (!stopping.compareAndSet(false, true)) return // déjà en cours (ex. auto-repli)
         Thread {
             try { AdbDnsManager(this).disablePrivateDns() } catch (_: Exception) {}
-            handler.post {
-                getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
-                    .putBoolean("dot_active", false).apply()
-                isRunning = false
-                stopForegroundCompat(removeNotif = true)
-                stopSelf()
-            }
+            getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
+                .putBoolean("dot_active", false).apply()
+            isRunning = false
+            stopForegroundCompat(removeNotif = true)
+            stopSelf()
         }.start()
     }
 

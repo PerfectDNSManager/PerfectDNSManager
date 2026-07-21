@@ -157,6 +157,9 @@ object DnsTester {
                 .port(port)
                 .applicationProtocol("doq")
                 .connectTimeout(java.time.Duration.ofMillis(5000))
+                .maxIdleTimeout(java.time.Duration.ofSeconds(5)) // évite un read qui gèle le speedtest
+                // noServerCertificateCheck OK ici : simple mesure de LATENCE, la réponse
+                // n'est jamais consommée comme résolution DNS (contrairement à DoQClient).
                 .noServerCertificateCheck()
                 .build()
 

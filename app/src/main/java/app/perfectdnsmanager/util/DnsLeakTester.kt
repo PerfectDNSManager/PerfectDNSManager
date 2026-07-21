@@ -119,20 +119,21 @@ object DnsLeakTester {
 
     private fun resolveViaProtectedSocket(dnsServer: InetAddress, hostname: String): String? {
         return try {
-            val socket = DatagramSocket()
-            if (!DnsVpnService.protectSocket(socket)) {
-                socket.close()
-                Log.w(TAG, "Cannot protect socket for $hostname")
-                return null
+            // .use{} : ferme le FD même sur receive() timeout (DNS FAI muet = cas
+            // fréquent). Appelé 2× par génération de rapport → sinon fuite de FD.
+            DatagramSocket().use { socket ->
+                if (!DnsVpnService.protectSocket(socket)) {
+                    Log.w(TAG, "Cannot protect socket for $hostname")
+                    return null
+                }
+                socket.soTimeout = 5000
+                val query = buildDnsQuery(hostname)
+                socket.send(DatagramPacket(query, query.size, dnsServer, 53))
+                val buf = ByteArray(512)
+                val response = DatagramPacket(buf, buf.size)
+                socket.receive(response)
+                parseDnsResponseIp(buf, response.length)?.hostAddress
             }
-            socket.soTimeout = 5000
-            val query = buildDnsQuery(hostname)
-            socket.send(DatagramPacket(query, query.size, dnsServer, 53))
-            val buf = ByteArray(512)
-            val response = DatagramPacket(buf, buf.size)
-            socket.receive(response)
-            socket.close()
-            parseDnsResponseIp(buf, response.length)?.hostAddress
         } catch (e: Exception) {
             Log.w(TAG, "Protected socket resolve $hostname: ${e.message}")
             null

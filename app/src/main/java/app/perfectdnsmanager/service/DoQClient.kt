@@ -34,7 +34,8 @@ class DoQClient(private val vpnService: VpnService) {
     }
 
     private val connections = ConcurrentHashMap<String, QuicClientConnection>()
-    private val connLock = java.util.concurrent.locks.ReentrantLock()
+    private val connLocks = ConcurrentHashMap<String, java.util.concurrent.locks.ReentrantLock>()
+    @Volatile private var closed = false
     /** Watchdog : ferme un stream/conn bloqué en lecture (kwik n'a pas de read-timeout). */
     private val watchdog = java.util.concurrent.Executors.newSingleThreadScheduledExecutor { r ->
         Thread(r, "DoQWatchdog").apply { isDaemon = true }
@@ -53,82 +54,62 @@ class DoQClient(private val vpnService: VpnService) {
      * @return la réponse DNS brute (avec transaction ID restauré), ou null si erreur
      */
     fun query(dnsPayload: ByteArray, quicUrl: String): ByteArray? {
+        val uri = try { URI(quicUrl.replace("quic://", "https://")) } catch (_: Exception) { return null }
+        val host = uri.host ?: return null
+        val port = if (uri.port > 0) uri.port else DEFAULT_PORT
+        val key = "$host:$port"
+
+        val originalId = ((dnsPayload[0].toInt() and 0xFF) shl 8) or (dnsPayload[1].toInt() and 0xFF)
+        val doqPayload = dnsPayload.copyOf().also { it[0] = 0; it[1] = 0 } // ID=0 (RFC 9250)
+        val wireMsgBytes = ByteBuffer.allocate(2 + doqPayload.size)
+            .putShort(doqPayload.size.toShort()).put(doqPayload).array()
+
+        val conn = getOrCreateConnection(key, host, port) ?: return null
+
+        // Watchdog ARMÉ AVANT createStream : createStream(true) de kwik attend jusqu'à
+        // ~10000 jours sur le crédit de streams (vérifié en décompil) → un serveur qui
+        // n'accorde pas de crédit bloquerait à l'infini. Le conn.close() du watchdog
+        // débloque createStream ET un read bloqué. `done` + remove par IDENTITÉ :
+        // ne jamais tuer la connexion FRAÎCHE (re)créée par un autre thread.
+        var stream: QuicStream? = null
+        val done = java.util.concurrent.atomic.AtomicBoolean(false)
+        val wd = watchdog.schedule({
+            if (done.get()) return@schedule
+            try { stream?.abortReading(0x3) } catch (_: Throwable) {}   // 0x3 = DOQ_REQUEST_CANCELLED
+            try { stream?.resetStream(0x3) } catch (_: Throwable) {}
+            try { if (connections.remove(key, conn)) conn.close() } catch (_: Throwable) {}
+        }, QUERY_TIMEOUT_MS, java.util.concurrent.TimeUnit.MILLISECONDS)
+
         return try {
-            // 1. Parse quic://host[:port]
-            val uri = URI(quicUrl.replace("quic://", "https://"))
-            val host = uri.host
-            val port = if (uri.port > 0) uri.port else DEFAULT_PORT
-            val key = "$host:$port"
-
-            // 2. Sauvegarder le transaction ID original
-            val originalId = ((dnsPayload[0].toInt() and 0xFF) shl 8) or (dnsPayload[1].toInt() and 0xFF)
-
-            // 3. Mettre l'ID à 0 (RFC 9250 : ID MUST be 0)
-            val doqPayload = dnsPayload.copyOf()
-            doqPayload[0] = 0
-            doqPayload[1] = 0
-
-            // 4. Préparer le message DoQ : 2 octets longueur + payload
-            val wireMsg = ByteBuffer.allocate(2 + doqPayload.size)
-            wireMsg.putShort(doqPayload.size.toShort())
-            wireMsg.put(doqPayload)
-            val wireMsgBytes = wireMsg.array()
-
-            // 5. Obtenir ou créer la connexion QUIC
-            val conn = getOrCreateConnection(key, host, port)
-                ?: return null
-
-            // 6. Ouvrir un stream bidirectionnel, écrire, lire
-            val stream: QuicStream = conn.createStream(true)
-            // Watchdog : kwik n'a PAS de read-timeout. Sans ça, un serveur (ou MITM)
-            // qui accepte le stream sans jamais répondre bloque `read()` à l'infini →
-            // les threads du pool queryExecutor se remplissent → « plus d'internet ».
-            val wd = watchdog.schedule({
-                try { stream.abortReading(0) } catch (_: Throwable) {}
-                try { stream.resetStream(0) } catch (_: Throwable) {}
-                try { connections.remove(key)?.close() } catch (_: Throwable) {}
-            }, QUERY_TIMEOUT_MS, java.util.concurrent.TimeUnit.MILLISECONDS)
-            val response = try {
-                stream.outputStream.write(wireMsgBytes)
-                stream.outputStream.close()
-                readFully(stream)
-            } finally {
-                wd.cancel(false)
-                try { stream.inputStream.close() } catch (_: Exception) {}
-            }
+            val s = conn.createStream(true); stream = s
+            s.outputStream.write(wireMsgBytes)
+            s.outputStream.close()
+            val response = readFully(s)
+            done.set(true)
             if (response == null || response.size < 14) {
                 Log.w(T, "DoQ: response too short (${response?.size ?: 0} bytes)")
-                return null
-            }
-
-            // 7. Retirer le préfixe 2 octets longueur
-            val dnsResp = if (response.size > 2) {
-                val len = ((response[0].toInt() and 0xFF) shl 8) or (response[1].toInt() and 0xFF)
-                if (len + 2 <= response.size) {
-                    response.copyOfRange(2, 2 + len)
-                } else {
-                    response.copyOfRange(2, response.size)
-                }
+                null
             } else {
-                response
+                // Retirer le préfixe 2 octets longueur
+                val dnsResp = run {
+                    val len = ((response[0].toInt() and 0xFF) shl 8) or (response[1].toInt() and 0xFF)
+                    if (len + 2 <= response.size) response.copyOfRange(2, 2 + len)
+                    else response.copyOfRange(2, response.size)
+                }
+                // Restaurer le transaction ID original
+                if (dnsResp.size >= 2) {
+                    dnsResp[0] = (originalId shr 8).toByte()
+                    dnsResp[1] = (originalId and 0xFF).toByte()
+                }
+                dnsResp
             }
-
-            // 8. Restaurer le transaction ID original
-            if (dnsResp.size >= 2) {
-                dnsResp[0] = (originalId shr 8).toByte()
-                dnsResp[1] = (originalId and 0xFF).toByte()
-            }
-
-            dnsResp
         } catch (e: Exception) {
-            Log.w(T, "DoQ query err: ${e.javaClass.simpleName}: ${e.message}")
-            // Invalider la connexion en cas d'erreur
-            try {
-                val uri = URI(quicUrl.replace("quic://", "https://"))
-                val key = "${uri.host}:${if (uri.port > 0) uri.port else DEFAULT_PORT}"
-                connections.remove(key)?.close()
-            } catch (_: Exception) {}
+            Log.w(T, "DoQ query err: ${e.javaClass.simpleName}") // pas de $message (peut contenir l'URL/ID compte)
+            try { if (connections.remove(key, conn)) conn.close() } catch (_: Exception) {} // par identité
             null
+        } finally {
+            wd.cancel(false)
+            try { stream?.inputStream?.close() } catch (_: Exception) {}
         }
     }
 
@@ -153,65 +134,55 @@ class DoQClient(private val vpnService: VpnService) {
     }
 
     private fun getOrCreateConnection(key: String, host: String, port: Int): QuicClientConnection? {
-        // Vérifier si la connexion existante est encore valide
-        connections[key]?.let { conn ->
-            if (!conn.isConnected) {
-                connections.remove(key)
-                try { conn.close() } catch (_: Exception) {}
-            } else {
-                return conn
-            }
+        // Fast-path hors verrou : connexion valide déjà présente.
+        connections[key]?.let { c ->
+            if (c.isConnected) return c
+            if (connections.remove(key, c)) try { c.close() } catch (_: Exception) {}
         }
 
-        // Sérialise la CRÉATION (le fast-path ci-dessus reste hors verrou) : sinon
-        // plusieurs threads du pool créent des connexions concurrentes vers le même
-        // serveur, la dernière écrase les autres → connexions QUIC fuitées.
-        // tryLock fail-fast : un seul thread établit la connexion (~2s) ; les autres
-        // n'attendent PAS (sinon 16 threads du pool bloqués = contention) — ils
-        // abandonnent cette requête (le stub client re-tentera → fast-path prêt).
-        if (!connLock.tryLock(300, java.util.concurrent.TimeUnit.MILLISECONDS)) {
+        // Résolution bootstrap HORS du verrou (2×3s de timeout UDP) : sinon le verrou
+        // serait tenu ~11s et un autre endpoint DoQ (secondaire) serait bloqué aussi.
+        val resolved = resolveHostBypass(host) ?: run { Log.w(T, "Cannot resolve ${redactHost(host)}"); return null }
+        val addr = resolved.address
+        val dnsService = vpnService as? DnsVpnService
+        if (dnsService == null || addr == null || addr.size != 4) {
+            // Sans split-horizon (serveur IPv6-only, contexte inattendu) on ne peut PAS
+            // valider → REFUS (fail-closed). Jamais de connexion non validée (downgrade).
+            Log.w(T, "DoQ: split-horizon indisponible → refus (fail-closed): ${redactHost(host)}")
+            return null
+        }
+        dnsService.registerLocalDns(host, addr)
+
+        // Verrou PAR CLÉ (pas global) : un seul thread établit la connexion vers CET
+        // endpoint ; les requêtes vers un autre endpoint ne sont pas bloquées. tryLock
+        // fail-fast : les autres threads du même endpoint abandonnent (re-tentent → fast-path).
+        val lock = connLocks.computeIfAbsent(key) { java.util.concurrent.locks.ReentrantLock() }
+        if (!lock.tryLock(300, java.util.concurrent.TimeUnit.MILLISECONDS)) {
             return connections[key]?.takeIf { it.isConnected }
         }
         try {
             connections[key]?.let { c ->
                 if (c.isConnected) return c
-                connections.remove(key); try { c.close() } catch (_: Exception) {}
+                if (connections.remove(key, c)) try { c.close() } catch (_: Exception) {}
             }
-
-            // Pré-résoudre l'IP via bootstrap protégé (hors tunnel → pas de récursion).
-            val resolved = resolveHostBypass(host) ?: run { Log.w(T, "Cannot resolve ${redactHost(host)}"); return null }
-
-            // Split-horizon : hostname→IP dans le service VPN → kwik résout localement
-            // (pas de récursion) → on passe le HOSTNAME à kwik (SNI correct) + valide le cert.
-            val addr = resolved.address
-            val dnsService = vpnService as? DnsVpnService
-            if (dnsService == null || addr == null || addr.size != 4) {
-                // Sans split-horizon (serveur IPv6-only, ou contexte inattendu) on ne
-                // peut PAS valider → on REFUSE (fail-closed). Jamais de connexion non
-                // validée, même en secours : ce serait un vecteur de downgrade MITM.
-                Log.w(T, "DoQ: split-horizon indisponible → refus (fail-closed): ${redactHost(host)}")
-                return null
-            }
-            dnsService.registerLocalDns(host, addr)
-
-            // Unique chemin : serverName = hostname + validation cert. FAIL-CLOSED
-            // pour TOUT échec (réseau OU cert) : un attaquant on-path pourrait sinon
-            // forcer un repli non validé en coupant la 1re connexion (downgrade).
+            // Unique chemin : serverName = hostname + validation cert. FAIL-CLOSED total.
             return try {
                 val conn = QuicClientConnection.newBuilder()
                     .uri(URI("https://$host:$port")) // host = hostname (pas .host(ip))
                     .applicationProtocol("doq")
                     .connectTimeout(Duration.ofMillis(CONNECT_TIMEOUT_MS))
-                    .maxIdleTimeout(Duration.ofMillis(MAX_IDLE_MS)) // borne les hangs
+                    .maxIdleTimeout(Duration.ofMillis(MAX_IDLE_MS))
                     .customTrustManager(buildTrustManager(host))
                     .socketFactory { _ -> DatagramSocket().also { vpnService.protect(it) } }
                     .build()
                 conn.connect()
-                if (conn.isConnected) {
+                if (conn.isConnected && !closed) {
                     connections[key] = conn
                     Log.i(T, "QUIC connecté (cert validé): ${redactHost(host)}:$port")
                     conn
                 } else {
+                    // !isConnected OU closeAll a eu lieu pendant le connect → on ferme
+                    // (sinon on ré-insérerait une conn après le clear de closeAll = fuite).
                     try { conn.close() } catch (_: Exception) {}
                     Log.w(T, "DoQ non connecté: ${redactHost(host)}:$port"); null
                 }
@@ -223,7 +194,7 @@ class DoQClient(private val vpnService: VpnService) {
                 null
             }
         } finally {
-            connLock.unlock()
+            lock.unlock()
         }
     }
 
@@ -336,16 +307,16 @@ class DoQClient(private val vpnService: VpnService) {
     /** Une requête DNS UDP type A vers une IP de bootstrap, en bypass VPN. */
     private fun queryBootstrapDns(host: String, serverIp: ByteArray): InetAddress? = try {
         val query = buildDnsQuery(host)
-        val sock = DatagramSocket()
-        vpnService.protect(sock)
-        sock.soTimeout = 3000
-        val server = InetAddress.getByAddress(serverIp)
-        sock.send(DatagramPacket(query, query.size, server, 53))
-        val resp = ByteArray(512)
-        val pkt = DatagramPacket(resp, resp.size)
-        sock.receive(pkt)
-        sock.close()
-        parseDnsResponseIp(resp, pkt.length)
+        DatagramSocket().use { sock -> // .use{} : ferme le FD même sur receive() timeout
+            vpnService.protect(sock)
+            sock.soTimeout = 3000
+            val server = InetAddress.getByAddress(serverIp)
+            sock.send(DatagramPacket(query, query.size, server, 53))
+            val resp = ByteArray(512)
+            val pkt = DatagramPacket(resp, resp.size)
+            sock.receive(pkt)
+            parseDnsResponseIp(resp, pkt.length)
+        }
     } catch (e: Exception) {
         Log.w(T, "bootstrap DNS ${serverIp.joinToString(".") { (it.toInt() and 0xFF).toString() }} failed: ${e.message}")
         null
@@ -399,6 +370,7 @@ class DoQClient(private val vpnService: VpnService) {
 
     /** Ferme toutes les connexions QUIC */
     fun closeAll() {
+        closed = true // empêche la ré-insertion d'une connexion établie après le clear
         for ((_, conn) in connections) {
             try { conn.close() } catch (_: Exception) {}
         }

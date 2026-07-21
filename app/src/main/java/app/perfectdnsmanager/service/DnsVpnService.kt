@@ -87,6 +87,10 @@ class DnsVpnService : VpnService() {
         if (ipv4.size == 4) localDnsMap[hostname.lowercase()] = ipv4
     }
 
+    /** Handler + Runnable du restart différé (ACTION_RESTART), annulables. */
+    private val mainHandler by lazy { android.os.Handler(mainLooper) }
+    @Volatile private var pendingRestart: Runnable? = null
+
     /** OkHttpClient with protected sockets (bypass VPN) and custom DNS resolver */
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
@@ -181,11 +185,13 @@ class DnsVpnService : VpnService() {
                 stopVpn(); startVpn()
             }
             ACTION_RESTART -> {
-                // Changement de profil : stop visible (icône VPN disparaît) puis restart après délai
+                // Changement de profil : stop visible (icône VPN disparaît) puis restart après délai.
                 dnsServer = intent.getStringExtra(EXTRA_DNS_PRIMARY) ?: "1.1.1.1"
                 dnsServerSecondary = intent.getStringExtra(EXTRA_DNS_SECONDARY)
-                stopVpn()
-                android.os.Handler(mainLooper).postDelayed({ startVpn() }, 600)
+                stopVpn() // annule aussi tout restart en attente (removeCallbacks)
+                val r = Runnable { startVpn() }
+                pendingRestart = r
+                mainHandler.postDelayed(r, 600)
             }
             ACTION_STOP -> { stopVpn(); stopSelf() }
             ACTION_RELOAD_RULES -> {
@@ -226,6 +232,10 @@ class DnsVpnService : VpnService() {
     private fun isDoQ(s: String) = s.startsWith("quic://")
 
     private fun startVpn() {
+        // Garde anti double-start : si une pile VPN tourne déjà (ex. deux ACTION_RESTART
+        // rapprochés, ou restart différé + start), on la ferme d'abord — sinon on écrase
+        // vpnInterface/tunOut/sockets/executor/doqClient sans les libérer (grosse fuite).
+        if (isRunning) stopVpn()
         try {
             Log.i(T, "=== START VPN ===  primary=${redactDnsUrl(dnsServer)}  secondary=${redactDnsUrl(dnsServerSecondary)}")
 
@@ -391,28 +401,34 @@ class DnsVpnService : VpnService() {
             var query = buf.copyOfRange(off, buf.size)
             val origId = (query[0].toInt() and 0xFF) shl 8 or (query[1].toInt() and 0xFF)
 
-            // Rewrite check
+            // Early-exit chemin chaud : ne parser le qname (ByteBuffer + String par
+            // label) que si une règle de rewrite OU un split-horizon DoQ est actif —
+            // sinon (config majoritaire) on forwarde directement sans parser.
             var wasRewritten = false
             var originalQnameEncoded: ByteArray? = null
-            val (qname, modifiedQuery) = getQNameAndApplyRewrite(query)
+            var modifiedQuery: ByteArray? = null
+            if (rewriteRules.isNotEmpty() || localDnsMap.isNotEmpty()) {
+                val (qname, modQ) = getQNameAndApplyRewrite(query)
+                modifiedQuery = modQ
 
-            // Split-horizon : si la requête vise le hostname d'un serveur DoQ
-            // (pré-résolu via bootstrap), on répond localement au lieu de la
-            // forwarder → kwik obtient l'IP sans récursion et valide le cert.
-            if (localDnsMap.isNotEmpty()) {
-                val ip = localDnsMap[qname.lowercase()]
-                if (ip != null) {
-                    val resp = synthesizeDnsResponse(query, ip)
-                    writeTun(Pending(srcIp, dstIp, srcPort, System.currentTimeMillis(), false, null, origId), resp)
-                    return
+                // Split-horizon : requête vers le hostname d'un serveur DoQ pré-résolu
+                // → on répond localement (kwik obtient l'IP sans récursion + valide le cert).
+                if (localDnsMap.isNotEmpty()) {
+                    val ip = localDnsMap[qname.lowercase()]
+                    if (ip != null) {
+                        val resp = synthesizeDnsResponse(query, ip)
+                        writeTun(Pending(srcIp, dstIp, srcPort, System.currentTimeMillis(), false, null, origId), resp)
+                        return
+                    }
                 }
+                if (modifiedQuery != null) originalQnameEncoded = encodeQName(qname)
             }
 
-            if (modifiedQuery != null) {
-                // (sécurité) ne PAS logger le domaine interrogé
+            modifiedQuery?.let {
+                // (sécurité) ne PAS logger le domaine interrogé. originalQnameEncoded
+                // a déjà été calculé plus haut (qname est local au bloc de parsing).
                 Log.i(T, "DNS Rewrite rule matched")
-                originalQnameEncoded = encodeQName(qname)
-                query = modifiedQuery
+                query = it
                 wasRewritten = true
             }
 
@@ -801,6 +817,9 @@ class DnsVpnService : VpnService() {
     }
 
     private fun stopVpn() {
+        // Annuler tout restart différé AVANT le early-return : sinon un ACTION_STOP
+        // pendant la fenêtre de 600ms laisserait le restart relancer un VPN zombie.
+        pendingRestart?.let { mainHandler.removeCallbacks(it) }; pendingRestart = null
         if (!isRunning) return
         Log.i(T, "=== STOP VPN v34 ===")
         isRunning = false; isVpnRunning = false; instance = null
