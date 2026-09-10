@@ -1,4 +1,4 @@
-# 2.4.0-beta.1
+# 2.4.0-beta.2
 
 Cette bêta reprend les changements non publiés de septembre et corrige les problèmes relevés pendant la reprise.
 

@@ -148,7 +148,8 @@ jobs:
           BT_DIR=$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -n1)
           "$ANDROID_HOME/build-tools/$BT_DIR/apksigner" verify --verbose --print-certs "${{ steps.apk.outputs.path }}" > signature.txt
           cat signature.txt
-          grep -Fq 'Signer #1 certificate SHA-256 digest: c7fd0c977b2c8911c32268e3fa15e9fe50b14dccfae18f7232b28a9faa858f6d' signature.txt
+          grep -Fq 'Number of signers: 1' signature.txt
+          grep -Eq '^(Signer #[0-9]+|V[0-9]+ Signer):? certificate SHA-256 digest: c7fd0c977b2c8911c32268e3fa15e9fe50b14dccfae18f7232b28a9faa858f6d$' signature.txt
 
       # Plus d'upload-artifact ici : l'APK est déjà attaché à la GitHub
       # Release (étape "Create GitHub Release" ci-dessous). Doubler le
