@@ -12,7 +12,13 @@ class DnsRewriteRepository(context: Context) {
 
     fun getAllRules(): MutableList<DnsRewriteRule> {
         val json = prefs.getString("rules", "[]")
-        return gson.fromJson(json, type) ?: mutableListOf()
+        return runCatching {
+            val parsed: List<DnsRewriteRule?> = gson.fromJson(json, type) ?: emptyList()
+            parsed.filterNotNull().filter {
+                app.perfectdnsmanager.util.ProfileValidation.isHostname(it.fromDomain ?: "") &&
+                    app.perfectdnsmanager.util.ProfileValidation.isHostname(it.toDomain ?: "")
+            }.toMutableList()
+        }.getOrDefault(mutableListOf())
     }
 
     private fun saveRules(rules: List<DnsRewriteRule>) {

@@ -549,4 +549,23 @@
         <item quantity="many">%1$s يفتحون المحتوى</item>
         <item quantity="other">%1$s يفتحون المحتوى</item>
     </plurals>
+    <!-- DNS privé (DoT) verrouillé au niveau système -->
+    <string name="retry">إعادة المحاولة</string>
+    <string name="private_dns_locked_title">نظام أسماء نطاقات خاص مفعّل على هذا الجهاز</string>
+    <string name="private_dns_locked_message">تم ضبط نظام أسماء نطاقات خاص (DoT) في إعدادات أندرويد، ولا يستطيع التطبيق إيقافه (تصحيح ADB غير متاح).\n\nما دام مفعّلاً فلن يعمل DoH أو DoQ: سيواصل أندرويد الترجمة عبر DoT، وقد تفقد الاتصال بالإنترنت تماماً.\n\nأوقف «نظام أسماء النطاقات الخاص» من إعدادات أندرويد ثم أعد المحاولة.</string>
+    <string name="private_dns_locked_message_fmt">تم ضبط نظام أسماء نطاقات خاص (DoT) نحو %1$s في إعدادات أندرويد، ولا يستطيع التطبيق إيقافه (تصحيح ADB غير متاح).\n\nما دام مفعّلاً فلن يعمل DoH أو DoQ: سيواصل أندرويد الترجمة عبر DoT، وقد تفقد الاتصال بالإنترنت تماماً.\n\nأوقف «نظام أسماء النطاقات الخاص» من إعدادات أندرويد ثم أعد المحاولة.</string>
+    <string name="private_dns_open_settings">فتح الإعدادات</string>
+    <string name="private_dns_settings_unavailable">تعذّر فتح الإعدادات على هذا الجهاز. انتقل إلى الإعدادات ← الشبكة ← نظام أسماء النطاقات الخاص ← إيقاف.</string>
+    <string name="private_dns_locked_boot">تم إلغاء إعادة الاتصال: نظام أسماء نطاقات خاص (DoT) مفعّل ولا يستطيع التطبيق إيقافه. اضغط لفتح الإعدادات.</string>
+    <string name="dot_locked_notif">⚠ تعذّر إيقاف نظام أسماء النطاقات الخاص (تصحيح ADB غير متاح). أوقفه من الإعدادات ← الشبكة ← نظام أسماء النطاقات الخاص.</string>
+    <string name="dot_disable_failed">فشل الإيقاف: نظام أسماء النطاقات الخاص مقفل على مستوى النظام. افتح الإعدادات لإيقافه يدوياً.</string>
+    <string name="dns_type_standard">قياسي</string>
+    <string name="nextdns_profile_name_fmt">الملف الشخصي %1$s</string>
+    <string name="dot_active_fmt">نظام أسماء النطاقات الخاص مفعّل: %1$s. اضغط «تعطيل» إذا فقدت الإنترنت.</string>
+    <string name="dot_warning_unreachable">⚠ خادم نظام أسماء النطاقات الخاص لم يعد يستجيب — قد ينقطع الإنترنت. جارٍ التعطيل التلقائي…</string>
+    <string name="dot_autodisabled">تم تعطيل نظام أسماء النطاقات الخاص تلقائياً (الخادم غير متاح). عاد الإنترنت. يمكنك تفعيله مجدداً من التطبيق.</string>
+    <string name="dot_disable_action">تعطيل</string>
+    <string name="report_undetermined">غير محدد</string>
+    <string name="md_blocking_undetermined">الاختبار غير حاسم: فشلت ترجمة أسماء النطاقات (الشبكة غير متاحة أو الخادم لا يستجيب). لا يمكن استنتاج وجود حجب.</string>
+    <string name="import_profiles_rejected">⚠ تم استبعاد %1$d ملف/ملفات: نقطة نهاية غير صالحة أو ناقصة.</string>
 </resources>

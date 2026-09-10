@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/settingsScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -196,7 +196,7 @@
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
                     android:src="@android:drawable/ic_menu_sort_by_size"
-                    android:tint="@color/pdm_text_secondary"
+                    app:tint="@color/pdm_text_secondary"
                     android:scaleType="fitCenter"
                     android:contentDescription="@null"
                     android:importantForAccessibility="no"/>
@@ -232,7 +232,7 @@
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
                     android:src="@android:drawable/ic_menu_compass"
-                    android:tint="@color/pdm_text_secondary"
+                    app:tint="@color/pdm_text_secondary"
                     android:scaleType="fitCenter"
                     android:contentDescription="@null"
                     android:importantForAccessibility="no"/>
@@ -268,7 +268,7 @@
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
                     android:src="@android:drawable/ic_menu_manage"
-                    android:tint="@color/pdm_text_secondary"
+                    app:tint="@color/pdm_text_secondary"
                     android:scaleType="fitCenter"/>
                 <TextView
                     android:layout_width="0dp"

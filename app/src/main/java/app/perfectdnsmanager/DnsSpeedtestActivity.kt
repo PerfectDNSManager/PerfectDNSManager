@@ -203,11 +203,8 @@ class DnsSpeedtestActivity : AppCompatActivity() {
 
                 appendProgress(getString(R.string.speedtest_providers_count_fmt, testProfiles.size), COLOR_WHITE)
 
-                val sharedClient = OkHttpClient.Builder()
-                    .connectTimeout(5, TimeUnit.SECONDS)
-                    .readTimeout(5, TimeUnit.SECONDS)
-                    .writeTimeout(5, TimeUnit.SECONDS)
-                    .build()
+                val sharedClient = app.perfectdnsmanager.util.Http
+                    .withTimeouts(connectSec = 5, readSec = 5, writeSec = 5)
 
                 val results = mutableListOf<SpeedResult>()
 
@@ -252,8 +249,8 @@ class DnsSpeedtestActivity : AppCompatActivity() {
                     updatePanels(results, final = false)
                 }
 
-                try { sharedClient.dispatcher.executorService.shutdown() } catch (_: Exception) {}
-                try { sharedClient.connectionPool.evictAll() } catch (_: Exception) {}
+                // Rien à fermer : sharedClient dérive du pool commun (cf. Http),
+                // et arrêter son dispatcher couperait tout le HTTP de l'app.
 
                 if (!cancelled) {
                     appendProgress(getString(R.string.speedtest_finished), COLOR_GREEN)

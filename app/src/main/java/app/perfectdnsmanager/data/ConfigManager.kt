@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
+import app.perfectdnsmanager.util.ProfileValidation
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -22,6 +23,8 @@ class ConfigManager(private val context: Context) {
 
     data class ImportResult(
         val profileCount: Int,
+        /** Profils écartés parce qu'invalides ou incomplets (cf. ProfileValidation). */
+        val rejectedProfileCount: Int = 0,
         val rewriteRuleCount: Int,
         val nextDnsProfileCount: Int,
         val hasSelectedProfile: Boolean,
@@ -103,13 +106,20 @@ class ConfigManager(private val context: Context) {
     // ══════════════════════════════════════════════════════════════
 
     fun importConfig(json: String, importSettings: Boolean = true): ImportResult {
-        val root = JsonParser.parseString(json).asJsonObject
+        val root = ConfigValidation.parse(json)
 
         // ── Profiles ──
         var profileCount = 0
+        var rejectedProfileCount = 0
         if (root.has("profiles") && !root.get("profiles").isJsonNull) {
             val profileType = object : TypeToken<List<DnsProfile>>() {}.type
-            val profiles: List<DnsProfile> = gson.fromJson(root.get("profiles"), profileType)
+            val parsed: List<DnsProfile?> = gson.fromJson(root.get("profiles"), profileType)
+            // Une config importée vient de l'extérieur : on lui applique les
+            // mêmes règles que la saisie manuelle, et on jette ce qui est
+            // incomplet (Gson contourne les constructeurs Kotlin, donc des
+            // champs non-nullables peuvent être null ici).
+            val profiles = parsed.filter { ProfileValidation.isUsable(it) }.filterNotNull()
+            rejectedProfileCount = parsed.size - profiles.size
             profileCount = profiles.size
 
             // Save via ProfileManager (SharedPrefs "dns_profiles_v2", key "profiles")
@@ -120,12 +130,16 @@ class ConfigManager(private val context: Context) {
         // ── Selected profile ──
         val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         val hasSelectedProfile: Boolean
-        if (root.has("selectedProfile") && !root.get("selectedProfile").isJsonNull) {
-            val selectedProfileElement = root.get("selectedProfile")
-            prefs.edit().putString("selected_profile_json", gson.toJson(selectedProfileElement)).apply()
+        val importedSelected = if (root.has("selectedProfile") && !root.get("selectedProfile").isJsonNull) {
+            runCatching { gson.fromJson(root.get("selectedProfile"), DnsProfile::class.java) }.getOrNull()
+        } else null
+        if (importedSelected != null && ProfileValidation.isUsable(importedSelected)) {
+            // Ce profil devient le résolveur actif : il doit passer la validation
+            // avant d'être écrit, pas après.
+            prefs.edit().putString("selected_profile_json", gson.toJson(importedSelected)).apply()
             hasSelectedProfile = true
         } else {
-            prefs.edit().remove("selected_profile_json").apply()
+            if (root.has("selectedProfile")) prefs.edit().remove("selected_profile_json").apply()
             hasSelectedProfile = false
         }
 
@@ -153,12 +167,12 @@ class ConfigManager(private val context: Context) {
         }
 
         // ── Test domains ──
-        if (root.has("testDomains") && !root.get("testDomains").isJsonNull) {
+        if (importSettings && root.has("testDomains") && !root.get("testDomains").isJsonNull) {
             prefs.edit().putString("test_domains_json", root.get("testDomains").toString()).apply()
         }
 
         // ── Excluded apps (split tunneling) ──
-        if (root.has("excludedApps") && !root.get("excludedApps").isJsonNull) {
+        if (importSettings && root.has("excludedApps") && !root.get("excludedApps").isJsonNull) {
             prefs.edit().putString("excluded_apps_json", root.get("excludedApps").toString()).apply()
         }
 
@@ -193,6 +207,7 @@ class ConfigManager(private val context: Context) {
 
         return ImportResult(
             profileCount = profileCount,
+            rejectedProfileCount = rejectedProfileCount,
             rewriteRuleCount = rewriteRuleCount,
             nextDnsProfileCount = nextDnsProfileCount,
             hasSelectedProfile = hasSelectedProfile,
@@ -206,7 +221,7 @@ class ConfigManager(private val context: Context) {
 
     fun getConfigSummary(json: String): String {
         return try {
-            val root = JsonParser.parseString(json).asJsonObject
+            val root = ConfigValidation.parse(json)
             val sb = StringBuilder()
 
             // Version
@@ -230,6 +245,18 @@ class ConfigManager(private val context: Context) {
                     }
                 }
                 sb.appendLine("Profiles: $total ($customCount custom)")
+                // Les endpoints DNS sont le VRAI contenu d'une config partagée :
+                // sans eux, l'utilisateur validait un import à l'aveugle.
+                val endpoints = profileArray.mapNotNull { element ->
+                    try {
+                        val o = element.asJsonObject
+                        val primary = o.get("primary")?.asString ?: return@mapNotNull null
+                        val provider = o.get("providerName")?.asString ?: "?"
+                        "  · $provider → $primary"
+                    } catch (_: Exception) { null }
+                }.distinct()
+                endpoints.take(12).forEach { sb.appendLine(it) }
+                if (endpoints.size > 12) sb.appendLine("  · … +${endpoints.size - 12}")
             } else {
                 sb.appendLine("Profiles: 0")
             }
@@ -240,7 +267,9 @@ class ConfigManager(private val context: Context) {
                     val sp = root.getAsJsonObject("selectedProfile")
                     val provider = sp.get("providerName")?.asString ?: ""
                     val name = sp.get("name")?.asString ?: ""
+                    val primary = sp.get("primary")?.asString ?: "?"
                     sb.appendLine("Selected profile: $provider - $name")
+                    sb.appendLine("  → $primary")
                 } catch (_: Exception) {
                     sb.appendLine("Selected profile: yes")
                 }
@@ -259,6 +288,10 @@ class ConfigManager(private val context: Context) {
                     }
                 }
                 sb.appendLine("Rewrite rules: ${rulesArray.size()} ($enabledCount enabled)")
+                rulesArray.take(16).forEach { rule ->
+                    val o = rule.asJsonObject
+                    sb.appendLine("  · ${o.get("fromDomain").asString} → ${o.get("toDomain").asString}")
+                }
             } else {
                 sb.appendLine("Rewrite rules: 0")
             }
@@ -292,6 +325,7 @@ class ConfigManager(private val context: Context) {
                 val appsArray = root.getAsJsonArray("excludedApps")
                 if (appsArray.size() > 0) {
                     sb.appendLine("Excluded apps (split tunnel): ${appsArray.size()}")
+                    appsArray.take(32).forEach { sb.appendLine("  · ${it.asString}") }
                 }
             }
 

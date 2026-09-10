@@ -79,21 +79,18 @@ object BlockingAuthoritiesManager {
      */
     fun syncFromRemote(context: Context) {
         try {
-            val client = OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .build()
+            val client = Http.withTimeouts(connectSec = 10, readSec = 10)
             val request = Request.Builder().url(REMOTE_URL).build()
-            val response = client.newCall(request).execute()
-            val body = response.body?.string() ?: ""
-            response.close()
-            client.dispatcher.executorService.shutdown()
-            client.connectionPool.evictAll()
-
-            if (!response.isSuccessful || body.isEmpty()) {
-                Log.w(TAG, "Sync failed: HTTP ${response.code}")
-                return
+            // .use{} : sans lui, une exception dans .string() laissait la réponse
+            // ouverte (le client dérivé partage désormais le pool commun).
+            val body = client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    Log.w(TAG, "Sync failed: HTTP ${response.code}")
+                    return
+                }
+                response.body?.string() ?: ""
             }
+            if (body.isEmpty()) return
 
             val remoteJson = JSONObject(body)
             val remoteVersion = remoteJson.optInt("version", 0)

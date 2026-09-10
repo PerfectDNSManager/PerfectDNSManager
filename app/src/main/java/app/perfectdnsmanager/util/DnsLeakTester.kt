@@ -41,10 +41,7 @@ object DnsLeakTester {
     )
 
     private fun createClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .build()
+        return Http.withTimeouts(connectSec = 10, readSec = 10)
     }
 
     fun runLeakTestComparison(context: Context): LeakComparisonResult {
@@ -52,7 +49,6 @@ object DnsLeakTester {
         val ispResolvers = detectResolversViaProtectedSocket(context)
 
         // 2. VPN DNS via système
-        clearDnsCache()
         val vpnResolvers = detectResolversViaSystem()
 
         // 3. GeoIP lookup
@@ -62,8 +58,6 @@ object DnsLeakTester {
         for (ip in allIps) {
             geoCache[ip] = lookupGeoIp(client, ip)
         }
-        client.dispatcher.executorService.shutdown()
-        client.connectionPool.evictAll()
 
         return LeakComparisonResult(
             LeakResult(
@@ -112,36 +106,34 @@ object DnsLeakTester {
             if (ip2 != null) resolverIps.add(ip2)
 
         } catch (e: Exception) {
-            Log.w(TAG, "Protected socket leak detect failed: ${e.message}")
+            Log.w(TAG, "Protected socket leak detect failed: ${e.javaClass.simpleName}")
         }
         return resolverIps
     }
 
-    private fun resolveViaProtectedSocket(dnsServer: InetAddress, hostname: String): String? {
-        return try {
-            // .use{} : ferme le FD même sur receive() timeout (DNS FAI muet = cas
-            // fréquent). Appelé 2× par génération de rapport → sinon fuite de FD.
-            DatagramSocket().use { socket ->
-                if (!DnsVpnService.protectSocket(socket)) {
-                    Log.w(TAG, "Cannot protect socket for $hostname")
-                    return null
-                }
-                socket.soTimeout = 5000
-                val query = buildDnsQuery(hostname)
-                socket.send(DatagramPacket(query, query.size, dnsServer, 53))
-                val buf = ByteArray(512)
-                val response = DatagramPacket(buf, buf.size)
-                socket.receive(response)
-                parseDnsResponseIp(buf, response.length)?.hostAddress
-            }
-        } catch (e: Exception) {
-            Log.w(TAG, "Protected socket resolve $hostname: ${e.message}")
-            null
-        }
+    // NOTE — il n'existe plus de moyen de vider le cache DNS de la JVM :
+    // `InetAddress.addressCache`/`negativeCache` sont des API cachées, bloquées
+    // depuis Android 9 (l'app cible le SDK 34). L'ancien `clearDnsCache()` par
+    // réflexion échouait en silence dans deux `catch` vides, en laissant croire
+    // que le cache était purgé. Les mesures qui doivent être fraîches passent
+    // donc par resolveViaProtectedSocket(), en UDP direct, sans cache.
+
+    /** Masque le label gauche d'un hostname avant de le logger. */
+    private fun redactHost(h: String): String {
+        val dot = h.indexOf('.')
+        return if (dot > 0) "***" + h.substring(dot) else "***"
     }
 
+    private fun resolveViaProtectedSocket(dnsServer: InetAddress, hostname: String): String? =
+        // DnsWire : socket connecté + ID aléatoire + réponse validée. La copie
+        // locale précédente acceptait tout datagramme arrivant sur le port.
+        DnsWire.resolveA(dnsServer, hostname, timeoutMs = 5000) { socket ->
+            DnsVpnService.protectSocket(socket).also {
+                if (!it) Log.w(TAG, "Cannot protect socket for ${redactHost(hostname)}")
+            }
+        }?.hostAddress
+
     private fun detectResolversViaSystem(): Set<String> {
-        clearDnsCache()
         val resolverIps = mutableSetOf<String>()
         try {
             val addr = InetAddress.getByName("whoami.akamai.net")
@@ -160,92 +152,22 @@ object DnsLeakTester {
         return resolverIps
     }
 
-    private fun clearDnsCache() {
-        // Vide le cache DNS de la JVM par réflexion afin que le leak test
-        // reflète la résolution courante et non une entrée mise en cache. Un
-        // échec (API cachée modifiée/restreinte selon la ROM) fausse le test :
-        // on le loggue au lieu de l'avaler silencieusement.
-        try {
-            val f = InetAddress::class.java.getDeclaredField("addressCache")
-            f.isAccessible = true
-            val c = f.get(null)
-            c?.javaClass?.getDeclaredMethod("clear")?.apply { isAccessible = true; invoke(c) }
-        } catch (e: Exception) {
-            Log.w(TAG, "clearDnsCache(addressCache) failed: ${e.message}")
-        }
-        try {
-            val f = InetAddress::class.java.getDeclaredField("negativeCache")
-            f.isAccessible = true
-            val c = f.get(null)
-            c?.javaClass?.getDeclaredMethod("clear")?.apply { isAccessible = true; invoke(c) }
-        } catch (e: Exception) {
-            Log.w(TAG, "clearDnsCache(negativeCache) failed: ${e.message}")
-        }
-    }
-
-    private fun buildDnsQuery(host: String): ByteArray {
-        val buf = java.io.ByteArrayOutputStream()
-        val txId = (System.currentTimeMillis() and 0xFFFF).toInt()
-        buf.write(txId shr 8); buf.write(txId and 0xFF)
-        buf.write(0x01); buf.write(0x00)
-        buf.write(0x00); buf.write(0x01)
-        buf.write(0x00); buf.write(0x00)
-        buf.write(0x00); buf.write(0x00)
-        buf.write(0x00); buf.write(0x00)
-        for (label in host.split(".")) {
-            buf.write(label.length)
-            buf.write(label.toByteArray())
-        }
-        buf.write(0x00)
-        buf.write(0x00); buf.write(0x01)
-        buf.write(0x00); buf.write(0x01)
-        return buf.toByteArray()
-    }
-
-    private fun parseDnsResponseIp(data: ByteArray, length: Int): InetAddress? {
-        if (length < 12) return null
-        val anCount = ((data[6].toInt() and 0xFF) shl 8) or (data[7].toInt() and 0xFF)
-        if (anCount == 0) return null
-        var offset = 12
-        while (offset < length && data[offset].toInt() != 0) {
-            val len = data[offset].toInt() and 0xFF
-            if (len >= 0xC0) { offset += 2; break }
-            offset += len + 1
-        }
-        if (offset < length && data[offset].toInt() == 0) offset++
-        offset += 4
-        for (i in 0 until anCount) {
-            if (offset >= length) break
-            if ((data[offset].toInt() and 0xC0) == 0xC0) offset += 2
-            else { while (offset < length && data[offset].toInt() != 0) offset++; offset++ }
-            if (offset + 10 > length) break
-            val rtype = ((data[offset].toInt() and 0xFF) shl 8) or (data[offset + 1].toInt() and 0xFF)
-            val rdlen = ((data[offset + 8].toInt() and 0xFF) shl 8) or (data[offset + 9].toInt() and 0xFF)
-            offset += 10
-            if (rtype == 1 && rdlen == 4 && offset + 4 <= length) {
-                return InetAddress.getByAddress(data.copyOfRange(offset, offset + 4))
-            }
-            offset += rdlen
-        }
-        return null
-    }
-
     private fun lookupGeoIp(client: OkHttpClient, ip: String): ResolverInfo {
         return try {
             val request = Request.Builder()
                 .url("https://ipapi.co/$ip/json/")
                 .header("User-Agent", "PerfectDNSManager/1.0")
                 .build()
-            val response = client.newCall(request).execute()
-            val body = response.body?.string() ?: ""
-            response.close()
-            if (response.isSuccessful && body.isNotEmpty()) {
-                val json = JSONObject(body)
-                val country = json.optString("country_name", "").ifEmpty { null }
-                val org = json.optString("org", "").ifEmpty { null }
-                ResolverInfo(ip, country, org)
-            } else {
-                ResolverInfo(ip, null, null)
+            client.newCall(request).execute().use { response ->
+                val body = response.body?.string() ?: ""
+                if (response.isSuccessful && body.isNotEmpty()) {
+                    val json = JSONObject(body)
+                    val country = json.optString("country_name", "").ifEmpty { null }
+                    val org = json.optString("org", "").ifEmpty { null }
+                    ResolverInfo(ip, country, org)
+                } else {
+                    ResolverInfo(ip, null, null)
+                }
             }
         } catch (e: Exception) {
             Log.w(TAG, "GeoIP lookup failed for $ip: ${e.message}")

@@ -18,11 +18,7 @@ object SpeedTester {
     )
 
     private fun createClient(timeoutSec: Long): OkHttpClient {
-        return OkHttpClient.Builder()
-            .connectTimeout(timeoutSec, TimeUnit.SECONDS)
-            .readTimeout(timeoutSec, TimeUnit.SECONDS)
-            .writeTimeout(timeoutSec, TimeUnit.SECONDS)
-            .build()
+        return Http.forSpeedTest(timeoutSec)
     }
 
     /**
@@ -61,19 +57,29 @@ object SpeedTester {
                     .head()
                     .build()
                 val start = System.nanoTime()
-                val response = client.newCall(request).execute()
-                val elapsed = (System.nanoTime() - start) / 1_000_000
-                response.close()
-                if (response.isSuccessful) pings.add(elapsed)
+                client.newCall(request).execute().use { response ->
+                    val elapsed = (System.nanoTime() - start) / 1_000_000
+                    if (response.isSuccessful) pings.add(elapsed)
+                }
             } catch (e: Exception) {
                 Log.w(TAG, "Ping attempt $i failed", e)
             }
         }
 
-        client.dispatcher.executorService.shutdown()
-        client.connectionPool.evictAll()
 
         return if (pings.isNotEmpty()) pings.sorted()[pings.size / 2] else -1
+    }
+
+    /** Lit un flux jusqu'au bout et renvoie le nombre d'octets (mesure de débit). */
+    private fun drain(stream: java.io.InputStream): Long = stream.use {
+        val buffer = ByteArray(8192)
+        var total = 0L
+        while (true) {
+            val read = it.read(buffer)
+            if (read == -1) break
+            total += read
+        }
+        total
     }
 
     private fun measureDownload(): Double {
@@ -86,28 +92,18 @@ object SpeedTester {
                 .url("https://speed.cloudflare.com/__down?bytes=$downloadBytes")
                 .build()
             val start = System.nanoTime()
-            val response = client.newCall(request).execute()
-            val body = response.body
-            if (response.isSuccessful && body != null) {
-                // Read all bytes to measure actual throughput
-                val buffer = ByteArray(8192)
-                val stream = body.byteStream()
-                var totalRead = 0L
-                while (true) {
-                    val read = stream.read(buffer)
-                    if (read == -1) break
-                    totalRead += read
-                }
-                stream.close()
-                val elapsed = (System.nanoTime() - start) / 1_000_000_000.0
-                response.close()
-                client.dispatcher.executorService.shutdown()
-                client.connectionPool.evictAll()
-                if (elapsed > 0 && totalRead > 0) {
-                    return (totalRead * 8.0) / (elapsed * 1_000_000)
+            // .use{} : une exception pendant la lecture du flux laissait la
+            // réponse (et son socket) ouverte à chaque échec de mesure.
+            client.newCall(request).execute().use { response ->
+                val body = response.body
+                if (response.isSuccessful && body != null) {
+                    val totalRead = drain(body.byteStream())
+                    val elapsed = (System.nanoTime() - start) / 1_000_000_000.0
+                    if (elapsed > 0 && totalRead > 0) {
+                        return (totalRead * 8.0) / (elapsed * 1_000_000)
+                    }
                 }
             }
-            response.close()
         } catch (e: Exception) {
             Log.w(TAG, "Cloudflare download failed, trying fallback", e)
         }
@@ -119,35 +115,20 @@ object SpeedTester {
                 .url("http://speedtest.tele2.net/1MB.zip")
                 .build()
             val start = System.nanoTime()
-            val response = fallbackClient.newCall(request).execute()
-            val body = response.body
-            if (response.isSuccessful && body != null) {
-                val buffer = ByteArray(8192)
-                val stream = body.byteStream()
-                var totalRead = 0L
-                while (true) {
-                    val read = stream.read(buffer)
-                    if (read == -1) break
-                    totalRead += read
-                }
-                stream.close()
-                val elapsed = (System.nanoTime() - start) / 1_000_000_000.0
-                response.close()
-                fallbackClient.dispatcher.executorService.shutdown()
-                fallbackClient.connectionPool.evictAll()
-                if (elapsed > 0 && totalRead > 0) {
-                    return (totalRead * 8.0) / (elapsed * 1_000_000)
+            fallbackClient.newCall(request).execute().use { response ->
+                val body = response.body
+                if (response.isSuccessful && body != null) {
+                    val totalRead = drain(body.byteStream())
+                    val elapsed = (System.nanoTime() - start) / 1_000_000_000.0
+                    if (elapsed > 0 && totalRead > 0) {
+                        return (totalRead * 8.0) / (elapsed * 1_000_000)
+                    }
                 }
             }
-            response.close()
-            fallbackClient.dispatcher.executorService.shutdown()
-            fallbackClient.connectionPool.evictAll()
         } catch (e: Exception) {
             Log.e(TAG, "Fallback download also failed", e)
         }
 
-        client.dispatcher.executorService.shutdown()
-        client.connectionPool.evictAll()
         return 0.0
     }
 
@@ -163,20 +144,16 @@ object SpeedTester {
                 .post(body)
                 .build()
             val start = System.nanoTime()
-            val response = client.newCall(request).execute()
-            val elapsed = (System.nanoTime() - start) / 1_000_000_000.0
-            response.close()
-            client.dispatcher.executorService.shutdown()
-            client.connectionPool.evictAll()
-            if (elapsed > 0 && response.isSuccessful) {
-                return (uploadSize * 8.0) / (elapsed * 1_000_000)
+            client.newCall(request).execute().use { response ->
+                val elapsed = (System.nanoTime() - start) / 1_000_000_000.0
+                if (elapsed > 0 && response.isSuccessful) {
+                    return (uploadSize * 8.0) / (elapsed * 1_000_000)
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Upload test failed", e)
         }
 
-        client.dispatcher.executorService.shutdown()
-        client.connectionPool.evictAll()
         return 0.0
     }
 }

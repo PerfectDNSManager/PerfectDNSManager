@@ -241,7 +241,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
                 buttonTintList = ColorStateList.valueOf(protoColors[i])
                 id = View.generateViewId()
                 textSize = 14f
-                focusable = View.FOCUSABLE
+                isFocusable = true
                 if (i == 0) isChecked = true
             }
             rgProto.addView(rb)
@@ -297,7 +297,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
             setTextColor(pdmTextPrimary())
             setHintTextColor(pdmTextDisabled())
             textSize = 14f
-            focusable = View.FOCUSABLE
+            isFocusable = true
         }
         layout.addView(etProfileId)
 

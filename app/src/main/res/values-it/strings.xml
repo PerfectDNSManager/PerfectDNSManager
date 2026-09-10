@@ -541,4 +541,23 @@
         <item quantity="one">%1$s sblocca il contenuto</item>
         <item quantity="other">%1$s sbloccano il contenuto</item>
     </plurals>
+    <!-- DNS privé (DoT) verrouillé au niveau système -->
+    <string name="retry">Riprova</string>
+    <string name="private_dns_locked_title">DNS privato attivo su questo dispositivo</string>
+    <string name="private_dns_locked_message">Nelle impostazioni di Android è configurato un DNS privato (DoT) e l\'app non può disattivarlo (debug ADB non disponibile).\n\nFinché resta attivo, un DNS DoH o DoQ non può funzionare: Android continuerebbe a risolvere via DoT e potresti perdere del tutto la connessione.\n\nDisattiva «DNS privato» nelle impostazioni di Android, poi riprova.</string>
+    <string name="private_dns_locked_message_fmt">Nelle impostazioni di Android è configurato un DNS privato (DoT) verso %1$s e l\'app non può disattivarlo (debug ADB non disponibile).\n\nFinché resta attivo, un DNS DoH o DoQ non può funzionare: Android continuerebbe a risolvere via DoT e potresti perdere del tutto la connessione.\n\nDisattiva «DNS privato» nelle impostazioni di Android, poi riprova.</string>
+    <string name="private_dns_open_settings">Apri le impostazioni</string>
+    <string name="private_dns_settings_unavailable">Impossibile aprire le impostazioni su questo dispositivo. Vai in Impostazioni → Rete → DNS privato → Disattivato.</string>
+    <string name="private_dns_locked_boot">Riconnessione annullata: è attivo un DNS privato (DoT) che l\'app non può disattivare. Tocca per aprire le impostazioni.</string>
+    <string name="dot_locked_notif">⚠ Impossibile disattivare il DNS privato (debug ADB non disponibile). Disattivalo in Impostazioni → Rete → DNS privato.</string>
+    <string name="dot_disable_failed">Disattivazione non riuscita: il DNS privato è bloccato a livello di sistema. Apri le impostazioni per disattivarlo manualmente.</string>
+    <string name="dns_type_standard">Standard</string>
+    <string name="nextdns_profile_name_fmt">Profilo %1$s</string>
+    <string name="dot_active_fmt">DNS privato attivo: %1$s. Tocca «Disattiva» se perdi la connessione.</string>
+    <string name="dot_warning_unreachable">⚠ Il server DNS privato non risponde più — la connessione rischia di cadere. Disattivazione automatica in corso…</string>
+    <string name="dot_autodisabled">DNS privato disattivato automaticamente (server irraggiungibile). Connessione ripristinata. Puoi riattivarlo dall\'app.</string>
+    <string name="dot_disable_action">Disattiva</string>
+    <string name="report_undetermined">Indeterminato</string>
+    <string name="md_blocking_undetermined">Test non concludente: la risoluzione DNS non è riuscita (rete non disponibile o server muto). Non si può concludere nulla su un blocco.</string>
+    <string name="import_profiles_rejected">⚠ %1$d profilo/i scartato/i: endpoint non valido o incompleto.</string>
 </resources>

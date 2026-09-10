@@ -541,4 +541,23 @@
         <item quantity="one">%1$s सामग्री अनब्लॉक करता है</item>
         <item quantity="other">%1$s सामग्री अनब्लॉक करते हैं</item>
     </plurals>
+    <!-- DNS privé (DoT) verrouillé au niveau système -->
+    <string name="retry">फिर कोशिश करें</string>
+    <string name="private_dns_locked_title">इस डिवाइस पर निजी DNS चालू है</string>
+    <string name="private_dns_locked_message">Android सेटिंग्स में एक निजी DNS (DoT) सेट है और ऐप उसे बंद नहीं कर सकता (ADB डीबगिंग उपलब्ध नहीं).\n\nजब तक वह चालू है, DoH या DoQ काम नहीं करेगा: Android DoT से ही नाम हल करता रहेगा और आपका इंटरनेट पूरी तरह बंद हो सकता है.\n\nAndroid सेटिंग्स में «निजी DNS» बंद करें, फिर दोबारा कोशिश करें.</string>
+    <string name="private_dns_locked_message_fmt">Android सेटिंग्स में %1$s की ओर एक निजी DNS (DoT) सेट है और ऐप उसे बंद नहीं कर सकता (ADB डीबगिंग उपलब्ध नहीं).\n\nजब तक वह चालू है, DoH या DoQ काम नहीं करेगा: Android DoT से ही नाम हल करता रहेगा और आपका इंटरनेट पूरी तरह बंद हो सकता है.\n\nAndroid सेटिंग्स में «निजी DNS» बंद करें, फिर दोबारा कोशिश करें.</string>
+    <string name="private_dns_open_settings">सेटिंग्स खोलें</string>
+    <string name="private_dns_settings_unavailable">इस डिवाइस पर सेटिंग्स नहीं खोली जा सकीं. सेटिंग्स → नेटवर्क → निजी DNS → बंद पर जाएँ.</string>
+    <string name="private_dns_locked_boot">फिर से कनेक्ट करना रद्द: एक निजी DNS (DoT) चालू है जिसे ऐप बंद नहीं कर सकता. सेटिंग्स खोलने के लिए टैप करें.</string>
+    <string name="dot_locked_notif">⚠ निजी DNS बंद नहीं किया जा सकता (ADB डीबगिंग उपलब्ध नहीं). इसे सेटिंग्स → नेटवर्क → निजी DNS में बंद करें.</string>
+    <string name="dot_disable_failed">बंद करना विफल: निजी DNS सिस्टम स्तर पर लॉक है. मैन्युअल रूप से बंद करने के लिए सेटिंग्स खोलें.</string>
+    <string name="dns_type_standard">मानक</string>
+    <string name="nextdns_profile_name_fmt">प्रोफ़ाइल %1$s</string>
+    <string name="dot_active_fmt">निजी DNS चालू: %1$s. इंटरनेट बंद हो जाए तो «बंद करें» दबाएँ.</string>
+    <string name="dot_warning_unreachable">⚠ निजी DNS सर्वर जवाब नहीं दे रहा — इंटरनेट बंद हो सकता है. अपने-आप बंद किया जा रहा है…</string>
+    <string name="dot_autodisabled">निजी DNS अपने-आप बंद कर दिया गया (सर्वर अनुपलब्ध). इंटरनेट बहाल. आप इसे ऐप से दोबारा चालू कर सकते हैं.</string>
+    <string name="dot_disable_action">बंद करें</string>
+    <string name="report_undetermined">अनिर्णीत</string>
+    <string name="md_blocking_undetermined">परीक्षण अनिर्णायक: DNS समाधान विफल रहा (नेटवर्क अनुपलब्ध या सर्वर मौन). अवरोधन के बारे में कोई निष्कर्ष नहीं निकाला जा सकता.</string>
+    <string name="import_profiles_rejected">⚠ %1$d प्रोफ़ाइल हटाई गईं: अमान्य या अधूरा एंडपॉइंट.</string>
 </resources>

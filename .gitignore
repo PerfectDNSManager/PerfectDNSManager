@@ -23,3 +23,5 @@ signing/
 
 # audit artifacts (local only)
 audit-screenshots/
+
+.kotlin/

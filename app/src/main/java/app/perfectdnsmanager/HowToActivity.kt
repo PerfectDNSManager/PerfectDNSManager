@@ -33,11 +33,11 @@ class HowToActivity : AppCompatActivity() {
 
         if (adbEnabled) {
             tvAdbStatus.text = getString(R.string.howto_adb_active)
-            tvAdbStatus.setTextColor(getColor(android.R.color.holo_green_light))
+            tvAdbStatus.setTextColor(androidx.core.content.ContextCompat.getColor(this, android.R.color.holo_green_light))
             btnOpenDevOptions.text = getString(R.string.howto_check_dev_options)
         } else {
             tvAdbStatus.text = getString(R.string.howto_adb_inactive)
-            tvAdbStatus.setTextColor(getColor(android.R.color.holo_red_light))
+            tvAdbStatus.setTextColor(androidx.core.content.ContextCompat.getColor(this, android.R.color.holo_red_light))
             btnOpenDevOptions.text = getString(R.string.howto_open_dev_options)
         }
 

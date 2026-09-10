@@ -260,7 +260,7 @@ class AdbDnsManager(private val context: Context) {
             Settings.Global.putString(context.contentResolver, KEY_DNS_SPECIFIER, hostname)
             Settings.Global.putString(context.contentResolver, KEY_DNS_MODE, "hostname")
             val mode = getCurrentPrivateDnsMode()
-            val ok = mode == "hostname"
+            val ok = mode == "hostname" && Settings.Global.getString(context.contentResolver, KEY_DNS_SPECIFIER) == hostname
             Log.i(TAG, "Settings API enable -> mode=$mode ok=$ok")
             ok
         } catch (e: SecurityException) {
@@ -295,7 +295,9 @@ class AdbDnsManager(private val context: Context) {
         val latch = CountDownLatch(1)
         var success = false
 
-        Thread {
+        val activeSocket = java.util.concurrent.atomic.AtomicReference<Socket?>()
+        val cancelled = java.util.concurrent.atomic.AtomicBoolean(false)
+        val worker = Thread {
             var socket: Socket? = null
             var connection: AdbConnection? = null
             var shellStream: AdbStream? = null
@@ -315,9 +317,12 @@ class AdbDnsManager(private val context: Context) {
 
                 var connected = false
                 for (port in portsToTry) {
+                    if (cancelled.get()) return@Thread
                     try {
                         Log.i(TAG, "Tentative ADB $ADB_HOST:$port (timeout ${CONN_TIMEOUT}ms)...")
                         socket = Socket()
+                        activeSocket.set(socket)
+                        if (cancelled.get()) return@Thread
                         socket.soTimeout = CONN_TIMEOUT
                         socket.connect(InetSocketAddress(ADB_HOST, port), CONN_TIMEOUT)
 
@@ -344,6 +349,7 @@ class AdbDnsManager(private val context: Context) {
                     return@Thread
                 }
 
+                if (cancelled.get()) return@Thread
                 // Auto-grant WRITE_SECURE_SETTINGS si pas (ou plus) accordée.
                 // Le flag SharedPref survit à une réinstallation alors que la
                 // permission elle est révoquée à chaque install — donc on
@@ -383,9 +389,11 @@ class AdbDnsManager(private val context: Context) {
                     }
                 }
 
+                if (cancelled.get()) return@Thread
                 // Ouvrir un shell et envoyer chaque commande
                 shellStream = connection.open("shell:")
                 for (cmd in commands) {
+                    if (cancelled.get()) return@Thread
                     Log.i(TAG, "ADB shell: ${redactCmd(cmd)}")
                     shellStream.write("$cmd\n".toByteArray(Charsets.UTF_8))
                     Thread.sleep(300)
@@ -411,10 +419,16 @@ class AdbDnsManager(private val context: Context) {
                 try { socket?.close() } catch (_: Exception) {}
                 latch.countDown()
             }
-        }.start()
-
-        latch.await(20, TimeUnit.SECONDS)
-        return success
+        }
+        worker.start()
+        try {
+            if (latch.await(20, TimeUnit.SECONDS)) return success
+            return false
+        } finally {
+            cancelled.set(true)
+            runCatching { activeSocket.get()?.close() }
+            worker.interrupt()
+        }
     }
 
     private fun execShellCommand(connection: AdbConnection, cmd: String): String {

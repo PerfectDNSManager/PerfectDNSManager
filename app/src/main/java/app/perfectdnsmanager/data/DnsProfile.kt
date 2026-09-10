@@ -35,10 +35,10 @@ data class DnsProfile(
      */
     fun displayDescription(context: Context): String? {
         if (descResId == 0) return description
-        val base = if (descResIdArg != null)
+        val base = try { if (descResIdArg != null)
             context.getString(descResId, descResIdArg)
         else
-            context.getString(descResId)
+            context.getString(descResId) } catch (_: android.content.res.Resources.NotFoundException) { return description }
         // Pas de suffixe sur les types DEFAULT (UDP cleartext) — la variante
         // est implicite par la liste UI.
         val suffix = when (type) {

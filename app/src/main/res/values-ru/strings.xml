@@ -519,6 +519,7 @@
     <plurals name="profile_count">
         <item quantity="one">%d профиль</item>
         <item quantity="few">%d профиля</item>
+        <item quantity="many">%d профилей</item>
         <item quantity="other">%d профилей</item>
     </plurals>    <string name="search_refine_hint">… уточните запрос</string>
     <string name="nextdns_profile_id_label">ID профиля NextDNS:</string>    <string name="speedtest_backend_label_fmt">Сервер теста: %1$s  ▾</string>
@@ -544,4 +545,23 @@
         <item quantity="many">%1$s разблокируют контент</item>
         <item quantity="other">%1$s разблокируют контент</item>
     </plurals>
+    <!-- DNS privé (DoT) verrouillé au niveau système -->
+    <string name="retry">Повторить</string>
+    <string name="private_dns_locked_title">На устройстве включён частный DNS</string>
+    <string name="private_dns_locked_message">В настройках Android задан частный DNS (DoT), и приложение не может его отключить (отладка ADB недоступна).\n\nПока он включён, DNS по DoH или DoQ работать не будет: Android продолжит разрешать имена через DoT, и интернет может пропасть полностью.\n\nОтключите «Частный DNS» в настройках Android и повторите попытку.</string>
+    <string name="private_dns_locked_message_fmt">В настройках Android задан частный DNS (DoT) на %1$s, и приложение не может его отключить (отладка ADB недоступна).\n\nПока он включён, DNS по DoH или DoQ работать не будет: Android продолжит разрешать имена через DoT, и интернет может пропасть полностью.\n\nОтключите «Частный DNS» в настройках Android и повторите попытку.</string>
+    <string name="private_dns_open_settings">Открыть настройки</string>
+    <string name="private_dns_settings_unavailable">Не удалось открыть настройки на этом устройстве. Перейдите в Настройки → Сеть → Частный DNS → Выключено.</string>
+    <string name="private_dns_locked_boot">Переподключение отменено: включён частный DNS (DoT), который приложение не может отключить. Нажмите, чтобы открыть настройки.</string>
+    <string name="dot_locked_notif">⚠ Не удаётся отключить частный DNS (отладка ADB недоступна). Отключите его в Настройки → Сеть → Частный DNS.</string>
+    <string name="dot_disable_failed">Не удалось отключить: частный DNS заблокирован на уровне системы. Откройте настройки и отключите его вручную.</string>
+    <string name="dns_type_standard">Стандартный</string>
+    <string name="nextdns_profile_name_fmt">Профиль %1$s</string>
+    <string name="dot_active_fmt">Частный DNS активен: %1$s. Нажмите «Отключить», если пропадёт интернет.</string>
+    <string name="dot_warning_unreachable">⚠ Сервер частного DNS не отвечает — интернет может пропасть. Выполняется автоматическое отключение…</string>
+    <string name="dot_autodisabled">Частный DNS отключён автоматически (сервер недоступен). Интернет восстановлен. Вы можете снова включить его в приложении.</string>
+    <string name="dot_disable_action">Отключить</string>
+    <string name="report_undetermined">Не определено</string>
+    <string name="md_blocking_undetermined">Тест не показателен: разрешение DNS не удалось (сеть недоступна или сервер молчит). Сделать вывод о блокировке нельзя.</string>
+    <string name="import_profiles_rejected">⚠ Отклонено профилей: %1$d — неверный или неполный адрес.</string>
 </resources>

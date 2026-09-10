@@ -17,85 +17,25 @@ object DnsTester {
 
     data class DnsResult(val ip: String, val isBlocked: Boolean)
 
-    fun execute(server: String, domain: String): DnsResult? {
-        return try {
-            // .use{} ferme le socket MÊME sur receive() timeout (cas fréquent),
-            // sinon un FD fuite à chaque test raté — et ça tourne en boucle.
-            DatagramSocket().use { socket ->
-                socket.soTimeout = 5000
-                val queryBuffer = buildQuery(domain)
-                val serverAddress = InetAddress.getByName(server)
-                val requestPacket = DatagramPacket(queryBuffer.array(), queryBuffer.limit(), serverAddress, 53)
-                socket.send(requestPacket)
-                val responseBytes = ByteArray(1024)
-                val responsePacket = DatagramPacket(responseBytes, responseBytes.size)
-                socket.receive(responsePacket)
-                val resultIp = parseResponse(responsePacket.data, responsePacket.length)
-                if (resultIp != null) {
-                    val isBlocked = resultIp == "127.0.0.1" || resultIp == "54.246.190.12"
-                    DnsResult(resultIp, isBlocked)
-                } else null
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "DNS test failed for server $server, domain $domain", e)
-            null
+    private val rng = java.security.SecureRandom()
+    fun execute(server: String, domain: String): DnsResult? = try {
+        DnsWire.resolveA(InetAddress.getByName(server), domain, 5000)?.hostAddress?.let {
+            DnsResult(it, it.startsWith("127.") || it == "0.0.0.0" || it == "54.246.190.12")
         }
-    }
+    } catch (_: Exception) { null }
 
-    private fun buildQuery(domain: String): ByteBuffer {
-        val buffer = ByteBuffer.allocate(512)
-        // --- Header ---
-        buffer.putShort(0x1234) // Transaction ID
-        buffer.putShort(0x0100) // Flags (Standard Query)
-        buffer.putShort(1)      // Questions
-        buffer.putShort(0)      // Answer RRs
-        buffer.putShort(0)      // Authority RRs
-        buffer.putShort(0)      // Additional RRs
+    private fun buildQuery(domain: String): ByteBuffer = ByteBuffer.wrap(DnsWire.buildQuery(domain, rng.nextInt(65536)))
 
-        // --- Question ---
-        domain.split(".").forEach {
-            buffer.put(it.length.toByte())
-            buffer.put(it.toByteArray())
-        }
-        buffer.put(0.toByte()) // End of domain name
-        buffer.putShort(1)     // Type: A (Host Address)
-        buffer.putShort(1)     // Class: IN (Internet)
-
-        buffer.flip()
-        return buffer
-    }
-
-    /**
-     * Mesure la latence d'un serveur DNS UDP standard (port 53).
-     * @return latence en millisecondes, ou null si erreur
-     */
-    fun measureLatency(server: String, domain: String = "google.com"): Long? {
-        return try {
-            DatagramSocket().use { socket ->
-                socket.soTimeout = 5000
-                val queryBuffer = buildQuery(domain)
-                val serverAddress = InetAddress.getByName(server)
-                val requestPacket = DatagramPacket(queryBuffer.array(), queryBuffer.limit(), serverAddress, 53)
-                val start = System.currentTimeMillis()
-                socket.send(requestPacket)
-                val responseBytes = ByteArray(1024)
-                val responsePacket = DatagramPacket(responseBytes, responseBytes.size)
-                socket.receive(responsePacket)
-                System.currentTimeMillis() - start
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Latency test failed for $server", e)
-            null
-        }
-    }
+    fun measureLatency(server: String, domain: String = "google.com"): Long? = try {
+        val query = buildQuery(domain).array()
+        val start = System.nanoTime()
+        val result = DnsWire.exchange(InetAddress.getByName(server), query)
+        if (result != null) (System.nanoTime() - start) / 1_000_000 else null
+    } catch (_: Exception) { null }
 
     /** Client HTTP réutilisable pour les tests DoH (évite le coût TCP+TLS à chaque test) */
     private val dohClient: OkHttpClient by lazy {
-        OkHttpClient.Builder()
-            .connectTimeout(5, TimeUnit.SECONDS)
-            .readTimeout(5, TimeUnit.SECONDS)
-            .writeTimeout(5, TimeUnit.SECONDS)
-            .build()
+        Http.withTimeouts(connectSec = 5, readSec = 5, writeSec = 5)
     }
 
     /**
@@ -117,10 +57,18 @@ object DnsTester {
             val start = System.currentTimeMillis()
             client.newCall(request).execute().use { response ->
                 val elapsed = System.currentTimeMillis() - start
-                if (response.isSuccessful) elapsed else null
+                val bytes = response.body?.byteStream()?.use { input ->
+                    val out = java.io.ByteArrayOutputStream()
+                    val buf = ByteArray(1024)
+                    while (out.size() <= DnsMessages.MAX_BYTES) {
+                        val n = input.read(buf); if (n < 0) break; out.write(buf, 0, n)
+                    }
+                    out.toByteArray()
+                }
+                if (response.isSuccessful && bytes != null && DnsMessages.matches(queryBytes, bytes)) elapsed else null
             }
         } catch (e: Exception) {
-            Log.e(TAG, "DoH latency test failed for $url", e)
+            Log.w(TAG, "DoH latency test failed for ${redactDnsUrl(url)} (${e.javaClass.simpleName})")
             null
         }
     }
@@ -136,8 +84,12 @@ object DnsTester {
             val host = uri.host
             val port = if (uri.port > 0) uri.port else 853
 
-            // Résoudre le host
-            val resolved = InetAddress.getByName(host)
+            // Pré-contrôle de joignabilité (échec rapide si le nom ne résout pas).
+            // On ne passe PAS l'IP à kwik : sa classe de connexion n'a qu'UN champ
+            // `host`, qui sert à la fois de serverName TLS et d'adresse. Lui donner
+            // l'IP casserait la vérification de nom du certificat — c'est
+            // exactement ce qui avait fait échouer le fix DoQ de la v2.1.1.
+            InetAddress.getByName(host)
 
             val queryBuffer = buildQuery(domain)
             val queryBytes = queryBuffer.array().copyOf(queryBuffer.limit())
@@ -153,31 +105,32 @@ object DnsTester {
 
             val conn = tech.kwik.core.QuicClientConnection.newBuilder()
                 .uri(java.net.URI("https://$host:$port"))
-                .host(resolved.hostAddress)
-                .port(port)
                 .applicationProtocol("doq")
                 .connectTimeout(java.time.Duration.ofMillis(5000))
                 .maxIdleTimeout(java.time.Duration.ofSeconds(5)) // évite un read qui gèle le speedtest
-                // noServerCertificateCheck OK ici : simple mesure de LATENCE, la réponse
-                // n'est jamais consommée comme résolution DNS (contrairement à DoQClient).
-                .noServerCertificateCheck()
+                // Le certificat est VALIDÉ, comme dans DoQClient : ces latences
+                // alimentent le classement sur lequel l'utilisateur choisit son
+                // résolveur, donc un MITM ne doit pas pouvoir peser dessus.
+                .customTrustManager(TlsTrust.forHost(host))
                 .build()
 
+            val timer = java.util.Timer(true)
+            timer.schedule(object : java.util.TimerTask() { override fun run() { runCatching { conn.close() } } }, 10_000L)
             try {
                 val start = System.currentTimeMillis()
                 conn.connect()
                 val stream = conn.createStream(true)
                 stream.outputStream.write(wireMsgBytes)
                 stream.outputStream.close()
-                val buf = ByteArray(4096)
-                val n = stream.inputStream.read(buf)
+                val response = DnsMessages.readFrame(stream.inputStream)
                 val elapsed = System.currentTimeMillis() - start
-                if (n > 12) elapsed else null
+                if (DnsMessages.matches(queryBytes, response)) elapsed else null
             } finally {
+                timer.cancel()
                 try { conn.close() } catch (_: Exception) {} // finally → pas de fuite sur exception
             }
         } catch (e: Exception) {
-            Log.e(TAG, "DoQ latency test failed for $url", e)
+            Log.w(TAG, "DoQ latency test failed for ${redactDnsUrl(url)} (${e.javaClass.simpleName})")
             null
         }
     }
@@ -200,66 +153,26 @@ object DnsTester {
 
             val sslFactory = javax.net.ssl.SSLSocketFactory.getDefault() as javax.net.ssl.SSLSocketFactory
             val start = System.currentTimeMillis()
-            (sslFactory.createSocket(hostname, 853) as javax.net.ssl.SSLSocket).use { socket ->
+            java.net.Socket().use { raw ->
+            raw.connect(java.net.InetSocketAddress(hostname, 853), 5000)
+            (sslFactory.createSocket(raw, hostname, 853, true) as javax.net.ssl.SSLSocket).use { socket ->
                 socket.soTimeout = 5000
+                // Sans ceci, la chaîne est validée mais PAS le nom : n'importe
+                // quel certificat valide pour n'importe quel domaine passerait.
+                TlsTrust.enableHostnameVerification(socket)
                 socket.startHandshake()
+                require(TlsTrust.hostnameMatches(socket.session.peerCertificates[0] as java.security.cert.X509Certificate, hostname)) { "TLS hostname mismatch" }
                 socket.outputStream.write(wireMsgBytes)
                 socket.outputStream.flush()
-                val lenBuf = ByteArray(2)
-                val inp = socket.inputStream
-                var read = 0
-                while (read < 2) { val n = inp.read(lenBuf, read, 2 - read); if (n < 0) break; read += n }
-                val respLen = ((lenBuf[0].toInt() and 0xFF) shl 8) or (lenBuf[1].toInt() and 0xFF)
-                val resp = ByteArray(respLen)
-                read = 0
-                while (read < respLen) { val n = inp.read(resp, read, respLen - read); if (n < 0) break; read += n }
+                val resp = DnsMessages.readFrame(socket.inputStream)
                 val elapsed = System.currentTimeMillis() - start
-                if (read >= 12) elapsed else null
+                if (DnsMessages.matches(queryBytes, resp)) elapsed else null
+            }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "DoT latency test failed for $hostname", e)
+            Log.w(TAG, "DoT latency test failed for ${redactDnsUrl(hostname)} (${e.javaClass.simpleName})")
             null
         }
     }
 
-    private fun parseResponse(data: ByteArray, length: Int): String? {
-        try {
-            val buffer = ByteBuffer.wrap(data, 0, length)
-            // Skip header (12 bytes)
-            buffer.position(12)
-
-            // Skip question section
-            var labels = 0
-            do {
-                labels = buffer.get().toInt()
-                if (labels > 0) {
-                    buffer.position(buffer.position() + labels)
-                }
-            } while (labels != 0)
-            buffer.position(buffer.position() + 4) // Skip QTYPE and QCLASS
-
-            // --- Answer Section ---
-            while (buffer.hasRemaining()) {
-                // Check for pointer (C0)
-                val name = buffer.getShort()
-                if ((name.toInt() and 0xC000) == 0xC000) {
-                    val type = buffer.getShort()
-                    buffer.getShort() // Class
-                    buffer.getInt()   // TTL
-                    val rdLength = buffer.getShort()
-
-                    if (type.toInt() == 1 && rdLength.toInt() == 4) { // A record
-                        val ipBytes = ByteArray(4)
-                        buffer.get(ipBytes)
-                        return ipBytes.joinToString(".") { (it.toInt() and 0xFF).toString() }
-                    }
-                }
-                // In a simple parser, we stop at the first A record.
-                break
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to parse DNS response", e)
-        }
-        return null
-    }
 }

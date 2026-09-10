@@ -14,6 +14,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import app.perfectdnsmanager.MainActivity
 import app.perfectdnsmanager.R
+import app.perfectdnsmanager.util.PrivateDnsGuard
 import java.net.InetAddress
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -70,9 +71,9 @@ class DotMonitorService : Service() {
     // un seul thread, une résolution coincée empêcherait les sondes suivantes de
     // DÉMARRER → f.get timeout sur une tâche jamais lancée → faux échecs → auto-repli
     // à tort. Un pool laisse chaque sonde démarrer et refléter le vrai état du DNS.
-    private val probeExecutor = Executors.newCachedThreadPool { r ->
+    private val probeExecutor = Executors.newFixedThreadPool(4, { r ->
         Thread(r, "DotProbe").apply { isDaemon = true }
-    }
+    })
     @Volatile private var monitoring = false
     /** Garantit qu'une seule séquence disable/stop s'exécute (anti double-repli). */
     private val stopping = java.util.concurrent.atomic.AtomicBoolean(false)
@@ -112,6 +113,9 @@ class DotMonitorService : Service() {
     private fun scheduleCheck() {
         handler.postDelayed({
             if (!monitoring) return@postDelayed
+            if (!PrivateDnsGuard.isStrictActive(this) || PrivateDnsGuard.specifier(this) != hostname) {
+                monitoring = false; stopSelf(); return@postDelayed
+            }
             val ok = probeDnsWithTimeout()
             if (!monitoring) return@postDelayed
             if (ok) {
@@ -153,16 +157,20 @@ class DotMonitorService : Service() {
         monitoring = false
         if (!stopping.compareAndSet(false, true)) return // déjà en cours (ex. tap "Désactiver")
         Thread {
-            val disabled = try { AdbDnsManager(this).disablePrivateDns() } catch (_: Exception) { false }
-            Log.i(T, "Auto-fallback: private DNS disabled=$disabled")
-            // Tout fait ICI (pas via handler) : si bgThread est déjà quitté, un post
-            // serait silencieusement perdu → `dot_active` resterait true (état zombie).
-            getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
-                .putBoolean("dot_active", false).apply()
-            isRunning = false
-            stopForegroundCompat(removeNotif = true) // retirer la persistante…
-            postAlert(getString(R.string.dot_autodisabled)) // …et heads-up d'info (channel HIGH)
-            stopSelf()
+            val freed = try { if (PrivateDnsGuard.specifier(this) != hostname) true else PrivateDnsGuard.tryDisable(this) } catch (_: Exception) { false }
+            Log.i(T, "Auto-fallback: private DNS freed=$freed")
+            if (freed) {
+                // Tout fait ICI (pas via handler) : si bgThread est déjà quitté, un post
+                // serait silencieusement perdu → `dot_active` resterait true (état zombie).
+                getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
+                    .putBoolean("dot_active", false).apply()
+                isRunning = false
+                stopForegroundCompat(removeNotif = true) // retirer la persistante…
+                postAlert(getString(R.string.dot_autodisabled)) // …et heads-up d'info (channel HIGH)
+                stopSelf()
+            } else {
+                onDisableFailed()
+            }
         }.start()
     }
 
@@ -171,13 +179,37 @@ class DotMonitorService : Service() {
         monitoring = false
         if (!stopping.compareAndSet(false, true)) return // déjà en cours (ex. auto-repli)
         Thread {
-            try { AdbDnsManager(this).disablePrivateDns() } catch (_: Exception) {}
-            getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
-                .putBoolean("dot_active", false).apply()
-            isRunning = false
-            stopForegroundCompat(removeNotif = true)
-            stopSelf()
+            val freed = try { if (PrivateDnsGuard.specifier(this) != hostname) true else PrivateDnsGuard.tryDisable(this) } catch (_: Exception) { false }
+            if (freed) {
+                getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
+                    .putBoolean("dot_active", false).apply()
+                isRunning = false
+                stopForegroundCompat(removeNotif = true)
+                stopSelf()
+            } else {
+                onDisableFailed()
+            }
         }.start()
+    }
+
+    /**
+     * On n'a PAS pu couper le DNS privé (débogage ADB désactivé depuis
+     * l'activation, WRITE_SECURE_SETTINGS révoquée, réglage posé par la box…).
+     *
+     * Surtout ne pas disparaître en silence : l'utilisateur croirait son
+     * internet rétabli alors que le mode strict tourne toujours. On garde la
+     * notification persistante, on bascule son texte sur l'état « verrouillé »
+     * et on ajoute un raccourci vers l'écran système, seul endroit où le
+     * réglage peut encore être coupé. `stopping` est relâché pour qu'un
+     * nouvel appui sur « Désactiver » puisse retenter (si l'ADB revient).
+     */
+    private fun onDisableFailed() {
+        Log.w(T, "Désactivation impossible : DNS privé verrouillé au niveau système")
+        stopping.set(false)
+        // Le health-check n'est PAS relancé : il ne pourrait que ré-échouer en
+        // boucle et re-notifier toutes les 2 min sans rien pouvoir corriger.
+        notify(buildNotif(warning = true, locked = true))
+        postAlert(getString(R.string.dot_disable_failed), withSettings = true)
     }
 
     private fun stopForegroundCompat(removeNotif: Boolean) {
@@ -205,9 +237,9 @@ class DotMonitorService : Service() {
     }
 
     /** Poste une alerte (heads-up) sur le channel HIGH, en plus de la notif persistante. */
-    private fun postAlert(text: String) {
+    private fun postAlert(text: String, withSettings: Boolean = false) {
         ensureChannel()
-        val n = NotificationCompat.Builder(this, CH_ID_ALERT)
+        val b = NotificationCompat.Builder(this, CH_ID_ALERT)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(text)
             .setStyle(NotificationCompat.BigTextStyle().bigText(text))
@@ -216,8 +248,9 @@ class DotMonitorService : Service() {
             .addAction(disableAction())
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .build()
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(NOTIF_ID_ALERT, n)
+        if (withSettings) b.addAction(settingsAction())
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+            .notify(NOTIF_ID_ALERT, b.build())
     }
 
     private fun disableAction(): NotificationCompat.Action {
@@ -230,15 +263,36 @@ class DotMonitorService : Service() {
     }
 
     private fun contentPi(): PendingIntent = PendingIntent.getActivity(
-        this, 0, Intent(this, MainActivity::class.java),
+        this, 0, Intent(this, app.perfectdnsmanager.NotificationActivity::class.java),
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
     )
 
-    private fun buildNotif(warning: Boolean): Notification {
+    /**
+     * Raccourci vers l'écran système « DNS privé ». On passe par MainActivity
+     * (et non par un Intent Settings direct) parce que l'action
+     * `PRIVATE_DNS_SETTINGS` est absente de certaines ROMs de box TV : le
+     * PendingIntent serait alors mort au tap, alors que MainActivity peut
+     * dérouler la cascade de repli de PrivateDnsGuard.openSettings().
+     */
+    private fun settingsAction(): NotificationCompat.Action {
+        val i = Intent(this, app.perfectdnsmanager.NotificationActivity::class.java)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            .putExtra(MainActivity.EXTRA_OPEN_PRIVATE_DNS_SETTINGS, true)
+        val pi = PendingIntent.getActivity(
+            this, 2, i,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        return NotificationCompat.Action(0, getString(R.string.private_dns_open_settings), pi)
+    }
+
+    private fun buildNotif(warning: Boolean, locked: Boolean = false): Notification {
         ensureChannel()
-        val text = if (warning) getString(R.string.dot_warning_unreachable)
-        else getString(R.string.dot_active_fmt, label.ifEmpty { redactHost(hostname) })
-        return NotificationCompat.Builder(this, CH_ID)
+        val text = when {
+            locked -> getString(R.string.dot_locked_notif)
+            warning -> getString(R.string.dot_warning_unreachable)
+            else -> getString(R.string.dot_active_fmt, label.ifEmpty { redactHost(hostname) })
+        }
+        val b = NotificationCompat.Builder(this, CH_ID)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(text)
             .setStyle(NotificationCompat.BigTextStyle().bigText(text))
@@ -247,7 +301,8 @@ class DotMonitorService : Service() {
             .addAction(disableAction())
             .setOngoing(true)
             .setPriority(if (warning) NotificationCompat.PRIORITY_HIGH else NotificationCompat.PRIORITY_LOW)
-            .build()
+        if (locked) b.addAction(settingsAction())
+        return b.build()
     }
 
     private fun notify(n: Notification) {

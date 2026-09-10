@@ -539,4 +539,23 @@
     <plurals name="domain_tester_unblocks_fmt">
         <item quantity="other">%1$s 解除内容屏蔽</item>
     </plurals>
+    <!-- DNS privé (DoT) verrouillé au niveau système -->
+    <string name="retry">重试</string>
+    <string name="private_dns_locked_title">本设备已启用私人 DNS</string>
+    <string name="private_dns_locked_message">Android 设置中配置了私人 DNS（DoT），应用无法将其关闭（ADB 调试不可用）。\n\n只要它保持开启，DoH 或 DoQ 就无法生效：Android 仍会通过 DoT 解析，你甚至可能完全失去网络。\n\n请在 Android 设置中关闭“私人 DNS”，然后重试。</string>
+    <string name="private_dns_locked_message_fmt">Android 设置中配置了指向 %1$s 的私人 DNS（DoT），应用无法将其关闭（ADB 调试不可用）。\n\n只要它保持开启，DoH 或 DoQ 就无法生效：Android 仍会通过 DoT 解析，你甚至可能完全失去网络。\n\n请在 Android 设置中关闭“私人 DNS”，然后重试。</string>
+    <string name="private_dns_open_settings">打开设置</string>
+    <string name="private_dns_settings_unavailable">无法在本设备上打开设置。请前往 设置 → 网络 → 私人 DNS → 关闭。</string>
+    <string name="private_dns_locked_boot">已取消重新连接：私人 DNS（DoT）处于开启状态且应用无法关闭它。点按可打开设置。</string>
+    <string name="dot_locked_notif">⚠ 无法关闭私人 DNS（ADB 调试不可用）。请在 设置 → 网络 → 私人 DNS 中关闭。</string>
+    <string name="dot_disable_failed">关闭失败：私人 DNS 在系统层面被锁定。请打开设置手动关闭。</string>
+    <string name="dns_type_standard">标准</string>
+    <string name="nextdns_profile_name_fmt">配置 %1$s</string>
+    <string name="dot_active_fmt">私人 DNS 已启用：%1$s。若失去网络连接，请点按“停用”。</string>
+    <string name="dot_warning_unreachable">⚠ 私人 DNS 服务器已无响应 — 网络可能中断。正在自动关闭…</string>
+    <string name="dot_autodisabled">已自动关闭私人 DNS（服务器不可达）。网络已恢复。你可以在应用中重新启用。</string>
+    <string name="dot_disable_action">停用</string>
+    <string name="report_undetermined">无法判定</string>
+    <string name="md_blocking_undetermined">测试结果不确定：DNS 解析失败（网络不可用或服务器无响应）。无法就是否被屏蔽下结论。</string>
+    <string name="import_profiles_rejected">⚠ 已丢弃 %1$d 个配置：端点无效或不完整。</string>
 </resources>

@@ -112,7 +112,7 @@ class SettingsActivity : AppCompatActivity() {
         // Statut ADB
         val adbEnabled = Settings.Global.getInt(contentResolver, Settings.Global.ADB_ENABLED, 0) == 1
         tvAdbStatus.text = if (adbEnabled) getString(R.string.adb_status_active) else getString(R.string.adb_status_inactive)
-        tvAdbStatus.setTextColor(if (adbEnabled) getColor(android.R.color.holo_green_light) else getColor(android.R.color.holo_red_light))
+        tvAdbStatus.setTextColor(if (adbEnabled) androidx.core.content.ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_green_light) else androidx.core.content.ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_red_light))
 
         // Switch démarrage DNS auto (option fusionnée — anciennement 2 toggles)
         switchAutoReconnect.isChecked = prefs.getBoolean("auto_reconnect_dns", false)
@@ -191,24 +191,7 @@ class SettingsActivity : AppCompatActivity() {
         switchDisableIpv6.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("disable_ipv6", isChecked).apply()
             // Auto-reconnexion VPN si actif
-            if (app.perfectdnsmanager.service.DnsVpnService.isVpnRunning) {
-                val profileJson = prefs.getString("selected_profile_json", null)
-                if (profileJson != null) {
-                    try {
-                        val profile = com.google.gson.Gson().fromJson(profileJson, app.perfectdnsmanager.data.DnsProfile::class.java)
-                        if (profile.type != app.perfectdnsmanager.data.DnsType.DOT) {
-                            val intent = Intent(this, app.perfectdnsmanager.service.DnsVpnService::class.java).apply {
-                                action = app.perfectdnsmanager.service.DnsVpnService.ACTION_START
-                                putExtra(app.perfectdnsmanager.service.DnsVpnService.EXTRA_DNS_PRIMARY, profile.primary)
-                                profile.secondary?.let { putExtra(app.perfectdnsmanager.service.DnsVpnService.EXTRA_DNS_SECONDARY, it) }
-                            }
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(intent)
-                            else startService(intent)
-                            Toast.makeText(this, getString(R.string.vpn_reconnecting_ipv6), Toast.LENGTH_SHORT).show()
-                        }
-                    } catch (_: Exception) {}
-                }
-            }
+            restartVpnIfRunning(R.string.vpn_reconnecting_ipv6)
         }
 
         // ── DNS DoT via ADB : toggle show/hide ADB sub-section ──
@@ -249,7 +232,7 @@ class SettingsActivity : AppCompatActivity() {
             if (isChecked) {
                 val adbNow = Settings.Global.getInt(contentResolver, Settings.Global.ADB_ENABLED, 0) == 1
                 tvAdbStatus.text = if (adbNow) getString(R.string.adb_status_active) else getString(R.string.adb_status_inactive)
-                tvAdbStatus.setTextColor(if (adbNow) getColor(android.R.color.holo_green_light) else getColor(android.R.color.holo_red_light))
+                tvAdbStatus.setTextColor(if (adbNow) androidx.core.content.ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_green_light) else androidx.core.content.ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_red_light))
             }
         }
 
@@ -292,12 +275,12 @@ class SettingsActivity : AppCompatActivity() {
                             when {
                                 error == "ADB_NOT_REACHABLE" -> {
                                     tvPermissionStatus?.text = getString(R.string.self_grant_adb_unreachable)
-                                    tvPermissionStatus?.setTextColor(getColor(android.R.color.holo_red_light))
+                                    tvPermissionStatus?.setTextColor(androidx.core.content.ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_red_light))
                                     showAdbUnreachableHelp()
                                 }
                                 error.startsWith("GRANT_FAILED:") -> {
                                     tvPermissionStatus?.text = getString(R.string.self_grant_failed)
-                                    tvPermissionStatus?.setTextColor(getColor(android.R.color.holo_red_light))
+                                    tvPermissionStatus?.setTextColor(androidx.core.content.ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_red_light))
                                 }
                                 error == "GRANT_NOT_EFFECTIVE" -> {
                                     tvPermissionStatus?.text = getString(R.string.self_grant_not_effective)
@@ -305,7 +288,7 @@ class SettingsActivity : AppCompatActivity() {
                                 }
                                 else -> {
                                     tvPermissionStatus?.text = getString(R.string.self_grant_error, error)
-                                    tvPermissionStatus?.setTextColor(getColor(android.R.color.holo_red_light))
+                                    tvPermissionStatus?.setTextColor(androidx.core.content.ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_red_light))
                                 }
                             }
                         }
@@ -940,24 +923,7 @@ class SettingsActivity : AppCompatActivity() {
                 saveExcludedApps(selected)
                 Toast.makeText(this, getString(R.string.split_tunnel_saved), Toast.LENGTH_SHORT).show()
 
-                if (app.perfectdnsmanager.service.DnsVpnService.isVpnRunning) {
-                    val profileJson = prefs.getString("selected_profile_json", null)
-                    if (profileJson != null) {
-                        try {
-                            val profile = com.google.gson.Gson().fromJson(profileJson, app.perfectdnsmanager.data.DnsProfile::class.java)
-                            if (profile.type != app.perfectdnsmanager.data.DnsType.DOT) {
-                                val intent = Intent(this, app.perfectdnsmanager.service.DnsVpnService::class.java).apply {
-                                    action = app.perfectdnsmanager.service.DnsVpnService.ACTION_START
-                                    putExtra(app.perfectdnsmanager.service.DnsVpnService.EXTRA_DNS_PRIMARY, profile.primary)
-                                    profile.secondary?.let { putExtra(app.perfectdnsmanager.service.DnsVpnService.EXTRA_DNS_SECONDARY, it) }
-                                }
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(intent)
-                                else startService(intent)
-                                Toast.makeText(this, getString(R.string.split_tunnel_restart_vpn), Toast.LENGTH_SHORT).show()
-                            }
-                        } catch (_: Exception) {}
-                    }
-                }
+                restartVpnIfRunning(R.string.split_tunnel_restart_vpn)
             }
             .setNegativeButton(getString(R.string.uncheck_all)) { _, _ ->
                 for (i in checked.indices) checked[i] = false
@@ -965,23 +931,7 @@ class SettingsActivity : AppCompatActivity() {
                 saveExcludedApps(emptySet())
                 Toast.makeText(this, getString(R.string.all_apps_unchecked), Toast.LENGTH_SHORT).show()
 
-                if (app.perfectdnsmanager.service.DnsVpnService.isVpnRunning) {
-                    val profileJson = prefs.getString("selected_profile_json", null)
-                    if (profileJson != null) {
-                        try {
-                            val profile = com.google.gson.Gson().fromJson(profileJson, app.perfectdnsmanager.data.DnsProfile::class.java)
-                            if (profile.type != app.perfectdnsmanager.data.DnsType.DOT) {
-                                val intent = Intent(this, app.perfectdnsmanager.service.DnsVpnService::class.java).apply {
-                                    action = app.perfectdnsmanager.service.DnsVpnService.ACTION_START
-                                    putExtra(app.perfectdnsmanager.service.DnsVpnService.EXTRA_DNS_PRIMARY, profile.primary)
-                                    profile.secondary?.let { putExtra(app.perfectdnsmanager.service.DnsVpnService.EXTRA_DNS_SECONDARY, it) }
-                                }
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(intent)
-                                else startService(intent)
-                            }
-                        } catch (_: Exception) {}
-                    }
-                }
+                restartVpnIfRunning(null)
             }
             .create()
 
@@ -1303,6 +1253,21 @@ class SettingsActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun performImport(json: String, includeSettings: Boolean) {
+        lifecycleScope.launch {
+            try {
+                val result = kotlinx.coroutines.withContext(Dispatchers.IO) {
+                    app.perfectdnsmanager.data.ConfigManager(applicationContext)
+                        .importConfig(json, includeSettings)
+                }
+                showImportResult(result)
+            } catch (e: Exception) {
+                Toast.makeText(this@SettingsActivity, getString(R.string.invalid_json,
+                    e.message ?: "Invalid configuration"), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
     private fun confirmAndImport(json: String) {
         try {
             val configManager = app.perfectdnsmanager.data.ConfigManager(this)
@@ -1312,12 +1277,10 @@ class SettingsActivity : AppCompatActivity() {
                 .setTitle(getString(R.string.confirm_import_title))
                 .setMessage(getString(R.string.confirm_import_message, summary))
                 .setPositiveButton(getString(R.string.import_with_settings)) { _, _ ->
-                    val result = configManager.importConfig(json, importSettings = true)
-                    showImportResult(result)
+                    performImport(json, true)
                 }
                 .setNeutralButton(getString(R.string.import_without_settings)) { _, _ ->
-                    val result = configManager.importConfig(json, importSettings = false)
-                    showImportResult(result)
+                    performImport(json, false)
                 }
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show()
@@ -1330,13 +1293,13 @@ class SettingsActivity : AppCompatActivity() {
         val granted = adbDnsManager.isPermissionGranted()
         if (granted) {
             tvPermissionStatus?.text = getString(R.string.permission_granted)
-            tvPermissionStatus?.setTextColor(getColor(android.R.color.holo_green_light))
+            tvPermissionStatus?.setTextColor(androidx.core.content.ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_green_light))
             btnSelfGrant?.text = getString(R.string.permission_already_granted)
             btnSelfGrant?.isEnabled = false
             btnSelfGrant?.alpha = 0.5f
         } else {
             tvPermissionStatus?.text = getString(R.string.permission_not_granted)
-            tvPermissionStatus?.setTextColor(getColor(android.R.color.holo_red_light))
+            tvPermissionStatus?.setTextColor(androidx.core.content.ContextCompat.getColor(this@SettingsActivity, android.R.color.holo_red_light))
             btnSelfGrant?.text = getString(R.string.self_grant_button)
             btnSelfGrant?.isEnabled = true
             btnSelfGrant?.alpha = 1f
@@ -1370,6 +1333,10 @@ class SettingsActivity : AppCompatActivity() {
         msg.appendLine(getString(R.string.import_profiles_count, result.profileCount))
         msg.appendLine(getString(R.string.import_rewrite_count, result.rewriteRuleCount))
         msg.appendLine(getString(R.string.import_nextdns_count, result.nextDnsProfileCount))
+        if (result.rejectedProfileCount > 0) {
+            // Le silence sur des profils écartés serait pire que le rejet lui-même.
+            msg.appendLine(getString(R.string.import_profiles_rejected, result.rejectedProfileCount))
+        }
         if (result.hasSelectedProfile) msg.appendLine(getString(R.string.import_selected_restored))
         if (result.settingsRestored) msg.appendLine(getString(R.string.import_settings_restored))
 
@@ -1378,5 +1345,34 @@ class SettingsActivity : AppCompatActivity() {
             .setMessage(msg.toString())
             .setPositiveButton("OK", null)
             .show()
+    }
+
+    /**
+     * Relance le VPN avec le profil courant pour qu'il reprenne un réglage qui
+     * n'est lu qu'au démarrage du tunnel (IPv6, split tunneling). No-op si le
+     * VPN ne tourne pas, ou si le profil actif est en DoT (pas de tunnel).
+     *
+     * Ce bloc était copié trois fois à l'identique dans ce fichier.
+     *
+     * @param toastRes message à afficher, ou null pour rester silencieux.
+     */
+    private fun restartVpnIfRunning(toastRes: Int?) {
+        if (!app.perfectdnsmanager.service.DnsVpnService.isVpnRunning) return
+        val profileJson = prefs.getString("selected_profile_json", null) ?: return
+        try {
+            val profile = com.google.gson.Gson()
+                .fromJson(profileJson, app.perfectdnsmanager.data.DnsProfile::class.java)
+            if (profile == null || profile.type == app.perfectdnsmanager.data.DnsType.DOT) return
+            val intent = Intent(this, app.perfectdnsmanager.service.DnsVpnService::class.java).apply {
+                action = app.perfectdnsmanager.service.DnsVpnService.ACTION_START
+                putExtra(app.perfectdnsmanager.service.DnsVpnService.EXTRA_DNS_PRIMARY, profile.primary)
+                profile.secondary?.let {
+                    putExtra(app.perfectdnsmanager.service.DnsVpnService.EXTRA_DNS_SECONDARY, it)
+                }
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(intent)
+            else startService(intent)
+            toastRes?.let { Toast.makeText(this, getString(it), Toast.LENGTH_SHORT).show() }
+        } catch (_: Exception) {}
     }
 }

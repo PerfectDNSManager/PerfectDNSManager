@@ -47,7 +47,9 @@ class AdbClient(private val host: String, private val port: Int, private val key
     private val outputStream get() = if (useTls) tlsOutputStream else plainOutputStream
 
     fun connect() {
-        socket = Socket(host, port)
+        socket = Socket()
+        socket.connect(java.net.InetSocketAddress(host, port), 10_000)
+        socket.soTimeout = 10_000
         socket.tcpNoDelay = true
         plainInputStream = DataInputStream(socket.getInputStream())
         plainOutputStream = DataOutputStream(socket.getOutputStream())
@@ -72,7 +74,7 @@ class AdbClient(private val host: String, private val port: Int, private val key
 
             message = read()
         } else if (message.command == A_AUTH) {
-            if (message.command != A_AUTH && message.arg0 != ADB_AUTH_TOKEN) error("not A_AUTH ADB_AUTH_TOKEN")
+            if (message.command != A_AUTH || message.arg0 != ADB_AUTH_TOKEN) error("not A_AUTH ADB_AUTH_TOKEN")
             write(A_AUTH, ADB_AUTH_SIGNATURE, 0, key.sign(message.data))
 
             message = read()
@@ -139,6 +141,7 @@ class AdbClient(private val host: String, private val port: Int, private val key
         val dataLength = buffer.int
         val checksum = buffer.int
         val magic = buffer.int
+        require(dataLength in 0..(1024 * 1024)) { "Invalid ADB payload length" }
         val data: ByteArray?
         if (dataLength >= 0) {
             data = ByteArray(dataLength)

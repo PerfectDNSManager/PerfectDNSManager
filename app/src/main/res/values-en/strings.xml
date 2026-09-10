@@ -560,4 +560,23 @@
         <item quantity="one">%1$s unblocks the content</item>
         <item quantity="other">%1$s unblock the content</item>
     </plurals>
+    <!-- DNS privé (DoT) verrouillé au niveau système -->
+    <string name="retry">Retry</string>
+    <string name="private_dns_locked_title">Private DNS is active on this device</string>
+    <string name="private_dns_locked_message">A private DNS (DoT) is set in the Android settings and the app cannot turn it off (ADB debugging unavailable).\n\nWhile it stays on, a DoH or DoQ profile cannot work: Android would keep resolving over DoT, and you could lose internet access entirely.\n\nTurn “Private DNS” off in the Android settings, then try again.</string>
+    <string name="private_dns_locked_message_fmt">A private DNS (DoT) pointing to %1$s is set in the Android settings and the app cannot turn it off (ADB debugging unavailable).\n\nWhile it stays on, a DoH or DoQ profile cannot work: Android would keep resolving over DoT, and you could lose internet access entirely.\n\nTurn “Private DNS” off in the Android settings, then try again.</string>
+    <string name="private_dns_open_settings">Open settings</string>
+    <string name="private_dns_settings_unavailable">Could not open the settings on this device. Go to Settings → Network → Private DNS → Off.</string>
+    <string name="private_dns_locked_boot">Reconnection cancelled: a private DNS (DoT) is active and the app cannot turn it off. Tap to open the settings.</string>
+    <string name="dot_locked_notif">⚠ Cannot turn the private DNS off (ADB debugging unavailable). Turn it off in Settings → Network → Private DNS.</string>
+    <string name="dot_disable_failed">Could not turn it off: the private DNS is locked at system level. Open the settings to disable it manually.</string>
+    <string name="dns_type_standard">Standard</string>
+    <string name="nextdns_profile_name_fmt">Profile %1$s</string>
+    <string name="dot_active_fmt">Private DNS active: %1$s. Tap “Disable” if you lose internet access.</string>
+    <string name="dot_warning_unreachable">⚠ The private DNS server is no longer responding — internet may go down. Turning it off automatically…</string>
+    <string name="dot_autodisabled">Private DNS turned off automatically (server unreachable). Internet restored. You can re-enable it from the app.</string>
+    <string name="dot_disable_action">Disable</string>
+    <string name="report_undetermined">Undetermined</string>
+    <string name="md_blocking_undetermined">Inconclusive test: DNS resolution failed (network unavailable or server silent). No conclusion about blocking can be drawn.</string>
+    <string name="import_profiles_rejected">⚠ %1$d profile(s) discarded: invalid or incomplete endpoint.</string>
 </resources>

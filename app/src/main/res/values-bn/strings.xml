@@ -541,4 +541,23 @@
         <item quantity="one">%1$s কন্টেন্ট আনব্লক করে</item>
         <item quantity="other">%1$s কন্টেন্ট আনব্লক করে</item>
     </plurals>
+    <!-- DNS privé (DoT) verrouillé au niveau système -->
+    <string name="retry">আবার চেষ্টা করুন</string>
+    <string name="private_dns_locked_title">এই ডিভাইসে ব্যক্তিগত DNS চালু আছে</string>
+    <string name="private_dns_locked_message">Android সেটিংসে একটি ব্যক্তিগত DNS (DoT) সেট করা আছে এবং অ্যাপ সেটি বন্ধ করতে পারছে না (ADB ডিবাগিং নেই)।\n\nএটি চালু থাকা অবস্থায় DoH বা DoQ কাজ করবে না: Android DoT দিয়েই নাম সমাধান করতে থাকবে, এমনকি ইন্টারনেট পুরোপুরি বন্ধ হয়ে যেতে পারে।\n\nAndroid সেটিংসে «ব্যক্তিগত DNS» বন্ধ করে আবার চেষ্টা করুন।</string>
+    <string name="private_dns_locked_message_fmt">Android সেটিংসে %1$s-এর জন্য একটি ব্যক্তিগত DNS (DoT) সেট করা আছে এবং অ্যাপ সেটি বন্ধ করতে পারছে না (ADB ডিবাগিং নেই)।\n\nএটি চালু থাকা অবস্থায় DoH বা DoQ কাজ করবে না: Android DoT দিয়েই নাম সমাধান করতে থাকবে, এমনকি ইন্টারনেট পুরোপুরি বন্ধ হয়ে যেতে পারে।\n\nAndroid সেটিংসে «ব্যক্তিগত DNS» বন্ধ করে আবার চেষ্টা করুন।</string>
+    <string name="private_dns_open_settings">সেটিংস খুলুন</string>
+    <string name="private_dns_settings_unavailable">এই ডিভাইসে সেটিংস খোলা যায়নি। সেটিংস → নেটওয়ার্ক → ব্যক্তিগত DNS → বন্ধ-এ যান।</string>
+    <string name="private_dns_locked_boot">পুনরায় সংযোগ বাতিল: একটি ব্যক্তিগত DNS (DoT) চালু আছে যা অ্যাপ বন্ধ করতে পারে না। সেটিংস খুলতে ট্যাপ করুন।</string>
+    <string name="dot_locked_notif">⚠ ব্যক্তিগত DNS বন্ধ করা যাচ্ছে না (ADB ডিবাগিং নেই)। সেটিংস → নেটওয়ার্ক → ব্যক্তিগত DNS-এ গিয়ে বন্ধ করুন।</string>
+    <string name="dot_disable_failed">বন্ধ করা যায়নি: ব্যক্তিগত DNS সিস্টেম স্তরে লক করা। ম্যানুয়ালি বন্ধ করতে সেটিংস খুলুন।</string>
+    <string name="dns_type_standard">স্ট্যান্ডার্ড</string>
+    <string name="nextdns_profile_name_fmt">প্রোফাইল %1$s</string>
+    <string name="dot_active_fmt">ব্যক্তিগত DNS চালু: %1$s। ইন্টারনেট বন্ধ হলে «বন্ধ করুন» চাপুন।</string>
+    <string name="dot_warning_unreachable">⚠ ব্যক্তিগত DNS সার্ভার সাড়া দিচ্ছে না — ইন্টারনেট বন্ধ হয়ে যেতে পারে। স্বয়ংক্রিয়ভাবে বন্ধ করা হচ্ছে…</string>
+    <string name="dot_autodisabled">ব্যক্তিগত DNS স্বয়ংক্রিয়ভাবে বন্ধ করা হয়েছে (সার্ভারে পৌঁছানো যায়নি)। ইন্টারনেট ফিরে এসেছে। অ্যাপ থেকে আবার চালু করতে পারেন।</string>
+    <string name="dot_disable_action">বন্ধ করুন</string>
+    <string name="report_undetermined">অনির্ধারিত</string>
+    <string name="md_blocking_undetermined">পরীক্ষা চূড়ান্ত নয়: DNS সমাধান ব্যর্থ হয়েছে (নেটওয়ার্ক অনুপলব্ধ বা সার্ভার নীরব)। ব্লক করা হয়েছে কি না, সে বিষয়ে সিদ্ধান্ত নেওয়া যাচ্ছে না।</string>
+    <string name="import_profiles_rejected">⚠ %1$d টি প্রোফাইল বাদ দেওয়া হয়েছে: এন্ডপয়েন্ট অবৈধ বা অসম্পূর্ণ।</string>
 </resources>

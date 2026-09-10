@@ -129,6 +129,9 @@ public class AdbProtocol {
             adbMessage.payloadLength = byteBufferOrder.getInt();
             adbMessage.checksum = byteBufferOrder.getInt();
             adbMessage.magic = byteBufferOrder.getInt();
+            if (adbMessage.payloadLength < 0 || adbMessage.payloadLength > 1024 * 1024) {
+                throw new IOException("Invalid ADB payload length");
+            }
             int i4 = adbMessage.payloadLength;
             if (i4 != 0) {
                 adbMessage.payload = new byte[i4];

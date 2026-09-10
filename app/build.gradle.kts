@@ -37,6 +37,7 @@ android {
         versionCode = computedVersionCode
         versionName = computedVersionName
 
+        buildConfigField("String", "PDM_BASE_URL", "\"${if (vSuffix.startsWith("beta")) "https://beta.perfectdnsmanager.app" else "https://perfectdnsmanager.app"}\"")
         buildConfigField("String", "BUILD_TIMESTAMP", "\"$buildTimestamp\"")
         buildConfigField("String", "VERSION_DISPLAY", "\"v$computedVersionName (build $vBuild — $buildTimestamp)\"")
         buildConfigField("int", "BUILD_NUMBER", "$vBuild")
@@ -68,6 +69,8 @@ android {
                 "META-INF/NOTICE.md",
                 "META-INF/DEPENDENCIES",
                 "META-INF/*.kotlin_module",
+                "META-INF/services/java.net.spi.InetAddressResolverProvider",
+                "META-INF/services/sun.net.spi.nameservice.NameServiceDescriptor",
             )
         }
     }
@@ -87,6 +90,16 @@ android {
 
     buildTypes {
         release {
+            // R8 : l'app était livrée sans minification ni élagage des ressources,
+            // avec kwik + BouncyCastle + Conscrypt embarqués en entier. Les règles
+            // de conservation (réflexion Gson, JNI, providers crypto) sont dans
+            // app/proguard-rules.pro.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             val ksPath = System.getenv("KEYSTORE_FILE")
                 ?: rootProject.file("signing/release-keystore.jks").takeIf { it.exists() }?.absolutePath
             if (ksPath != null) {
@@ -123,9 +136,8 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
-    implementation("com.github.kittinunf.fuel:fuel-android:2.3.1")
-    implementation("com.github.kittinunf.result:result:3.1.0")
+    implementation("dnsjava:dnsjava:3.6.5")
+    implementation("org.slf4j:slf4j-nop:1.7.36")
 
     // ─── ADB pairing (Android 11+ Wireless Debugging) ───
     // Vendored from Shizuku (Apache 2.0) : voir app/src/main/java/moe/shizuku/manager/adb/.

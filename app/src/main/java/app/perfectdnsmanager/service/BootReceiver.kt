@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import app.perfectdnsmanager.MainActivity
 import app.perfectdnsmanager.R
 import app.perfectdnsmanager.data.DnsProfile
+import app.perfectdnsmanager.util.PrivateDnsGuard
 import app.perfectdnsmanager.util.redactDnsUrl
 import com.google.gson.Gson
 
@@ -23,6 +24,7 @@ class BootReceiver : BroadcastReceiver() {
         private const val BOOT_DELAY_MS = 8_000L
         private const val CHANNEL_ID = "boot_notification"
         private const val NOTIF_ID = 9001
+        private const val NOTIF_ID_DNS_LOCKED = 9002
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -68,6 +70,18 @@ class BootReceiver : BroadcastReceiver() {
         Thread {
             try {
                 Thread.sleep(BOOT_DELAY_MS)
+
+                // Un DNS privé strict encore posé au niveau système empêche le
+                // VPN de fonctionner : le résolveur reste en DoT et, si ce
+                // serveur n'est pas joignable, le mode strict n'a pas de repli
+                // → plus aucune résolution. On tente de le couper ; verrouillé,
+                // on renonce à la reconnexion et on prévient, plutôt que de
+                // démarrer un VPN qui laisserait l'appareil sans internet.
+                if (PrivateDnsGuard.isStrictActive(context) && !PrivateDnsGuard.tryDisable(context)) {
+                    Log.w(TAG, "DNS privé verrouillé au niveau système : reconnexion VPN annulée")
+                    postPrivateDnsLockedNotification(context)
+                    return@Thread
+                }
 
                 // Check if VPN permission is granted (prepare() returns null if OK)
                 val vpnPrepare = VpnService.prepare(context)
@@ -119,9 +133,38 @@ class BootReceiver : BroadcastReceiver() {
         }
     }
 
+    /**
+     * Le DNS privé (DoT) est verrouillé au niveau système : on ne peut ni le
+     * couper, ni monter le VPN sans casser la résolution. On envoie
+     * l'utilisateur vers l'écran système via MainActivity.
+     */
+    private fun postPrivateDnsLockedNotification(context: Context) {
+        ensureNotificationChannel(context)
+        val intent = Intent(context, app.perfectdnsmanager.NotificationActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra(MainActivity.EXTRA_OPEN_PRIVATE_DNS_SETTINGS, true)
+        }
+        val pi = PendingIntent.getActivity(
+            context, 2, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val text = context.getString(R.string.private_dns_locked_boot)
+        val notif = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(context.getString(R.string.app_name))
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .setContentIntent(pi)
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        nm.notify(NOTIF_ID_DNS_LOCKED, notif)
+    }
+
     private fun postVpnPermissionNotification(context: Context) {
         ensureNotificationChannel(context)
-        val intent = Intent(context, MainActivity::class.java).apply {
+        val intent = Intent(context, app.perfectdnsmanager.NotificationActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("AUTO_RECONNECT", true)
         }

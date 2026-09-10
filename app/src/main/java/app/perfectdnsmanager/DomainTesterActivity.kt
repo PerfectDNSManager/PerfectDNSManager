@@ -77,7 +77,7 @@ class DomainTesterActivity : AppCompatActivity() {
             text = getString(R.string.back_arrow)
             setTextColor(pdmTextPrimary())
             setBackgroundResource(R.drawable.focusable_item_background)
-            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+            if (android.os.Build.VERSION.SDK_INT >= 23) foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             isFocusable = true
             textSize = 13f
             minWidth = 0
@@ -139,7 +139,7 @@ class DomainTesterActivity : AppCompatActivity() {
             text = getString(R.string.domain_tester_add)
             setTextColor(pdmAccent())
             setBackgroundResource(R.drawable.pdm_btn_primary)
-            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+            if (android.os.Build.VERSION.SDK_INT >= 23) foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             isFocusable = true
             textSize = 14f
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
@@ -165,7 +165,7 @@ class DomainTesterActivity : AppCompatActivity() {
             text = dnsButtonText()
             setTextColor(pdmAccentAlt())
             setBackgroundResource(R.drawable.focusable_item_background)
-            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+            if (android.os.Build.VERSION.SDK_INT >= 23) foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             isFocusable = true
             textSize = 14f
             setTypeface(typeface, android.graphics.Typeface.BOLD)
@@ -187,7 +187,7 @@ class DomainTesterActivity : AppCompatActivity() {
             text = getString(R.string.domain_tester_run)
             setTextColor(pdmAccentAlt())
             setBackgroundResource(R.drawable.pdm_btn_info)
-            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+            if (android.os.Build.VERSION.SDK_INT >= 23) foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             isFocusable = true
             textSize = 14f
             setTypeface(typeface, android.graphics.Typeface.BOLD)
@@ -528,7 +528,13 @@ class DomainTesterActivity : AppCompatActivity() {
 
                     // Always test ISP DNS first
                     val ispResult = UrlBlockingTester.resolveViaProtectedSocket(this, entry.domain)
-                    val ispIcon = if (ispResult.isBlocked) "\u274C" else "\u2705"
+                    // ⚠ = le test n'a pas abouti (réseau, DNS muet) — distinct
+                    // d'un blocage constaté, qu'on ne doit pas inventer.
+                    val ispIcon = when {
+                        ispResult.isUnknown -> "\u26A0\uFE0F"
+                        ispResult.isBlocked -> "\u274C"
+                        else -> "\u2705"
+                    }
                     val ispLabel = if (ispResult.authorityLabel != null)
                         "${ispResult.ip ?: labelNoARecord} (${ispResult.authorityLabel})"
                     else
@@ -564,7 +570,7 @@ class DomainTesterActivity : AppCompatActivity() {
                             joined
                         )
                         sb.appendLine("  \u2192 $msg")
-                    } else if (!ispResult.isBlocked) {
+                    } else if (ispResult.status == UrlBlockingTester.Status.ACCESSIBLE) {
                         sb.appendLine("  \u2192 $labelIspNotBlocked")
                     }
                     sb.appendLine()

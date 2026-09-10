@@ -105,6 +105,7 @@ class AdbKey(private val adbKeyStore: AdbKeyStore, name: String) {
     }
 
     private fun getOrCreateEncryptionKey(): Key? {
+        if (android.os.Build.VERSION.SDK_INT < 23) error("Wireless ADB requires Android 6 or newer")
         val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE)
         keyStore.load(null)
 

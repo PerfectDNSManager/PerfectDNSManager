@@ -539,4 +539,23 @@
     <plurals name="domain_tester_unblocks_fmt">
         <item quantity="other">%1$s がコンテンツのブロックを解除</item>
     </plurals>
+    <!-- DNS privé (DoT) verrouillé au niveau système -->
+    <string name="retry">再試行</string>
+    <string name="private_dns_locked_title">このデバイスでプライベート DNS が有効です</string>
+    <string name="private_dns_locked_message">Android の設定にプライベート DNS（DoT）が設定されており、アプリからは無効にできません（ADB デバッグが利用不可）。\n\n有効なままでは DoH や DoQ は機能しません。Android は DoT で名前解決を続けるため、インターネットに完全につながらなくなる可能性があります。\n\nAndroid の設定で「プライベート DNS」をオフにしてから、もう一度お試しください。</string>
+    <string name="private_dns_locked_message_fmt">Android の設定に %1$s へのプライベート DNS（DoT）が設定されており、アプリからは無効にできません（ADB デバッグが利用不可）。\n\n有効なままでは DoH や DoQ は機能しません。Android は DoT で名前解決を続けるため、インターネットに完全につながらなくなる可能性があります。\n\nAndroid の設定で「プライベート DNS」をオフにしてから、もう一度お試しください。</string>
+    <string name="private_dns_open_settings">設定を開く</string>
+    <string name="private_dns_settings_unavailable">このデバイスでは設定を開けませんでした。設定 → ネットワーク → プライベート DNS → オフ を選択してください。</string>
+    <string name="private_dns_locked_boot">再接続を中止しました：プライベート DNS（DoT）が有効で、アプリからは無効にできません。タップすると設定が開きます。</string>
+    <string name="dot_locked_notif">⚠ プライベート DNS を無効にできません（ADB デバッグが利用不可）。設定 → ネットワーク → プライベート DNS でオフにしてください。</string>
+    <string name="dot_disable_failed">無効化に失敗しました：プライベート DNS はシステム側でロックされています。設定を開いて手動でオフにしてください。</string>
+    <string name="dns_type_standard">標準</string>
+    <string name="nextdns_profile_name_fmt">プロファイル %1$s</string>
+    <string name="dot_active_fmt">プライベート DNS 有効：%1$s。インターネットが使えなくなったら「無効にする」をタップしてください。</string>
+    <string name="dot_warning_unreachable">⚠ プライベート DNS サーバーが応答しません — インターネットが切れるおそれがあります。自動的に無効化しています…</string>
+    <string name="dot_autodisabled">プライベート DNS を自動的に無効にしました（サーバーに到達不可）。インターネットが回復しました。アプリから再度有効にできます。</string>
+    <string name="dot_disable_action">無効にする</string>
+    <string name="report_undetermined">判定不能</string>
+    <string name="md_blocking_undetermined">テストは結論に至りませんでした：DNS の名前解決に失敗しました（ネットワーク利用不可、またはサーバーが無応答）。ブロックの有無は判断できません。</string>
+    <string name="import_profiles_rejected">⚠ %1$d 件のプロファイルを破棄しました：エンドポイントが無効または不完全です。</string>
 </resources>

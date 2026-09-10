@@ -35,6 +35,7 @@ import app.perfectdnsmanager.service.DnsVpnService
 import app.perfectdnsmanager.service.UpdateManager
 import app.perfectdnsmanager.util.DnsLeakTester
 import app.perfectdnsmanager.util.LocaleHelper
+import app.perfectdnsmanager.util.PrivateDnsGuard
 import app.perfectdnsmanager.util.SpeedTester
 import app.perfectdnsmanager.util.UrlBlockingTester
 import com.google.gson.Gson
@@ -42,8 +43,19 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class MainActivity : AppCompatActivity() {
+open class MainActivity : AppCompatActivity() {
+
+    companion object {
+        /**
+         * Extra posé par la notification du DotMonitorService quand le DNS privé
+         * ne peut plus être coupé par l'app : on repasse par ici pour dérouler la
+         * cascade de repli de [PrivateDnsGuard.openSettings] (l'action Settings
+         * directe n'existe pas sur toutes les ROMs de box TV).
+         */
+        const val EXTRA_OPEN_PRIVATE_DNS_SETTINGS = "OPEN_PRIVATE_DNS_SETTINGS"
+    }
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleHelper.applyLocale(newBase))
@@ -79,7 +91,9 @@ class MainActivity : AppCompatActivity() {
     private var lastSpeedResult: SpeedTester.SpeedResult? = null
     private var lastLeakResult: DnsLeakTester.LeakResult? = null
     private var lastLeakIspResult: DnsLeakTester.LeakResult? = null
-    private var lastBlockingResult: UrlBlockingTester.BlockingResult? = null
+    // @Volatile : écrit par generatingThread, lu par le thread UI (visibilité
+    // sinon non garantie → case « blocage » désactivée alors que le résultat existe).
+    @Volatile private var lastBlockingResult: UrlBlockingTester.BlockingResult? = null
     private var lastIpv4: String? = null
     private var lastIpv6: String? = null
     private var lastCarrierName: String? = null
@@ -144,10 +158,19 @@ class MainActivity : AppCompatActivity() {
                             getString(R.string.switching_disabling_dot),
                             Toast.LENGTH_SHORT
                         ).show()
-                        stopDotMonitor()
                         lifecycleScope.launch(Dispatchers.IO) {
-                            adbManager.disablePrivateDns()
-                            runOnUiThread { setInactiveStatus(); applyDns() }
+                            val freed = PrivateDnsGuard.tryDisable(this@MainActivity)
+                            runOnUiThread {
+                                when {
+                                    freed -> { stopDotMonitor(); setInactiveStatus(); applyDns() }
+                                    // Nouveau profil DoT : applyDnsViaAdb remontera sa
+                                    // propre erreur ADB si l'écriture échoue aussi.
+                                    newMethod == "ADB" -> { checkStatus(); applyDns() }
+                                    // DoH/DoQ impossible tant que le DoT système tient :
+                                    // ne pas prétendre l'avoir coupé, ni monter le VPN.
+                                    else -> { checkStatus(); showPrivateDnsLockedDialog(newProfile) }
+                                }
+                            }
                         }
                     } else if (vpnWasActive && newMethod == "ADB") {
                         // VPN→DoT : stopper le VPN, puis appliquer en ADB
@@ -172,7 +195,7 @@ class MainActivity : AppCompatActivity() {
                             .putString("vpn_label", label)
                             .putString("last_method", "VPN")
                             .apply()
-                        setActiveStatus(true, label)
+                        setActiveStatus(true)
                     } else {
                         // Aucune méthode active détectée, appliquer normalement
                         applyDns()
@@ -202,6 +225,16 @@ class MainActivity : AppCompatActivity() {
             val lang = if (sysLang in supported) sysLang else "en"
             prefs.edit().putString("language", lang).apply()
         }
+
+        // Premier lancement : démarrage auto et blocage IPv6 actifs par défaut.
+        // On ne sème que les clés ABSENTES, donc un utilisateur qui les a déjà
+        // décochées garde son choix.
+        val defaults = prefs.edit()
+        var seeded = false
+        for (key in listOf("auto_reconnect_dns", "disable_ipv6")) {
+            if (!prefs.contains(key)) { defaults.putBoolean(key, true); seeded = true }
+        }
+        if (seeded) defaults.apply()
 
         // Migration de version : rafraîchir les presets DNS si la version a changé
         checkVersionMigration()
@@ -445,11 +478,32 @@ class MainActivity : AppCompatActivity() {
         tvStatusInfo.text = sb
     }
 
+    override fun onDestroy() {
+        // Le thread de génération de rapport enchaîne test de blocage, test de
+        // fuite DNS et speedtest — plusieurs dizaines de secondes. Sans ça il
+        // survivait à l'Activity, la retenait en mémoire et postait sur des vues
+        // détachées (les deux autres écrans longs le font déjà).
+        generatingThread?.interrupt()
+        generatingThread = null
+        super.onDestroy()
+    }
+
+    // Only the non-exported notification entry point may consume action extras.
+    private fun isSelfOriginated(): Boolean = this is NotificationActivity
+
     override fun onResume() {
         super.onResume()
+        // Raccourci « Réglages » de la notification DNS privé verrouillé.
+        if (isSelfOriginated() && intent?.getBooleanExtra(EXTRA_OPEN_PRIVATE_DNS_SETTINGS, false) == true) {
+            intent?.removeExtra(EXTRA_OPEN_PRIVATE_DNS_SETTINGS)
+            if (!PrivateDnsGuard.openSettings(this)) {
+                Toast.makeText(this, getString(R.string.private_dns_settings_unavailable),
+                    Toast.LENGTH_LONG).show()
+            }
+        }
         if (!isActivating) {
             // Gestion AUTO_RECONNECT (notification boot) → dernier DNS sélectionné
-            if (intent?.getBooleanExtra("AUTO_RECONNECT", false) == true) {
+            if (isSelfOriginated() && intent?.getBooleanExtra("AUTO_RECONNECT", false) == true) {
                 intent?.removeExtra("AUTO_RECONNECT")
                 val profileJson = prefs.getString("selected_profile_json", null)
                 if (profileJson != null && !DnsVpnService.isVpnRunning) {
@@ -572,6 +626,22 @@ class MainActivity : AppCompatActivity() {
         return listOf(single)
     }
 
+    /**
+     * Icône d'un verdict de blocage. Le troisième cas (⚠) est le point : un
+     * échec réseau ne doit plus être affiché comme un blocage constaté.
+     */
+    private fun blockIcon(r: UrlBlockingTester.ResolutionResult): String = when {
+        r.isUnknown -> "\u26A0\uFE0F"
+        r.isBlocked -> "\u274C"
+        else -> "\u2705"
+    }
+
+    private fun blockLabel(r: UrlBlockingTester.ResolutionResult): String = when {
+        r.isUnknown -> getString(R.string.report_undetermined)
+        r.isBlocked -> getString(R.string.report_blocked)
+        else -> getString(R.string.report_accessible)
+    }
+
     private fun cancelGeneration() {
         generatingThread?.interrupt()
         generatingThread = null
@@ -642,15 +712,15 @@ class MainActivity : AppCompatActivity() {
                     val blocking = UrlBlockingTester.testBeforeAfter(this@MainActivity, domain)
                     allBlockingResults.add(blocking)
                     display.append("\n${blocking.domain} :")
-                    val ispIcon = if (blocking.ispDns.isBlocked) "❌" else "✅"
+                    val ispIcon = blockIcon(blocking.ispDns)
                     val ispIp = blocking.ispDns.ip ?: blocking.ispDns.error ?: "N/A"
                     val ispAuth = blocking.ispDns.authorityLabel?.let { " — $it" } ?: ""
                     display.append("\n  ${getString(R.string.report_isp_dns_label)} : $ispIcon $ispIp$ispAuth")
-                    val activeIcon = if (blocking.activeDns.isBlocked) "❌" else "✅"
+                    val activeIcon = blockIcon(blocking.activeDns)
                     val activeIp = blocking.activeDns.ip ?: blocking.activeDns.error ?: "N/A"
                     val activeAuth = blocking.activeDns.authorityLabel?.let { " — $it" } ?: ""
                     display.append("\n  ${getString(R.string.report_active_dns_label)} : $activeIcon $activeIp$activeAuth")
-                    if (blocking.ispDns.isBlocked && !blocking.activeDns.isBlocked) {
+                    if (blocking.ispDns.isBlocked && blocking.activeDns.status == UrlBlockingTester.Status.ACCESSIBLE) {
                         display.append("\n  → ${getString(R.string.report_dns_unblocks)}")
                     }
                 } catch (e: Exception) {
@@ -939,16 +1009,20 @@ class MainActivity : AppCompatActivity() {
                         appendLine()
                         appendLine("| ${getString(R.string.md_step)} | ${getString(R.string.md_result)} | IP | ${getString(R.string.md_authority)} |")
                         appendLine("|-------|----------|----|----|")
-                        val beforeIcon = if (b.ispDns.isBlocked) "\u274c ${getString(R.string.report_blocked)}" else "\u2705 ${getString(R.string.report_accessible)}"
+                        val beforeIcon = "${blockIcon(b.ispDns)} ${blockLabel(b.ispDns)}"
                         val beforeIp = b.ispDns.ip ?: b.ispDns.error ?: "N/A"
                         val beforeAuth = b.ispDns.authorityLabel ?: ""
                         appendLine("| **${getString(R.string.md_isp_dns_no_vpn)}** | $beforeIcon | `$beforeIp` | $beforeAuth |")
-                        val afterIcon = if (b.activeDns.isBlocked) "\u274c ${getString(R.string.report_blocked)}" else "\u2705 ${getString(R.string.report_accessible)}"
+                        val afterIcon = "${blockIcon(b.activeDns)} ${blockLabel(b.activeDns)}"
                         val afterIp = b.activeDns.ip ?: b.activeDns.error ?: "N/A"
                         val afterAuth = b.activeDns.authorityLabel ?: ""
                         appendLine("| **${getString(R.string.md_active_dns_with_vpn)}** | $afterIcon | `$afterIp` | $afterAuth |")
                         appendLine()
-                        if (b.ispDns.isBlocked && !b.activeDns.isBlocked) {
+                        if (b.ispDns.isUnknown || b.activeDns.isUnknown) {
+                            // Un test qui n'a pas abouti ne permet aucune conclusion
+                            // sur le blocage — surtout dans un rapport partagé.
+                            appendLine("> ${getString(R.string.md_blocking_undetermined)}")
+                        } else if (b.ispDns.isBlocked && !b.activeDns.isBlocked) {
                             appendLine("> ${getString(R.string.md_dns_unblocks_success)}")
                         } else if (!b.ispDns.isBlocked && !b.activeDns.isBlocked) {
                             appendLine("> ${getString(R.string.md_domain_accessible_both)}")
@@ -1154,7 +1228,7 @@ class MainActivity : AppCompatActivity() {
                 val savedMethod = prefs.getString("last_method", "ADB") ?: "ADB"
                 val displayMethod = if (savedMethod == "Shizuku" || savedMethod == "Settings") savedMethod else "ADB"
                 prefs.edit().putString("last_method", displayMethod).apply()
-                setActiveStatus(true, "DNS via DoT ($displayMethod): $host")
+                setActiveStatus(true)
                 return
             }
         }
@@ -1164,7 +1238,7 @@ class MainActivity : AppCompatActivity() {
 
         if (vpnReallyActive && vpnSavedActive) {
             val label = prefs.getString("vpn_label", "") ?: ""
-            setActiveStatus(true, label)
+            setActiveStatus(true)
         } else {
             if (!vpnReallyActive && vpnSavedActive) {
                 prefs.edit().putBoolean("vpn_active", false).putString("vpn_label", "").apply()
@@ -1290,7 +1364,7 @@ class MainActivity : AppCompatActivity() {
                 if (success) {
                     val method = adbManager.lastMethod.ifEmpty { "ADB" }
                     prefs.edit().putString("last_method", method).apply()
-                    setActiveStatus(true, "DNS via DoT ($method): ${profile.providerName}\n${profile.primary}")
+                    setActiveStatus(true)
                     // Moniteur DoT : notif "Désactiver" (A) + health-check auto-repli (B).
                     startDotMonitor(profile.primary, profile.providerName)
                     // Auto-refresh IP display after ADB activation
@@ -1314,12 +1388,39 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applyDnsViaVpn(profile: DnsProfile) {
-        // Stopper ADB/DoT s'il est actif avant d'activer VPN (évite conflit DoT+DoH)
-        val adbIsActive = adbManager.getCurrentPrivateDnsMode()?.contains("hostname") == true
-        if (adbIsActive) {
-            stopDotMonitor()
-            lifecycleScope.launch(Dispatchers.IO) { adbManager.disablePrivateDns() }
+        // Le Private DNS strict d'Android ne peut PAS cohabiter avec le VPN
+        // DoH/DoQ : le résolveur système resterait en DoT (le profil choisi
+        // serait ignoré) et, si le serveur DoT devient injoignable une fois le
+        // VPN en place, le mode strict n'a AUCUN repli → plus aucune résolution
+        // = « plus d'internet ». On le coupe donc AVANT, en ATTENDANT le
+        // résultat : l'ancienne version tirait la désactivation en fire-and-
+        // forget et démarrait le VPN quoi qu'il arrive.
+        if (!PrivateDnsGuard.isStrictActive(this)) {
+            proceedWithVpn(profile)
+            return
         }
+
+        isActivating = true
+        tvActivationStatus.text = "\u23F3"
+        btnToggle.isEnabled = false
+        lifecycleScope.launch {
+            val freed = withContext(Dispatchers.IO) { PrivateDnsGuard.tryDisable(this@MainActivity) }
+            if (freed) {
+                stopDotMonitor()
+                proceedWithVpn(profile)
+            } else {
+                // Verrouillé : débogage ADB coupé depuis l'activation, DNS privé
+                // posé par la box… Démarrer le VPN ici casserait internet.
+                isActivating = false
+                btnToggle.isEnabled = true
+                setInactiveStatus()
+                showPrivateDnsLockedDialog(profile)
+            }
+        }
+    }
+
+    /** Suite de [applyDnsViaVpn], une fois le DNS privé système hors du chemin. */
+    private fun proceedWithVpn(profile: DnsProfile) {
         isActivating = true
         tvActivationStatus.text = "\u23F3"
         btnToggle.isEnabled = false
@@ -1328,16 +1429,42 @@ class MainActivity : AppCompatActivity() {
         if (intent != null) vpnPermissionLauncher.launch(intent) else startVpnService(profile)
     }
 
-    private fun startVpnService(profile: DnsProfile) {
-        // Première connexion VPN : activer auto-reconnect DNS et disable IPv6
-        if (!prefs.getBoolean("first_vpn_done", false)) {
-            prefs.edit()
-                .putBoolean("auto_reconnect_dns", true)
-                .putBoolean("disable_ipv6", true)
-                .putBoolean("first_vpn_done", true)
-                .apply()
-        }
+    /**
+     * Le DNS privé (DoT) est posé au niveau système et l'app ne peut plus
+     * l'enlever (ni WRITE_SECURE_SETTINGS, ni ADB joignable). On explique
+     * pourquoi le DNS demandé ne peut pas être activé et on envoie vers l'écran
+     * système — le seul endroit où l'utilisateur peut encore le couper.
+     *
+     * @param retryProfile profil à réappliquer via le bouton « Réessayer »
+     *   (après désactivation manuelle), ou null pour n'offrir que la sortie.
+     */
+    private fun showPrivateDnsLockedDialog(retryProfile: DnsProfile?) {
+        if (isFinishing || isDestroyed) return
+        val host = PrivateDnsGuard.specifier(this)
+        val msg = if (host.isNotEmpty())
+            getString(R.string.private_dns_locked_message_fmt, host)
+        else getString(R.string.private_dns_locked_message)
 
+        val builder = AlertDialog.Builder(this)
+            .setTitle(getString(R.string.private_dns_locked_title))
+            .setMessage(msg)
+            .setPositiveButton(getString(R.string.private_dns_open_settings)) { _, _ ->
+                if (!PrivateDnsGuard.openSettings(this)) {
+                    Toast.makeText(this, getString(R.string.private_dns_settings_unavailable),
+                        Toast.LENGTH_LONG).show()
+                }
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+        if (retryProfile != null) {
+            builder.setNeutralButton(getString(R.string.retry)) { _, _ -> applyDnsViaVpn(retryProfile) }
+        }
+        builder.show()
+    }
+
+    private fun startVpnService(profile: DnsProfile) {
+        // Les deux réglages sont posés au premier lancement (onCreate). L'ancien
+        // bloc `first_vpn_done` les REforçait ici à true : il écrasait le choix
+        // d'un utilisateur qui les avait décochés avant sa première connexion.
         val intent = Intent(this, DnsVpnService::class.java).apply {
             action = DnsVpnService.ACTION_START
             putExtra(DnsVpnService.EXTRA_DNS_PRIMARY, profile.primary)
@@ -1351,7 +1478,7 @@ class MainActivity : AppCompatActivity() {
             .putString("vpn_label", label)
             .putString("last_method", "VPN")
             .apply()
-        setActiveStatus(true, label)
+        setActiveStatus(true)
 
         btnToggle.postDelayed({
             isActivating = false
@@ -1379,12 +1506,26 @@ class MainActivity : AppCompatActivity() {
             startService(Intent(this, DnsVpnService::class.java).apply { action = DnsVpnService.ACTION_STOP })
             prefs.edit().putBoolean("vpn_active", false).putString("vpn_label", "").apply()
         }
-        // Stopper ADB si actif
+        // Stopper ADB si actif — en VÉRIFIANT que le réglage a bien sauté.
+        // Si le débogage ADB a été coupé depuis l'activation (ou si le DNS privé
+        // vient de la box), l'écriture échoue : on ne doit PAS afficher « éteint »
+        // alors que le DNS privé tourne toujours, sinon l'utilisateur croit avoir
+        // rétabli son internet.
         if (adbIsActive) {
-            stopDotMonitor()
             lifecycleScope.launch(Dispatchers.IO) {
-                adbManager.disablePrivateDns()
-                runOnUiThread { setInactiveStatus(); onDone() }
+                val freed = PrivateDnsGuard.tryDisable(this@MainActivity)
+                runOnUiThread {
+                    if (freed) {
+                        stopDotMonitor()
+                        setInactiveStatus(); onDone()
+                    } else {
+                        // Le moniteur reste en place : sa notification « Désactiver »
+                        // demeure la voie de secours si l'ADB redevient joignable.
+                        lastManualDisableMs = 0L
+                        checkStatus()
+                        showPrivateDnsLockedDialog(null)
+                    }
+                }
             }
         } else {
             setInactiveStatus(); onDone()
@@ -1400,7 +1541,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setActiveStatus(active: Boolean, statusText: String) {
+    /**
+     * Passe l'UI en état « DNS actif ». Le libellé affiché est recalculé par
+     * [computeDnsStatus] depuis l'état réel du système, via refreshIpDisplay() —
+     * cette fonction prenait autrefois un `statusText` qu'elle n'utilisait pas,
+     * et les 7 sites d'appel construisaient une chaîne (dont deux libellés
+     * français codés en dur) qui partait directement à la poubelle.
+     */
+    private fun setActiveStatus(active: Boolean) {
         isActive = active
         // Switch sans listener pour éviter rebond — on est ici parce qu'on vient
         // soit d'activer manuellement, soit checkStatus a détecté un VPN/ADB déjà ON.

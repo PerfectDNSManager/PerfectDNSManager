@@ -565,4 +565,17 @@
     <string name="dot_warning_unreachable">⚠ Le serveur DNS privé ne répond plus — internet risque d\'être coupé. Désactivation automatique en cours…</string>
     <string name="dot_autodisabled">DNS privé désactivé automatiquement (serveur injoignable). Internet rétabli. Vous pouvez le réactiver depuis l\'app.</string>
     <string name="dot_disable_action">Désactiver</string>
+    <!-- DNS privé (DoT) verrouillé au niveau système -->
+    <string name="retry">Réessayer</string>
+    <string name="private_dns_locked_title">DNS privé actif sur cet appareil</string>
+    <string name="private_dns_locked_message">Un DNS privé (DoT) est configuré dans les réglages Android et l\'application ne peut pas le désactiver (débogage ADB indisponible).\n\nTant qu\'il est actif, un DNS DoH ou DoQ ne peut pas fonctionner : Android continuerait à résoudre en DoT, et vous risqueriez de perdre complètement internet.\n\nDésactivez « DNS privé » dans les réglages Android, puis réessayez.</string>
+    <string name="private_dns_locked_message_fmt">Un DNS privé (DoT) vers %1$s est configuré dans les réglages Android et l\'application ne peut pas le désactiver (débogage ADB indisponible).\n\nTant qu\'il est actif, un DNS DoH ou DoQ ne peut pas fonctionner : Android continuerait à résoudre en DoT, et vous risqueriez de perdre complètement internet.\n\nDésactivez « DNS privé » dans les réglages Android, puis réessayez.</string>
+    <string name="private_dns_open_settings">Ouvrir les réglages</string>
+    <string name="private_dns_settings_unavailable">Impossible d\'ouvrir les réglages sur cet appareil. Allez dans Réglages → Réseau → DNS privé → Désactivé.</string>
+    <string name="private_dns_locked_boot">Reconnexion annulée : un DNS privé (DoT) est actif et l\'application ne peut pas le désactiver. Appuyez pour ouvrir les réglages.</string>
+    <string name="dot_locked_notif">⚠ Impossible de désactiver le DNS privé (débogage ADB indisponible). Désactivez-le dans Réglages → Réseau → DNS privé.</string>
+    <string name="dot_disable_failed">La désactivation a échoué : le DNS privé est verrouillé au niveau système. Ouvrez les réglages pour le couper manuellement.</string>
+    <string name="report_undetermined">Indéterminé</string>
+    <string name="md_blocking_undetermined">Test non concluant : la résolution DNS a échoué (réseau indisponible ou serveur muet). Aucune conclusion sur un blocage ne peut être tirée.</string>
+    <string name="import_profiles_rejected">⚠ %1$d profil(s) écarté(s) : endpoint invalide ou incomplet.</string>
 </resources>

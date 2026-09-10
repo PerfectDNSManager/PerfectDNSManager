@@ -49,7 +49,7 @@ class AddProfileDialog(
             // visibles à travers la zone Nom du profil / Type de DNS).
             setBackgroundDrawable(
                 android.graphics.drawable.ColorDrawable(
-                    context.getColor(R.color.pdm_surface)
+                    androidx.core.content.ContextCompat.getColor(context, R.color.pdm_surface)
                 )
             )
         }
@@ -160,40 +160,11 @@ class AddProfileDialog(
             R.id.rbDoq -> DnsType.DOQ
             else -> DnsType.DEFAULT
         }
-        if (!isValidPrimaryFor(type, primary)) {
+        if (!app.perfectdnsmanager.util.ProfileValidation.isValidPrimary(type, primary)) {
             Toast.makeText(context, context.getString(R.string.primary_dns_invalid), Toast.LENGTH_LONG).show()
             return false
         }
         return true
     }
 
-    /**
-     * Validation par type :
-     *  - DoH : `https://<host>[/path]` avec hostname valide
-     *  - DoQ : `quic://<host>[:port]` avec hostname valide
-     *  - DoT : hostname brut sans scheme
-     *  - DEFAULT : IPv4 littérale
-     * Empêche un user de coller `javascript:` ou un host bizarre dans un champ
-     * qui sera ensuite passé à OkHttp / kwik / VpnService.
-     */
-    private fun isValidPrimaryFor(type: DnsType, raw: String): Boolean {
-        val hostnameRe = Regex("^(?=.{1,253}$)([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}$")
-        val ipv4Re = Regex("^(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)(\\.(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)){3}$")
-        return when (type) {
-            DnsType.DOH -> {
-                if (!raw.startsWith("https://", ignoreCase = true)) return false
-                val rest = raw.removePrefix("https://").removePrefix("HTTPS://")
-                val host = rest.substringBefore('/').substringBefore(':').substringBefore('?')
-                hostnameRe.matches(host)
-            }
-            DnsType.DOQ -> {
-                if (!raw.startsWith("quic://", ignoreCase = true)) return false
-                val rest = raw.removePrefix("quic://").removePrefix("QUIC://")
-                val host = rest.substringBefore('/').substringBefore(':')
-                hostnameRe.matches(host)
-            }
-            DnsType.DOT -> hostnameRe.matches(raw)
-            DnsType.DEFAULT -> ipv4Re.matches(raw)
-        }
-    }
 }

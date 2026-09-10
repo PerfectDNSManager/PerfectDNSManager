@@ -541,4 +541,23 @@
         <item quantity="one">%1$s entsperrt den Inhalt</item>
         <item quantity="other">%1$s entsperren den Inhalt</item>
     </plurals>
+    <!-- DNS privé (DoT) verrouillé au niveau système -->
+    <string name="retry">Erneut versuchen</string>
+    <string name="private_dns_locked_title">Privates DNS auf diesem Gerät aktiv</string>
+    <string name="private_dns_locked_message">In den Android-Einstellungen ist ein privates DNS (DoT) eingetragen, und die App kann es nicht abschalten (ADB-Debugging nicht verfügbar).\n\nSolange es aktiv ist, kann ein DoH- oder DoQ-DNS nicht funktionieren: Android würde weiterhin über DoT auflösen, und du könntest das Internet komplett verlieren.\n\nSchalte „Privates DNS“ in den Android-Einstellungen aus und versuche es erneut.</string>
+    <string name="private_dns_locked_message_fmt">In den Android-Einstellungen ist ein privates DNS (DoT) auf %1$s eingetragen, und die App kann es nicht abschalten (ADB-Debugging nicht verfügbar).\n\nSolange es aktiv ist, kann ein DoH- oder DoQ-DNS nicht funktionieren: Android würde weiterhin über DoT auflösen, und du könntest das Internet komplett verlieren.\n\nSchalte „Privates DNS“ in den Android-Einstellungen aus und versuche es erneut.</string>
+    <string name="private_dns_open_settings">Einstellungen öffnen</string>
+    <string name="private_dns_settings_unavailable">Die Einstellungen konnten auf diesem Gerät nicht geöffnet werden. Gehe zu Einstellungen → Netzwerk → Privates DNS → Aus.</string>
+    <string name="private_dns_locked_boot">Wiederverbindung abgebrochen: Ein privates DNS (DoT) ist aktiv und kann von der App nicht abgeschaltet werden. Zum Öffnen der Einstellungen tippen.</string>
+    <string name="dot_locked_notif">⚠ Privates DNS kann nicht abgeschaltet werden (ADB-Debugging nicht verfügbar). Schalte es unter Einstellungen → Netzwerk → Privates DNS aus.</string>
+    <string name="dot_disable_failed">Abschalten fehlgeschlagen: Das private DNS ist auf Systemebene gesperrt. Öffne die Einstellungen, um es manuell abzuschalten.</string>
+    <string name="dns_type_standard">Standard</string>
+    <string name="nextdns_profile_name_fmt">Profil %1$s</string>
+    <string name="dot_active_fmt">Privates DNS aktiv: %1$s. Tippe auf „Deaktivieren“, wenn du kein Internet mehr hast.</string>
+    <string name="dot_warning_unreachable">⚠ Der private DNS-Server antwortet nicht mehr — das Internet könnte ausfallen. Automatische Abschaltung läuft…</string>
+    <string name="dot_autodisabled">Privates DNS automatisch abgeschaltet (Server nicht erreichbar). Internet wiederhergestellt. Du kannst es in der App wieder aktivieren.</string>
+    <string name="dot_disable_action">Deaktivieren</string>
+    <string name="report_undetermined">Unbestimmt</string>
+    <string name="md_blocking_undetermined">Test nicht aussagekräftig: Die DNS-Auflösung ist fehlgeschlagen (Netzwerk nicht verfügbar oder Server antwortet nicht). Über eine Sperrung lässt sich nichts sagen.</string>
+    <string name="import_profiles_rejected">⚠ %1$d Profil(e) verworfen: ungültiger oder unvollständiger Endpunkt.</string>
 </resources>

@@ -541,4 +541,23 @@
         <item quantity="one">%1$s desbloqueia o conteúdo</item>
         <item quantity="other">%1$s desbloqueiam o conteúdo</item>
     </plurals>
+    <!-- DNS privé (DoT) verrouillé au niveau système -->
+    <string name="retry">Tentar novamente</string>
+    <string name="private_dns_locked_title">DNS privado ativo neste aparelho</string>
+    <string name="private_dns_locked_message">Há um DNS privado (DoT) configurado nas configurações do Android e o app não consegue desativá-lo (depuração ADB indisponível).\n\nEnquanto ele estiver ativo, um DNS DoH ou DoQ não funciona: o Android continuaria resolvendo por DoT e você pode ficar totalmente sem internet.\n\nDesative «DNS privado» nas configurações do Android e tente de novo.</string>
+    <string name="private_dns_locked_message_fmt">Há um DNS privado (DoT) apontando para %1$s nas configurações do Android e o app não consegue desativá-lo (depuração ADB indisponível).\n\nEnquanto ele estiver ativo, um DNS DoH ou DoQ não funciona: o Android continuaria resolvendo por DoT e você pode ficar totalmente sem internet.\n\nDesative «DNS privado» nas configurações do Android e tente de novo.</string>
+    <string name="private_dns_open_settings">Abrir configurações</string>
+    <string name="private_dns_settings_unavailable">Não foi possível abrir as configurações neste aparelho. Vá em Configurações → Rede → DNS privado → Desativado.</string>
+    <string name="private_dns_locked_boot">Reconexão cancelada: há um DNS privado (DoT) ativo que o app não consegue desativar. Toque para abrir as configurações.</string>
+    <string name="dot_locked_notif">⚠ Não é possível desativar o DNS privado (depuração ADB indisponível). Desative em Configurações → Rede → DNS privado.</string>
+    <string name="dot_disable_failed">Falha ao desativar: o DNS privado está bloqueado no nível do sistema. Abra as configurações para desativá-lo manualmente.</string>
+    <string name="dns_type_standard">Padrão</string>
+    <string name="nextdns_profile_name_fmt">Perfil %1$s</string>
+    <string name="dot_active_fmt">DNS privado ativo: %1$s. Toque em «Desativar» se ficar sem internet.</string>
+    <string name="dot_warning_unreachable">⚠ O servidor DNS privado parou de responder — a internet pode cair. Desativando automaticamente…</string>
+    <string name="dot_autodisabled">DNS privado desativado automaticamente (servidor inacessível). Internet restaurada. Você pode reativá-lo pelo app.</string>
+    <string name="dot_disable_action">Desativar</string>
+    <string name="report_undetermined">Indeterminado</string>
+    <string name="md_blocking_undetermined">Teste inconclusivo: a resolução DNS falhou (rede indisponível ou servidor mudo). Não é possível concluir nada sobre bloqueio.</string>
+    <string name="import_profiles_rejected">⚠ %1$d perfil(is) descartado(s): endpoint inválido ou incompleto.</string>
 </resources>

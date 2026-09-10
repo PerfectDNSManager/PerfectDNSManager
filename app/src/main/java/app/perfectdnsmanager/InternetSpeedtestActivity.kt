@@ -237,7 +237,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             setTextColor(COLOR_WHITE)
             textSize = 13f
             setBackgroundResource(R.drawable.focusable_item_background)
-            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+            if (android.os.Build.VERSION.SDK_INT >= 23) foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             isFocusable = true
             minWidth = 0
             minHeight = 0
@@ -269,7 +269,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             setTypeface(typeface, Typeface.BOLD)
             isFocusable = true
             background = chipBackground(dp(12), COLOR_CYAN, false)
-            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+            if (android.os.Build.VERSION.SDK_INT >= 23) foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             setPadding(dp(20), dp(12), dp(20), dp(12))
             layoutParams = lp(matchParent, wrapContent).apply { bottomMargin = dp(6) }
             gravity = Gravity.CENTER
@@ -405,7 +405,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             background = GradientDrawable().apply {
                 setColor(pdmSurfaceInput()); cornerRadius = dp(8).toFloat()
             }
-            foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
+            if (android.os.Build.VERSION.SDK_INT >= 23) foreground = resources.getDrawable(R.drawable.btn_focus_foreground, theme)
             foregroundGravity = Gravity.FILL
             isFocusable = true
             isFocusableInTouchMode = false
@@ -825,9 +825,11 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                     .header("Cache-Control", "no-cache")
                     .build()
                 val t0 = System.nanoTime()
-                val resp = client.newCall(req).execute()
-                val ms = (System.nanoTime() - t0) / 1_000_000.0
-                resp.body?.close(); resp.close()
+                // .use{} : sans lui, une exception entre execute() et close()
+                // laissait la réponse ouverte à chaque ping raté.
+                val ms = client.newCall(req).execute().use {
+                    (System.nanoTime() - t0) / 1_000_000.0
+                }
                 pings.add(ms)
                 ui { logConsole(getString(R.string.speedtest_ping_attempt_fmt, i, ms)) }
             } catch (e: Exception) {
@@ -865,18 +867,18 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                             .url("${CF_DL_URL}${CF_DL_BYTES}&r=${System.nanoTime()}")
                             .header("Cache-Control", "no-store, no-cache")
                             .build()
-                        val resp = c.newCall(req).execute()
-                        if (resp.isSuccessful) {
-                            resp.body?.byteStream()?.use { stream ->
-                                val buf = ByteArray(65536)
-                                while (!cancelled.get() && System.nanoTime() < deadline) {
-                                    val n = stream.read(buf)
-                                    if (n == -1) break
-                                    totalBytes.addAndGet(n.toLong())
+                        c.newCall(req).execute().use { resp ->
+                            if (resp.isSuccessful) {
+                                resp.body?.byteStream()?.use { stream ->
+                                    val buf = ByteArray(65536)
+                                    while (!cancelled.get() && System.nanoTime() < deadline) {
+                                        val n = stream.read(buf)
+                                        if (n == -1) break
+                                        totalBytes.addAndGet(n.toLong())
+                                    }
                                 }
                             }
                         }
-                        resp.close()
                     }
                 } catch (_: Exception) {
                 } finally { shutdown(c) }
@@ -980,16 +982,15 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 .header("Accept", "application/json")
                 .header("User-Agent", OOKLA_USER_AGENT)
                 .build()
-            val resp = client.newCall(req).execute()
-            if (resp.isSuccessful) {
-                val json = resp.body?.string() ?: "[]"
-                resp.close()
-                val type = object : TypeToken<List<OoklaServer>>() {}.type
-                fetched.addAll(Gson().fromJson<List<OoklaServer>>(json, type))
-            } else {
-                val code = resp.code
-                resp.close()
-                ui { logConsole(getString(R.string.speedtest_ookla_err_code_fmt, code)) }
+            client.newCall(req).execute().use { resp ->
+                if (resp.isSuccessful) {
+                    val json = resp.body?.string() ?: "[]"
+                    val type = object : TypeToken<List<OoklaServer>>() {}.type
+                    fetched.addAll(Gson().fromJson<List<OoklaServer>>(json, type))
+                } else {
+                    val code = resp.code
+                    ui { logConsole(getString(R.string.speedtest_ookla_err_code_fmt, code)) }
+                }
             }
             shutdown(client)
         } catch (e: Exception) {
@@ -1012,13 +1013,12 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                                 .url("${baseUrl}latency.txt?r=${System.nanoTime()}")
                                 .header("User-Agent", OOKLA_USER_AGENT)
                                 .build()
-                            val pingResp = client.newCall(pingReq).execute()
-                            val ms = (System.nanoTime() - t0) / 1_000_000.0
-                            pingResp.close()
-                            shutdown(client)
-                            if (pingResp.isSuccessful || pingResp.code in 200..499)
-                                server.id to ms
-                            else null
+                            client.newCall(pingReq).execute().use { pingResp ->
+                                val ms = (System.nanoTime() - t0) / 1_000_000.0
+                                if (pingResp.isSuccessful || pingResp.code in 200..499)
+                                    server.id to ms
+                                else null
+                            }
                         } catch (_: Exception) { null }
                     }
                 }
@@ -1088,9 +1088,11 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                     .header("User-Agent", OOKLA_USER_AGENT)
                     .build()
                 val t0 = System.nanoTime()
-                val resp = client.newCall(req).execute()
-                val ms = (System.nanoTime() - t0) / 1_000_000.0
-                resp.body?.close(); resp.close()
+                // .use{} : sans lui, une exception entre execute() et close()
+                // laissait la réponse ouverte à chaque ping raté.
+                val ms = client.newCall(req).execute().use {
+                    (System.nanoTime() - t0) / 1_000_000.0
+                }
                 pings.add(ms)
                 ui { logConsole(getString(R.string.speedtest_ping_attempt_fmt, i, ms)) }
             } catch (e: Exception) {
@@ -1126,18 +1128,18 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                             .header("Cache-Control", "no-store, no-cache")
                             .header("User-Agent", OOKLA_USER_AGENT)
                             .build()
-                        val resp = c.newCall(req).execute()
-                        if (resp.isSuccessful) {
-                            resp.body?.byteStream()?.use { stream ->
-                                val buf = ByteArray(65536)
-                                while (!cancelled.get() && System.nanoTime() < deadline) {
-                                    val n = stream.read(buf)
-                                    if (n == -1) break
-                                    totalBytes.addAndGet(n.toLong())
+                        c.newCall(req).execute().use { resp ->
+                            if (resp.isSuccessful) {
+                                resp.body?.byteStream()?.use { stream ->
+                                    val buf = ByteArray(65536)
+                                    while (!cancelled.get() && System.nanoTime() < deadline) {
+                                        val n = stream.read(buf)
+                                        if (n == -1) break
+                                        totalBytes.addAndGet(n.toLong())
+                                    }
                                 }
                             }
                         }
-                        resp.close()
                     }
                 } catch (_: Exception) {
                 } finally { shutdown(c) }
@@ -1264,10 +1266,9 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 .header("Accept", "application/json")
                 .header("User-Agent", "Mozilla/5.0")
                 .build()
-            val resp = client.newCall(req).execute()
+            client.newCall(req).execute().use { resp ->
             if (resp.isSuccessful) {
                 val json = resp.body?.string() ?: "{}"
-                resp.close()
                 // Parse the response: { "targets": [{"url": "..."}, ...], ... }
                 try {
                     @Suppress("UNCHECKED_CAST")
@@ -1282,9 +1283,9 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 }
             } else {
                 val code = resp.code
-                resp.close()
                 ui { logConsole(getString(R.string.speedtest_fast_api_error_fmt, code.toString())) }
                 emptyList()
+            }
             }
         } catch (e: Exception) {
             Log.w(TAG, "Netflix API fetch failed", e)
@@ -1311,9 +1312,11 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                     .header("User-Agent", "Mozilla/5.0")
                     .build()
                 val t0 = System.nanoTime()
-                val resp = client.newCall(req).execute()
-                val ms = (System.nanoTime() - t0) / 1_000_000.0
-                resp.body?.close(); resp.close()
+                // .use{} : sans lui, une exception entre execute() et close()
+                // laissait la réponse ouverte à chaque ping raté.
+                val ms = client.newCall(req).execute().use {
+                    (System.nanoTime() - t0) / 1_000_000.0
+                }
                 pings.add(ms)
                 ui { logConsole(getString(R.string.speedtest_ping_attempt_fmt, i, ms)) }
             } catch (e: Exception) {
@@ -1353,18 +1356,18 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                             .header("Cache-Control", "no-store, no-cache")
                             .header("User-Agent", "Mozilla/5.0")
                             .build()
-                        val resp = c.newCall(req).execute()
-                        if (resp.isSuccessful) {
-                            resp.body?.byteStream()?.use { stream ->
-                                val buf = ByteArray(65536)
-                                while (!cancelled.get() && System.nanoTime() < deadline) {
-                                    val n = stream.read(buf)
-                                    if (n == -1) break
-                                    totalBytes.addAndGet(n.toLong())
+                        c.newCall(req).execute().use { resp ->
+                            if (resp.isSuccessful) {
+                                resp.body?.byteStream()?.use { stream ->
+                                    val buf = ByteArray(65536)
+                                    while (!cancelled.get() && System.nanoTime() < deadline) {
+                                        val n = stream.read(buf)
+                                        if (n == -1) break
+                                        totalBytes.addAndGet(n.toLong())
+                                    }
                                 }
                             }
                         }
-                        resp.close()
                     }
                 } catch (_: Exception) {
                 } finally { shutdown(c) }
@@ -1489,18 +1492,19 @@ class InternetSpeedtestActivity : AppCompatActivity() {
         scrollConsole.post { scrollConsole.fullScroll(View.FOCUS_DOWN) }
     }
 
-    /** Fresh OkHttpClient that does NOT use the app's VPN/DNS tunnel. */
+    /** Client de mesure — dérivé du pool partagé, sans reprise silencieuse. */
     private fun plainClient(timeoutSec: Long): OkHttpClient =
-        OkHttpClient.Builder()
-            .connectTimeout(timeoutSec, TimeUnit.SECONDS)
-            .readTimeout(timeoutSec, TimeUnit.SECONDS)
-            .writeTimeout(timeoutSec, TimeUnit.SECONDS)
-            .retryOnConnectionFailure(false)
-            .build()
+        app.perfectdnsmanager.util.Http.forSpeedTest(timeoutSec)
 
-    private fun shutdown(c: OkHttpClient) {
-        try { c.dispatcher.executorService.shutdown(); c.connectionPool.evictAll() }
-        catch (_: Exception) {}
-    }
+    /**
+     * No-op conservé pour les 13 sites d'appel.
+     *
+     * Les clients viennent maintenant du pool partagé (cf. [Http]) : appeler
+     * `dispatcher.executorService.shutdown()` sur un client dérivé tuerait le
+     * dispatcher COMMUN à toute l'app — plus aucune requête HTTP ensuite. OkHttp
+     * recycle les connexions oisives tout seul, il n'y a rien à fermer ici.
+     */
+    @Suppress("UNUSED_PARAMETER")
+    private fun shutdown(c: OkHttpClient) { /* pool partagé : rien à fermer */ }
 
 }

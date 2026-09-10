@@ -44,12 +44,22 @@ class EncryptedSharer {
         private const val ARGON2_T_COST = 3
         private const val ARGON2_PARALLEL = 1
 
+        /**
+         * Six characters preserve the existing TV-friendly sharing workflow (~29.7 bits).
+         * Argon2id slows guessing; it does not make this a high-entropy secret.
+         * A downloaded ciphertext can be attacked offline indefinitely, even after expiry.
+         * Use a trusted channel for the password; do not use this for long-term secret storage.
+         */
         private const val PASSWORD_LEN = 6
 
-        private const val PDM_BASE_URL = "https://perfectdnsmanager.app"
+        private const val PDM_BASE_URL = app.perfectdnsmanager.BuildConfig.PDM_BASE_URL
 
-        // Slug raccourci à 4 caractères (worker allocateSlug(4)). Accepte 4-16
-        // pour rester compatible avec les anciens liens 8 chars.
+        /** Plafond d'un blob téléchargé (le worker limite déjà l'upload à 20 Mo). */
+        private const val MAX_BLOB_BYTES = 20 * 1024 * 1024
+
+        // Le worker alloue des slugs de 6 caractères (allocateSlug(6)) : à 4,
+        // l'espace (36^4 ≈ 1,7 M) était énumérable. On accepte 4-16 en LECTURE
+        // pour que les anciens liens (4 et 8 chars) continuent de résoudre.
         private val SLUG_RE = Regex("^[a-z0-9]{4,16}$")
 
         // Alphabet sans caractères ambigus (0/O, 1/l/I exclus) pour dictée orale.
@@ -77,77 +87,75 @@ class EncryptedSharer {
 
             val combined = byteArrayOf(FORMAT_VERSION) + salt + iv + encrypted
 
-            val client = OkHttpClient.Builder()
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
+            // Client dérivé du pool partagé (cf. Http) : plus de dispatcher ni de
+            // pool de connexions dédiés à fermer à la main.
+            val client = Http.withTimeouts(connectSec = 15, readSec = 15, writeSec = 30)
+
+            // Token éphémère — pas de clé statique extractible de l'APK.
+            // Le worker rate-limite /api/challenge, donc un attaquant ne peut
+            // pas se pré-émettre un stock de tokens. TTL 90 s côté serveur.
+            val token = fetchUploadToken(client)
+
+            val nameParam = java.net.URLEncoder.encode(fileName, "UTF-8")
+            val uploadUrl = "$PDM_BASE_URL/api/upload?expires_in=$expiresIn&name=$nameParam"
+
+            val request = Request.Builder()
+                .url(uploadUrl)
+                .header("X-Upload-Token", token)
+                .post(combined.toRequestBody("application/octet-stream".toMediaType()))
                 .build()
-            // Fermer le client dans finally : sinon son thread pool + connexions
-            // fuient (cf. BlockingAuthoritiesManager.syncFromRemote).
-            try {
-                // Token éphémère — pas de clé statique extractible de l'APK.
-                // Le worker rate-limite /api/challenge, donc un attaquant ne peut
-                // pas se pré-émettre un stock de tokens. TTL 5 min côté serveur.
-                val token = fetchUploadToken(client)
 
-                val nameParam = java.net.URLEncoder.encode(fileName, "UTF-8")
-                val uploadUrl = "$PDM_BASE_URL/api/upload?expires_in=$expiresIn&name=$nameParam"
-
-                val request = Request.Builder()
-                    .url(uploadUrl)
-                    .header("X-Upload-Token", token)
-                    .post(combined.toRequestBody("application/octet-stream".toMediaType()))
-                    .build()
-
-                if (BuildConfig.DEBUG) Log.d(TAG, "Uploading ${combined.size} bytes (Argon2id v2)")
-                val response = client.newCall(request).execute()
-                val body = response.body?.string()?.trim() ?: ""
-                response.close()
-
+            if (BuildConfig.DEBUG) Log.d(TAG, "Uploading ${combined.size} bytes (Argon2id v2)")
+            val body = client.newCall(request).execute().use { response ->
+                val text = response.body?.string()?.trim() ?: ""
                 if (!response.isSuccessful) throw Exception("Upload failed (${response.code})")
-
-                val json = JSONObject(body)
-                val slug = json.optString("slug", "")
-                val shortUrl = json.optString("short_url", "")
-                val rawUrl = json.optString("raw_url", "")
-                if (slug.isBlank() || shortUrl.isBlank()) throw Exception("Upload response invalid")
-
-                return UploadResult(
-                    shortCode = slug,
-                    password = password,
-                    fullUrl = shortUrl,
-                    fileUrl = rawUrl
-                )
-            } finally {
-                client.dispatcher.executorService.shutdown()
-                client.connectionPool.evictAll()
+                text
             }
+
+            val json = JSONObject(body)
+            val slug = json.optString("slug", "")
+            val shortUrl = json.optString("short_url", "")
+            val rawUrl = json.optString("raw_url", "")
+            if (slug.isBlank() || shortUrl.isBlank()) throw Exception("Upload response invalid")
+
+            return UploadResult(
+                shortCode = slug,
+                password = password,
+                fullUrl = shortUrl,
+                fileUrl = rawUrl
+            )
         }
 
         fun downloadAndDecrypt(context: android.content.Context, shortCodeOrUrl: String, password: String): String {
             val slug = parseSlug(context, shortCodeOrUrl)
             if (password.isBlank()) throw Exception(context.getString(R.string.es_err_password_required))
 
-            val client = OkHttpClient.Builder()
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .build()
-            // Fermer le client dans finally : sinon son thread pool + connexions
-            // fuient (cf. BlockingAuthoritiesManager.syncFromRemote).
-            val bytes: ByteArray
-            try {
-                val request = Request.Builder().url("$PDM_BASE_URL/r/$slug").build()
-                val response = client.newCall(request).execute()
+            val client = Http.withTimeouts(connectSec = 15, readSec = 15)
+            val source = runCatching { java.net.URI(shortCodeOrUrl.trim()) }.getOrNull()
+            val sourceBase = if (source?.host != null) {
+                require(source.scheme == "https" && source.userInfo == null && source.port == -1 &&
+                    source.host in setOf("perfectdnsmanager.app", "beta.perfectdnsmanager.app", "pdm.appstorefr.net")) { "Invalid share URL" }
+                "https://${source.host}"
+            } else PDM_BASE_URL
+            val request = Request.Builder().url("$sourceBase/r/$slug").build()
+            val bytes = client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
-                    val code = response.code
-                    response.close()
-                    throw Exception(context.getString(R.string.es_err_download_failed_fmt, code))
+                    throw Exception(context.getString(R.string.es_err_download_failed_fmt, response.code))
                 }
-                bytes = response.body?.bytes() ?: ByteArray(0)
-                response.close()
-            } finally {
-                client.dispatcher.executorService.shutdown()
-                client.connectionPool.evictAll()
+                // Plafond : le blob est un rapport chiffré, pas un fichier
+                // arbitraire. Sans limite, un endpoint hostile ferait allouer
+                // autant de mémoire qu'il veut.
+                val stream = response.body?.byteStream() ?: throw Exception("empty body")
+                val out = java.io.ByteArrayOutputStream()
+                val buf = ByteArray(64 * 1024)
+                while (out.size() <= MAX_BLOB_BYTES) {
+                    val n = stream.read(buf)
+                    if (n < 0) break
+                    out.write(buf, 0, n)
+                }
+                if (out.size() > MAX_BLOB_BYTES)
+                    throw Exception(context.getString(R.string.es_err_format_unsupported))
+                out.toByteArray()
             }
 
             if (bytes.isEmpty() || bytes[0] != FORMAT_VERSION) {
@@ -176,7 +184,7 @@ class EncryptedSharer {
 
         /**
          * Demande un token de session au worker via /api/challenge. Token signé
-         * HMAC-SHA256 côté serveur, lié à l'IP du client, TTL 5 min. Empêche
+         * HMAC-SHA256 côté serveur, lié à l'IP du client, TTL 90 s. Empêche
          * d'avoir une clé statique extractible de l'APK.
          */
         private fun fetchUploadToken(client: OkHttpClient): String {
