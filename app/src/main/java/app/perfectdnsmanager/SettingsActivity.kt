@@ -348,6 +348,13 @@ class SettingsActivity : AppCompatActivity() {
             prefs.edit().putBoolean("show_standard_dns", isChecked).apply()
         }
 
+        val switchAdblock = findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchAdblock)
+        switchAdblock.isChecked = prefs.getBoolean("allow_adblock_profiles", false)
+        findViewById<LinearLayout>(R.id.rowAdblock).setOnClickListener { switchAdblock.isChecked = !switchAdblock.isChecked }
+        switchAdblock.setOnCheckedChangeListener { _, checked ->
+            prefs.edit().putBoolean("allow_adblock_profiles", checked).apply()
+        }
+
         // ── Profile variants toggle ──
         switchProfileVariants.isChecked = prefs.getBoolean("show_profile_variants", false)
         rowProfileVariants.setOnClickListener { switchProfileVariants.isChecked = !switchProfileVariants.isChecked }

@@ -117,7 +117,7 @@
             android:focusable="true"
             android:clickable="true"
             android:nextFocusUp="@id/rowAutoReconnect"
-            android:nextFocusDown="@id/rowAdvanced">
+            android:nextFocusDown="@id/rowAdblock">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -132,6 +132,28 @@
                 android:focusable="false"
                 android:clickable="false" />
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rowAdblock"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:background="@drawable/focusable_item_background"
+        android:padding="12dp" android:layout_marginBottom="8dp"
+        android:focusable="true" android:clickable="true"
+        android:nextFocusUp="@id/rowDisableIpv6" android:nextFocusDown="@id/rowAdvanced">
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:orientation="vertical">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="@string/allow_adblock_profiles" android:textSize="15sp"
+                android:textColor="@color/pdm_text_primary"/>
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="@string/allow_adblock_profiles_help" android:textSize="12sp"
+                android:textColor="@color/pdm_text_secondary"/>
+        </LinearLayout>
+        <androidx.appcompat.widget.SwitchCompat android:id="@+id/switchAdblock"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:focusable="false" android:clickable="false"/>
     </LinearLayout>
 
     <!-- Section Paramètres DNS avancés -->
@@ -153,7 +175,7 @@
             android:padding="8dp"
             android:focusable="true"
             android:clickable="true"
-            android:nextFocusUp="@id/rowDisableIpv6"
+            android:nextFocusUp="@id/rowAdblock"
             android:nextFocusDown="@id/rowImportExport">
             <TextView
                 android:layout_width="0dp"

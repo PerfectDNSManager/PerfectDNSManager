@@ -100,26 +100,8 @@ class DnsSelectionActivity : AppCompatActivity() {
             true
         }
 
-        // Si show_profile_variants off : ne garder qu'un seul profil par type par fournisseur
-        val filtered = if (!showProfileVariants) {
-            val seen = mutableSetOf<String>()
-            val sortedForDedup = baseFiltered.sortedBy { profile ->
-                val n = profile.name.lowercase()
-                when {
-                    n == "unfiltered" || n == "unsecured" || n == "standard" || n == "basic" || n.startsWith("ns") -> 0
-                    else -> 1
-                }
-            }
-            sortedForDedup.filter { profile ->
-                if (profile.isCustom || profile.isOperatorDns) return@filter true
-                val key = "${profile.providerName}:${profile.type}"
-                if (key in seen) return@filter false
-                seen.add(key)
-                true
-            }
-        } else {
-            baseFiltered
-        }
+        val filtered = app.perfectdnsmanager.data.ProfileCatalog.visible(
+            baseFiltered, prefs.getBoolean("allow_adblock_profiles", false), showProfileVariants)
 
         val grouped = linkedMapOf<String, List<DnsProfile>>()
 

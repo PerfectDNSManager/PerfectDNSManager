@@ -82,6 +82,7 @@ class ConfigManager(private val context: Context) {
             settings.addProperty("adb_dot_enabled", prefs.getBoolean("adb_dot_enabled", false))
             settings.addProperty("operator_dns_enabled", prefs.getBoolean("operator_dns_enabled", false))
             settings.addProperty("advanced_features_enabled", prefs.getBoolean("advanced_features_enabled", false))
+            settings.addProperty("allow_adblock_profiles", prefs.getBoolean("allow_adblock_profiles", false))
             settings.addProperty("show_doq_dns", prefs.getBoolean("show_doq_dns", false))
             root.add("settings", settings)
         }
@@ -196,6 +197,9 @@ class ConfigManager(private val context: Context) {
             }
             if (settings.has("advanced_features_enabled")) {
                 editor.putBoolean("advanced_features_enabled", settings.get("advanced_features_enabled").asBoolean)
+            }
+            if (settings.has("allow_adblock_profiles")) {
+                editor.putBoolean("allow_adblock_profiles", settings.get("allow_adblock_profiles").asBoolean)
             }
             if (settings.has("show_doq_dns")) {
                 editor.putBoolean("show_doq_dns", settings.get("show_doq_dns").asBoolean)

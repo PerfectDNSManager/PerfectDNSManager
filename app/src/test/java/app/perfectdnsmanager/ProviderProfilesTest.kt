@@ -36,13 +36,29 @@ class ProviderProfilesTest {
         }
         assertEquals("quic://abc12345.dns.controld.com:853", ControlDProfiles.primary("abc12345", DnsType.DOQ))
     }
-    @Test fun xdpOnlyIncludesStandardResolvers() {
+    @Test fun xdpIncludesOptionalAdblockResolvers() {
         val all = DnsProfile.getDefaultPresets()
         assertEquals(all.size, all.map { it.id }.distinct().size)
         val xdp = all.filter { it.providerName == "xdp.es" }
-        assertEquals(4, xdp.size)
-        assertTrue(xdp.all { it.name == "Standard" })
+        assertEquals(8, xdp.size)
+        assertEquals(4, xdp.count { it.isAdblock })
         assertTrue(xdp.all(ProfileValidation::isUsable))
         assertEquals("https://lite.xdp.es/dns-query", xdp.single { it.name == "Standard" && it.type == DnsType.DOH }.primary)
+    }
+    @Test fun adblockSettingIsIndependentOfVariants() {
+        val presets = DnsProfile.getDefaultPresets()
+        for (variants in listOf(false, true)) {
+            val hidden = ProfileCatalog.visible(presets, false, variants)
+            assertFalse(hidden.any { it.isAdblock })
+            val shown = ProfileCatalog.visible(presets, true, variants)
+            assertEquals(presets.filter { it.isAdblock }.map { it.id }.toSet(), shown.filter { it.isAdblock }.map { it.id }.toSet())
+            assertTrue(shown.any { it.providerName == "xdp.es" && it.name == "Standard" })
+        }
+        assertTrue(presets.all(ProfileValidation::isUsable))
+        val custom = DnsProfile(providerName = "ControlD", name = "My profile", type = DnsType.DOH,
+            primary = "https://dns.controld.com/abc123", isCustom = true)
+        assertTrue(ProfileCatalog.visible(presets + custom, false, false).contains(custom))
+        val imported = ConfigValidation.parse("""{"settings":{"allow_adblock_profiles":true}}""")
+        assertTrue(imported.getAsJsonObject("settings").get("allow_adblock_profiles").asBoolean)
     }
 }

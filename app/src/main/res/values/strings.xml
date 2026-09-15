@@ -583,4 +583,10 @@
     <string name="controld_resolver_help">Copiez le Resolver ID de votre appareil dans Control D, ou son adresse DoH / DoT / DoQ.</string>
     <string name="controld_invalid_resolver">Identifiant ou adresse Control D invalide.</string>
     <string name="dns_desc_xdp_standard">DNS public espagnol sans adblock ; réécriture de certaines IP bloquées.</string>
+    <string name="allow_adblock_profiles">Autoriser les profils Adblock</string>
+    <string name="allow_adblock_profiles_help">Affiche les DNS qui bloquent les publicités. Masquer ces profils ne change pas le DNS actif ni les profils personnels.</string>
+    <string name="dns_desc_ads_social">Bloque publicités, traqueurs, malwares et réseaux sociaux</string>
+    <string name="dns_desc_ads_family">Bloque publicités, traqueurs, malwares, contenus adultes et jeux d’argent</string>
+    <string name="dns_desc_ads_all">Bloque publicités, traqueurs, malwares, contenus adultes, jeux d’argent et réseaux sociaux</string>
+    <string name="mullvad_dns_retirement">Arrêt du service annoncé le 2 novembre 2026</string>
 </resources>
