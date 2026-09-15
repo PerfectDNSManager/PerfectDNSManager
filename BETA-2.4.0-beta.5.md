@@ -18,3 +18,5 @@ Validation : tests JVM des formats Control D, conservation lors de la validation
 Installation : canal bêta de PDM ou Downloader **2447296**.
 
 Sources du catalogue : [Control D](https://docs.controld.com/docs/free-dns), [AdGuard](https://adguard-dns.io/en/public-dns.html), [Mullvad](https://mullvad.net/en/help/dns-over-https-and-dns-over-tls).
+
+Vérification finale : 12 tests JVM et lint Android réussis. Requêtes DoH réelles réussies pour xdp.es (2 variantes), AdGuard Family et les 13 variantes Control D ajoutées. Mullvad ferme la connexion depuis cet environnement, également pour son endpoint Standard existant : disponibilité non validée ici, adresses conservées selon la documentation officielle.
