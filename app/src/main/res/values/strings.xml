@@ -583,5 +583,4 @@
     <string name="controld_resolver_help">Copiez le Resolver ID de votre appareil dans Control D, ou son adresse DoH / DoT / DoQ.</string>
     <string name="controld_invalid_resolver">Identifiant ou adresse Control D invalide.</string>
     <string name="dns_desc_xdp_standard">DNS public espagnol sans adblock ; réécriture de certaines IP bloquées.</string>
-    <string name="dns_desc_xdp_adblock">DNS public espagnol avec filtrage publicitaire et réécriture de certaines IP bloquées.</string>
 </resources>

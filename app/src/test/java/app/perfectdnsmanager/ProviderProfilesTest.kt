@@ -36,13 +36,13 @@ class ProviderProfilesTest {
         }
         assertEquals("quic://abc12345.dns.controld.com:853", ControlDProfiles.primary("abc12345", DnsType.DOQ))
     }
-    @Test fun xdpPresetsHaveDistinctIdsAndFilteringEndpoints() {
+    @Test fun xdpOnlyIncludesStandardResolvers() {
         val all = DnsProfile.getDefaultPresets()
         assertEquals(all.size, all.map { it.id }.distinct().size)
         val xdp = all.filter { it.providerName == "xdp.es" }
-        assertEquals(8, xdp.size)
+        assertEquals(4, xdp.size)
+        assertTrue(xdp.all { it.name == "Standard" })
         assertTrue(xdp.all(ProfileValidation::isUsable))
         assertEquals("https://lite.xdp.es/dns-query", xdp.single { it.name == "Standard" && it.type == DnsType.DOH }.primary)
-        assertEquals("https://dns.xdp.es/dns-query", xdp.single { it.name == "Adblock" && it.type == DnsType.DOH }.primary)
     }
 }
