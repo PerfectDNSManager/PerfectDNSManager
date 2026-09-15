@@ -558,4 +558,10 @@
     <string name="report_undetermined">判定不能</string>
     <string name="md_blocking_undetermined">テストは結論に至りませんでした：DNS の名前解決に失敗しました（ネットワーク利用不可、またはサーバーが無応答）。ブロックの有無は判断できません。</string>
     <string name="import_profiles_rejected">⚠ %1$d 件のプロファイルを破棄しました：エンドポイントが無効または不完全です。</string>
+    <string name="add_controld_profile">➕ カスタム Control D プロファイルを追加</string>
+    <string name="controld_resolver_hint">Control D ID or DNS address</string>
+    <string name="controld_resolver_help">Paste your Control D device Resolver ID or its DoH / DoT / DoQ address.</string>
+    <string name="controld_invalid_resolver">Invalid Control D resolver ID or address.</string>
+    <string name="dns_desc_xdp_standard">Spanish public DNS without adblock; rewrites some blocked IP addresses.</string>
+    <string name="dns_desc_xdp_adblock">Spanish public DNS with ad blocking; rewrites some blocked IP addresses.</string>
 </resources>

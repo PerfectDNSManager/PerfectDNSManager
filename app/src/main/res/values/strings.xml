@@ -578,4 +578,10 @@
     <string name="report_undetermined">Indéterminé</string>
     <string name="md_blocking_undetermined">Test non concluant : la résolution DNS a échoué (réseau indisponible ou serveur muet). Aucune conclusion sur un blocage ne peut être tirée.</string>
     <string name="import_profiles_rejected">⚠ %1$d profil(s) écarté(s) : endpoint invalide ou incomplet.</string>
+    <string name="add_controld_profile">➕ Ajouter un profil Control D</string>
+    <string name="controld_resolver_hint">ID Control D ou adresse DNS</string>
+    <string name="controld_resolver_help">Copiez le Resolver ID de votre appareil dans Control D, ou son adresse DoH / DoT / DoQ.</string>
+    <string name="controld_invalid_resolver">Identifiant ou adresse Control D invalide.</string>
+    <string name="dns_desc_xdp_standard">DNS public espagnol sans adblock ; réécriture de certaines IP bloquées.</string>
+    <string name="dns_desc_xdp_adblock">DNS public espagnol avec filtrage publicitaire et réécriture de certaines IP bloquées.</string>
 </resources>

@@ -560,4 +560,10 @@
     <string name="report_undetermined">अनिर्णीत</string>
     <string name="md_blocking_undetermined">परीक्षण अनिर्णायक: DNS समाधान विफल रहा (नेटवर्क अनुपलब्ध या सर्वर मौन). अवरोधन के बारे में कोई निष्कर्ष नहीं निकाला जा सकता.</string>
     <string name="import_profiles_rejected">⚠ %1$d प्रोफ़ाइल हटाई गईं: अमान्य या अधूरा एंडपॉइंट.</string>
+    <string name="add_controld_profile">➕ कस्टम Control D प्रोफ़ाइल जोड़ें</string>
+    <string name="controld_resolver_hint">Control D ID or DNS address</string>
+    <string name="controld_resolver_help">Paste your Control D device Resolver ID or its DoH / DoT / DoQ address.</string>
+    <string name="controld_invalid_resolver">Invalid Control D resolver ID or address.</string>
+    <string name="dns_desc_xdp_standard">Spanish public DNS without adblock; rewrites some blocked IP addresses.</string>
+    <string name="dns_desc_xdp_adblock">Spanish public DNS with ad blocking; rewrites some blocked IP addresses.</string>
 </resources>

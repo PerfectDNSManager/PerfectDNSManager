@@ -558,4 +558,10 @@
     <string name="report_undetermined">无法判定</string>
     <string name="md_blocking_undetermined">测试结果不确定：DNS 解析失败（网络不可用或服务器无响应）。无法就是否被屏蔽下结论。</string>
     <string name="import_profiles_rejected">⚠ 已丢弃 %1$d 个配置：端点无效或不完整。</string>
+    <string name="add_controld_profile">➕ 添加自定义 Control D 配置</string>
+    <string name="controld_resolver_hint">Control D ID or DNS address</string>
+    <string name="controld_resolver_help">Paste your Control D device Resolver ID or its DoH / DoT / DoQ address.</string>
+    <string name="controld_invalid_resolver">Invalid Control D resolver ID or address.</string>
+    <string name="dns_desc_xdp_standard">Spanish public DNS without adblock; rewrites some blocked IP addresses.</string>
+    <string name="dns_desc_xdp_adblock">Spanish public DNS with ad blocking; rewrites some blocked IP addresses.</string>
 </resources>

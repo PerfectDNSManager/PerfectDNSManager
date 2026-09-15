@@ -359,6 +359,24 @@ data class DnsProfile(
             // ══════════════════════════════════════════════════════
             //  DNS Opérateur FR  (cachés sauf toggle dédié)
             // ══════════════════════════════════════════════════════
+            // Official endpoints: https://xdp.es/ and Oihalitz/xdp-dns-evadeproxy.
+            DnsProfile(id = 1600, providerName = "xdp.es", name = "Standard", type = DnsType.DOH,
+                primary = "https://lite.xdp.es/dns-query", descResId = R.string.dns_desc_xdp_standard),
+            DnsProfile(id = 1601, providerName = "xdp.es", name = "Standard", type = DnsType.DOQ,
+                primary = "quic://lite.xdp.es:853", descResId = R.string.dns_desc_xdp_standard),
+            DnsProfile(id = 1602, providerName = "xdp.es", name = "Standard", type = DnsType.DOT,
+                primary = "lite.xdp.es", descResId = R.string.dns_desc_xdp_standard),
+            DnsProfile(id = 1603, providerName = "xdp.es", name = "Standard", type = DnsType.DEFAULT,
+                primary = "85.208.114.52", primaryV6 = "2a0e:97c0:c40::52", descResId = R.string.dns_desc_xdp_standard),
+            DnsProfile(id = 1604, providerName = "xdp.es", name = "Adblock", type = DnsType.DOH,
+                primary = "https://dns.xdp.es/dns-query", descResId = R.string.dns_desc_xdp_adblock),
+            DnsProfile(id = 1605, providerName = "xdp.es", name = "Adblock", type = DnsType.DOQ,
+                primary = "quic://dns.xdp.es:853", descResId = R.string.dns_desc_xdp_adblock),
+            DnsProfile(id = 1606, providerName = "xdp.es", name = "Adblock", type = DnsType.DOT,
+                primary = "dns.xdp.es", descResId = R.string.dns_desc_xdp_adblock),
+            DnsProfile(id = 1607, providerName = "xdp.es", name = "Adblock", type = DnsType.DEFAULT,
+                primary = "85.208.114.51", primaryV6 = "2a0e:97c0:c40::51", descResId = R.string.dns_desc_xdp_adblock),
+
             DnsProfile(id = 2001, providerName = "🇫🇷 Orange", name = "DNS Orange", type = DnsType.DEFAULT,
                 primary = "80.10.246.2", secondary = "80.10.246.129",
                 descResId = R.string.dns_desc_isp_fmt, descResIdArg = "Orange", isOperatorDns = true),

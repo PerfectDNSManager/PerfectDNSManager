@@ -77,7 +77,7 @@ class DnsSelectionActivity : AppCompatActivity() {
 
     private val providerOrder = listOf(
         "ControlD", "NextDNS", "AdGuard", "Surfshark",
-        "Mullvad", "Cloudflare", "Quad9", "FDN", "dns.sb", "Yandex", "Google"
+        "Mullvad", "Cloudflare", "Quad9", "xdp.es", "FDN", "dns.sb", "Yandex", "Google"
     )
 
     private fun showProviders() {

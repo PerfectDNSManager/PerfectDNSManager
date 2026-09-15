@@ -564,4 +564,10 @@
     <string name="report_undetermined">Не определено</string>
     <string name="md_blocking_undetermined">Тест не показателен: разрешение DNS не удалось (сеть недоступна или сервер молчит). Сделать вывод о блокировке нельзя.</string>
     <string name="import_profiles_rejected">⚠ Отклонено профилей: %1$d — неверный или неполный адрес.</string>
+    <string name="add_controld_profile">➕ Добавить пользовательский профиль Control D</string>
+    <string name="controld_resolver_hint">Control D ID or DNS address</string>
+    <string name="controld_resolver_help">Paste your Control D device Resolver ID or its DoH / DoT / DoQ address.</string>
+    <string name="controld_invalid_resolver">Invalid Control D resolver ID or address.</string>
+    <string name="dns_desc_xdp_standard">Spanish public DNS without adblock; rewrites some blocked IP addresses.</string>
+    <string name="dns_desc_xdp_adblock">Spanish public DNS with ad blocking; rewrites some blocked IP addresses.</string>
 </resources>

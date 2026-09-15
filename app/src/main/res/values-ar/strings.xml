@@ -568,4 +568,10 @@
     <string name="report_undetermined">غير محدد</string>
     <string name="md_blocking_undetermined">الاختبار غير حاسم: فشلت ترجمة أسماء النطاقات (الشبكة غير متاحة أو الخادم لا يستجيب). لا يمكن استنتاج وجود حجب.</string>
     <string name="import_profiles_rejected">⚠ تم استبعاد %1$d ملف/ملفات: نقطة نهاية غير صالحة أو ناقصة.</string>
+    <string name="add_controld_profile">➕ إضافة ملف Control D مخصص</string>
+    <string name="controld_resolver_hint">Control D ID or DNS address</string>
+    <string name="controld_resolver_help">Paste your Control D device Resolver ID or its DoH / DoT / DoQ address.</string>
+    <string name="controld_invalid_resolver">Invalid Control D resolver ID or address.</string>
+    <string name="dns_desc_xdp_standard">Spanish public DNS without adblock; rewrites some blocked IP addresses.</string>
+    <string name="dns_desc_xdp_adblock">Spanish public DNS with ad blocking; rewrites some blocked IP addresses.</string>
 </resources>

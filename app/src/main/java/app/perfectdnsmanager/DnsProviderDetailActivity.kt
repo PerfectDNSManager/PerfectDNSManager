@@ -53,8 +53,17 @@ class DnsProviderDetailActivity : AppCompatActivity() {
 
         val providerName = intent.getStringExtra("PROVIDER_NAME") ?: run { finish(); return }
         val profilesJson = intent.getStringExtra("PROFILES_JSON") ?: run { finish(); return }
-        val profiles: List<DnsProfile> = Gson().fromJson(profilesJson, object : TypeToken<List<DnsProfile>>() {}.type)
+        val suppliedProfiles: List<DnsProfile> = Gson().fromJson(profilesJson, object : TypeToken<List<DnsProfile>>() {}.type)
         val isNextDns = intent.getBooleanExtra("IS_NEXTDNS", false)
+        val profiles = if (providerName == "ControlD") {
+            val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
+            val custom = app.perfectdnsmanager.data.ProfileManager(this).loadProfiles().filter {
+                it.providerName == "ControlD" && it.isCustom &&
+                    (it.type != DnsType.DOT || prefs.getBoolean("adb_dot_enabled", false)) &&
+                    (it.type != DnsType.DOQ || prefs.getBoolean("show_doq_dns", false))
+            }
+            suppliedProfiles.filterNot { it.isCustom } + custom
+        } else suppliedProfiles
 
         // Header
         val btnBack: Button = findViewById(R.id.btnBack)
@@ -82,6 +91,12 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         if (isNextDns) {
             btnAddProfile.visibility = View.VISIBLE
             btnAddProfile.setOnClickListener { showAddNextDnsProfileDialog() }
+        }
+
+        if (actualName == "ControlD") {
+            btnAddProfile.visibility = View.VISIBLE
+            btnAddProfile.setText(R.string.add_controld_profile)
+            btnAddProfile.setOnClickListener { showAddControlDProfileDialog() }
         }
 
         // Group profiles by type, ordered: DoH > DoQ > DoT > Standard
@@ -342,6 +357,70 @@ class DnsProviderDetailActivity : AppCompatActivity() {
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .show()
+    }
+
+    private fun showAddControlDProfileDialog() {
+        val layout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(48, 24, 48, 16)
+        }
+        val input = EditText(this).apply {
+            hint = getString(R.string.controld_resolver_hint)
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+            filters = arrayOf(android.text.InputFilter.LengthFilter(256))
+            setTextColor(pdmTextPrimary()); setHintTextColor(pdmTextDisabled())
+            isSingleLine = true
+        }
+        layout.addView(TextView(this).apply {
+            setText(R.string.controld_resolver_help); setTextColor(pdmTextSecondary())
+        })
+        layout.addView(input)
+        val name = EditText(this).apply {
+            hint = getString(R.string.profile_name_hint)
+            filters = arrayOf(android.text.InputFilter.LengthFilter(128))
+            setTextColor(pdmTextPrimary()); setHintTextColor(pdmTextDisabled())
+            isSingleLine = true
+        }
+        layout.addView(name)
+        val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
+        val types = mutableListOf(DnsType.DOH)
+        if (prefs.getBoolean("show_doq_dns", false)) types.add(DnsType.DOQ)
+        if (prefs.getBoolean("adb_dot_enabled", false)) types.add(DnsType.DOT)
+        layout.addView(TextView(this).apply { setText(R.string.protocol_label); setTextColor(pdmTextSecondary()) })
+        val group = RadioGroup(this)
+        val ids = types.map { type ->
+            val button = RadioButton(this).apply {
+                id = View.generateViewId(); text = when (type) {
+                    DnsType.DOH -> "DoH"; DnsType.DOQ -> "DoQ"; else -> "DoT"
+                }
+                setTextColor(pdmTextPrimary()); isFocusable = true
+            }
+            group.addView(button); button.id
+        }
+        group.check(ids.first()); layout.addView(group)
+        val dialog = AlertDialog.Builder(this).setTitle(R.string.add_controld_profile)
+            .setView(layout).setPositiveButton(R.string.save_button, null)
+            .setNegativeButton(R.string.cancel, null).create()
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val id = app.perfectdnsmanager.data.ControlDProfiles.resolverId(input.text.toString())
+                if (id == null) {
+                    input.error = getString(R.string.controld_invalid_resolver); input.requestFocus()
+                    return@setOnClickListener
+                }
+                val type = types[ids.indexOf(group.checkedRadioButtonId)]
+                val primary = app.perfectdnsmanager.data.ControlDProfiles.primary(id, type)
+                val manager = app.perfectdnsmanager.data.ProfileManager(this)
+                val existing = manager.loadProfiles().find { it.providerName == "ControlD" && it.isCustom && it.primary == primary }
+                val profile = existing ?: DnsProfile(
+                    providerName = "ControlD", name = name.text.toString().trim().ifBlank { "Control D $id" },
+                    type = type, primary = primary, isCustom = true
+                ).also { manager.addProfile(it) }
+                setResult(Activity.RESULT_OK, Intent().putExtra("SELECTED_PROFILE_JSON", Gson().toJson(profile)))
+                dialog.dismiss(); finish()
+            }
+        }
+        dialog.show()
     }
 
     // -- Sealed class for list items --
