@@ -80,7 +80,8 @@ object DnsTester {
      */
     fun measureDoqLatency(url: String, domain: String = "google.com"): Long? {
         return try {
-            val uri = java.net.URI(url.replace("quic://", "https://"))
+            if (!ProfileValidation.isValidPrimary(app.perfectdnsmanager.data.DnsType.DOQ, url)) return null
+            val uri = java.net.URI(ProfileValidation.normalizeEndpoint(url))
             val host = uri.host
             val port = if (uri.port > 0) uri.port else 853
 

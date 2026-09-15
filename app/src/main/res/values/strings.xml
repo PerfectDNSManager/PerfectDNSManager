@@ -589,4 +589,6 @@
     <string name="dns_desc_ads_family">Bloque publicités, traqueurs, malwares, contenus adultes et jeux d’argent</string>
     <string name="dns_desc_ads_all">Bloque publicités, traqueurs, malwares, contenus adultes, jeux d’argent et réseaux sociaux</string>
     <string name="mullvad_dns_retirement">Arrêt du service annoncé le 2 novembre 2026</string>
+    <string name="copy_share">Copier le partage</string>
+    <string name="share_result_text">Lien chiffré :\n%1$s\n\nMot de passe :\n%2$s\n\nExpiration : %3$s.\nCopiez uniquement si vous souhaitez placer le lien et le mot de passe dans le presse-papiers.</string>
 </resources>

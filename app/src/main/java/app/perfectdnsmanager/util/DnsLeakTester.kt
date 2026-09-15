@@ -91,19 +91,15 @@ object DnsLeakTester {
                          caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
                 }
                 val linkProps = physicalNetwork?.let { cm.getLinkProperties(it) }
-                linkProps?.dnsServers?.firstOrNull() ?: InetAddress.getByName("8.8.8.8")
+                linkProps?.dnsServers?.firstOrNull() ?: return emptySet()
             } else {
-                InetAddress.getByName("8.8.8.8")
+                return emptySet()
             }
 
             // whoami.akamai.net
             val ip1 = resolveViaProtectedSocket(ispDns, "whoami.akamai.net")
             if (ip1 != null) resolverIps.add(ip1)
 
-            // myip.opendns.com via OpenDNS
-            val openDns = InetAddress.getByName("208.67.222.222")
-            val ip2 = resolveViaProtectedSocket(openDns, "myip.opendns.com")
-            if (ip2 != null) resolverIps.add(ip2)
 
         } catch (e: Exception) {
             Log.w(TAG, "Protected socket leak detect failed: ${e.javaClass.simpleName}")
@@ -142,13 +138,6 @@ object DnsLeakTester {
         } catch (e: Exception) {
             Log.w(TAG, "whoami.akamai.net failed: ${e.message}")
         }
-        try {
-            val addr = InetAddress.getByName("myip.opendns.com")
-            val ip = addr.hostAddress
-            if (ip != null && ip.isNotEmpty()) resolverIps.add(ip)
-        } catch (e: Exception) {
-            Log.w(TAG, "myip.opendns.com failed: ${e.message}")
-        }
         return resolverIps
     }
 
@@ -159,7 +148,7 @@ object DnsLeakTester {
                 .header("User-Agent", "PerfectDNSManager/1.0")
                 .build()
             client.newCall(request).execute().use { response ->
-                val body = response.body?.string() ?: ""
+                val body = app.perfectdnsmanager.util.Http.readText(response.body)
                 if (response.isSuccessful && body.isNotEmpty()) {
                     val json = JSONObject(body)
                     val country = json.optString("country_name", "").ifEmpty { null }

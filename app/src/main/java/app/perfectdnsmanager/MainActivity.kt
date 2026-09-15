@@ -787,8 +787,8 @@ open class MainActivity : AppCompatActivity() {
                 }
                 lastSpeedResult = speed
                 if (speed.pingMs >= 0) display.append("\nPing : ${speed.pingMs} ms")
-                display.append("\n↓ Download : ${String.format("%.1f", speed.downloadMbps)} Mbps")
-                display.append("\n↑ Upload : ${String.format("%.1f", speed.uploadMbps)} Mbps")
+                display.append("\n↓ Download : ${String.format(java.util.Locale.getDefault(), "%.1f", speed.downloadMbps)} Mbps")
+                display.append("\n↑ Upload : ${String.format(java.util.Locale.getDefault(), "%.1f", speed.uploadMbps)} Mbps")
             } catch (e: Exception) {
                 display.append("\n❌ ${e.message}")
             }
@@ -1093,8 +1093,8 @@ open class MainActivity : AppCompatActivity() {
                         appendLine("| ${getString(R.string.md_measure)} | ${getString(R.string.md_result)} |")
                         appendLine("|--------|----------|")
                         if (speed.pingMs >= 0) appendLine("| **Ping** | ${speed.pingMs} ms |")
-                        appendLine("| **Download** | ${String.format("%.1f", speed.downloadMbps)} Mbps |")
-                        appendLine("| **Upload** | ${String.format("%.1f", speed.uploadMbps)} Mbps |")
+                        appendLine("| **Download** | ${String.format(java.util.Locale.getDefault(), "%.1f", speed.downloadMbps)} Mbps |")
+                        appendLine("| **Upload** | ${String.format(java.util.Locale.getDefault(), "%.1f", speed.uploadMbps)} Mbps |")
                         appendLine()
                     }
 
@@ -1127,12 +1127,9 @@ open class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     btnShareReport.isEnabled = true
                     btnShareReport.setBackgroundResource(R.drawable.pdm_btn_primary)
-                    val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
                     val url1 = result.fullUrl
                     val pwd = result.password
-                    // Clipboard : URL + mot de passe formaté pour un partage complet en 1 collage.
-                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("PDM Share", "$url1\n${getString(R.string.share_clip_password_fmt, pwd)}"))
-                    val text = getString(R.string.share_text_format, url1, pwd, expiresIn)
+                    val text = getString(R.string.share_result_text, url1, pwd, expiresIn)
                     val msg = android.text.SpannableString(text)
                     val linkColor = pdmAccentAlt()
                     val accentColor = pdmAccent()
@@ -1148,6 +1145,9 @@ open class MainActivity : AppCompatActivity() {
                     }
                     val dialog = AlertDialog.Builder(this@MainActivity)
                         .setTitle(getString(R.string.share_ip_success_title))
+                        .setNeutralButton(getString(R.string.copy_share)) { _, _ ->
+                            app.perfectdnsmanager.util.ShareClipboard.copy(this@MainActivity, "$url1\n${getString(R.string.share_clip_password_fmt, pwd)}")
+                        }
                         .setMessage(msg)
                         .setPositiveButton("OK", null)
                         .show()

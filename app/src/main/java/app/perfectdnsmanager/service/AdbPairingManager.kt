@@ -54,6 +54,7 @@ class AdbPairingManager(private val context: Context) {
      * @param callback callback (sur le thread appelant — appeler depuis un Thread dédié)
      */
     fun pairAndGrant(pairCode: String, callback: Callback) {
+        if (!Regex("^[0-9]{6}$").matches(pairCode)) { callback.onError("INVALID_PAIR_CODE"); return }
         if (!AdbPairingClient.available()) {
             callback.onError("PAIRING_NATIVE_UNAVAILABLE")
             return
@@ -99,7 +100,10 @@ class AdbPairingManager(private val context: Context) {
                 val output = StringBuilder()
                 client.shellCommand(
                     "pm grant ${context.packageName} android.permission.WRITE_SECURE_SETTINGS"
-                ) { data -> output.append(String(data)) }
+                ) { data ->
+                    require(output.length + data.size <= 64 * 1024) { "ADB output too large" }
+                    output.append(String(data))
+                }
                 Log.i(TAG, "pm grant output: $output")
             }
         } catch (e: Throwable) {

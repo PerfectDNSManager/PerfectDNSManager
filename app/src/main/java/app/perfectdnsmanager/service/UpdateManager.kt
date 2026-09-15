@@ -116,7 +116,7 @@ class UpdateManager(private val context: Context) {
                 // Le téléchargement démarrait immédiatement : plusieurs dizaines
                 // de Mo sans confirmation, y compris en données mobiles.
                 val sizeStr = if (release.apkSize > 0)
-                    String.format("%.1f Mo", release.apkSize / 1_000_000.0) else ""
+                    String.format(java.util.Locale.getDefault(), "%.1f Mo", release.apkSize / 1_000_000.0) else ""
                 runOnMainThread {
                     if (context is Activity && !context.isFinishing) {
                         AlertDialog.Builder(context)
@@ -150,7 +150,7 @@ class UpdateManager(private val context: Context) {
             if (compareVersions(release.version, currentVersion) <= 0) return@fetchBestRelease
             if (release.version == dismissedVersion) return@fetchBestRelease
 
-            val sizeStr = if (release.apkSize > 0) String.format("%.1f Mo", release.apkSize / 1_000_000.0) else ""
+            val sizeStr = if (release.apkSize > 0) String.format(java.util.Locale.getDefault(), "%.1f Mo", release.apkSize / 1_000_000.0) else ""
             runOnMainThread {
                 if (context is Activity && !context.isFinishing) {
                     AlertDialog.Builder(context)
@@ -205,7 +205,7 @@ class UpdateManager(private val context: Context) {
                         Log.w(TAG, "Release indisponible ($apiUrl): HTTP ${resp.code}")
                         null
                     } else {
-                        val json = JSONObject(resp.body?.string() ?: "")
+                        val json = JSONObject(app.perfectdnsmanager.util.Http.readText(resp.body))
                         val tagName = json.optString("tag_name", "")
                         val body = json.optString("body", "")
                         val version = if (tagName == LATEST_BETA_TAG) {

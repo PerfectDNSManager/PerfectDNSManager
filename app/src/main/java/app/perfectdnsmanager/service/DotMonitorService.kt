@@ -85,6 +85,11 @@ class DotMonitorService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_DISABLE -> {
+                if (hostname.isEmpty()) {
+                    val saved = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                    hostname = saved.getString("dot_hostname", "") ?: ""
+                    label = saved.getString("dot_label", "") ?: ""
+                }
                 disableAndStop()
                 return START_NOT_STICKY
             }
@@ -116,6 +121,11 @@ class DotMonitorService : Service() {
             if (!PrivateDnsGuard.isStrictActive(this) || PrivateDnsGuard.specifier(this) != hostname) {
                 monitoring = false; stopSelf(); return@postDelayed
             }
+            // A disconnected network does not establish that the chosen DNS has failed.
+            val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+            @Suppress("DEPRECATION")
+            val connected = cm.activeNetworkInfo?.isConnected == true
+            if (!connected) { failures = 0; scheduleCheck(); return@postDelayed }
             val ok = probeDnsWithTimeout()
             if (!monitoring) return@postDelayed
             if (ok) {

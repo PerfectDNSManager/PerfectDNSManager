@@ -17,7 +17,7 @@
 -keep class app.perfectdnsmanager.util.UrlBlockingTester$* { <fields>; }
 -keep class app.perfectdnsmanager.util.DnsLeakTester$* { <fields>; }
 -keep class app.perfectdnsmanager.util.SpeedTester$* { <fields>; }
--keep class app.perfectdnsmanager.InternetSpeedtestActivity$OoklaServer { <fields>; }
+-keep class app.perfectdnsmanager.OoklaServer { <fields>; }
 # TypeToken s'appuie sur la signature générique conservée ci-dessus.
 -keep class com.google.gson.reflect.TypeToken { *; }
 -keep class * extends com.google.gson.reflect.TypeToken

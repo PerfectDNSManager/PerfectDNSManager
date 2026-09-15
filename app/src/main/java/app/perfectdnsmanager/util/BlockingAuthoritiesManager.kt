@@ -88,7 +88,7 @@ object BlockingAuthoritiesManager {
                     Log.w(TAG, "Sync failed: HTTP ${response.code}")
                     return
                 }
-                response.body?.string() ?: ""
+                app.perfectdnsmanager.util.Http.readText(response.body)
             }
             if (body.isEmpty()) return
 

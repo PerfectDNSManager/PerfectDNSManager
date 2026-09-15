@@ -329,7 +329,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
                     }
                 } else COLOR_GREY
                 val protoColor = protocolColorForLabel(r.type)
-                appendTwoPart(fullBuf, "${String.format("%2d", i + 1)}. ${r.provider} (", r.type, protoColor, ")", color)
+                appendTwoPart(fullBuf, "${String.format(java.util.Locale.getDefault(), "%2d", i + 1)}. ${r.provider} (", r.type, protoColor, ")", color)
                 appendToBuf(fullBuf, "    $latencyStr", color)
             }
 

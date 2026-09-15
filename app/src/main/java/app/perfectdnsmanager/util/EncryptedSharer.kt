@@ -193,7 +193,7 @@ class EncryptedSharer {
                 .post("".toRequestBody("application/octet-stream".toMediaType()))
                 .build()
             client.newCall(req).execute().use { resp ->
-                val body = resp.body?.string() ?: ""
+                val body = app.perfectdnsmanager.util.Http.readText(resp.body)
                 if (!resp.isSuccessful) throw Exception("Challenge failed (${resp.code})")
                 val token = JSONObject(body).optString("token", "")
                 if (token.isBlank()) throw Exception("Challenge response invalid")

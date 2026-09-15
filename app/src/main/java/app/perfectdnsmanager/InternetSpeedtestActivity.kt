@@ -984,7 +984,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 .build()
             client.newCall(req).execute().use { resp ->
                 if (resp.isSuccessful) {
-                    val json = resp.body?.string() ?: "[]"
+                    val json = app.perfectdnsmanager.util.Http.readText(resp.body)
                     val type = object : TypeToken<List<OoklaServer>>() {}.type
                     fetched.addAll(Gson().fromJson<List<OoklaServer>>(json, type))
                 } else {
@@ -1268,7 +1268,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
                 .build()
             client.newCall(req).execute().use { resp ->
             if (resp.isSuccessful) {
-                val json = resp.body?.string() ?: "{}"
+                val json = app.perfectdnsmanager.util.Http.readText(resp.body)
                 // Parse the response: { "targets": [{"url": "..."}, ...], ... }
                 try {
                     @Suppress("UNCHECKED_CAST")

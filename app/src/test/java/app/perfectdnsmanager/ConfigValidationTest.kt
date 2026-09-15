@@ -36,4 +36,21 @@ class ConfigValidationTest {
         assertFalse(ProfileValidation.isValidPrimary(DnsType.DOH, "https://dns.example/#secret"))
         assertTrue(ProfileValidation.isValidPrimary(DnsType.DOH, "https://1.1.1.1/dns-query"))
     }
+    @Test fun migratesLegacyNextDnsDoqAndRejectsIgnoredPaths() {
+        val old = "quic://dns.nextdns.io/abc123"
+        assertEquals("quic://abc123.dns.nextdns.io", ProfileValidation.normalizeEndpoint(old))
+        assertTrue(ProfileValidation.isValidPrimary(DnsType.DOQ, old))
+        assertFalse(ProfileValidation.isValidPrimary(DnsType.DOQ, "quic://dns.example/ignored"))
+        assertFalse(ProfileValidation.isValidPrimary(DnsType.DOQ, "quic://dns.example?profile=ignored"))
+        val p = ConfigValidation.parse("""{"selectedProfile":{"id":12345,"providerName":"NextDNS","name":"Personal","type":"DOQ","primary":"quic://dns.nextdns.io/abc123"}}""").getAsJsonObject("selectedProfile")
+        assertEquals("quic://abc123.dns.nextdns.io", p.get("primary").asString)
+    }
+    @Test fun rejectsInvalidSecondaryAndIpv6() {
+        val base = app.perfectdnsmanager.data.DnsProfile(providerName="test",name="test",type=DnsType.DEFAULT,primary="1.1.1.1")
+        assertFalse(ProfileValidation.isUsable(base.copy(secondary="999.1.1.1")))
+        assertFalse(ProfileValidation.isUsable(base.copy(primaryV6="not-an-ip")))
+        assertFalse(ProfileValidation.isUsable(base.copy(primaryV6="fe80::1%eth0")))
+        assertTrue(ProfileValidation.isUsable(base.copy(primaryV6="2606:4700:4700::1111")))
+        assertFalse(ProfileValidation.isUsable(base.copy(name="x".repeat(129))))
+    }
 }

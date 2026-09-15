@@ -137,7 +137,11 @@ class AddProfileDialog(
                     descResId = R.string.dns_desc_custom,
                     isCustom = true
                 )
-                onProfileCreated(profile)
+                if (!app.perfectdnsmanager.util.ProfileValidation.isUsable(profile)) {
+                    Toast.makeText(context, context.getString(R.string.primary_dns_invalid), Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+                onProfileCreated(profile.copy(primary = app.perfectdnsmanager.util.ProfileValidation.normalizeEndpoint(profile.primary)))
                 dismiss()
             }
         }

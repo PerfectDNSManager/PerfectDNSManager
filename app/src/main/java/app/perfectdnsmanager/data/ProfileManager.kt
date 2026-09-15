@@ -39,7 +39,10 @@ class ProfileManager(private val context: Context) {
             saveProfiles(defaults)
             return defaults
         }
-        val saved = GSON.fromJson<List<DnsProfile>>(json, listType) ?: return DnsProfile.getDefaultPresets()
+        val saved = runCatching { GSON.fromJson<List<DnsProfile?>>(json, listType) }
+            .getOrNull().orEmpty().filterNotNull()
+            .filter(app.perfectdnsmanager.util.ProfileValidation::isUsable)
+            .map { it.copy(primary = app.perfectdnsmanager.util.ProfileValidation.normalizeEndpoint(it.primary)) }
 
         // Auto-sync presets : mettre à jour les existants + injecter les manquants
         val defaults = DnsProfile.getDefaultPresets()

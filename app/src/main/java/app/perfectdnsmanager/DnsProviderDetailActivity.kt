@@ -55,14 +55,16 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         val profilesJson = intent.getStringExtra("PROFILES_JSON") ?: run { finish(); return }
         val suppliedProfiles: List<DnsProfile> = Gson().fromJson(profilesJson, object : TypeToken<List<DnsProfile>>() {}.type)
         val isNextDns = intent.getBooleanExtra("IS_NEXTDNS", false)
-        val profiles = if (providerName == "ControlD") {
+        val profiles = if (providerName != "NextDNS") {
             val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
             val custom = app.perfectdnsmanager.data.ProfileManager(this).loadProfiles().filter {
-                it.providerName == "ControlD" && it.isCustom &&
+                it.providerName == providerName &&
                     (it.type != DnsType.DOT || prefs.getBoolean("adb_dot_enabled", false)) &&
                     (it.type != DnsType.DOQ || prefs.getBoolean("show_doq_dns", false))
             }
-            suppliedProfiles.filterNot { it.isCustom } + custom
+            app.perfectdnsmanager.data.ProfileCatalog.visible(custom.filter {
+                (it.type != DnsType.DEFAULT || prefs.getBoolean("show_standard_dns", false) || it.isOperatorDns)
+            }, prefs.getBoolean("allow_adblock_profiles", false), prefs.getBoolean("show_profile_variants", false))
         } else suppliedProfiles
 
         // Header
@@ -178,7 +180,12 @@ class DnsProviderDetailActivity : AppCompatActivity() {
                     primary = etPrimary.text.toString().trim().ifEmpty { profile.primary },
                     secondary = etSecondary.text.toString().trim().takeIf { it.isNotEmpty() }
                 )
-                profileManager.updateProfile(updated)
+                if (!app.perfectdnsmanager.util.ProfileValidation.isUsable(updated)) {
+                    Toast.makeText(this, getString(R.string.primary_dns_invalid), Toast.LENGTH_LONG).show()
+                    return@setPositiveButton
+                }
+                profileManager.updateProfile(updated.copy(isCustom = true,
+                    primary = app.perfectdnsmanager.util.ProfileValidation.normalizeEndpoint(updated.primary)))
                 Toast.makeText(this, getString(R.string.profile_updated), Toast.LENGTH_SHORT).show()
                 recreate()
             }
@@ -219,7 +226,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         Regex("""(?:quic://|https://)dns\.nextdns\.io/([a-z0-9]+)""").find(trimmed)?.let {
             return it.groupValues[1]
         }
-        Regex("""^([a-z0-9]+)\.dns\.nextdns\.io$""").find(trimmed)?.let {
+        Regex("""^(?:quic://)?([a-zA-Z0-9-]+)\.dns\.nextdns\.io(?::853)?/?$""").find(trimmed)?.let {
             return it.groupValues[1]
         }
         return null
@@ -321,7 +328,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
             .setView(layout)
             .setPositiveButton("OK") { _, _ ->
                 val profileId = etProfileId.text.toString().trim()
-                if (profileId.isEmpty()) {
+                if (!Regex("^[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?$").matches(profileId)) {
                     Toast.makeText(this, getString(R.string.nextdns_id_required), Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
@@ -333,7 +340,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
                     DnsType.DEFAULT -> "Standard"
                 }
                 val primary = when (type) {
-                    DnsType.DOQ -> "quic://dns.nextdns.io/$profileId"
+                    DnsType.DOQ -> "quic://$profileId.dns.nextdns.io"
                     DnsType.DOH -> "https://dns.nextdns.io/$profileId"
                     DnsType.DOT -> "$profileId.dns.nextdns.io"
                     DnsType.DEFAULT -> "45.90.28.0"

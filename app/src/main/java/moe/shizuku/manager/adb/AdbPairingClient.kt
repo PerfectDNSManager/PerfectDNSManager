@@ -58,7 +58,7 @@ private class PeerInfo(
     }
 
     fun toStringShort(): String {
-        return "type=$type, data=${data.contentToString()}"
+        return "type=$type, dataSize=${data.size}"
     }
 
     companion object {
@@ -205,7 +205,9 @@ class AdbPairingClient(private val host: String, private val port: Int, private 
     }
 
     private fun setupTlsConnection() {
-        socket = Socket(host, port)
+        socket = Socket()
+        socket.connect(java.net.InetSocketAddress(host, port), 10_000)
+        socket.soTimeout = 10_000
         socket.tcpNoDelay = true
 
         val sslContext = key.sslContext
@@ -218,7 +220,7 @@ class AdbPairingClient(private val host: String, private val port: Int, private 
 
         val pairCodeBytes = pairCode.toByteArray()
         val keyMaterial = Conscrypt.exportKeyingMaterial(sslSocket, kExportedKeyLabel, null, kExportedKeySize)
-        val passwordBytes = ByteArray(pairCode.length + keyMaterial.size)
+        val passwordBytes = ByteArray(pairCodeBytes.size + keyMaterial.size)
         pairCodeBytes.copyInto(passwordBytes)
         keyMaterial.copyInto(passwordBytes, pairCodeBytes.size)
 
@@ -303,7 +305,7 @@ class AdbPairingClient(private val host: String, private val port: Int, private 
         } catch (e: Exception) {
         }
 
-        if (state != State.Ready) {
+        if (::pairingContext.isInitialized && state != State.Ready) {
             pairingContext.destroy()
         }
     }

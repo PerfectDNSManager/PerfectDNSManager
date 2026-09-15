@@ -98,15 +98,21 @@ class DnsVpnService : VpnService() {
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
             .socketFactory(object : SocketFactory() {
-                override fun createSocket(): Socket = Socket().also { protect(it) }
-                override fun createSocket(host: String, port: Int): Socket =
-                    Socket(host, port).also { protect(it) }
-                override fun createSocket(host: String, port: Int, localHost: InetAddress, localPort: Int): Socket =
-                    Socket(host, port, localHost, localPort).also { protect(it) }
-                override fun createSocket(host: InetAddress, port: Int): Socket =
-                    Socket(host, port).also { protect(it) }
-                override fun createSocket(host: InetAddress, port: Int, localAddress: InetAddress, localPort: Int): Socket =
-                    Socket(host, port, localAddress, localPort).also { protect(it) }
+                override fun createSocket(): Socket = Socket().also {
+                    if (!protect(it)) { it.close(); throw java.io.IOException("Cannot protect DNS socket") }
+                }
+                private fun connected(host: InetAddress, port: Int, local: InetAddress? = null, localPort: Int = 0): Socket {
+                    val socket = createSocket()
+                    try {
+                        if (local != null) socket.bind(java.net.InetSocketAddress(local, localPort))
+                        socket.connect(java.net.InetSocketAddress(host, port), 5000)
+                        return socket
+                    } catch (e: Exception) { socket.close(); throw e }
+                }
+                override fun createSocket(host: String, port: Int): Socket = connected(resolveHostBypass(host) ?: throw java.net.UnknownHostException(), port)
+                override fun createSocket(host: String, port: Int, localHost: InetAddress, localPort: Int): Socket = connected(resolveHostBypass(host) ?: throw java.net.UnknownHostException(), port, localHost, localPort)
+                override fun createSocket(host: InetAddress, port: Int): Socket = connected(host, port)
+                override fun createSocket(host: InetAddress, port: Int, localAddress: InetAddress, localPort: Int): Socket = connected(host, port, localAddress, localPort)
             })
             .dns(object : Dns {
                 override fun lookup(hostname: String): List<InetAddress> {
@@ -263,7 +269,7 @@ class DnsVpnService : VpnService() {
             val builder = Builder()
                 .setSession("Perfect DNS Manager")
                 .setMtu(1500)
-                .addAddress("192.168.50.1", 24)
+                .addAddress("192.0.2.1", 32)
                 .setBlocking(true)
 
             val disableIpv6 = getSharedPreferences("prefs", Context.MODE_PRIVATE)
@@ -272,10 +278,9 @@ class DnsVpnService : VpnService() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 builder.allowBypass()
                 try { builder.allowFamily(OsConstants.AF_INET) } catch (_: Exception) {}
-                // Pour bloquer IPv6, il faut aussi capturer la famille AF_INET6
-                if (disableIpv6) {
-                    try { builder.allowFamily(OsConstants.AF_INET6) } catch (_: Exception) {}
-                }
+                // Without an IPv6 address/route Android blocks this family by default.
+                // Permit bypass when IPv6 blocking is OFF; the ::/0 route below captures it when ON.
+                if (!disableIpv6) builder.allowFamily(OsConstants.AF_INET6)
 
                 // Split tunneling : exclure certaines apps du VPN
                 val excludedAppsJson = getSharedPreferences("prefs", Context.MODE_PRIVATE)

@@ -33,7 +33,9 @@ object TlsTrust {
 
     /** TrustManager qui valide la chaîne (CA système) PUIS le hostname attendu. */
     fun forHost(expectedHost: String): X509TrustManager = object : X509TrustManager {
-        override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+        override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+            throw CertificateException("Client authentication is not supported by this server trust manager")
+        }
 
         override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
             val tm = systemTrustManager ?: throw CertificateException("no system trust manager")
@@ -45,7 +47,7 @@ object TlsTrust {
             val leaf = chain?.firstOrNull() ?: throw CertificateException("empty certificate chain")
             // Compense le "UNKNOWN" (qui saute le contrôle EKU) : on exige
             // explicitement l'usage serverAuth (ou aucun EKU) sur le leaf.
-            val eku = try { leaf.extendedKeyUsage } catch (_: Exception) { null }
+            val eku = leaf.extendedKeyUsage
             if (eku != null && !eku.contains("1.3.6.1.5.5.7.3.1") && !eku.contains("2.5.29.37.0"))
                 throw CertificateException("cert non destiné à l'auth serveur (EKU)")
             if (!hostnameMatches(leaf, expectedHost))

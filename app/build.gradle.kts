@@ -143,8 +143,8 @@ dependencies {
     // Vendored from Shizuku (Apache 2.0) : voir app/src/main/java/moe/shizuku/manager/adb/.
     // BouncyCastle pour cert X509 (AdbKey signe son cert avec sa propre RSA).
     // Conscrypt pour exportKeyingMaterial (RFC 5705) requis par SPAKE2 pairing.
-    implementation("org.bouncycastle:bcpkix-jdk18on:1.78.1")
-    implementation("org.bouncycastle:bcprov-jdk18on:1.78.1")
+    implementation("org.bouncycastle:bcpkix-jdk18on:1.84")
+    implementation("org.bouncycastle:bcprov-jdk18on:1.84")
     implementation("org.conscrypt:conscrypt-android:2.5.2")
 
     // QUIC client pour DoQ (DNS over QUIC)

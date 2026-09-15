@@ -10,8 +10,15 @@ object ProfileValidation {
     private val IPV4_RE = Regex("^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}$")
     fun isHostname(raw: String): Boolean = HOSTNAME_RE.matches(raw) && !IPV4_RE.matches(raw)
     fun isIpv4(raw: String): Boolean = IPV4_RE.matches(raw)
-    fun normalizeEndpoint(raw: String): String = if (raw.contains("://"))
-        raw.substringBefore("://").lowercase(Locale.ROOT) + "://" + raw.substringAfter("://") else raw
+    fun normalizeEndpoint(raw: String): String {
+        val value = if (raw.contains("://")) raw.substringBefore("://").lowercase(Locale.ROOT) + "://" + raw.substringAfter("://") else raw
+        // Migrate historic DoQ profile URLs: QUIC has no HTTP path to carry an ID.
+        val old = Regex("^quic://dns\\.nextdns\\.io/([A-Za-z0-9-]{1,63})/?$").matchEntire(value)
+        return if (old != null) "quic://${old.groupValues[1]}.dns.nextdns.io" else value
+    }
+    fun isIpv6(raw: String): Boolean = raw.length <= 45 && raw.contains(':') &&
+        raw.all { it in "0123456789abcdefABCDEF:." } &&
+        runCatching { java.net.InetAddress.getByName(raw) is java.net.Inet6Address }.getOrDefault(false)
     fun isHttpsUrl(raw: String): Boolean = validUrl(raw, "https")
     private fun validUrl(raw: String, scheme: String): Boolean = try {
         val uri = URI(raw)
@@ -22,7 +29,11 @@ object ProfileValidation {
     } catch (_: Exception) { false }
     fun isValidPrimary(type: DnsType, raw: String): Boolean = when (type) {
         DnsType.DOH -> validUrl(raw, "https")
-        DnsType.DOQ -> validUrl(raw, "quic")
+        DnsType.DOQ -> try {
+            val normalized = normalizeEndpoint(raw)
+            val uri = URI(normalized)
+            validUrl(normalized, "quic") && uri.rawPath in listOf("", "/") && uri.rawQuery == null
+        } catch (_: Exception) { false }
         DnsType.DOT -> isHostname(raw)
         DnsType.DEFAULT -> isIpv4(raw)
     }
@@ -30,7 +41,10 @@ object ProfileValidation {
         if (profile == null) return false
         @Suppress("SENSELESS_COMPARISON")
         if (profile.type == null || profile.primary == null || profile.providerName == null || profile.name == null) return false
-        return isValidPrimary(profile.type, profile.primary) &&
+        return profile.name.isNotBlank() && profile.name.length <= 128 &&
+            profile.providerName.isNotBlank() && profile.providerName.length <= 128 &&
+            listOfNotNull(profile.primaryV6, profile.secondaryV6).all { it.isBlank() || isIpv6(it) } &&
+            isValidPrimary(profile.type, profile.primary) &&
             (profile.secondary.isNullOrBlank() || isValidPrimary(profile.type, profile.secondary))
     }
     fun endpointsOf(profile: DnsProfile): String = listOfNotNull(profile.primary, profile.secondary?.takeIf { it.isNotBlank() }).joinToString(", ")

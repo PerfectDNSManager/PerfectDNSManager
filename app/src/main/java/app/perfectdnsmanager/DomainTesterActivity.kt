@@ -464,7 +464,7 @@ class DomainTesterActivity : AppCompatActivity() {
             .setView(et)
             .setPositiveButton(getString(R.string.add_button)) { _, _ ->
                 val domain = et.text.toString().trim()
-                if (domain.isNotEmpty()) {
+                if (app.perfectdnsmanager.util.ProfileValidation.isHostname(domain)) {
                     val list = loadEntries()
                     list.add(TestDomainEntry(domain, true))
                     saveEntries(list)
@@ -487,7 +487,7 @@ class DomainTesterActivity : AppCompatActivity() {
             .setView(et)
             .setPositiveButton(getString(R.string.save_button)) { _, _ ->
                 val domain = et.text.toString().trim()
-                if (domain.isNotEmpty()) {
+                if (app.perfectdnsmanager.util.ProfileValidation.isHostname(domain)) {
                     val list = loadEntries()
                     if (index < list.size) {
                         list[index] = list[index].copy(domain = domain)

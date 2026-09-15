@@ -519,6 +519,8 @@
     <plurals name="profile_count">
         <item quantity="one">%d perfil</item>
         <item quantity="other">%d perfis</item>
+
+        <item quantity="many">%d perfis</item>
     </plurals>    <string name="search_refine_hint">… refine sua pesquisa</string>
     <string name="nextdns_profile_id_label">ID do perfil NextDNS:</string>    <string name="speedtest_backend_label_fmt">Servidor de teste: %1$s  ▾</string>
     <string name="speedtest_backend_picker_title">Escolher servidor de teste</string>    <string name="speedtest_ookla_loading">Carregando lista de servidores Ookla…</string>
@@ -540,6 +542,8 @@
     <plurals name="domain_tester_unblocks_fmt">
         <item quantity="one">%1$s desbloqueia o conteúdo</item>
         <item quantity="other">%1$s desbloqueiam o conteúdo</item>
+
+        <item quantity="many">%1$s desbloqueiam o conteúdo</item>
     </plurals>
     <!-- DNS privé (DoT) verrouillé au niveau système -->
     <string name="retry">Tentar novamente</string>
@@ -571,4 +575,6 @@
     <string name="dns_desc_ads_family">Blocks ads, trackers, malware, adult content and gambling</string>
     <string name="dns_desc_ads_all">Blocks ads, trackers, malware, adult content, gambling and social media</string>
     <string name="mullvad_dns_retirement">Service ends November 2, 2026</string>
+    <string name="copy_share">Copy share</string>
+    <string name="share_result_text">Encrypted link:\n%1$s\n\nPassword:\n%2$s\n\nExpires in %3$s.\nCopy only if you want the link and password in your clipboard.</string>
 </resources>

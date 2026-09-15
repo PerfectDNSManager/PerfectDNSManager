@@ -84,18 +84,20 @@ class ConfigManager(private val context: Context) {
             settings.addProperty("advanced_features_enabled", prefs.getBoolean("advanced_features_enabled", false))
             settings.addProperty("allow_adblock_profiles", prefs.getBoolean("allow_adblock_profiles", false))
             settings.addProperty("show_doq_dns", prefs.getBoolean("show_doq_dns", false))
+            settings.addProperty("show_profile_variants", prefs.getBoolean("show_profile_variants", false))
+            settings.addProperty("show_standard_dns", prefs.getBoolean("show_standard_dns", false))
             root.add("settings", settings)
         }
 
         // Test domains
         val testDomainsJson = prefs.getString("test_domains_json", null)
-        if (testDomainsJson != null) {
+        if (includeSettings && testDomainsJson != null) {
             root.add("testDomains", JsonParser.parseString(testDomainsJson))
         }
 
         // Excluded apps (split tunneling)
         val excludedAppsJson = prefs.getString("excluded_apps_json", null)
-        if (excludedAppsJson != null) {
+        if (includeSettings && excludedAppsJson != null) {
             root.add("excludedApps", JsonParser.parseString(excludedAppsJson))
         }
 
@@ -205,6 +207,8 @@ class ConfigManager(private val context: Context) {
                 editor.putBoolean("show_doq_dns", settings.get("show_doq_dns").asBoolean)
             }
 
+            if (settings.has("show_profile_variants")) editor.putBoolean("show_profile_variants", settings.get("show_profile_variants").asBoolean)
+            if (settings.has("show_standard_dns")) editor.putBoolean("show_standard_dns", settings.get("show_standard_dns").asBoolean)
             editor.apply()
             settingsRestored = true
         }

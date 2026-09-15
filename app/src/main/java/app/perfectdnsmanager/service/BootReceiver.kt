@@ -64,6 +64,8 @@ class BootReceiver : BroadcastReceiver() {
             return
         }
 
+        if (!app.perfectdnsmanager.util.ProfileValidation.isUsable(profile) || profile.type == app.perfectdnsmanager.data.DnsType.DOT) return
+
         Log.i(TAG, "Auto-reconnect VPN: ${profile.providerName} - ${redactDnsUrl(profile.primary)}")
 
         val pendingResult = goAsync()

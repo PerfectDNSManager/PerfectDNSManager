@@ -60,7 +60,8 @@ class DoQClient(private val vpnService: VpnService) {
      */
     fun query(dnsPayload: ByteArray, quicUrl: String): ByteArray? {
         if (closed || dnsPayload.size < 12) return null
-        val uri = try { URI(quicUrl.replace("quic://", "https://")) } catch (_: Exception) { return null }
+        val uri = try { URI(app.perfectdnsmanager.util.ProfileValidation.normalizeEndpoint(quicUrl)) } catch (_: Exception) { return null }
+        if (!app.perfectdnsmanager.util.ProfileValidation.isValidPrimary(app.perfectdnsmanager.data.DnsType.DOQ, quicUrl)) return null
         val host = uri.host ?: return null
         val port = if (uri.port > 0) uri.port else DEFAULT_PORT
         val key = "$host:$port"

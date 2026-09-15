@@ -571,4 +571,6 @@
     <string name="dns_desc_ads_family">Blocks ads, trackers, malware, adult content and gambling</string>
     <string name="dns_desc_ads_all">Blocks ads, trackers, malware, adult content, gambling and social media</string>
     <string name="mullvad_dns_retirement">Service ends November 2, 2026</string>
+    <string name="copy_share">Copy share</string>
+    <string name="share_result_text">Encrypted link:\n%1$s\n\nPassword:\n%2$s\n\nExpires in %3$s.\nCopy only if you want the link and password in your clipboard.</string>
 </resources>

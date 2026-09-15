@@ -1158,10 +1158,8 @@ class SettingsActivity : AppCompatActivity() {
                     this@SettingsActivity, content, "PerfectDNS-config.enc", expiresIn
                 )
                 runOnUiThread {
-                    val clipboard = getSystemService(CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("PDM Share", "${result.fullUrl}\n${getString(R.string.share_clip_password_fmt, result.password)}"))
                     val msg = android.text.SpannableString(
-                        getString(R.string.share_text_format, result.fullUrl, result.password, expiresIn)
+                        getString(R.string.share_result_text, result.fullUrl, result.password, expiresIn)
                     )
                     val linkColor = pdmAccentAlt()
                     val accentColor = pdmAccent()
@@ -1174,6 +1172,9 @@ class SettingsActivity : AppCompatActivity() {
                     }
                     AlertDialog.Builder(this@SettingsActivity)
                         .setTitle(getString(R.string.upload_success_title))
+                        .setNeutralButton(getString(R.string.copy_share)) { _, _ ->
+                            app.perfectdnsmanager.util.ShareClipboard.copy(this@SettingsActivity, "${result.fullUrl}\n${getString(R.string.share_clip_password_fmt, result.password)}")
+                        }
                         .setMessage(msg)
                         .setPositiveButton("OK", null)
                         .show()

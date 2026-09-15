@@ -144,7 +144,7 @@ class DnsSelectionActivity : AppCompatActivity() {
                         ))
                         customProfiles.add(DnsProfile(
                             providerName = "NextDNS", name = getString(R.string.nextdns_profile_name_fmt, pid), type = DnsType.DOQ,
-                            primary = "quic://dns.nextdns.io/$pid", descResId = R.string.dns_desc_nextdns_custom,
+                            primary = "quic://$pid.dns.nextdns.io", descResId = R.string.dns_desc_nextdns_custom,
                             isCustom = true, testUrl = "https://test.nextdns.io/"
                         ))
                         if (adbDotEnabled) {

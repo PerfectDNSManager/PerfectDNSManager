@@ -53,4 +53,20 @@ object Http {
 
     /** Le client de base, pour les usages sans exigence particulière. */
     fun shared(): OkHttpClient = base
+    /** Bounded text for small remote metadata, never APKs or speed-test payloads. */
+    fun readText(body: okhttp3.ResponseBody?, maxBytes: Int = 1024 * 1024): String {
+        if (body == null) return ""
+        require(body.contentLength() <= maxBytes) { "Response too large" }
+        val out = java.io.ByteArrayOutputStream()
+        val buffer = ByteArray(8192)
+        body.byteStream().use { stream ->
+            while (true) {
+                val count = stream.read(buffer)
+                if (count < 0) break
+                require(out.size() + count <= maxBytes) { "Response too large" }
+                out.write(buffer, 0, count)
+            }
+        }
+        return out.toString("UTF-8")
+    }
 }
