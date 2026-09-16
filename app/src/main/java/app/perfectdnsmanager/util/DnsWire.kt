@@ -123,10 +123,32 @@ object DnsWire {
         host: String,
         timeoutMs: Int = 3000,
         prepare: (DatagramSocket) -> Boolean = { true }
-    ): InetAddress? = try {
+    ): InetAddress? = lookupA(server, host, timeoutMs, prepare)?.address
+
+    /**
+     * Réponse DNS reçue pour une requête A : l'adresse trouvée, ou le code de
+     * réponse quand le serveur répond négativement (NXDOMAIN, REFUSED…).
+     * Distinguer ces cas d'un simple timeout est indispensable au testeur de
+     * blocage : un FAI qui bloque par NXDOMAIN est un blocage constaté, pas un
+     * test « indéterminé ».
+     */
+    data class ALookup(val address: InetAddress?, val rcode: Int)
+
+    /** Comme [resolveA], mais renvoie aussi le code DNS. Null = aucune réponse valide. */
+    fun lookupA(
+        server: InetAddress,
+        host: String,
+        timeoutMs: Int = 3000,
+        prepare: (DatagramSocket) -> Boolean = { true }
+    ): ALookup? = try {
         val query = buildQuery(host, randomTxnId())
-        val response = exchange(server, query, timeoutMs, prepare) ?: return null
-        parseAnswerIp(response, response.size, expectedHost = host)
+        val response = exchange(server, query, timeoutMs, prepare)
+        if (response == null) null else {
+            val rcode = org.xbill.DNS.Message(response).rcode
+            if (rcode == org.xbill.DNS.Rcode.NOERROR)
+                ALookup(parseAnswerIp(response, response.size, expectedHost = host), rcode)
+            else ALookup(null, rcode)
+        }
     } catch (_: Exception) { null }
 
     /** One connected socket per transaction; bounded by the caller's executor. */

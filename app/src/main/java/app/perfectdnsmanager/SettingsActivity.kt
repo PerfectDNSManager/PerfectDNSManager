@@ -1025,6 +1025,16 @@ class SettingsActivity : AppCompatActivity() {
             .setPositiveButton(getString(R.string.add_button)) { _, _ ->
                 val domain = etDomain.text.toString().trim()
                 val target = etTarget.text.toString().trim()
+                // Valider AVANT d'ajouter : une saisie invalide (« https://ygg.re »,
+                // domaine sans point…) affichait « ajoutée » puis la règle était
+                // filtrée à la relecture et effacée à la sauvegarde suivante.
+                val bad = listOf(domain, target).firstOrNull {
+                    it.isNotEmpty() && !app.perfectdnsmanager.util.ProfileValidation.isHostname(it)
+                }
+                if (bad != null) {
+                    Toast.makeText(this, getString(R.string.adb_err_invalid_hostname_fmt, bad), Toast.LENGTH_LONG).show()
+                    return@setPositiveButton
+                }
                 if (domain.isNotEmpty() && target.isNotEmpty()) {
                     val rule = app.perfectdnsmanager.data.DnsRewriteRule(
                         id = System.currentTimeMillis(),

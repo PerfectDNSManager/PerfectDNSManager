@@ -62,8 +62,18 @@ class UpdateManager(private val context: Context) {
         OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
-            .callTimeout(180, TimeUnit.SECONDS)
+            // Pas de plafond global : 180 s empêchaient tout téléchargement de
+            // l'APK (~15 Mo) sous ~0,7 Mbps. readTimeout coupe déjà un flux figé.
+            .callTimeout(0, TimeUnit.SECONDS)
             .followSslRedirects(false)
+            // Chaque saut de redirection doit rester sur un hôte autorisé : seul
+            // l'hôte initial était vérifié, OkHttp suivait ensuite n'importe où.
+            .addNetworkInterceptor { chain ->
+                val h = chain.request().url.host.lowercase()
+                if (chain.request().url.scheme != "https" || h !in ALLOWED_APK_HOSTS && h != "api.github.com")
+                    throw java.io.IOException("Redirection vers un hôte non autorisé")
+                chain.proceed(chain.request())
+            }
             .build()
     }
 
@@ -259,21 +269,29 @@ class UpdateManager(private val context: Context) {
         }
 
         showToastOnMainThread(appContext.getString(R.string.update_downloading))
-        val updatesDir = File(appContext.cacheDir, "updates").apply { mkdirs() }
-        val destination = File.createTempFile("update-", ".apk", updatesDir)
         // Plafond : la taille annoncée par l'API + une marge. Sans lui, une URL
         // hostile pouvait remplir le cache avant même la vérif de signature.
         val maxBytes = if (expectedSize in 1..(200L * 1024 * 1024 - SIZE_SLACK)) expectedSize + SIZE_SLACK else 200L * 1024 * 1024
 
         Thread {
+            // Création du fichier HORS du main thread et DANS le try : sur cache
+            // plein, l'IOException faisait planter l'app au clic sur « Installer ».
+            var destination: File? = null
             try {
+                val updatesDir = File(appContext.cacheDir, "updates").apply { mkdirs() }
+                // Purge des APK précédents : les noms uniques s'accumulaient (≈15 Mo
+                // chacun) car la suppression différée ne survit pas au remplacement
+                // du package.
+                updatesDir.listFiles()?.forEach { runCatching { it.delete() } }
+                val dest = File.createTempFile("update-", ".apk", updatesDir)
+                destination = dest
                 val req = Request.Builder().url(apkUrl).build()
                 http.newCall(req).execute().use { resp ->
                     if (!resp.isSuccessful) throw java.io.IOException("HTTP ${resp.code}")
                     val body = resp.body ?: throw java.io.IOException("empty body")
                     var written = 0L
                     body.byteStream().use { input ->
-                        destination.outputStream().use { output ->
+                        dest.outputStream().use { output ->
                             val buf = ByteArray(64 * 1024)
                             while (true) {
                                 val n = input.read(buf)
@@ -285,11 +303,11 @@ class UpdateManager(private val context: Context) {
                         }
                     }
                 }
-                Log.i(TAG, "Download complete: ${destination.absolutePath}")
-                installApk(destination)
+                Log.i(TAG, "Download complete: ${dest.absolutePath}")
+                installApk(dest)
             } catch (e: Exception) {
                 Log.e(TAG, "Download error: ${e.javaClass.simpleName}: ${e.message}")
-                destination.delete()
+                destination?.delete()
                 showToastOnMainThread(appContext.getString(R.string.update_download_error))
             }
         }.start()

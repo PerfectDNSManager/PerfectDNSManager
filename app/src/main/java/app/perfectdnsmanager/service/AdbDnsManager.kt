@@ -84,7 +84,7 @@ class AdbDnsManager(private val context: Context) {
         }
 
         // Méthode 2 : ADB TCP localhost (TV boxes, appareils avec ADB réseau)
-        val adbResult = runCommandsViaAdb(listOf(
+        val adbResult = runCommandsViaAdb(disable = false, commands = listOf(
             "settings put global $KEY_DNS_MODE hostname",
             "settings put global $KEY_DNS_SPECIFIER $hostname"
         ))
@@ -104,7 +104,7 @@ class AdbDnsManager(private val context: Context) {
         }
 
         // Méthode 2 : ADB TCP localhost
-        val adbResult = runCommandsViaAdb(listOf(
+        val adbResult = runCommandsViaAdb(disable = true, commands = listOf(
             "settings put global $KEY_DNS_MODE off",
             "settings delete global $KEY_DNS_SPECIFIER"
         ))
@@ -291,7 +291,7 @@ class AdbDnsManager(private val context: Context) {
 
     // ─── Méthode 3 : ADB local ────────────────────────────────────────────────
 
-    private fun runCommandsViaAdb(commands: List<String>): Boolean {
+    private fun runCommandsViaAdb(disable: Boolean, commands: List<String>): Boolean {
         val latch = CountDownLatch(1)
         var success = false
 
@@ -377,8 +377,10 @@ class AdbDnsManager(private val context: Context) {
                     prefs.edit().putBoolean(PREF_PERMISSION_GRANTED, true).apply()
 
                     // Retry Settings API maintenant qu'on a la permission
-                    val retryOk = commands.any { it.contains("off") || it.contains("delete") }
-                    val apiOk = if (retryOk) trySettingsDisable() else {
+                    // Sens explicite : deviner « désactiver » en cherchant "off" dans les
+                    // commandes coupait le DNS privé quand le hostname DoT contenait
+                    // "off" (ex. dns.office.example) tout en renvoyant un succès.
+                    val apiOk = if (disable) trySettingsDisable() else {
                         val hostname = commands.lastOrNull()?.substringAfterLast(" ") ?: ""
                         if (hostname.isNotEmpty()) trySettingsEnable(hostname) else false
                     }

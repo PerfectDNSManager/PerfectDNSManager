@@ -15,11 +15,23 @@ class ProviderProfilesTest {
         }
         assertEquals("AbC123", ControlDProfiles.resolverId("https://dns.controld.com/AbC123"))
     }
+    @Test fun keepsControlDDeviceNameAcrossProtocols() {
+        // Formats documentés par Control D : /id/appareil en DoH, id-appareil en DoT/DoQ.
+        for (input in listOf("https://dns.controld.com/abc12345/living-tv",
+            "abc12345-living-tv.dns.controld.com", "quic://abc12345-living-tv.dns.controld.com",
+            "abc12345-living-tv")) {
+            assertEquals(input, "abc12345-living-tv", ControlDProfiles.resolverId(input))
+        }
+        assertEquals("https://dns.controld.com/abc12345/living-tv",
+            ControlDProfiles.primary("abc12345-living-tv", DnsType.DOH))
+        assertEquals("abc12345-living-tv.dns.controld.com",
+            ControlDProfiles.primary("abc12345-living-tv", DnsType.DOT))
+    }
     @Test fun rejectsWrongHostsAndAmbiguousInputs() {
         for (input in listOf("", "bad id", "-abc", "a".repeat(64),
             "https://dns.controld.com.evil.test/abc12345", "http://dns.controld.com/abc12345",
             "https://user@dns.controld.com/abc12345", "https://dns.controld.com/abc12345?x=1",
-            "https://dns.controld.com/abc12345#x", "https://dns.controld.com/a/b",
+            "https://dns.controld.com/abc12345#x", "https://dns.controld.com/a/b/c",
             "quic://abc12345.dns.controld.com:443", "https://dns.controld.com/%61bc12345")) {
             assertNull(input, ControlDProfiles.resolverId(input))
         }

@@ -90,16 +90,6 @@ android {
 
     buildTypes {
         release {
-            // R8 : l'app était livrée sans minification ni élagage des ressources,
-            // avec kwik + BouncyCastle + Conscrypt embarqués en entier. Les règles
-            // de conservation (réflexion Gson, JNI, providers crypto) sont dans
-            // app/proguard-rules.pro.
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
             val ksPath = System.getenv("KEYSTORE_FILE")
                 ?: rootProject.file("signing/release-keystore.jks").takeIf { it.exists() }?.absolutePath
             if (ksPath != null) {

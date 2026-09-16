@@ -122,7 +122,8 @@ class ConfigManager(private val context: Context) {
             // incomplet (Gson contourne les constructeurs Kotlin, donc des
             // champs non-nullables peuvent être null ici).
             val profiles = parsed.filter { ProfileValidation.isUsable(it) }.filterNotNull()
-            rejectedProfileCount = parsed.size - profiles.size
+            rejectedProfileCount = parsed.size - profiles.size +
+                (root.get(ConfigValidation.REJECTED_PROFILES_KEY)?.asInt ?: 0)
             profileCount = profiles.size
 
             // Save via ProfileManager (SharedPrefs "dns_profiles_v2", key "profiles")

@@ -98,13 +98,23 @@ class DnsVpnService : VpnService() {
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
             .socketFactory(object : SocketFactory() {
-                override fun createSocket(): Socket = Socket().also {
-                    if (!protect(it)) { it.close(); throw java.io.IOException("Cannot protect DNS socket") }
-                }
-                private fun connected(host: InetAddress, port: Int, local: InetAddress? = null, localPort: Int = 0): Socket {
-                    val socket = createSocket()
+                override fun createSocket(): Socket = protectedSocket()
+
+                private fun protectedSocket(local: InetAddress? = null, port: Int = 0): Socket {
+                    val socket = Socket()
                     try {
-                        if (local != null) socket.bind(java.net.InetSocketAddress(local, localPort))
+                        // Android creates the native fd lazily. Bind before protect(),
+                        // otherwise a fresh Socket has no valid fd and protect returns false.
+                        // Binding sends no traffic; protection still precedes connect().
+                        socket.bind(java.net.InetSocketAddress(local, port))
+                        if (!protect(socket)) throw java.io.IOException("Cannot protect DNS socket")
+                        return socket
+                    } catch (e: Exception) { socket.close(); throw e }
+                }
+
+                private fun connected(host: InetAddress, port: Int, local: InetAddress? = null, localPort: Int = 0): Socket {
+                    val socket = protectedSocket(local, localPort)
+                    try {
                         socket.connect(java.net.InetSocketAddress(host, port), 5000)
                         return socket
                     } catch (e: Exception) { socket.close(); throw e }
@@ -486,8 +496,20 @@ class DnsVpnService : VpnService() {
 
     // ── Rewrite : restaurer le qname original dans la réponse ─────────────
 
+    /** Dernier log de réponse rejetée (limitation de fréquence). */
+    private val lastDropLog = java.util.concurrent.atomic.AtomicLong(0)
+
     private fun writeTun(p: Pending, payload: ByteArray) {
-        if (p.generation != generation.get() || !DnsMessages.matches(p.query, payload)) return
+        if (p.generation != generation.get()) return
+        if (!DnsMessages.matches(p.query, payload)) {
+            // Réponse qui ne correspond pas à la question (serveur mal configuré,
+            // endpoint erroné, réponse non-DNS…) : on la jette, mais plus en
+            // silence — sinon une panne « plus d'internet » est indiagnosticable.
+            val now = System.currentTimeMillis(); val last = lastDropLog.get()
+            if (now - last > 5000 && lastDropLog.compareAndSet(last, now))
+                Log.w(T, "Réponse DNS rejetée : ne correspond pas à la requête (${payload.size} o)")
+            return
+        }
         val finalPayload = if (p.wasRewritten && p.originalQnameEncoded != null) {
             DnsMessages.restoreResponse(payload, p.originalQnameEncoded) ?: return
         } else {

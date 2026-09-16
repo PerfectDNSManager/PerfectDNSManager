@@ -122,22 +122,31 @@ object UrlBlockingTester {
             // chaque timeout, et ce testeur tourne en boucle sur toute la liste
             // de domaines → épuisement des descripteurs.
             // DnsWire : socket connecté + ID aléatoire + réponse validée.
-            DnsWire.resolveA(ispDnsServer, domain, timeoutMs = 5000) { socket ->
+            val lookup = DnsWire.lookupA(ispDnsServer, domain, timeoutMs = 5000) { socket ->
                 // Sans VPN le socket normal sort déjà par le réseau physique ;
                 // avec VPN il faut le protéger pour ne pas boucler dans le tunnel.
                 if (vpnRunning && !DnsVpnService.protectSocket(socket)) {
                     Log.w(TAG, "Could not protect socket")
-                    return@resolveA false
+                    return@lookupA false
                 }
                 true
-            }?.hostAddress?.let { resolved(it) }
+            }
+            when {
+                lookup == null -> null
+                lookup.address != null -> lookup.address.hostAddress?.let { resolved(it) }
+                // Réponse explicite du DNS FAI « ce domaine n'existe pas » : c'est
+                // une méthode de blocage répandue, donc un blocage constaté.
+                lookup.rcode == org.xbill.DNS.Rcode.NXDOMAIN -> ResolutionResult(null, Status.BLOCKED, "NXDOMAIN")
+                else -> unknown("DNS rcode ${org.xbill.DNS.Rcode.string(lookup.rcode)}")
+            }
         } catch (e: Exception) {
             Log.w(TAG, "Protected socket resolve ${redactHost(domain)}: ${e.javaClass.simpleName}")
             null // échec de la requête UDP
         }
 
         // If UDP succeeded with a valid result, return it
-        if (udpResult != null && udpResult.ip != null) return udpResult
+        // Une réponse NXDOMAIN du DNS FAI est aussi un résultat définitif.
+        if (udpResult != null && (udpResult.ip != null || udpResult.status == Status.BLOCKED)) return udpResult
 
         // Fallback: if no VPN is active, system resolver IS the ISP DNS,
         // so InetAddress.getByName() gives us the ISP resolution directly

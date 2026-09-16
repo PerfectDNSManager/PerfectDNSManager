@@ -9,6 +9,8 @@ import com.google.gson.JsonParser
 /** Validate the entire external document before any preference is changed. */
 object ConfigValidation {
     private const val MAX_BYTES = 1024 * 1024
+    /** Clé interne ajoutée au document validé : nombre de profils écartés. */
+    const val REJECTED_PROFILES_KEY = "__rejectedProfiles"
     private val gson = Gson()
     private val settingsKeys = setOf("auto_reconnect_dns", "disable_ipv6", "adb_dot_enabled",
         "operator_dns_enabled", "advanced_features_enabled", "show_doq_dns", "allow_adblock_profiles", "show_profile_variants", "show_standard_dns")
@@ -54,8 +56,19 @@ object ConfigValidation {
             val preset = DnsProfile.getDefaultPresets().find { it.id == p.id }
             o.addProperty("isCustom", preset == null || preset.primary != p.primary || preset.type != p.type || preset.secondary != p.secondary)
         }
-        array("profiles", 512, ::profile)
-        root.get("selectedProfile")?.let { if (!it.isJsonNull) profile(it) }
+        // Un profil invalide n'invalide plus toute la sauvegarde : il est écarté
+        // et compté par ConfigManager. Avant, le premier profil refusé faisait
+        // rejeter le document entier — y compris tout export fait par la 2.3.2.
+        root.get("profiles")?.let { value ->
+            require(value.isJsonArray && value.asJsonArray.size() <= 512) { "Invalid profiles" }
+            val kept = com.google.gson.JsonArray()
+            value.asJsonArray.forEach { e -> if (runCatching { profile(e) }.isSuccess) kept.add(e) }
+            root.addProperty(REJECTED_PROFILES_KEY, value.asJsonArray.size() - kept.size())
+            root.add("profiles", kept)
+        }
+        root.get("selectedProfile")?.let {
+            if (!it.isJsonNull && runCatching { profile(it) }.isFailure) root.remove("selectedProfile")
+        }
         array("rewriteRules", 256) { e ->
             require(e.isJsonObject) { "Invalid rewrite rule" }
             val o = e.asJsonObject

@@ -30,7 +30,14 @@ class PdmApp : Application() {
             // ne recevrait jamais de mise à jour. Écrase le pref sans toucher
             // aux autres préférences.
             if (isBetaBuild()) {
-                prefs.edit().putBoolean("beta_updates_enabled", true).apply()
+                prefs.edit().putBoolean("beta_updates_enabled", true)
+                    .putBoolean("beta_channel_forced", true).apply()
+            } else if (prefs.getBoolean("beta_channel_forced", false)) {
+                // Passage d'une bêta à une stable : le canal bêta avait été forcé
+                // par la bêta, pas choisi. Sans ce retour, l'ancien testeur restait
+                // abonné aux futures bêtas sans le savoir.
+                prefs.edit().putBoolean("beta_updates_enabled", false)
+                    .remove("beta_channel_forced").apply()
             }
         } catch (_: Throwable) {
             // Never crash startup on theme init

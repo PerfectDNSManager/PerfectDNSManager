@@ -41,13 +41,24 @@ object Http {
         .build()
 
     /**
-     * Client pour les mesures de débit : `retryOnConnectionFailure(false)` pour
-     * ne pas fausser un chronomètre par une reprise silencieuse.
+     * Client pour les mesures de débit.
+     *
+     * - Pool de connexions DÉDIÉ : avec le pool commun, les N flux parallèles
+     *   d'un test multi-connexions vers un serveur HTTP/2 étaient multiplexés
+     *   dans UNE seule connexion TCP — débit mesuré faussé à la baisse alors que
+     *   la console annonçait « 4 connexions ». Chaque appel crée son pool ; ses
+     *   connexions oisives se ferment d'elles-mêmes (le dispatcher reste partagé,
+     *   ne jamais l'arrêter).
+     * - `callTimeout(0)` : le plafond global de 60 s du client de base coupait un
+     *   téléchargement de 5 Mo sous ~0,7 Mbps. Les délais connect/read suffisent.
+     * - `retryOnConnectionFailure(false)` pour ne pas fausser le chronomètre.
      */
     fun forSpeedTest(timeoutSec: Long = 30): OkHttpClient = base.newBuilder()
+        .connectionPool(okhttp3.ConnectionPool())
         .connectTimeout(timeoutSec, TimeUnit.SECONDS)
         .readTimeout(timeoutSec, TimeUnit.SECONDS)
         .writeTimeout(timeoutSec, TimeUnit.SECONDS)
+        .callTimeout(0, TimeUnit.SECONDS)
         .retryOnConnectionFailure(false)
         .build()
 

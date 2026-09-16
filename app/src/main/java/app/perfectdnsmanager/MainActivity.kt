@@ -55,6 +55,12 @@ open class MainActivity : AppCompatActivity() {
          * directe n'existe pas sur toutes les ROMs de box TV).
          */
         const val EXTRA_OPEN_PRIVATE_DNS_SETTINGS = "OPEN_PRIVATE_DNS_SETTINGS"
+
+        /** Extra portant le jeton interne posé par NotificationActivity. */
+        const val EXTRA_INTERNAL_TOKEN = "app.perfectdnsmanager.INTERNAL_TOKEN"
+
+        /** Jeton aléatoire propre au processus : inconnu de toute autre app. */
+        val INTERNAL_TOKEN: String = java.util.UUID.randomUUID().toString()
     }
 
     override fun attachBaseContext(newBase: Context) {
@@ -235,6 +241,19 @@ open class MainActivity : AppCompatActivity() {
             if (!prefs.contains(key)) { defaults.putBoolean(key, true); seeded = true }
         }
         if (seeded) defaults.apply()
+
+        // Réglage « profils Adblock » (nouveau en 2.4.0, OFF par défaut). Un
+        // utilisateur de la 2.3.2 qui affichait toutes les variantes, ou dont le
+        // DNS actif est un preset adblock, perdait l'accès à ces profils après la
+        // mise à jour : on hérite donc son choix une seule fois.
+        if (!prefs.contains("allow_adblock_profiles")) {
+            val selectedIsAdblock = runCatching {
+                val sel = Gson().fromJson(prefs.getString("selected_profile_json", null), DnsProfile::class.java)
+                sel != null && DnsProfile.getDefaultPresets().any { it.id == sel.id && it.isAdblock }
+            }.getOrDefault(false)
+            val inherit = prefs.getBoolean("show_profile_variants", false) || selectedIsAdblock
+            prefs.edit().putBoolean("allow_adblock_profiles", inherit).apply()
+        }
 
         // Migration de version : rafraîchir les presets DNS si la version a changé
         checkVersionMigration()
@@ -489,7 +508,16 @@ open class MainActivity : AppCompatActivity() {
     }
 
     // Only the non-exported notification entry point may consume action extras.
-    private fun isSelfOriginated(): Boolean = this is NotificationActivity
+    /** Vrai si l'intent a été relayé par NotificationActivity (jeton du processus). */
+    private fun isSelfOriginated(): Boolean =
+        intent?.getStringExtra(EXTRA_INTERNAL_TOKEN) == INTERNAL_TOKEN
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        // Relais de notification vers l'instance existante (SINGLE_TOP) : onResume
+        // doit voir le NOUVEL intent et ses actions.
+        setIntent(intent)
+    }
 
     override fun onResume() {
         super.onResume()

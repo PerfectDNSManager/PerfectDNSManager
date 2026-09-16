@@ -137,8 +137,18 @@ class EncryptedSharer {
                     source.host in setOf("perfectdnsmanager.app", "beta.perfectdnsmanager.app", "pdm.appstorefr.net")) { "Invalid share URL" }
                 "https://${source.host}"
             } else PDM_BASE_URL
-            val request = Request.Builder().url("$sourceBase/r/$slug").build()
-            val bytes = client.newCall(request).execute().use { response ->
+            // Un code court seul ne dit pas sur quel backend il a été créé : la bêta
+            // stocke ses partages à part (beta.perfectdnsmanager.app). On essaie le
+            // backend de cette build, puis l'autre, pour qu'un partage créé depuis
+            // une bêta reste lisible depuis une stable et inversement.
+            val candidates = if (source?.host != null) listOf(sourceBase)
+                else listOf(PDM_BASE_URL) + listOf("https://perfectdnsmanager.app", "https://beta.perfectdnsmanager.app")
+                    .filter { it != PDM_BASE_URL }
+            var bytes: ByteArray? = null
+            for ((index, base) in candidates.withIndex()) {
+                val request = Request.Builder().url("$base/r/$slug").build()
+                val result = client.newCall(request).execute().use { response ->
+                if (response.code == 404 && index < candidates.lastIndex) return@use null
                 if (!response.isSuccessful) {
                     throw Exception(context.getString(R.string.es_err_download_failed_fmt, response.code))
                 }
@@ -156,18 +166,21 @@ class EncryptedSharer {
                 if (out.size() > MAX_BLOB_BYTES)
                     throw Exception(context.getString(R.string.es_err_format_unsupported))
                 out.toByteArray()
+                }
+                if (result != null) { bytes = result; break }
             }
+            val downloaded = bytes ?: throw Exception(context.getString(R.string.es_err_download_failed_fmt, 404))
 
-            if (bytes.isEmpty() || bytes[0] != FORMAT_VERSION) {
+            if (downloaded.isEmpty() || downloaded[0] != FORMAT_VERSION) {
                 throw Exception(context.getString(R.string.es_err_format_unsupported))
             }
-            if (bytes.size < 1 + SALT_SIZE + GCM_IV_SIZE + 16) {
-                throw Exception(context.getString(R.string.es_err_content_too_short_fmt, bytes.size))
+            if (downloaded.size < 1 + SALT_SIZE + GCM_IV_SIZE + 16) {
+                throw Exception(context.getString(R.string.es_err_content_too_short_fmt, downloaded.size))
             }
 
-            val salt = bytes.copyOfRange(1, 1 + SALT_SIZE)
-            val iv = bytes.copyOfRange(1 + SALT_SIZE, 1 + SALT_SIZE + GCM_IV_SIZE)
-            val ct = bytes.copyOfRange(1 + SALT_SIZE + GCM_IV_SIZE, bytes.size)
+            val salt = downloaded.copyOfRange(1, 1 + SALT_SIZE)
+            val iv = downloaded.copyOfRange(1 + SALT_SIZE, 1 + SALT_SIZE + GCM_IV_SIZE)
+            val ct = downloaded.copyOfRange(1 + SALT_SIZE + GCM_IV_SIZE, downloaded.size)
 
             val keyBytes = argon2id(password.toByteArray(Charsets.UTF_8), salt, AES_KEY_BYTES)
             val secretKey: SecretKey = SecretKeySpec(keyBytes, "AES")

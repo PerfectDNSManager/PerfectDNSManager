@@ -8,13 +8,27 @@ import java.util.Locale
 object ProfileValidation {
     private val HOSTNAME_RE = Regex("^(?=.{1,253}$)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+\\.?$")
     private val IPV4_RE = Regex("^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}$")
-    fun isHostname(raw: String): Boolean = HOSTNAME_RE.matches(raw) && !IPV4_RE.matches(raw)
+    private val LEGACY_DOQ_PATHS = listOf(
+        Regex("^quic://dns\\.nextdns\\.io/([A-Za-z0-9-]{1,63})/?$") to "dns.nextdns.io",
+        Regex("^quic://freedns\\.controld\\.com/([A-Za-z0-9-]{1,63})/?$") to "freedns.controld.com",
+        Regex("^quic://dns\\.controld\\.com/([A-Za-z0-9-]{1,63})/?$") to "dns.controld.com",
+    )
+    // Le dernier label (TLD) doit contenir une lettre : aucun TLD n'est
+    // numérique, et sans ce contrôle « 1.1.1 » passait pour un nom d'hôte.
+    fun isHostname(raw: String): Boolean = HOSTNAME_RE.matches(raw) && !IPV4_RE.matches(raw) &&
+        raw.trimEnd('.').substringAfterLast('.').any { it.isLetter() }
     fun isIpv4(raw: String): Boolean = IPV4_RE.matches(raw)
     fun normalizeEndpoint(raw: String): String {
         val value = if (raw.contains("://")) raw.substringBefore("://").lowercase(Locale.ROOT) + "://" + raw.substringAfter("://") else raw
-        // Migrate historic DoQ profile URLs: QUIC has no HTTP path to carry an ID.
-        val old = Regex("^quic://dns\\.nextdns\\.io/([A-Za-z0-9-]{1,63})/?$").matchEntire(value)
-        return if (old != null) "quic://${old.groupValues[1]}.dns.nextdns.io" else value
+        // Migrate historic DoQ profile URLs: QUIC has no HTTP path to carry an ID,
+        // so the ID moves into the hostname. 2.3.2 shipped ControlD presets as
+        // quic://freedns.controld.com/p0 — without this migration a user who had
+        // one selected could no longer start the VPN after updating.
+        for ((re, host) in LEGACY_DOQ_PATHS) {
+            val m = re.matchEntire(value) ?: continue
+            return "quic://${m.groupValues[1]}.$host"
+        }
+        return value
     }
     fun isIpv6(raw: String): Boolean = raw.length <= 45 && raw.contains(':') &&
         raw.all { it in "0123456789abcdefABCDEF:." } &&

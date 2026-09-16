@@ -39,10 +39,21 @@ class ProfileManager(private val context: Context) {
             saveProfiles(defaults)
             return defaults
         }
-        val saved = runCatching { GSON.fromJson<List<DnsProfile?>>(json, listType) }
+        // Normaliser AVANT de valider : une URL historique (quic://…/p0 en 2.3.2)
+        // doit être migrée, pas écartée.
+        val raw = runCatching { GSON.fromJson<List<DnsProfile?>>(json, listType) }
             .getOrNull().orEmpty().filterNotNull()
-            .filter(app.perfectdnsmanager.util.ProfileValidation::isUsable)
-            .map { it.copy(primary = app.perfectdnsmanager.util.ProfileValidation.normalizeEndpoint(it.primary)) }
+            .map { p ->
+                @Suppress("SENSELESS_COMPARISON")
+                if (p.primary == null) p
+                else p.copy(primary = app.perfectdnsmanager.util.ProfileValidation.normalizeEndpoint(p.primary))
+            }
+        val saved = raw.filter(app.perfectdnsmanager.util.ProfileValidation::isUsable)
+        // Les profils perso qui ne passent pas la nouvelle validation sont masqués
+        // mais CONSERVÉS sur disque : la bêta les supprimait définitivement et en
+        // silence au premier lancement.
+        val unusable = raw.filterNot(app.perfectdnsmanager.util.ProfileValidation::isUsable)
+            .filter { it.isCustom }
 
         // Auto-sync presets : mettre à jour les existants + injecter les manquants
         val defaults = DnsProfile.getDefaultPresets()
@@ -61,37 +72,51 @@ class ProfileManager(private val context: Context) {
         val missing = defaults.filter { it.id !in savedIds }
         val merged = updated + missing
 
-        if (merged != saved) {
-            saveProfiles(merged)
+        // Réécrire si la fusion a changé quelque chose, ou si des presets obsolètes
+        // ont été écartés (les profils perso masqués sont conservés tels quels).
+        if (merged != saved || raw.size - saved.size != unusable.size) {
+            saveProfiles(merged + unusable)
         }
         return merged
     }
 
+    /** Profils perso présents sur disque mais masqués car non valides (cf. loadProfiles). */
+    private fun hiddenCustom(): List<DnsProfile> {
+        val json = prefs.getString("profiles", null) ?: return emptyList()
+        return runCatching { GSON.fromJson<List<DnsProfile?>>(json, listType) }
+            .getOrNull().orEmpty().filterNotNull()
+            .filter { it.isCustom && !app.perfectdnsmanager.util.ProfileValidation.isUsable(it) }
+    }
+
     fun addProfile(profile: DnsProfile) {
+        val hidden = hiddenCustom()
         val all = loadProfiles().toMutableList()
         all.add(profile)
-        saveProfiles(all)
+        saveProfiles(all + hidden)
     }
 
     fun deleteProfile(profileId: Long) {
+        val hidden = hiddenCustom().filter { it.id != profileId }
         val all = loadProfiles().toMutableList()
         all.removeAll { it.id == profileId }
-        saveProfiles(all)
+        saveProfiles(all + hidden)
     }
 
     fun updateProfile(updated: DnsProfile) {
+        val hidden = hiddenCustom()
         val all = loadProfiles().toMutableList()
         val index = all.indexOfFirst { it.id == updated.id }
         if (index >= 0) {
             all[index] = updated
-            saveProfiles(all)
+            saveProfiles(all + hidden)
         }
     }
 
     fun restoreDefaults() {
+        val hidden = hiddenCustom()
         val currentCustom = loadProfiles().filter { it.isCustom }
         val defaults = DnsProfile.getDefaultPresets()
-        saveProfiles(defaults + currentCustom)
+        saveProfiles(defaults + currentCustom + hidden)
     }
 
     fun resetAll() {

@@ -184,8 +184,19 @@ class DnsProviderDetailActivity : AppCompatActivity() {
                     Toast.makeText(this, getString(R.string.primary_dns_invalid), Toast.LENGTH_LONG).show()
                     return@setPositiveButton
                 }
-                profileManager.updateProfile(updated.copy(isCustom = true,
-                    primary = app.perfectdnsmanager.util.ProfileValidation.normalizeEndpoint(updated.primary)))
+                val normalized = app.perfectdnsmanager.util.ProfileValidation.normalizeEndpoint(updated.primary)
+                if (profile.isCustom) {
+                    profileManager.updateProfile(updated.copy(primary = normalized))
+                } else {
+                    // Éditer un preset crée une COPIE perso avec un nouvel id. Garder
+                    // l'id du preset produisait deux profils identiques après
+                    // restoreDefaults() (suppression des deux, mise à jour d'un seul),
+                    // et la copie héritait de la description et du drapeau adblock
+                    // du preset d'origine.
+                    profileManager.addProfile(updated.copy(
+                        id = System.currentTimeMillis(), primary = normalized, isCustom = true,
+                        descResId = 0, descResIdArg = null, isAdblock = false))
+                }
                 Toast.makeText(this, getString(R.string.profile_updated), Toast.LENGTH_SHORT).show()
                 recreate()
             }

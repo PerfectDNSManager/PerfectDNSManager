@@ -119,6 +119,9 @@ class DotMonitorService : Service() {
         handler.postDelayed({
             if (!monitoring) return@postDelayed
             if (!PrivateDnsGuard.isStrictActive(this) || PrivateDnsGuard.specifier(this) != hostname) {
+                // DNS privé coupé ou changé ailleurs (Réglages Android…) : l'état
+                // « DoT actif » est périmé, y compris après un échec de désactivation.
+                getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putBoolean("dot_active", false).apply()
                 monitoring = false; stopSelf(); return@postDelayed
             }
             // A disconnected network does not establish that the chosen DNS has failed.
