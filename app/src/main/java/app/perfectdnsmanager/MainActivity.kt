@@ -282,6 +282,11 @@ open class MainActivity : AppCompatActivity() {
      * Peuple les 3 cards du panneau status (gauche) : DNS actif + profil, connexion + IPs, hardware.
      * Contient : type connexion, opérateur, IP locale, IPv4, IPv6, ISP, statut DNS (vert/rouge).
      */
+    /** Dernières valeurs WAN connues, réaffichées pendant un rafraîchissement. */
+    private var lastIspInfo: String? = null
+    /** Rafraîchissement réseau en cours : évite les rafales redondantes. */
+    private var ipRefreshJob: kotlinx.coroutines.Job? = null
+
     private fun refreshIpDisplay() {
         // ── Phase 1 : données synchrones (rendu instantané, pas d'IO) ──
         val localIp = try {
@@ -330,17 +335,25 @@ open class MainActivity : AppCompatActivity() {
         // worker (cf generateReport), l'accès direct à tvStatusInfo.text crash
         // en CalledFromWrongThreadException. runOnUiThread est instantané quand
         // le caller est déjà UI thread.
+        // On réaffiche les DERNIÈRES valeurs connues au lieu de « … » : l'ancien
+        // code vidait l'IP à chaque passage, et comme le rafraîchissement est
+        // déclenché plusieurs fois d'affilée après une activation, l'IP
+        // clignotait — plusieurs secondes sur un lien lent (box TV).
         runOnUiThread {
             renderStatus(
                 dnsStatusText, dnsActive, connType, carrierName,
-                ispInfo = "…", localIp = localIp,
-                ipv4Display = "…", ipv6Display = "…",
+                ispInfo = lastIspInfo ?: "…", localIp = localIp,
+                ipv4Display = lastIpv4 ?: "…", ipv6Display = lastIpv6 ?: "…",
                 devType = devType
             )
         }
 
+        // Un seul appel réseau à la fois : les rafales (activation + 1 s + 3 s +
+        // 6 s) se contentent du rendu synchrone ci-dessus.
+        if (ipRefreshJob?.isActive == true) return
+
         // ── Phase 2 : IO réseau (parallèle) puis update final ──
-        lifecycleScope.launch(Dispatchers.IO) {
+        ipRefreshJob = lifecycleScope.launch(Dispatchers.IO) {
             // Une seule API : pdm-worker /api/whoami. Renvoie ip + isp + asn +
             // country + colo en 1 round-trip via request.cf de Cloudflare. On
             // force la résolution IPv4-only puis IPv6-only en parallèle, ce qui
@@ -348,8 +361,10 @@ open class MainActivity : AppCompatActivity() {
             // qu'ipify+ipinfo (qui chaînait + ajoutait 5s pour le FAI).
             fun whoamiOn(ipv4Only: Boolean): org.json.JSONObject? = try {
                 val client = okhttp3.OkHttpClient.Builder()
-                    .connectTimeout(3, java.util.concurrent.TimeUnit.SECONDS)
-                    .readTimeout(3, java.util.concurrent.TimeUnit.SECONDS)
+                    // 3 s suffisaient en Wi-Fi mais expiraient sur box TV en
+                    // liaison lente, d'où un « indisponible » régulier.
+                    .connectTimeout(6, java.util.concurrent.TimeUnit.SECONDS)
+                    .readTimeout(6, java.util.concurrent.TimeUnit.SECONDS)
                     .dns(object : okhttp3.Dns {
                         override fun lookup(hostname: String): List<java.net.InetAddress> {
                             val filtered = okhttp3.Dns.SYSTEM.lookup(hostname).filter {
@@ -371,7 +386,13 @@ open class MainActivity : AppCompatActivity() {
                         org.json.JSONObject(body)
                     } else null
                 }
-            } catch (_: Exception) { null }
+            } catch (e: Exception) {
+                // Échec silencieux auparavant : impossible de diagnostiquer une IP
+                // qui disparaît. On ne journalise que le type d'erreur.
+                android.util.Log.w("PdmWhoami",
+                    "whoami ${if (ipv4Only) "v4" else "v6"} échec: ${e.javaClass.simpleName}")
+                null
+            }
 
             val v4Job = async(Dispatchers.IO) { whoamiOn(ipv4Only = true) }
             val v6Job = async(Dispatchers.IO) { whoamiOn(ipv4Only = false) }
@@ -384,14 +405,19 @@ open class MainActivity : AppCompatActivity() {
             val ipv4 = v4Info?.optString("ip")?.takeIf { it.isNotBlank() }
             val ispInfoV4 = v4Info?.optString("isp", "")?.takeIf { it.isNotBlank() } ?: ""
 
+            // En cas d'échec on CONSERVE la dernière valeur connue : l'ancien code
+            // la remplaçait par « indisponible », puis un rafraîchissement suivant
+            // la restaurait — l'IP semblait disparaître puis revenir.
+            if (ipv4 != null) lastIpv4 = ipv4
+            if (ispInfoV4.isNotEmpty()) lastIspInfo = ispInfoV4
             val (dnsText2, dnsActive2) = computeDnsStatus()
             runOnUiThread {
                 renderStatus(
                     dnsText2, dnsActive2, connType, carrierName,
-                    ispInfo = ispInfoV4.ifEmpty { getString(R.string.wan_ip_error) },
+                    ispInfo = lastIspInfo ?: getString(R.string.wan_ip_error),
                     localIp = localIp,
-                    ipv4Display = ipv4 ?: getString(R.string.wan_ip_error),
-                    ipv6Display = "…",
+                    ipv4Display = lastIpv4 ?: getString(R.string.wan_ip_error),
+                    ipv6Display = lastIpv6 ?: "…",
                     devType = devType
                 )
             }
@@ -404,17 +430,20 @@ open class MainActivity : AppCompatActivity() {
                 v6Info?.optString("isp", "")?.takeIf { it.isNotBlank() } ?: ""
             }
 
-            lastIpv4 = ipv4
-            lastIpv6 = ipv6
+            if (ipv4 != null) lastIpv4 = ipv4
+            if (ipv6 != null) lastIpv6 = ipv6
+            if (ispInfo.isNotEmpty()) lastIspInfo = ispInfo
             lastCarrierName = carrierName.ifEmpty { null }
 
             runOnUiThread {
                 renderStatus(
                     dnsText2, dnsActive2, connType, carrierName,
-                    ispInfo = ispInfo.ifEmpty { getString(R.string.wan_ip_error) },
+                    ispInfo = lastIspInfo ?: getString(R.string.wan_ip_error),
                     localIp = localIp,
-                    ipv4Display = ipv4 ?: getString(R.string.wan_ip_error),
-                    ipv6Display = ipv6 ?: getString(R.string.wan_ipv6_blocked),
+                    ipv4Display = lastIpv4 ?: getString(R.string.wan_ip_error),
+                    // Pas d'IPv6 = soit bloquée par le réglage, soit réseau v4-only :
+                    // le libellé « bloqué » reste correct dans les deux cas.
+                    ipv6Display = lastIpv6 ?: getString(R.string.wan_ipv6_blocked),
                     devType = devType
                 )
             }
