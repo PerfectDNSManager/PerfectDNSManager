@@ -101,7 +101,8 @@ All sensitive operations are end-to-end encrypted; the worker never sees plainte
 
 ## 🌐 Sites
 
-- Main landing & changelog: <https://perfectdnsmanager.app>
+- Main landing: <https://perfectdnsmanager.app>
+- Changelog: [CHANGELOG.md](CHANGELOG.md) · [GitHub releases](https://github.com/PerfectDNSManager/PerfectDNSManager/releases)
 - Locale-specific pages: <https://www.perfectdnsmanager.app/>
 - Direct APK redirect: <https://perfectdnsmanager.app/apk>
 - Privacy: <https://perfectdnsmanager.app/privacy>
