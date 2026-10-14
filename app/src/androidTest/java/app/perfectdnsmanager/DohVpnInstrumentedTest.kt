@@ -37,9 +37,11 @@ class DohVpnInstrumentedTest {
         shell("settings put global private_dns_mode off")
         assertNull("VPN authorization", VpnService.prepare(context))
         context.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit()
-            .putBoolean("disable_ipv6", false).remove("excluded_apps_json").commit()
+            .remove("disable_ipv6").remove("excluded_apps_json").commit()
         val activity = instrumentation.startActivitySync(Intent(context, MainActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        assertFalse("MainActivity must not enable IPv6 blocking",
+            context.getSharedPreferences("prefs", Context.MODE_PRIVATE).getBoolean("disable_ipv6", false))
         val start = Intent(context, DnsVpnService::class.java)
             .setAction(DnsVpnService.ACTION_START)
             .putExtra(DnsVpnService.EXTRA_DNS_PRIMARY, endpoint)

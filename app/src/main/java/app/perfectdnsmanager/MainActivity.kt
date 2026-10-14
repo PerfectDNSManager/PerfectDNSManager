@@ -232,12 +232,12 @@ open class MainActivity : AppCompatActivity() {
             prefs.edit().putString("language", lang).apply()
         }
 
-        // Premier lancement : démarrage auto et blocage IPv6 actifs par défaut.
+        // Premier lancement : démarrage auto actif par défaut. IPv6 reste autorisé.
         // On ne sème que les clés ABSENTES, donc un utilisateur qui les a déjà
         // décochées garde son choix.
         val defaults = prefs.edit()
         var seeded = false
-        for (key in listOf("auto_reconnect_dns", "disable_ipv6")) {
+        for (key in listOf("auto_reconnect_dns")) {
             if (!prefs.contains(key)) { defaults.putBoolean(key, true); seeded = true }
         }
         if (seeded) defaults.apply()
@@ -441,9 +441,8 @@ open class MainActivity : AppCompatActivity() {
                     ispInfo = lastIspInfo ?: getString(R.string.wan_ip_error),
                     localIp = localIp,
                     ipv4Display = lastIpv4 ?: getString(R.string.wan_ip_error),
-                    // Pas d'IPv6 = soit bloquée par le réglage, soit réseau v4-only :
-                    // le libellé « bloqué » reste correct dans les deux cas.
-                    ipv6Display = lastIpv6 ?: getString(R.string.wan_ipv6_blocked),
+                    // A failed IPv6 probe does not prove that PDM blocks IPv6.
+                    ipv6Display = ipv6Status(lastIpv6),
                     devType = devType
                 )
             }
@@ -489,6 +488,11 @@ open class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun ipv6Status(address: String?): String =
+        if (DnsVpnService.isVpnRunning && prefs.getBoolean("disable_ipv6", false)) {
+            getString(R.string.wan_ipv6_blocked)
+        } else address ?: getString(R.string.wan_ip_error)
+
     /** Construit + affiche le bloc status complet dans tvStatusInfo. */
     private fun renderStatus(
         dnsStatusText: String, dnsActive: Boolean, connType: String, carrierName: String,
@@ -514,7 +518,7 @@ open class MainActivity : AppCompatActivity() {
         // la valeur fetched ou "indisponible". Cohérent avec IPv4/IPv6.
         sb.append(getString(R.string.report_isp_fmt, ispInfo)).append("\n")
         sb.append(getString(R.string.report_ipv4_fmt, ipv4Display)).append("\n")
-        sb.append(getString(R.string.report_ipv6_fmt, ipv6Display))
+        sb.append(getString(R.string.report_ipv6_fmt, ipv6Status(ipv6Display)))
         sb.append("\n\n")
 
         sb.append("${getString(R.string.md_device_model)}: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}").append("\n")
@@ -1048,7 +1052,7 @@ open class MainActivity : AppCompatActivity() {
                         }
                         appendLine("| **${getString(R.string.md_local_ip)}** | `$localIp` |")
                         appendLine("| **IPv4** | `${lastIpv4 ?: "N/A"}` |")
-                        val ipv6Status = lastIpv6 ?: "${getString(R.string.wan_ipv6_blocked)}"
+                        val ipv6Status = ipv6Status(lastIpv6)
                         appendLine("| **IPv6** | `$ipv6Status` |")
                         // Snapshot capturé sur UI thread avant le launch — pas de read direct ici
                         appendLine("| **${getString(R.string.md_active_dns)}** | `$statusFirstLineSnapshot` |")

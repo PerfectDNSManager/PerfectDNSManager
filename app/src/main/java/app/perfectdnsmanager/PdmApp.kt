@@ -9,6 +9,7 @@ import java.security.Security
 class PdmApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        app.perfectdnsmanager.data.Ipv6Settings.initialize(getSharedPreferences("prefs", Context.MODE_PRIVATE))
         // Conscrypt en provider TLS par défaut. Requis pour
         // exportKeyingMaterial() utilisé par le pairing ADB Android 11+
         // (SPAKE2 dérive son secret depuis le code 6-chiffres + keying
