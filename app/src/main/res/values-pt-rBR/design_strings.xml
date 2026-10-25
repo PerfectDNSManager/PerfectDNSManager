@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="protocol_filter_hint">Filtrar por protocolo. Ative DoT nas definições. Os filtros não alteram a ligação ativa.</string>
+    <string name="protocol_filter_empty">Nenhum perfil corresponde aos filtros.</string>
+    <string name="protocol_filter_count">%1$d fornecedores · %2$d perfis</string>
+</resources>

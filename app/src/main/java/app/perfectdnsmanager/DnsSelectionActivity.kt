@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.CheckBox
+import android.widget.LinearLayout
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +31,9 @@ class DnsSelectionActivity : AppCompatActivity() {
     private lateinit var btnBack: Button
     private lateinit var tvMethodInfo: TextView
     private lateinit var profileManager: ProfileManager
-    private var allProfiles = mutableListOf<DnsProfile>()
+    private var allProfiles = listOf<DnsProfile>()
+    private val selectedProtocols = linkedSetOf<DnsType>()
+    private val protocolButtons = mutableMapOf<DnsType, CheckBox>()
 
     private val providerDetailLauncher = registerForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
@@ -57,7 +61,41 @@ class DnsSelectionActivity : AppCompatActivity() {
         btnBack = findViewById(R.id.btnBack)
         tvMethodInfo = findViewById(R.id.tvMethodInfo)
 
-        tvMethodInfo.visibility = android.view.View.GONE
+        rvProviders.layoutManager = LinearLayoutManager(this)
+        val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
+        val restored = savedInstanceState?.getStringArrayList("protocols")
+        if (restored != null) {
+            selectedProtocols.addAll(DnsType.entries.filter { it.name in restored })
+        } else {
+            selectedProtocols.add(DnsType.DOH)
+            if (prefs.getBoolean("show_doq_dns", false)) selectedProtocols.add(DnsType.DOQ)
+            if (prefs.getBoolean("adb_dot_enabled", false)) selectedProtocols.add(DnsType.DOT)
+            if (prefs.getBoolean("show_standard_dns", false) || prefs.getBoolean("operator_dns_enabled", false)) selectedProtocols.add(DnsType.DEFAULT)
+        }
+        val filters = findViewById<LinearLayout>(R.id.protocolFilters)
+        for (type in listOf(DnsType.DOH, DnsType.DOT, DnsType.DOQ, DnsType.DEFAULT)) {
+            val checkbox = CheckBox(this).apply {
+                id = android.view.View.generateViewId()
+                nextFocusUpId = R.id.btnBack
+                nextFocusDownId = R.id.btnSpeedtest
+                text = when(type) { DnsType.DOH -> "DoH"; DnsType.DOT -> "DoT"; DnsType.DOQ -> "DoQ"; DnsType.DEFAULT -> "UDP" }
+                minHeight = (48 * resources.displayMetrics.density).toInt()
+                textSize = 13f
+                isChecked = type in selectedProtocols
+                isEnabled = type != DnsType.DOT || prefs.getBoolean("adb_dot_enabled", false)
+                background = androidx.core.content.ContextCompat.getDrawable(this@DnsSelectionActivity, R.drawable.pdm_btn_primary)
+                setOnCheckedChangeListener { _, checked ->
+                    if (checked) selectedProtocols.add(type) else selectedProtocols.remove(type)
+                    showProviders()
+                }
+            }
+            protocolButtons[type] = checkbox
+            filters.addView(checkbox, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        }
+        btnBack.nextFocusDownId = protocolButtons.getValue(DnsType.DOH).id
+        btnSpeedtest.nextFocusUpId = protocolButtons.getValue(DnsType.DOH).id
+        btnAddProfile.nextFocusUpId = protocolButtons.getValue(DnsType.DEFAULT).id
+        tvMethodInfo.setText(R.string.protocol_filter_hint)
 
         btnBack.requestFocus()
         btnBack.setOnClickListener { finish() }
@@ -71,7 +109,10 @@ class DnsSelectionActivity : AppCompatActivity() {
     }
 
     private fun loadProfiles() {
-        allProfiles = profileManager.loadProfiles().toMutableList()
+        allProfiles = profileManager.loadProfiles()
+        val dotEnabled = getSharedPreferences("prefs", MODE_PRIVATE).getBoolean("adb_dot_enabled", false)
+        protocolButtons[DnsType.DOT]?.isEnabled = dotEnabled
+        if (!dotEnabled) { selectedProtocols.remove(DnsType.DOT); protocolButtons[DnsType.DOT]?.isChecked = false }
         showProviders()
     }
 
@@ -84,20 +125,13 @@ class DnsSelectionActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
         val operatorEnabled = prefs.getBoolean("operator_dns_enabled", false)
         val adbDotEnabled = prefs.getBoolean("adb_dot_enabled", false)
-        val showStandardDns = prefs.getBoolean("show_standard_dns", false)
         val showProfileVariants = prefs.getBoolean("show_profile_variants", false)
 
-        // Filter DoQ profiles based on toggle
-        if (!prefs.getBoolean("show_doq_dns", false)) {
-            allProfiles.removeAll { it.type == DnsType.DOQ }
-        }
-
-        // Filtrage des profils selon les toggles
+        // Protocol filters change the catalog, never the active connection or settings.
         val baseFiltered = allProfiles.filter { profile ->
-            if (profile.isOperatorDns && !operatorEnabled) return@filter false
-            if (profile.type == DnsType.DOT && !adbDotEnabled) return@filter false
-            if (!showStandardDns && profile.type == DnsType.DEFAULT && !profile.isOperatorDns) return@filter false
-            true
+            profile.type in selectedProtocols &&
+                (!profile.isOperatorDns || operatorEnabled) &&
+                (profile.type != DnsType.DOT || adbDotEnabled)
         }
 
         val filtered = app.perfectdnsmanager.data.ProfileCatalog.visible(
@@ -155,7 +189,7 @@ class DnsSelectionActivity : AppCompatActivity() {
                             ))
                         }
                     }
-                    profiles + customProfiles
+                    (profiles + customProfiles).filter { it.type in selectedProtocols }.distinctBy { Triple(it.type, it.primary, it.name) }
                 } else {
                     profiles
                 }
@@ -164,6 +198,7 @@ class DnsSelectionActivity : AppCompatActivity() {
                     putExtra("PROVIDER_NAME", providerName)
                     putExtra("PROFILES_JSON", Gson().toJson(allProfiles))
                     putExtra("IS_NEXTDNS", isNextDns)
+                    putExtra("PROTOCOL_FILTER", selectedProtocols.map { it.name }.toTypedArray())
                 }
                 providerDetailLauncher.launch(intent)
             }
@@ -176,8 +211,14 @@ class DnsSelectionActivity : AppCompatActivity() {
             if (best != null) returnProfileToMain(best)
         }
 
-        rvProviders.layoutManager = LinearLayoutManager(this)
         rvProviders.adapter = adapter
+        findViewById<TextView>(R.id.tvFilterResults).text = if (filtered.isEmpty()) getString(R.string.protocol_filter_empty)
+            else getString(R.string.protocol_filter_count, grouped.size, filtered.size)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putStringArrayList("protocols", ArrayList(selectedProtocols.map { it.name }))
+        super.onSaveInstanceState(outState)
     }
 
     private fun returnProfileToMain(profile: DnsProfile) {

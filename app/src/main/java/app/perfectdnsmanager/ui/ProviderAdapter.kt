@@ -80,18 +80,7 @@ class ProviderAdapter(
 
         holder.tvBestProfile.visibility = View.GONE
 
-        // Ratings: 2 lines (speed + privacy)
-        val actualProvider = firstProfile?.providerName ?: providerName
-        val rating = DnsProfile.providerRatings[actualProvider]
-        if (rating != null && firstProfile?.isOperatorDns != true && firstProfile?.isCustom != true) {
-            holder.layoutRatings.visibility = View.VISIBLE
-            holder.tvSpeedLabel.text = ctx.getString(R.string.speed_label) + ": "
-            holder.tvSpeedStars.text = starsText(rating.speed)
-            holder.tvPrivacyLabel.text = ctx.getString(R.string.privacy_label) + ": "
-            holder.tvPrivacyStars.text = starsText(rating.privacy)
-        } else {
-            holder.layoutRatings.visibility = View.GONE
-        }
+        holder.layoutRatings.visibility = View.GONE
 
         // Blue button (icon + name) click -> quick connect (best profile)
         holder.layoutProviderButton.setOnClickListener {

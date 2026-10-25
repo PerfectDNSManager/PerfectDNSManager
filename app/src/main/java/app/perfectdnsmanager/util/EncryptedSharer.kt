@@ -73,6 +73,7 @@ class EncryptedSharer {
         )
 
         fun encryptAndUpload(context: android.content.Context, content: String, fileName: String = "data.enc", expiresIn: String = "1h"): UploadResult {
+            require(content.length <= MAX_BLOB_BYTES && content.toByteArray(Charsets.UTF_8).size <= MAX_BLOB_BYTES - 45) { "Content too large" }
             val rng = SecureRandom()
 
             val password = generatePassword(rng, PASSWORD_LEN)
@@ -107,7 +108,7 @@ class EncryptedSharer {
 
             if (BuildConfig.DEBUG) Log.d(TAG, "Uploading ${combined.size} bytes (Argon2id v2)")
             val body = client.newCall(request).execute().use { response ->
-                val text = response.body?.string()?.trim() ?: ""
+                val text = Http.readText(response.body, 16 * 1024).trim()
                 if (!response.isSuccessful) throw Exception("Upload failed (${response.code})")
                 text
             }
@@ -127,21 +128,17 @@ class EncryptedSharer {
         }
 
         fun downloadAndDecrypt(context: android.content.Context, shortCodeOrUrl: String, password: String): String {
-            val slug = parseSlug(context, shortCodeOrUrl)
-            if (password.isBlank()) throw Exception(context.getString(R.string.es_err_password_required))
-
+            val link = ShareLinks.parse(shortCodeOrUrl)
+                ?: throw IllegalArgumentException(context.getString(R.string.es_err_invalid_code_fmt, ""))
+            val slug = link.slug
+            require(password.isNotBlank() && password.length <= 128) { "Invalid password" }
             val client = Http.withTimeouts(connectSec = 15, readSec = 15)
-            val source = runCatching { java.net.URI(shortCodeOrUrl.trim()) }.getOrNull()
-            val sourceBase = if (source?.host != null) {
-                require(source.scheme == "https" && source.userInfo == null && source.port == -1 &&
-                    source.host in setOf("perfectdnsmanager.app", "beta.perfectdnsmanager.app", "pdm.appstorefr.net")) { "Invalid share URL" }
-                "https://${source.host}"
-            } else PDM_BASE_URL
+            val sourceBase = link.origin ?: PDM_BASE_URL
             // Un code court seul ne dit pas sur quel backend il a été créé : la bêta
             // stocke ses partages à part (beta.perfectdnsmanager.app). On essaie le
             // backend de cette build, puis l'autre, pour qu'un partage créé depuis
             // une bêta reste lisible depuis une stable et inversement.
-            val candidates = if (source?.host != null) listOf(sourceBase)
+            val candidates = if (link.origin != null) listOf(sourceBase)
                 else listOf(PDM_BASE_URL) + listOf("https://perfectdnsmanager.app", "https://beta.perfectdnsmanager.app")
                     .filter { it != PDM_BASE_URL }
             var bytes: ByteArray? = null
@@ -212,19 +209,6 @@ class EncryptedSharer {
                 if (token.isBlank()) throw Exception("Challenge response invalid")
                 return token
             }
-        }
-
-        /** Accepte "abcd1234" (slug), "https://perfectdnsmanager.app/d/abcd1234", etc. */
-        private fun parseSlug(context: android.content.Context, input: String): String {
-            val trimmed = input.trim()
-            if (trimmed.contains("appstorefr.github.io", ignoreCase = true)) {
-                throw Exception(context.getString(R.string.es_err_legacy_unsupported))
-            }
-            val base = if (trimmed.contains('#')) trimmed.substringBefore('#') else trimmed
-            val raw = if (base.contains("/")) base.trimEnd('/').substringAfterLast('/') else base
-            val clean = raw.substringBefore('?')
-            if (!clean.matches(SLUG_RE)) throw Exception(context.getString(R.string.es_err_invalid_code_fmt, clean))
-            return clean
         }
 
         private fun argon2id(password: ByteArray, salt: ByteArray, keyLen: Int): ByteArray {

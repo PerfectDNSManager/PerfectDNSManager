@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="protocol_filter_hint">التصفية حسب البروتوكول. فعّل DoT في الإعدادات. لا تغيّر التصفية الاتصال الحالي.</string>
+    <string name="protocol_filter_empty">لا توجد ملفات تعريف تطابق هذه المرشحات.</string>
+    <string name="protocol_filter_count">%1$d مزوّد · %2$d ملف تعريف</string>
+</resources>

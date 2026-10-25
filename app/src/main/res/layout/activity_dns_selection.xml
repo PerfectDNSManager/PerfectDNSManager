@@ -6,37 +6,11 @@
     android:background="@color/pdm_background"
     android:padding="16dp">
 
-    <!-- Header : FrameLayout pour titre VRAIMENT centré sur l'écran sans
-         bouffer d'espace par un spacer miroir. Le bouton RETOUR est en
-         layout_gravity=start, le titre en layout_gravity=center. Le titre
-         peut overlap visuellement le bouton sur très petit écran si vraiment
-         long, mais on accepte (préférable à la troncature ellipsize). -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp">
-
-        <Button
-            android:id="@+id/btnBack"
-            style="@style/PDMBackButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
-            android:text="@string/back_arrow"
-            android:nextFocusDown="@id/btnSpeedtest" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/choose_dns_server"
-            android:textColor="@color/pdm_text_primary"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:maxLines="1" />
-    </FrameLayout>
-
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="12dp">
+        <Button android:id="@+id/btnBack" style="@style/PDMBackButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/back_arrow" android:nextFocusDown="@id/protocolFilters"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="16dp" android:text="@string/choose_dns_server" android:textColor="@color/pdm_text_primary" android:textSize="20sp" android:textStyle="bold"/>
+    </LinearLayout>
+    <LinearLayout android:id="@+id/protocolFilters" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="8dp"/>
     <!-- Info méthode -->
     <TextView
         android:id="@+id/tvMethodInfo"
@@ -85,6 +59,7 @@
             android:nextFocusDown="@id/rvDnsList" />
     </LinearLayout>
 
+    <TextView android:id="@+id/tvFilterResults" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/pdm_text_secondary" android:textSize="13sp" android:paddingBottom="8dp" android:accessibilityLiveRegion="polite"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvDnsList"
         android:layout_width="match_parent"

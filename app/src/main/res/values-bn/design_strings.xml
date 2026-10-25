@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="protocol_filter_hint">প্রোটোকল অনুযায়ী ফিল্টার করুন। সেটিংসে DoT চালু করুন। ফিল্টার সক্রিয় সংযোগ বদলায় না।</string>
+    <string name="protocol_filter_empty">এই ফিল্টারে কোনো প্রোফাইল নেই।</string>
+    <string name="protocol_filter_count">%1$d প্রদানকারী · %2$d প্রোফাইল</string>
+</resources>

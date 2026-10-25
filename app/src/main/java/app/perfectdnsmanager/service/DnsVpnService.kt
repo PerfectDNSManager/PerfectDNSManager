@@ -619,7 +619,7 @@ class DnsVpnService : VpnService() {
                 else -> responseBody
             }
         }
-    } catch (e: Exception) { Log.w(T, "DoH err: ${e.javaClass.simpleName}: ${e.message}"); null }
+    } catch (e: Exception) { Log.w(T, "DoH err: ${e.javaClass.simpleName}"); null }
 
     /** Lit au plus [max] octets d'un flux, sans allouer sur la foi du serveur. */
     private fun readBounded(input: java.io.InputStream, max: Int): ByteArray {

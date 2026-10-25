@@ -3,20 +3,20 @@
     <!-- ─── Palette PDM — Dark ─── -->
     <!-- Technique sobre : noirs bleutés, accents verts/bleus discrets, haute lisibilité. -->
 
-    <color name="pdm_background">#0E0F12</color>
-    <color name="pdm_surface">#17191E</color>
-    <color name="pdm_surface_elevated">#1F2228</color>
-    <color name="pdm_surface_input">#14161A</color>
-    <color name="pdm_surface_pressed">#22262E</color>
-    <color name="pdm_border">#2A2E36</color>
-    <color name="pdm_border_focus">#4CAF50</color>
+    <color name="pdm_background">#0C1420</color>
+    <color name="pdm_surface">#121E2E</color>
+    <color name="pdm_surface_elevated">#1B2C40</color>
+    <color name="pdm_surface_input">#0F1A28</color>
+    <color name="pdm_surface_pressed">#22384E</color>
+    <color name="pdm_border">#33495F</color>
+    <color name="pdm_border_focus">#A9DFCE</color>
 
     <color name="pdm_text_primary">#E6E9EE</color>
-    <color name="pdm_text_secondary">#8A93A3</color>
+    <color name="pdm_text_secondary">#B0BFD0</color>
     <color name="pdm_text_disabled">#555B66</color>
-    <color name="pdm_text_on_accent">#0E0F12</color>
+    <color name="pdm_text_on_accent">#0C1420</color>
 
-    <color name="pdm_accent">#2E7D32</color>
+    <color name="pdm_accent">#8CD7C0</color>
     <color name="pdm_accent_pressed">#1B5E20</color>
     <color name="pdm_accent_alt">#64B5F6</color>
     <color name="pdm_danger">#FF5252</color>
@@ -43,7 +43,7 @@
     <color name="pdm_toggle_off">#6B6F78</color>
 
     <!-- ─── Couleurs par type de DNS (dark) ─── -->
-    <!-- Versions plus vives, lisibles sur fond sombre (#0E0F12). -->
+    <!-- Versions plus vives, lisibles sur fond sombre (#0C1420). -->
     <color name="dns_type_doh">#4CD964</color>
     <color name="dns_type_doq">#9E8CFF</color>
     <color name="dns_type_dot">#FFC947</color>

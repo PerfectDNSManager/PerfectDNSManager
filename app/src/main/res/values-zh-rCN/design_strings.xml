@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="protocol_filter_hint">按协议筛选。请在设置中启用 DoT。筛选不会更改当前连接。</string>
+    <string name="protocol_filter_empty">没有符合条件的配置。</string>
+    <string name="protocol_filter_count">%1$d 个提供商 · %2$d 个配置</string>
+</resources>

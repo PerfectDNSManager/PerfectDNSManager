@@ -360,29 +360,13 @@ open class MainActivity : AppCompatActivity() {
             // permet de capturer les deux familles. Plus rapide et plus fiable
             // qu'ipify+ipinfo (qui chaînait + ajoutait 5s pour le FAI).
             fun whoamiOn(ipv4Only: Boolean): org.json.JSONObject? = try {
-                val client = okhttp3.OkHttpClient.Builder()
-                    // 3 s suffisaient en Wi-Fi mais expiraient sur box TV en
-                    // liaison lente, d'où un « indisponible » régulier.
-                    .connectTimeout(6, java.util.concurrent.TimeUnit.SECONDS)
-                    .readTimeout(6, java.util.concurrent.TimeUnit.SECONDS)
-                    .dns(object : okhttp3.Dns {
-                        override fun lookup(hostname: String): List<java.net.InetAddress> {
-                            val filtered = okhttp3.Dns.SYSTEM.lookup(hostname).filter {
-                                if (ipv4Only) it is java.net.Inet4Address
-                                else it is java.net.Inet6Address
-                            }
-                            if (filtered.isEmpty())
-                                throw java.net.UnknownHostException("no ${if (ipv4Only) "v4" else "v6"} for $hostname")
-                            return filtered
-                        }
-                    })
-                    .build()
+                val client = app.perfectdnsmanager.util.WhoamiClients.forFamily(ipv4Only)
                 val req = okhttp3.Request.Builder()
-                    .url("https://perfectdnsmanager.app/api/whoami")
+                    .url("${BuildConfig.PDM_BASE_URL}/api/whoami")
                     .build()
                 client.newCall(req).execute().use { resp ->
                     if (resp.isSuccessful) {
-                        val body = resp.body?.string() ?: return@use null
+                        val body = app.perfectdnsmanager.util.Http.readText(resp.body, 16 * 1024)
                         org.json.JSONObject(body)
                     } else null
                 }

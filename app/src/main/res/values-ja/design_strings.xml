@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="protocol_filter_hint">プロトコルで絞り込み。DoT は設定で有効にしてください。接続中の設定は変わりません。</string>
+    <string name="protocol_filter_empty">条件に一致するプロファイルはありません。</string>
+    <string name="protocol_filter_count">プロバイダー %1$d · プロファイル %2$d</string>
+</resources>

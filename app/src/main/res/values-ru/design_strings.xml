@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="protocol_filter_hint">Фильтр по протоколу. Включите DoT в настройках. Фильтры не меняют активное подключение.</string>
+    <string name="protocol_filter_empty">Нет профилей для этих фильтров.</string>
+    <string name="protocol_filter_count">Провайдеры: %1$d · Профили: %2$d</string>
+</resources>

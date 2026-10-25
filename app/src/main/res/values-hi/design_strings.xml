@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="protocol_filter_hint">प्रोटोकॉल के अनुसार फ़िल्टर करें। सेटिंग में DoT सक्षम करें। फ़िल्टर सक्रिय कनेक्शन नहीं बदलते।</string>
+    <string name="protocol_filter_empty">इन फ़िल्टर से कोई प्रोफ़ाइल नहीं मिली।</string>
+    <string name="protocol_filter_count">%1$d प्रदाता · %2$d प्रोफ़ाइल</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="protocol_filter_hint">Filtra per protocollo. Abilita DoT nelle impostazioni. I filtri non modificano la connessione attiva.</string>
+    <string name="protocol_filter_empty">Nessun profilo per questi filtri.</string>
+    <string name="protocol_filter_count">%1$d fornitori · %2$d profili</string>
+</resources>

@@ -55,15 +55,16 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         val profilesJson = intent.getStringExtra("PROFILES_JSON") ?: run { finish(); return }
         val suppliedProfiles: List<DnsProfile> = Gson().fromJson(profilesJson, object : TypeToken<List<DnsProfile>>() {}.type)
         val isNextDns = intent.getBooleanExtra("IS_NEXTDNS", false)
+        val requestedTypes = intent.getStringArrayExtra("PROTOCOL_FILTER")?.toSet()
         val profiles = if (providerName != "NextDNS") {
             val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
             val custom = app.perfectdnsmanager.data.ProfileManager(this).loadProfiles().filter {
                 it.providerName == providerName &&
                     (it.type != DnsType.DOT || prefs.getBoolean("adb_dot_enabled", false)) &&
-                    (it.type != DnsType.DOQ || prefs.getBoolean("show_doq_dns", false))
+                    (requestedTypes?.contains(it.type.name) ?: (it.type != DnsType.DOQ || prefs.getBoolean("show_doq_dns", false)))
             }
             app.perfectdnsmanager.data.ProfileCatalog.visible(custom.filter {
-                (it.type != DnsType.DEFAULT || prefs.getBoolean("show_standard_dns", false) || it.isOperatorDns)
+                (requestedTypes?.contains(it.type.name) ?: (it.type != DnsType.DEFAULT || prefs.getBoolean("show_standard_dns", false) || it.isOperatorDns))
             }, prefs.getBoolean("allow_adblock_profiles", false), prefs.getBoolean("show_profile_variants", false))
         } else suppliedProfiles
 
@@ -77,16 +78,8 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         tvProviderName.text = actualName
         ivProviderIcon.setImageResource(DnsProfile.getProviderIcon(actualName))
 
-        // Ratings
-        val rating = DnsProfile.providerRatings[actualName]
-        val layoutRatings: LinearLayout = findViewById(R.id.layoutRatings)
-        if (rating != null) {
-            layoutRatings.visibility = View.VISIBLE
-            findViewById<TextView>(R.id.tvSpeedLabel).text = getString(R.string.speed_label) + ": "
-            findViewById<TextView>(R.id.tvSpeedStars).text = "★".repeat(rating.speed) + "☆".repeat(5 - rating.speed)
-            findViewById<TextView>(R.id.tvPrivacyLabel).text = getString(R.string.privacy_label) + ": "
-            findViewById<TextView>(R.id.tvPrivacyStars).text = "★".repeat(rating.privacy) + "☆".repeat(5 - rating.privacy)
-        }
+        // Static stars are not measured speed or an independent privacy assessment.
+        findViewById<LinearLayout>(R.id.layoutRatings).visibility = View.GONE
 
         // NextDNS: add profile button
         val btnAddProfile: Button = findViewById(R.id.btnAddProfile)
