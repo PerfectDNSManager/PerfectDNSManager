@@ -212,6 +212,15 @@ data class DnsProfile(
                 primaryV6 = "2606:4700:4700::1113", secondaryV6 = "2606:4700:4700::1003",
                 descResId = R.string.dns_desc_adult_blocking),
 
+            // Swiss public encrypted resolver. No plaintext port 53 service.
+            // Official configuration: https://www.digitale-gesellschaft.ch/dns/
+            DnsProfile(id = 1800, providerName = "Digitale Gesellschaft", name = "Standard", type = DnsType.DOH,
+                primary = "https://dns.digitale-gesellschaft.ch/dns-query", descResId = R.string.dns_desc_no_logs),
+            DnsProfile(id = 1801, providerName = "Digitale Gesellschaft", name = "Standard", type = DnsType.DOT,
+                primary = "dns.digitale-gesellschaft.ch", descResId = R.string.dns_desc_no_logs),
+            DnsProfile(id = 1802, providerName = "Digitale Gesellschaft", name = "Standard", type = DnsType.DOQ,
+                primary = "quic://dns.digitale-gesellschaft.ch:853", descResId = R.string.dns_desc_no_logs),
+
             // ══════════════════════════════════════════════════════
             //  8. FDN (French Data Network)
             // ══════════════════════════════════════════════════════

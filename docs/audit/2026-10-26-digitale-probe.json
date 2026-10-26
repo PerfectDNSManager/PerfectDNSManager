@@ -1,0 +1,52 @@
+{
+  "domain": "example.com",
+  "results": [
+    {
+      "providerName": "Digitale Gesellschaft",
+      "name": "Standard",
+      "type": "DOH",
+      "field": "primary",
+      "endpoint": "https://dns.digitale-gesellschaft.ch/dns-query",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "104.20.23.154",
+          "172.66.147.243"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "Digitale Gesellschaft",
+      "name": "Standard",
+      "type": "DOT",
+      "field": "primary",
+      "endpoint": "dns.digitale-gesellschaft.ch",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "104.20.23.154",
+          "172.66.147.243"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    }
+  ],
+  "doq": "See Android instrumentation matrix"
+}

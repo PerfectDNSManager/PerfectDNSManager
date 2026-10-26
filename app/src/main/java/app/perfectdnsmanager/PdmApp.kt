@@ -9,6 +9,11 @@ import java.security.Security
 class PdmApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        // Agent15 must use Android algorithm names for RSA-PSS TLS signatures.
+        // Configure before any QUIC handshake; certificate validation stays enabled.
+        tech.kwik.agent15.env.PlatformMapping.usePlatformMapping(
+            tech.kwik.agent15.env.PlatformMapping.Platform.Android)
+
         app.perfectdnsmanager.data.Ipv6Settings.initialize(getSharedPreferences("prefs", Context.MODE_PRIVATE))
         // Conscrypt en provider TLS par défaut. Requis pour
         // exportKeyingMaterial() utilisé par le pairing ADB Android 11+

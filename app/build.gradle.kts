@@ -143,6 +143,7 @@ dependencies {
 
     // QUIC client pour DoQ (DNS over QUIC)
     implementation("tech.kwik:kwik:0.10.8")
+    implementation("tech.kwik:agent15:3.1") // Android RSA-PSS algorithm mapping
 
     // Argon2id KDF (JNI sur libargon2) — partage E2EE, remplace PBKDF2
     implementation("com.lambdapioneer.argon2kt:argon2kt:1.5.0")

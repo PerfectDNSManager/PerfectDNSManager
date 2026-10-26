@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.3-beta.1 — 26 octobre 2026
+
+- Ajout de Digitale Gesellschaft (Société Numérique, Suisse) : DoH, DoT et DoQ, sans filtrage ni profil DNS classique.
+- Correction de la compatibilité DoQ avec les signatures TLS RSA-PSS sur Android (configuration Agent15), sans désactiver la validation des certificats.
+- DoH visible par défaut ; DoT et DoQ selon les réglages existants. Ajout automatique aux catalogues déjà enregistrés, profils personnels conservés.
+
 ## 2.4.2-beta.2 — 26 octobre 2026
 
 - Retour aux couleurs et à la présentation d’origine, abandon de la refonte graphique.

@@ -24,9 +24,10 @@ import org.xbill.DNS.Section
 
 @RunWith(AndroidJUnit4::class)
 class DoqConcurrencyInstrumentedTest {
-    @Test fun concurrentAAndAaaaWaitForColdControlDConnection() {
+    @Test fun concurrentAAndAaaaWaitForColdConnection() {
         assumeTrue(Build.HARDWARE in listOf("ranchu", "goldfish"))
         val inst = InstrumentationRegistry.getInstrumentation(); val ctx = inst.targetContext
+        val endpoint = InstrumentationRegistry.getArguments().getString("doqEndpoint") ?: "quic://p0.freedns.controld.com"
         ParcelFileDescriptor.AutoCloseInputStream(inst.uiAutomation.executeShellCommand("appops set ${ctx.packageName} ACTIVATE_VPN allow")).use { it.readBytes() }
         assertNull(android.net.VpnService.prepare(ctx))
         ctx.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putBoolean("disable_ipv6", false).commit()
@@ -37,7 +38,7 @@ class DoqConcurrencyInstrumentedTest {
         try {
             for (round in 0..2) {
                 androidx.core.content.ContextCompat.startForegroundService(ctx, Intent(ctx, DnsVpnService::class.java)
-                    .setAction(DnsVpnService.ACTION_START).putExtra(DnsVpnService.EXTRA_DNS_PRIMARY, "quic://p0.freedns.controld.com"))
+                    .setAction(DnsVpnService.ACTION_START).putExtra(DnsVpnService.EXTRA_DNS_PRIMARY, endpoint))
                 val end = SystemClock.elapsedRealtime()+15000
                 while ((!DnsVpnService.isVpnRunning || !vpnActive()) && SystemClock.elapsedRealtime()<end) SystemClock.sleep(50)
                 assertTrue(DnsVpnService.isVpnRunning && vpnActive())
