@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.perfectdnsmanager.data.DnsProfile
 import app.perfectdnsmanager.data.DnsType
@@ -57,7 +56,7 @@ class DnsSelectionActivity : AppCompatActivity() {
         btnBack = findViewById(R.id.btnBack)
         tvMethodInfo = findViewById(R.id.tvMethodInfo)
 
-        rvProviders.layoutManager = LinearLayoutManager(this)
+        rvProviders.layoutManager = app.perfectdnsmanager.ui.ProviderLayoutManager(rvProviders)
         tvMethodInfo.visibility = android.view.View.GONE
 
         btnBack.requestFocus()

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.4-beta.1 — 26 octobre 2026
+
+- Télécommande : haut/bas reste dans la même colonne de la liste des fournisseurs DNS, y compris pendant le défilement. Gauche/droite permet de passer entre le fournisseur et ses profils.
+
 ## 2.4.3-beta.1 — 26 octobre 2026
 
 - Ajout de Digitale Gesellschaft (Société Numérique, Suisse) : DoH, DoT et DoQ, sans filtrage ni profil DNS classique.
