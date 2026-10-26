@@ -575,4 +575,7 @@
     <string name="share_result_text">এনক্রিপ্ট করা লিংক:\n%1$s\n\nপাসওয়ার্ড:\n%2$s\n\n%3$s পরে মেয়াদ শেষ।\nশুধু তখনই কপি করুন যখন লিংক ও পাসওয়ার্ড ক্লিপবোর্ডে রাখতে চান।</string>
     <string name="dns_desc_fdn_restricted">শুধু FDN / FFDN নেটওয়ার্কের জন্য। অন্য নেটওয়ার্কে DoH বা DoT ব্যবহার করুন।</string>
     <string name="auto_reconnect_system_dot">সিস্টেম DoT: %1$s। পুনরায় চালু করার পরও Android এই DNS রাখে; এই বিকল্পটি PDM VPN পুনরায় চালু করা নিয়ন্ত্রণ করে।</string>
+    <string name="return_stable_title">স্থিতিশীল সংস্করণে ফিরুন</string>
+    <string name="return_stable_explanation">বিটা আপডেট বন্ধ করলে কেবল ভবিষ্যতের আপডেট বদলায়, ইনস্টল করা সংস্করণ নয়। স্থিতিশীল সংস্করণ পুরোনো হলে Android বিটা সরাতে বলে। আগে কনফিগারেশন এক্সপোর্ট করে লিংক এবং পাসওয়ার্ড দুটিই PDM-এর বাইরে রাখুন। তারপর স্থিতিশীল APK ডাউনলোড করে Downloads-এ রাখুন।</string>
+    <string name="return_stable_saved">স্থিতিশীল APK সংরক্ষিত। এই সংস্করণ পুরোনো। কনফিগারেশন PDM-এর বাইরে রাখার পর Android সেটিংস থেকে PDM সরান, ফাইল ম্যানেজার দিয়ে সংরক্ষিত APK খুলুন এবং ব্যাকআপ ইম্পোর্ট করুন। আনইনস্টল করলে PDM-এর ডেটা মুছে যায়।</string>
 </resources>

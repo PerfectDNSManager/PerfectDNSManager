@@ -698,6 +698,17 @@
                     android:clickable="false" />
             </LinearLayout>
 
+            <Button
+                android:id="@+id/btnReturnStable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/return_stable_title"
+                android:background="@drawable/pdm_btn_info"
+                android:foreground="@drawable/btn_focus_foreground"
+                android:textColor="@color/pdm_accent_alt"
+                android:layout_marginTop="10dp" />
+
             <!-- Bouton "Vérifier les mises à jour" plein-largeur. Le numéro de
                  version courant est concaténé au runtime dans SettingsActivity. -->
             <Button

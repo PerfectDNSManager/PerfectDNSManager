@@ -593,4 +593,7 @@
     <string name="share_result_text">Lien chiffré :\n%1$s\n\nMot de passe :\n%2$s\n\nExpiration : %3$s.\nCopiez uniquement si vous souhaitez placer le lien et le mot de passe dans le presse-papiers.</string>
     <string name="dns_desc_fdn_restricted">Réservé aux réseaux FDN / FFDN. Hors de ces réseaux, utilisez DoH ou DoT.</string>
     <string name="auto_reconnect_system_dot">DoT système : %1$s. Android conserve ce DNS après redémarrage ; cette option concerne la relance du VPN PDM.</string>
+    <string name="return_stable_title">Revenir à la version stable</string>
+    <string name="return_stable_explanation">Désactiver le canal bêta limite les prochaines mises à jour aux versions stables. Cela ne change pas la version installée. Si la stable est plus ancienne, Android impose de désinstaller la bêta. Exportez votre configuration et conservez le lien ET le mot de passe hors de PDM avant toute désinstallation. Téléchargez ensuite la stable et enregistrez son APK dans Téléchargements.</string>
+    <string name="return_stable_saved">APK stable enregistré. Cette version est plus ancienne. Après avoir sauvegardé votre configuration hors de PDM, désinstallez PDM depuis les paramètres Android, ouvrez l’APK enregistré avec votre gestionnaire de fichiers, puis importez la sauvegarde. La désinstallation efface les données de PDM.</string>
 </resources>

@@ -259,7 +259,7 @@ class UpdateManager(private val context: Context) {
         return if (preferredUrl != null) preferredUrl to preferredSize else fallbackUrl to fallbackSize
     }
 
-    private fun downloadAndInstallUpdate(apkUrl: String, expectedSize: Long = 0) {
+    private fun downloadAndInstallUpdate(apkUrl: String, expectedSize: Long = 0, verifiedDownload: ((File) -> Unit)? = null) {
         // A5 : l'URL vient d'un JSON distant — on refuse tout hôte inattendu.
         val host = try { java.net.URL(apkUrl).host?.lowercase() } catch (_: Exception) { null }
         if (!apkUrl.startsWith("https://") || host == null || host !in ALLOWED_APK_HOSTS) {
@@ -304,13 +304,43 @@ class UpdateManager(private val context: Context) {
                     }
                 }
                 Log.i(TAG, "Download complete: ${dest.absolutePath}")
-                installApk(dest)
+                if (verifiedDownload == null) installApk(dest) else {
+                    if (!verifyApkSignature(dest)) {
+                        dest.delete()
+                        showToastOnMainThread(appContext.getString(R.string.update_signature_mismatch))
+                    } else verifiedDownload(dest)
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Download error: ${e.javaClass.simpleName}: ${e.message}")
                 destination?.delete()
                 showToastOnMainThread(appContext.getString(R.string.update_download_error))
             }
         }.start()
+    }
+
+    /** Explicit stable return, independently of the currently installed beta version. */
+    fun returnToStable(saveOlderApk: (File) -> Unit) {
+        fetchBestRelease(GITHUB_REPO, false) { release ->
+            if (release == null) {
+                showToastOnMainThread(appContext.getString(R.string.update_download_error))
+                return@fetchBestRelease
+            }
+            downloadAndInstallUpdate(release.apkUrl, release.apkSize) { file ->
+                val pm = appContext.packageManager
+                val archive = pm.getPackageArchiveInfo(file.absolutePath, 0)
+                // Reject mislabeled prereleases even if the API calls them stable.
+                if (archive == null || archive.versionName.isNullOrBlank() || archive.versionName!!.contains('-')) {
+                    file.delete()
+                    showToastOnMainThread(appContext.getString(R.string.update_download_error))
+                } else {
+                    val installed = pm.getPackageInfo(appContext.packageName, 0)
+                    @Suppress("DEPRECATION")
+                    val older = if (Build.VERSION.SDK_INT >= 28) archive.longVersionCode < installed.longVersionCode
+                        else archive.versionCode < installed.versionCode
+                    if (older) runOnMainThread { saveOlderApk(file) } else installApk(file)
+                }
+            }
+        }
     }
 
     private fun installApk(apkFile: File) {

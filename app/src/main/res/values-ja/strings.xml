@@ -573,4 +573,7 @@
     <string name="share_result_text">暗号化リンク：\n%1$s\n\nパスワード：\n%2$s\n\n有効期限：%3$s。\nリンクとパスワードをクリップボードに入れたい場合のみコピーしてください。</string>
     <string name="dns_desc_fdn_restricted">FDN / FFDN ネットワーク専用です。それ以外では DoH または DoT を使用してください。</string>
     <string name="auto_reconnect_system_dot">システム DoT：%1$s。Android は再起動後もこの DNS を保持します。この設定は PDM VPN の再起動を制御します。</string>
+    <string name="return_stable_title">安定版に戻す</string>
+    <string name="return_stable_explanation">ベータ更新を無効にしても、インストール済みのバージョンは変わりません。安定版が古い場合、Android はベータ版のアンインストールを要求します。先に設定をエクスポートし、リンクとパスワードの両方を PDM の外に保存してください。その後、安定版 APK をダウンロードフォルダに保存します。</string>
+    <string name="return_stable_saved">安定版 APK を保存しました。このバージョンは古いため、先に設定を PDM の外に保存し、Android 設定から PDM をアンインストールしてください。ファイル管理アプリで保存した APK を開き、バックアップをインポートします。アンインストールすると PDM のデータが消去されます。</string>
 </resources>

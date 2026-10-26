@@ -575,4 +575,7 @@
     <string name="share_result_text">एन्क्रिप्टेड लिंक:\n%1$s\n\nपासवर्ड:\n%2$s\n\n%3$s में समाप्त.\nकेवल तभी कॉपी करें जब आप लिंक और पासवर्ड क्लिपबोर्ड में रखना चाहते हों.</string>
     <string name="dns_desc_fdn_restricted">केवल FDN / FFDN नेटवर्क के लिए। अन्य नेटवर्क पर DoH या DoT का उपयोग करें।</string>
     <string name="auto_reconnect_system_dot">सिस्टम DoT: %1$s। Android पुनः आरंभ होने के बाद भी यह DNS रखता है; यह विकल्प PDM VPN को फिर शुरू करने के लिए है।</string>
+    <string name="return_stable_title">स्थिर संस्करण पर वापस जाएँ</string>
+    <string name="return_stable_explanation">बीटा अपडेट बंद करने से केवल आगे के अपडेट बदलते हैं, इंस्टॉल किया संस्करण नहीं। स्थिर संस्करण पुराना होने पर Android बीटा हटाने को कहता है। पहले कॉन्फ़िगरेशन निर्यात करें और लिंक तथा पासवर्ड दोनों PDM से बाहर सहेजें। फिर स्थिर APK डाउनलोड करके Downloads में सहेजें।</string>
+    <string name="return_stable_saved">स्थिर APK सहेजा गया। यह संस्करण पुराना है। कॉन्फ़िगरेशन PDM से बाहर सहेजने के बाद Android सेटिंग से PDM हटाएँ, फ़ाइल प्रबंधक से सहेजा APK खोलें और बैकअप आयात करें। ऐप हटाने से PDM का डेटा मिट जाता है।</string>
 </resources>

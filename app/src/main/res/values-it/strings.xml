@@ -579,4 +579,7 @@
     <string name="share_result_text">Link cifrato:\n%1$s\n\nPassword:\n%2$s\n\nScade tra %3$s.\nCopia solo se vuoi il link e la password negli appunti.</string>
     <string name="dns_desc_fdn_restricted">Riservato alle reti FDN / FFDN. Altrove usa DoH o DoT.</string>
     <string name="auto_reconnect_system_dot">DoT di sistema: %1$s. Android conserva questo DNS dopo il riavvio; questa opzione controlla il riavvio della VPN PDM.</string>
+    <string name="return_stable_title">Torna alla versione stabile</string>
+    <string name="return_stable_explanation">Disattivare gli aggiornamenti beta riguarda solo gli aggiornamenti futuri. Non cambia la versione installata. Se la stabile è precedente, Android richiede di disinstallare la beta. Esporta la configurazione e conserva link E password fuori da PDM. Poi scarica la APK stabile e salvala in Download.</string>
+    <string name="return_stable_saved">APK stabile salvata. Questa versione è precedente. Dopo aver salvato la configurazione fuori da PDM, disinstalla PDM dalle impostazioni Android, apri la APK salvata con il gestore file e importa il backup. La disinstallazione elimina i dati di PDM.</string>
 </resources>

@@ -583,4 +583,7 @@
     <string name="share_result_text">رابط مشفّر:\n%1$s\n\nكلمة المرور:\n%2$s\n\nتنتهي الصلاحية بعد %3$s.\nانسخ فقط إذا أردت وضع الرابط وكلمة المرور في الحافظة.</string>
     <string name="dns_desc_fdn_restricted">مخصص لشبكات FDN / FFDN. خارجها، استخدم DoH أو DoT.</string>
     <string name="auto_reconnect_system_dot">DoT للنظام: %1$s. يحتفظ Android بهذا DNS بعد إعادة التشغيل؛ يتحكم هذا الخيار في إعادة تشغيل VPN الخاص بـ PDM.</string>
+    <string name="return_stable_title">العودة إلى الإصدار المستقر</string>
+    <string name="return_stable_explanation">إيقاف تحديثات بيتا يؤثر فقط على التحديثات القادمة ولا يغير الإصدار المثبت. إذا كان المستقر أقدم، يتطلب Android إزالة بيتا. صدّر الإعدادات واحتفظ بالرابط وكلمة المرور خارج PDM قبل الإزالة. ثم نزّل APK المستقر واحفظه في التنزيلات.</string>
+    <string name="return_stable_saved">تم حفظ APK المستقر. هذا الإصدار أقدم. بعد حفظ الإعدادات خارج PDM، أزل PDM من إعدادات Android وافتح APK المحفوظ بمدير الملفات ثم استورد النسخة الاحتياطية. الإزالة تمسح بيانات PDM.</string>
 </resources>

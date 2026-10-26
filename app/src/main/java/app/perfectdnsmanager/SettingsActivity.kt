@@ -48,6 +48,47 @@ class SettingsActivity : AppCompatActivity() {
     private var tvPermissionStatus: TextView? = null
     private var btnSelfGrant: Button? = null
 
+    private var pendingStableApkName: String? = null
+    private val stableStoragePermission = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) persistStableApk() else {
+            pendingStableApkName?.let { java.io.File(java.io.File(cacheDir, "updates"), it).delete() }
+            pendingStableApkName = null
+            Toast.makeText(this, R.string.update_download_error, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun persistStableApk() {
+        val name = pendingStableApkName ?: return
+        pendingStableApkName = null
+        if (name != java.io.File(name).name) return
+        val file = java.io.File(java.io.File(cacheDir, "updates"), name)
+        lifecycleScope.launch {
+            val saved = kotlinx.coroutines.withContext(Dispatchers.IO) {
+                try { app.perfectdnsmanager.util.StableApkStorage.save(this@SettingsActivity, file); true }
+                catch (_: Exception) { false }
+                finally { file.delete() }
+            }
+            if (saved) AlertDialog.Builder(this@SettingsActivity)
+                .setTitle(R.string.return_stable_title)
+                .setMessage(getString(R.string.return_stable_saved) + "\n\nDownloads/PerfectDNSManager")
+                .setPositiveButton(R.string.private_dns_open_settings) { _, _ ->
+                    try { startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        android.net.Uri.parse("package:$packageName"))) }
+                    catch (_: android.content.ActivityNotFoundException) {
+                        Toast.makeText(this@SettingsActivity, R.string.return_stable_saved, Toast.LENGTH_LONG).show()
+                    }
+                }.setNegativeButton(android.R.string.ok, null).show()
+            else Toast.makeText(this@SettingsActivity, R.string.update_download_error, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString("stable_apk_name", pendingStableApkName)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -65,27 +106,33 @@ class SettingsActivity : AppCompatActivity() {
         rowAutoReconnect.setOnClickListener { switchAutoReconnect.toggle() }
         rowDisableIpv6.setOnClickListener { switchDisableIpv6.toggle() }
 
-        // ── Mises à jour bêta ──
-        // Sur un build bêta on force l'option ON et on verrouille la rangée :
-        // l'utilisateur est déjà sur prerelease, le désactiver le couperait
-        // des mises à jour (UpdateManager ne verrait que les stables, donc
-        // toujours antérieures à la version courante).
         val rowBetaUpdates: LinearLayout = findViewById(R.id.rowBetaUpdates)
         val switchBetaUpdates: SwitchCompat = findViewById(R.id.switchBetaUpdates)
-        if (PdmApp.isBetaBuild()) {
-            switchBetaUpdates.isChecked = true
-            // Reste focusable (DPAD doit pouvoir s'arrêter dessus pour lire le
-            // libellé) mais clickable=false → la rangée n'avale pas le clic et
-            // le toggle reste verrouillé sur ON.
-            rowBetaUpdates.isClickable = false
-            rowBetaUpdates.alpha = 0.7f
-            findViewById<TextView>(R.id.tvBetaUpdatesDescription)
-                .setText(R.string.beta_updates_locked)
-        } else {
-            switchBetaUpdates.isChecked = prefs.getBoolean("beta_updates_enabled", false)
-            rowBetaUpdates.setOnClickListener { switchBetaUpdates.toggle() }
-            switchBetaUpdates.setOnCheckedChangeListener { _, checked ->
-                prefs.edit().putBoolean("beta_updates_enabled", checked).apply()
+        switchBetaUpdates.isChecked = prefs.getBoolean("beta_updates_enabled", false)
+        rowBetaUpdates.setOnClickListener { switchBetaUpdates.toggle() }
+        switchBetaUpdates.setOnCheckedChangeListener { _, checked ->
+            prefs.edit().putBoolean("beta_updates_enabled", checked).remove("beta_channel_forced").apply()
+        }
+        pendingStableApkName = savedInstanceState?.getString("stable_apk_name")
+        findViewById<Button>(R.id.btnReturnStable).apply {
+            visibility = if (PdmApp.isBetaBuild()) View.VISIBLE else View.GONE
+            setOnClickListener {
+                AlertDialog.Builder(this@SettingsActivity)
+                    .setTitle(R.string.return_stable_title)
+                    .setMessage(R.string.return_stable_explanation)
+                    .setNeutralButton(R.string.export_button) { _, _ -> switchBetaUpdates.isChecked = false; exportConfiguration() }
+                    .setNegativeButton(R.string.cancel, null)
+                    .setPositiveButton(R.string.download_button) { _, _ ->
+                        switchBetaUpdates.isChecked = false
+                        app.perfectdnsmanager.service.UpdateManager(this@SettingsActivity).returnToStable { file ->
+                            if (isFinishing || isDestroyed) { file.delete(); return@returnToStable }
+                            pendingStableApkName = file.name
+                            if (Build.VERSION.SDK_INT <= 28 && androidx.core.content.ContextCompat.checkSelfPermission(
+                                    this@SettingsActivity, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                stableStoragePermission.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            } else persistStableApk()
+                        }
+                    }.show()
             }
         }
 
