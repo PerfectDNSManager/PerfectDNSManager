@@ -1,9 +1,9 @@
 # Changelog
 
-## 2.4.2-beta.1 — 26 octobre 2026
+## 2.4.2-beta.2 — 26 octobre 2026
 
 - Retour aux couleurs et à la présentation d’origine, abandon de la refonte graphique.
-- Conservation des filtres DoH / DoT / DoQ / UDP et du catalogue mis à jour.
+- Suppression du sélecteur à cases : DoH par défaut ; DoT, DoQ et DNS classique activables dans les paramètres, puis affichés dans les profils. Catalogue et profils personnels conservés.
 - Conservation de toutes les corrections de la bêta précédente : IPv6, concurrence DoQ, erreurs DNS, DoT système dans les paramètres et au démarrage, sécurité, partage et optimisations réseau.
 - Canal bêta désactivable, choix conservé au redémarrage ; bouton de retour à la stable avec vérification de signature, sauvegarde et export de l’APK lorsque Android impose une réinstallation.
 - Cette bêta remplace 2.4.1-beta.design.1 ; la stable reste inchangée.

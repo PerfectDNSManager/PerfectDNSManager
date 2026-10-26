@@ -21,3 +21,10 @@ Un refus de permission ou un échec de copie ne déclenche aucune désinstallati
 - L’enregistrement MediaStore est relu après suppression de la source en cache ; emplacement public Download/PerfectDNSManager et état non-pending vérifiés. La branche Android 9 et antérieur reste à confirmer sur appareil physique.
 - Palette claire/sombre et cartes de profils comparées octet par octet avec la stable ; capture du catalogue inspectée.
 - Site : tests worker/site/catalogue et TypeScript réussis ; 32 combinaisons de filtres. Présentation du catalogue contrôlée dans le navigateur local.
+
+
+## Retour aux protocoles pilotés par les paramètres — beta.2
+
+La publication beta.1 a été annulée avant livraison. Les cases de sélection des protocoles sont supprimées. DoH est toujours visible ; DoT, DoQ, DNS classique et DNS opérateurs suivent leurs paramètres existants (désactivés par défaut). Le même filtrage est appliqué aux détails et aux profils personnels, sans modifier la liste source. Le test instrumenté couvre les 16 combinaisons de réglages et l’absence de cases après recréation. Le site local conserve la recherche et l’option Adblock mais retire les cases de protocoles.
+
+Validation beta.2 : assembleDebug + assembleDebugAndroidTest + testDebugUnitTest + lintDebug réussis (30 tests JVM, zéro échec). Android TV API31 : cinq tests instrumentés réussis (protocoles, persistance du choix bêta, copie stable en Downloads, DoT système). Tests web et typecheck réussis. Le moteur DNS n’a pas été modifié par ce retour d’interface.

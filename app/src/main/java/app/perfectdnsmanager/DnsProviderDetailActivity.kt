@@ -55,18 +55,13 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         val profilesJson = intent.getStringExtra("PROFILES_JSON") ?: run { finish(); return }
         val suppliedProfiles: List<DnsProfile> = Gson().fromJson(profilesJson, object : TypeToken<List<DnsProfile>>() {}.type)
         val isNextDns = intent.getBooleanExtra("IS_NEXTDNS", false)
-        val requestedTypes = intent.getStringArrayExtra("PROTOCOL_FILTER")?.toSet()
-        val profiles = if (providerName != "NextDNS") {
-            val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
-            val custom = app.perfectdnsmanager.data.ProfileManager(this).loadProfiles().filter {
-                it.providerName == providerName &&
-                    (it.type != DnsType.DOT || prefs.getBoolean("adb_dot_enabled", false)) &&
-                    (requestedTypes?.contains(it.type.name) ?: (it.type != DnsType.DOQ || prefs.getBoolean("show_doq_dns", false)))
-            }
-            app.perfectdnsmanager.data.ProfileCatalog.visible(custom.filter {
-                (requestedTypes?.contains(it.type.name) ?: (it.type != DnsType.DEFAULT || prefs.getBoolean("show_standard_dns", false) || it.isOperatorDns))
-            }, prefs.getBoolean("allow_adblock_profiles", false), prefs.getBoolean("show_profile_variants", false))
+        val prefs = getSharedPreferences("prefs", MODE_PRIVATE)
+        val candidates = if (providerName != "NextDNS") {
+            app.perfectdnsmanager.data.ProfileManager(this).loadProfiles().filter { it.providerName == providerName }
         } else suppliedProfiles
+        val profiles = app.perfectdnsmanager.data.ProfileCatalog.visible(
+            candidates.filter { DnsProtocolVisibility.isVisible(it, prefs) },
+            prefs.getBoolean("allow_adblock_profiles", false), prefs.getBoolean("show_profile_variants", false))
 
         // Header
         val btnBack: Button = findViewById(R.id.btnBack)

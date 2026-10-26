@@ -2,59 +2,56 @@ package app.perfectdnsmanager
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
+import android.view.View
+import android.view.ViewGroup
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.recyclerview.widget.RecyclerView
+import app.perfectdnsmanager.data.DnsType
+import app.perfectdnsmanager.data.ProfileManager
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class ProtocolFiltersInstrumentedTest {
-    @Test fun filtersKeepConnectionSettingsAndSurviveRecreation() {
-        val instrumentation = InstrumentationRegistry.getInstrumentation()
-        val context = instrumentation.targetContext
-        check(context.packageName.endsWith(".design")) { "Local design build only" }
+    @Test fun protocolsFollowSettingsAndDefaultToDoh() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        check(context.packageName.endsWith(".design"))
         val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        prefs.edit().putBoolean("show_doq_dns", false).putBoolean("show_standard_dns", false)
-            .putBoolean("adb_dot_enabled", false).putBoolean("operator_dns_enabled", false)
-            .putBoolean("allow_adblock_profiles", false).putBoolean("disable_ipv6", false).commit()
-        ActivityScenario.launch<DnsSelectionActivity>(Intent(context, DnsSelectionActivity::class.java)).use { scenario ->
-            scenario.onActivity { activity ->
-                val bar = activity.findViewById<LinearLayout>(R.id.protocolFilters)
-                val doh = bar.getChildAt(0) as CheckBox
-                val dot = bar.getChildAt(1) as CheckBox
-                val doq = bar.getChildAt(2) as CheckBox
-                assertTrue(doh.isChecked); assertFalse(dot.isEnabled); assertFalse(doq.isChecked)
-                assertTrue(activity.findViewById<RecyclerView>(R.id.rvDnsList).adapter!!.itemCount > 0)
-                doh.performClick()
-                assertEquals(0, activity.findViewById<RecyclerView>(R.id.rvDnsList).adapter!!.itemCount)
-                assertEquals(activity.getString(R.string.protocol_filter_empty),activity.findViewById<TextView>(R.id.tvFilterResults).text)
-                doq.performClick()
-                assertTrue(activity.findViewById<RecyclerView>(R.id.rvDnsList).adapter!!.itemCount > 0)
-                assertFalse(prefs.getBoolean("show_doq_dns", true))
-                assertFalse(prefs.getBoolean("disable_ipv6", true))
+        val keys = listOf("adb_dot_enabled", "show_doq_dns", "show_standard_dns", "operator_dns_enabled")
+        val profiles = ProfileManager(context).loadProfiles()
+        try {
+            for (mask in 0..15) {
+                prefs.edit().apply { keys.forEachIndexed { i, key -> putBoolean(key, mask and (1 shl i) != 0) } }.commit()
+                val visible = profiles.filter { DnsProtocolVisibility.isVisible(it, prefs) }
+                assertTrue(visible.any { it.type == DnsType.DOH })
+                for (profile in profiles) {
+                    val expected = (!profile.isOperatorDns || mask and 8 != 0) && when(profile.type) {
+                        DnsType.DOH -> true
+                        DnsType.DOT -> mask and 1 != 0
+                        DnsType.DOQ -> mask and 2 != 0
+                        DnsType.DEFAULT -> if (profile.isOperatorDns) mask and 8 != 0 else mask and 4 != 0
+                    }
+                    assertEquals("mask=$mask profile=${profile.name}", expected, profile in visible)
+                }
             }
-            scenario.recreate()
-            scenario.onActivity { activity ->
-                val bar = activity.findViewById<LinearLayout>(R.id.protocolFilters)
-                assertFalse((bar.getChildAt(0) as CheckBox).isChecked)
-                assertTrue((bar.getChildAt(2) as CheckBox).isChecked)
+            prefs.edit().apply { keys.forEach { putBoolean(it, false) } }.commit()
+            ActivityScenario.launch<DnsSelectionActivity>(Intent(context, DnsSelectionActivity::class.java)).use { scenario ->
+                fun assertCatalog(activity: DnsSelectionActivity) {
+                    fun hasCheckbox(view: View): Boolean = view is CheckBox || (view is ViewGroup && (0 until view.childCount).any { hasCheckbox(view.getChildAt(it)) })
+                    assertFalse(hasCheckbox(activity.window.decorView))
+                    assertTrue(activity.findViewById<RecyclerView>(R.id.rvDnsList).adapter!!.itemCount > 0)
+                    assertEquals(setOf(DnsType.DOH), DnsProtocolVisibility.allowedTypes(prefs))
+                }
+                scenario.onActivity { assertCatalog(it) }
+                scenario.recreate()
+                scenario.onActivity { assertCatalog(it) }
             }
-            instrumentation.waitForIdleSync()
-            scenario.onActivity { activity ->
-                val view = activity.window.decorView
-                val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-                view.draw(android.graphics.Canvas(bitmap))
-                File(context.filesDir, "design-catalog.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG,100,it) }
-                bitmap.recycle()
-            }
+        } finally {
+            prefs.edit().apply { keys.forEach { putBoolean(it, false) } }.commit()
         }
     }
 }
