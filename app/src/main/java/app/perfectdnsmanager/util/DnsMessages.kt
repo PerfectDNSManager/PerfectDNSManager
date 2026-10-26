@@ -28,6 +28,21 @@ object DnsMessages {
         }
     } catch (_: Exception) { false }
 
+    /** Explicit upstream failure, never an empty success (which would suppress AAAA). */
+    fun serverFailure(query: ByteArray): ByteArray? = try {
+        require(query.size in 12..MAX_BYTES)
+        val request = Message(query)
+        require(!request.header.getFlag(Flags.QR.toInt()) && request.header.getCount(Section.QUESTION) == 1)
+        val response = Message(request.header.id)
+        response.header.opcode = request.header.opcode
+        response.header.setFlag(Flags.QR.toInt())
+        response.header.setFlag(Flags.RA.toInt())
+        if (request.header.getFlag(Flags.RD.toInt())) response.header.setFlag(Flags.RD.toInt())
+        response.header.rcode = org.xbill.DNS.Rcode.SERVFAIL
+        response.addRecord(request.question, Section.QUESTION)
+        response.toWire(MAX_BYTES)
+    } catch (_: Exception) { null }
+
     fun rewriteQuery(query: ByteArray, domain: String): ByteArray? = try {
         val m = Message(query)
         require(m.header.getCount(Section.QUESTION) == 1 && m.tsig == null && !m.isSigned)
@@ -43,7 +58,7 @@ object DnsMessages {
         val target = m.question.name
         m.removeAllRecords(Section.QUESTION); m.addRecord(q, Section.QUESTION)
         m.header.unsetFlag(Flags.AD.toInt()) // Local aliases have not been DNSSEC authenticated.
-        if (target != q.name) {
+        if (target != q.name && m.rcode == org.xbill.DNS.Rcode.NOERROR) {
             val answers = m.getSectionArray(Section.ANSWER)
             m.removeAllRecords(Section.ANSWER)
             m.addRecord(CNAMERecord(q.name, q.dClass, 60, target), Section.ANSWER)

@@ -115,33 +115,30 @@ class DoQClient(private val vpnService: VpnService) {
             if (connections.remove(key, c)) try { c.close() } catch (_: Exception) {}
         }
 
-        // Résolution bootstrap HORS du verrou (2×3s de timeout UDP) : sinon le verrou
-        // serait tenu ~11s et un autre endpoint DoQ (secondaire) serait bloqué aussi.
-        val resolved = resolveHostBypass(host) ?: run { Log.w(T, "Cannot resolve ${redactHost(host)}"); return null }
-        val addr = resolved.address
-        val dnsService = vpnService as? DnsVpnService
-        if (dnsService == null || addr == null || addr.size != 4) {
-            // Sans split-horizon (serveur IPv6-only, contexte inattendu) on ne peut PAS
-            // valider → REFUS (fail-closed). Jamais de connexion non validée (downgrade).
-            Log.w(T, "DoQ: split-horizon indisponible → refus (fail-closed): ${redactHost(host)}")
-            return null
-        }
-        synchronized(lifecycleLock) {
-            if (closed) return null
-            dnsService.registerLocalDns(host, addr)
-        }
-
-        // Verrou PAR CLÉ (pas global) : un seul thread établit la connexion vers CET
-        // endpoint ; les requêtes vers un autre endpoint ne sont pas bloquées. tryLock
-        // fail-fast : les autres threads du même endpoint abandonnent (re-tentent → fast-path).
+        // A and AAAA arrive together on a cold connection. Wait for the same
+        // handshake instead of failing one family after 300 ms. The owner has
+        // at most two 3 s bootstrap lookups and a 5 s QUIC connect timeout.
         val lock = connLocks.computeIfAbsent(key) { java.util.concurrent.locks.ReentrantLock() }
-        if (!lock.tryLock(300, java.util.concurrent.TimeUnit.MILLISECONDS)) {
+        if (!lock.tryLock(12, java.util.concurrent.TimeUnit.SECONDS)) {
             return connections[key]?.takeIf { it.isConnected }
         }
         try {
+            if (closed) return null
             connections[key]?.let { c ->
                 if (c.isConnected) return c
                 if (connections.remove(key, c)) try { c.close() } catch (_: Exception) {}
+            }
+            // Resolve once per cold endpoint. Each endpoint has its own lock.
+            val resolved = resolveHostBypass(host) ?: run { Log.w(T, "Cannot resolve ${redactHost(host)}"); return null }
+            val addr = resolved.address
+            val dnsService = vpnService as? DnsVpnService
+            if (dnsService == null || addr == null || addr.size != 4) {
+                Log.w(T, "DoQ: split-horizon unavailable; refusing connection")
+                return null
+            }
+            synchronized(lifecycleLock) {
+                if (closed) return null
+                dnsService.registerLocalDns(host, addr)
             }
             // Unique chemin : serverName = hostname + validation cert. FAIL-CLOSED total.
             var candidate: QuicClientConnection? = null
@@ -198,7 +195,7 @@ class DoQClient(private val vpnService: VpnService) {
     /**
      * Résoudre un hostname en bypassant le VPN via une requête DNS UDP directe.
      * Politique sans-Google : bootstrap sur Cloudflare (1.1.1.1) puis fallback
-     * Quad9 (9.9.9.9). Socket connecté + ID aléatoire + réponse validée : cf.
+     * dns.sb (185.222.222.222). Socket connecté + ID aléatoire + réponse validée : cf.
      * [DnsWire] (l'ancienne copie locale acceptait n'importe quel datagramme
      * avec un ID de transaction constant 0x1234).
      */
@@ -207,7 +204,7 @@ class DoQClient(private val vpnService: VpnService) {
             InetAddress.getByName(host)
         } else {
             bootstrapResolve(host, byteArrayOf(1, 1, 1, 1))
-                ?: bootstrapResolve(host, byteArrayOf(9, 9, 9, 9))
+                ?: bootstrapResolve(host, byteArrayOf(185.toByte(), 222.toByte(), 222.toByte(), 222.toByte()))
         }
     } catch (e: Exception) {
         Log.w(T, "resolveHostBypass: ${e.javaClass.simpleName}")

@@ -61,6 +61,17 @@ class Ipv6RoutingInstrumentedTest {
                 socket.getInputStream().bufferedReader().readLine() == "PDM_IPV6_OK"
             }
         } catch (_: IOException) { false }
+        fun assertIpv6Flow(block: Boolean) {
+            // Connectivity callbacks and per-UID route installation are asynchronous.
+            val deadline = SystemClock.elapsedRealtime() + 10000
+            var actual = ipv6Works()
+            while (actual != !block && SystemClock.elapsedRealtime() < deadline) {
+                SystemClock.sleep(200)
+                actual = ipv6Works()
+            }
+            assertEquals("IPv6 data flow with disable_ipv6=$block", !block, actual)
+        }
+        var settingsActivity: android.app.Activity? = null
         try {
             stopVpn()
             assertTrue("IPv6 baseline unavailable; start the host probe", ipv6Works())
@@ -70,10 +81,39 @@ class Ipv6RoutingInstrumentedTest {
                     Intent(context, DnsVpnService::class.java).setAction(DnsVpnService.ACTION_START)
                         .putExtra(DnsVpnService.EXTRA_DNS_PRIMARY, "https://one.one.one.one/dns-query"))
                 waitForVpn(true)
-                assertEquals("IPv6 data flow with disable_ipv6=$block", !block, ipv6Works())
+                assertIpv6Flow(block)
                 stopVpn()
             }
+            // Exercise the actual settings listener while Control D is connected.
+            // A stopped/restarted service alone cannot detect a stale live tunnel.
+            val profile = app.perfectdnsmanager.data.DnsProfile.getDefaultPresets().first {
+                it.providerName == "ControlD" && it.type == app.perfectdnsmanager.data.DnsType.DOH && it.name == "Unfiltered"
+            }
+            prefs.edit().putString("selected_profile_json", com.google.gson.Gson().toJson(profile)).commit()
+            androidx.core.content.ContextCompat.startForegroundService(context,
+                Intent(context, DnsVpnService::class.java).setAction(DnsVpnService.ACTION_START)
+                    .putExtra(DnsVpnService.EXTRA_DNS_PRIMARY, profile.primary))
+            waitForVpn(true)
+            assertTrue("Control D baseline IPv6", ipv6Works())
+            val settings = instrumentation.startActivitySync(Intent(context, SettingsActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            settingsActivity = settings
+            for (block in listOf(true, false, true, false)) {
+                val oldNetwork = cm.activeNetwork
+                instrumentation.runOnMainSync {
+                    settings.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchDisableIpv6).isChecked = block
+                }
+                val deadline = SystemClock.elapsedRealtime() + 15000
+                while (SystemClock.elapsedRealtime() < deadline) {
+                    if (cm.activeNetwork != oldNetwork && DnsVpnService.isVpnRunning &&
+                        cm.getNetworkCapabilities(cm.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_VPN) == true) break
+                    SystemClock.sleep(100)
+                }
+                assertNotEquals("Settings must rebuild the active VPN", oldNetwork, cm.activeNetwork)
+                assertIpv6Flow(block)
+            }
         } finally {
+            settingsActivity?.let { instrumentation.runOnMainSync { it.finish() } }
             stopVpn()
             prefs.edit().putBoolean("disable_ipv6", false).commit()
             instrumentation.runOnMainSync { activity.finish() }

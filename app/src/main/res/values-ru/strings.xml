@@ -577,4 +577,6 @@
     <string name="mullvad_dns_retirement">Прекращение работы сервиса объявлено на 2 ноября 2026 г.</string>
     <string name="copy_share">Копировать ссылку</string>
     <string name="share_result_text">Зашифрованная ссылка:\n%1$s\n\nПароль:\n%2$s\n\nИстекает через %3$s.\nКопируйте, только если хотите поместить ссылку и пароль в буфер обмена.</string>
+    <string name="dns_desc_fdn_restricted">Только для сетей FDN / FFDN. В других сетях используйте DoH или DoT.</string>
+    <string name="auto_reconnect_system_dot">Системный DoT: %1$s. Android сохраняет этот DNS после перезапуска; этот параметр управляет запуском VPN PDM.</string>
 </resources>

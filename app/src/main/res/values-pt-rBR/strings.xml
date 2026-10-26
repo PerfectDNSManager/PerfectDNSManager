@@ -577,4 +577,6 @@
     <string name="mullvad_dns_retirement">Encerramento do serviço anunciado para 2 de novembro de 2026</string>
     <string name="copy_share">Copiar o compartilhamento</string>
     <string name="share_result_text">Link criptografado:\n%1$s\n\nSenha:\n%2$s\n\nExpira em %3$s.\nCopie somente se quiser o link e a senha na área de transferência.</string>
+    <string name="dns_desc_fdn_restricted">Restrito às redes FDN / FFDN. Fora delas, use DoH ou DoT.</string>
+    <string name="auto_reconnect_system_dot">DoT do sistema: %1$s. O Android mantém este DNS após reiniciar; esta opção controla a reinicialização da VPN do PDM.</string>
 </resources>

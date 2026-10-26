@@ -573,4 +573,6 @@
     <string name="mullvad_dns_retirement">২ নভেম্বর ২০২৬-এ পরিষেবা বন্ধের ঘোষণা</string>
     <string name="copy_share">শেয়ার কপি করুন</string>
     <string name="share_result_text">এনক্রিপ্ট করা লিংক:\n%1$s\n\nপাসওয়ার্ড:\n%2$s\n\n%3$s পরে মেয়াদ শেষ।\nশুধু তখনই কপি করুন যখন লিংক ও পাসওয়ার্ড ক্লিপবোর্ডে রাখতে চান।</string>
+    <string name="dns_desc_fdn_restricted">শুধু FDN / FFDN নেটওয়ার্কের জন্য। অন্য নেটওয়ার্কে DoH বা DoT ব্যবহার করুন।</string>
+    <string name="auto_reconnect_system_dot">সিস্টেম DoT: %1$s। পুনরায় চালু করার পরও Android এই DNS রাখে; এই বিকল্পটি PDM VPN পুনরায় চালু করা নিয়ন্ত্রণ করে।</string>
 </resources>

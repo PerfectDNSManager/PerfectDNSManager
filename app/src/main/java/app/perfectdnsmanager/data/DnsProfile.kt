@@ -191,48 +191,6 @@ data class DnsProfile(
                 descResId = R.string.dns_desc_blocks_ads_trackers, testUrl = "https://adguard.com/test.html"),
 
             // ══════════════════════════════════════════════════════
-            //  4. Surfshark  ★ DoQ
-            // ══════════════════════════════════════════════════════
-            DnsProfile(id = 1240, providerName = "Surfshark", name = "Standard", type = DnsType.DOQ,
-                primary = "quic://dns.surfsharkdns.com",
-                descResId = R.string.dns_desc_no_logs),
-            DnsProfile(id = 1101, providerName = "Surfshark", name = "Standard", type = DnsType.DOH,
-                primary = "https://dns.surfsharkdns.com/dns-query",
-                descResId = R.string.dns_desc_no_logs),
-            DnsProfile(id = 1100, providerName = "Surfshark", name = "Standard", type = DnsType.DEFAULT,
-                primary = "194.169.169.169",
-                primaryV6 = "2a09:a707:169::",
-                descResId = R.string.dns_desc_no_logs),
-            DnsProfile(id = 1102, providerName = "Surfshark", name = "Standard", type = DnsType.DOT,
-                primary = "dns.surfsharkdns.com", descResId = R.string.dns_desc_no_logs),
-
-            // ══════════════════════════════════════════════════════
-            //  5. Mullvad  ★ DoQ
-            // ══════════════════════════════════════════════════════
-            DnsProfile(id = 1210, providerName = "Mullvad", name = "Standard", type = DnsType.DOQ,
-                primary = "quic://dns.mullvad.net",
-                descResId = R.string.dns_desc_privacy),
-            DnsProfile(id = 1211, providerName = "Mullvad", name = "Adblock", isAdblock = true, type = DnsType.DOQ,
-                primary = "quic://adblock.dns.mullvad.net",
-                descResId = R.string.dns_desc_ad_blocker),
-            DnsProfile(id = 1212, providerName = "Mullvad", name = "Base", isAdblock = true, type = DnsType.DOQ,
-                primary = "quic://base.dns.mullvad.net",
-                descResId = R.string.dns_desc_ad_malware_blocker),
-            DnsProfile(id = 1060, providerName = "Mullvad", name = "Standard", type = DnsType.DOH,
-                primary = "https://dns.mullvad.net/dns-query",
-                descResId = R.string.dns_desc_privacy),
-            DnsProfile(id = 1063, providerName = "Mullvad", name = "Adblock", isAdblock = true, type = DnsType.DOH,
-                primary = "https://adblock.dns.mullvad.net/dns-query",
-                descResId = R.string.dns_desc_ad_blocker),
-            DnsProfile(id = 1064, providerName = "Mullvad", name = "Base", isAdblock = true, type = DnsType.DOH,
-                primary = "https://base.dns.mullvad.net/dns-query",
-                descResId = R.string.dns_desc_ad_malware_blocker),
-            DnsProfile(id = 1062, providerName = "Mullvad", name = "Standard", type = DnsType.DOT,
-                primary = "dns.mullvad.net", descResId = R.string.dns_desc_privacy),
-            DnsProfile(id = 1065, providerName = "Mullvad", name = "Base", isAdblock = true, type = DnsType.DOT,
-                primary = "base.dns.mullvad.net", descResId = R.string.dns_desc_ad_malware_blocker),
-
-            // ══════════════════════════════════════════════════════
             //  6. Cloudflare
             // ══════════════════════════════════════════════════════
             DnsProfile(id = 1010, providerName = "Cloudflare", name = "Standard", type = DnsType.DOH,
@@ -255,28 +213,6 @@ data class DnsProfile(
                 descResId = R.string.dns_desc_adult_blocking),
 
             // ══════════════════════════════════════════════════════
-            //  7. Quad9 — Standard (Anti-Malware) en premier
-            // ══════════════════════════════════════════════════════
-            DnsProfile(id = 1080, providerName = "Quad9", name = "Standard", type = DnsType.DOH,
-                primary = "https://dns.quad9.net/dns-query",
-                descResId = R.string.dns_desc_anti_malware),
-            DnsProfile(id = 1084, providerName = "Quad9", name = "Unsecured", type = DnsType.DOH,
-                primary = "https://dns10.quad9.net/dns-query",
-                descResId = R.string.dns_desc_unfiltered),
-            DnsProfile(id = 1081, providerName = "Quad9", name = "Standard", type = DnsType.DEFAULT,
-                primary = "9.9.9.9", secondary = "149.112.112.112",
-                primaryV6 = "2620:fe::fe", secondaryV6 = "2620:fe::9",
-                descResId = R.string.dns_desc_anti_malware),
-            DnsProfile(id = 1082, providerName = "Quad9", name = "Unsecured", type = DnsType.DEFAULT,
-                primary = "9.9.9.10", secondary = "149.112.112.10",
-                primaryV6 = "2620:fe::10", secondaryV6 = "2620:fe::fe:10",
-                descResId = R.string.dns_desc_unfiltered),
-            DnsProfile(id = 1083, providerName = "Quad9", name = "Standard", type = DnsType.DOT,
-                primary = "dns.quad9.net", descResId = R.string.dns_desc_anti_malware),
-            DnsProfile(id = 1085, providerName = "Quad9", name = "Unsecured", type = DnsType.DOT,
-                primary = "dns10.quad9.net", descResId = R.string.dns_desc_unfiltered),
-
-            // ══════════════════════════════════════════════════════
             //  8. FDN (French Data Network)
             // ══════════════════════════════════════════════════════
             DnsProfile(id = 1315, providerName = "FDN", name = "ns0", type = DnsType.DOH,
@@ -288,11 +224,11 @@ data class DnsProfile(
             DnsProfile(id = 1319, providerName = "FDN", name = "ns0", type = DnsType.DEFAULT,
                 primary = "80.67.169.12",
                 primaryV6 = "2001:910:800::12",
-                descResId = R.string.dns_desc_neutral_dnssec),
+                descResId = R.string.dns_desc_fdn_restricted, isOperatorDns = true),
             DnsProfile(id = 1320, providerName = "FDN", name = "ns1", type = DnsType.DEFAULT,
                 primary = "80.67.169.40",
                 primaryV6 = "2001:910:800::40",
-                descResId = R.string.dns_desc_neutral_dnssec),
+                descResId = R.string.dns_desc_fdn_restricted, isOperatorDns = true),
             DnsProfile(id = 1317, providerName = "FDN", name = "ns0", type = DnsType.DOT,
                 primary = "ns0.fdn.fr",
                 descResId = R.string.dns_desc_neutral_dnssec),
@@ -383,20 +319,6 @@ data class DnsProfile(
                 primary = "https://family.adguard-dns.com/dns-query", descResId = R.string.dns_desc_family_protection),
             DnsProfile(id = 1611, providerName = "AdGuard", name = "Family", type = DnsType.DOT, isAdblock = true,
                 primary = "family.adguard-dns.com", descResId = R.string.dns_desc_family_protection),
-            DnsProfile(id = 1620, providerName = "Mullvad", name = "Adblock", type = DnsType.DOT, isAdblock = true,
-                primary = "adblock.dns.mullvad.net", descResId = R.string.dns_desc_ad_blocker),
-            DnsProfile(id = 1621, providerName = "Mullvad", name = "Extended", type = DnsType.DOH, isAdblock = true,
-                primary = "https://extended.dns.mullvad.net/dns-query", descResId = R.string.dns_desc_ads_social),
-            DnsProfile(id = 1622, providerName = "Mullvad", name = "Extended", type = DnsType.DOT, isAdblock = true,
-                primary = "extended.dns.mullvad.net", descResId = R.string.dns_desc_ads_social),
-            DnsProfile(id = 1623, providerName = "Mullvad", name = "Family", type = DnsType.DOH, isAdblock = true,
-                primary = "https://family.dns.mullvad.net/dns-query", descResId = R.string.dns_desc_ads_family),
-            DnsProfile(id = 1624, providerName = "Mullvad", name = "Family", type = DnsType.DOT, isAdblock = true,
-                primary = "family.dns.mullvad.net", descResId = R.string.dns_desc_ads_family),
-            DnsProfile(id = 1625, providerName = "Mullvad", name = "All", type = DnsType.DOH, isAdblock = true,
-                primary = "https://all.dns.mullvad.net/dns-query", descResId = R.string.dns_desc_ads_all),
-            DnsProfile(id = 1626, providerName = "Mullvad", name = "All", type = DnsType.DOT, isAdblock = true,
-                primary = "all.dns.mullvad.net", descResId = R.string.dns_desc_ads_all),
             DnsProfile(id = 1700, providerName = "ControlD", name = "OISD Full", type = DnsType.DOH, isAdblock = true,
                 primary = "https://freedns.controld.com/x-oisd", descResId = R.string.dns_desc_ad_blocker),
             DnsProfile(id = 1701, providerName = "ControlD", name = "OISD Full", type = DnsType.DOT, isAdblock = true,
@@ -517,7 +439,7 @@ data class DnsProfile(
             DnsProfile(id = 2005, providerName = "🇫🇷 OVH", name = "DNS OVH", type = DnsType.DEFAULT,
                 primary = "213.186.33.99", secondary = "213.251.128.140",
                 descResId = R.string.dns_desc_isp_fmt, descResIdArg = "OVH/OVHcloud", isOperatorDns = true)
-            )
+            ).sortedBy { ProfileCatalog.providerOrder.indexOf(it.providerName).let { rank -> if (rank < 0) Int.MAX_VALUE else rank } }
         }
 
         fun getDefaultPresets(): List<DnsProfile> = cachedDefaultPresets

@@ -116,10 +116,7 @@ class DnsSelectionActivity : AppCompatActivity() {
         showProviders()
     }
 
-    private val providerOrder = listOf(
-        "ControlD", "NextDNS", "AdGuard", "Surfshark",
-        "Mullvad", "Cloudflare", "Quad9", "xdp.es", "FDN", "dns.sb", "Yandex", "Google"
-    )
+    private val providerOrder = app.perfectdnsmanager.data.ProfileCatalog.providerOrder
 
     private fun showProviders() {
         val prefs = getSharedPreferences("prefs", MODE_PRIVATE)

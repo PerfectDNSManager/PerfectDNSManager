@@ -14,6 +14,29 @@ class DnsMessagesTest {
         header.setFlag(Flags.QR.toInt())
         addRecord(ARecord(q.question.name, DClass.IN, 60, InetAddress.getByName("192.0.2.10")), Section.ANSWER)
     }
+    @Test fun upstreamFailurePreservesAAndAaaaQuestionsWithoutNegativeAnswers() {
+        for (type in listOf(Type.A, Type.AAAA)) {
+            val q = query(type = type)
+            q.header.setFlag(Flags.AD.toInt())
+            val wire = DnsMessages.serverFailure(q.toWire())!!
+            val r = Message(wire)
+            assertTrue(DnsMessages.matches(q.toWire(), wire))
+            assertEquals(Rcode.SERVFAIL, r.rcode)
+            assertEquals(0, r.header.getCount(Section.ANSWER))
+            assertFalse(r.header.getFlag(Flags.AD.toInt()))
+            assertTrue(r.header.getFlag(Flags.RD.toInt()))
+        }
+        assertNull(DnsMessages.serverFailure(byteArrayOf(1, 2)))
+        assertNull(DnsMessages.serverFailure(response(query()).toWire()))
+    }
+    @Test fun rewrittenUpstreamFailureDoesNotInventCnameAnswers() {
+        val original = query(type = Type.AAAA).toWire()
+        val rewritten = DnsMessages.rewriteQuery(original, "destination.example.")!!
+        val r = Message(DnsMessages.restoreResponse(DnsMessages.serverFailure(rewritten)!!, original)!!)
+        assertEquals(Rcode.SERVFAIL, r.rcode)
+        assertEquals(Message(original).question, r.question)
+        assertEquals(0, r.header.getCount(Section.ANSWER))
+    }
     @Test fun rejectsWrongIdQuestionTypeAndQueryPackets() {
         val q = query(); val r = response(q)
         assertTrue(DnsMessages.matches(q.toWire(), r.toWire()))

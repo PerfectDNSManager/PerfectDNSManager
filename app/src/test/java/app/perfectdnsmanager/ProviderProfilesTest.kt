@@ -7,6 +7,24 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ProviderProfilesTest {
+    @Test fun cataloguePriorityAndRetirementPreservePersonalProfiles() {
+        val presets = DnsProfile.getDefaultPresets()
+        assertEquals(listOf("Cloudflare", "ControlD", "dns.sb"), presets.map { it.providerName }.distinct().take(3))
+        assertFalse(presets.any { it.providerName in listOf("Mullvad", "Surfshark", "Quad9") })
+        val retired = DnsProfile(id = 1101, providerName = "Surfshark", name = "Standard",
+            type = DnsType.DOH, primary = "https://dns.surfsharkdns.com/dns-query")
+        assertTrue(ProfileCatalog.isRetiredPreset(retired))
+        assertFalse(ProfileCatalog.visible(listOf(retired), true, true).contains(retired))
+        val personal = retired.copy(isCustom = true)
+        assertFalse(ProfileCatalog.isRetiredPreset(personal))
+        assertTrue(ProfileCatalog.visible(listOf(personal), true, true).contains(personal))
+    }
+
+    @Test fun fdnPlainDnsIsRestrictedToOperatorNetworks() {
+        val fdn = DnsProfile.getDefaultPresets().filter { it.providerName == "FDN" }
+        assertEquals(2, fdn.count { it.type == DnsType.DEFAULT && it.isOperatorDns })
+        assertEquals(4, fdn.count { it.type in listOf(DnsType.DOH, DnsType.DOT) && !it.isOperatorDns })
+    }
     @Test fun acceptsPersonalControlDAddresses() {
         for (input in listOf("abc12345", " https://dns.controld.com/abc12345/ ",
             "abc12345.dns.controld.com", "tls://abc12345.dns.controld.com:853",

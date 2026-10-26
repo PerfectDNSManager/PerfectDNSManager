@@ -573,4 +573,6 @@
     <string name="mullvad_dns_retirement">Einstellung des Dienstes zum 2. November 2026 angekündigt</string>
     <string name="copy_share">Freigabe kopieren</string>
     <string name="share_result_text">Verschlüsselter Link:\n%1$s\n\nPasswort:\n%2$s\n\nLäuft ab in %3$s.\nNur kopieren, wenn Link und Passwort in die Zwischenablage sollen.</string>
+    <string name="dns_desc_fdn_restricted">Nur für FDN-/FFDN-Netze. Außerhalb dieser Netze DoH oder DoT verwenden.</string>
+    <string name="auto_reconnect_system_dot">System-DoT: %1$s. Android behält diesen DNS nach dem Neustart; diese Option betrifft den Neustart des PDM-VPN.</string>
 </resources>

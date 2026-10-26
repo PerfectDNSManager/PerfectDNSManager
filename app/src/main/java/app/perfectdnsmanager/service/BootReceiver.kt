@@ -73,15 +73,9 @@ class BootReceiver : BroadcastReceiver() {
             try {
                 Thread.sleep(BOOT_DELAY_MS)
 
-                // Un DNS privé strict encore posé au niveau système empêche le
-                // VPN de fonctionner : le résolveur reste en DoT et, si ce
-                // serveur n'est pas joignable, le mode strict n'a pas de repli
-                // → plus aucune résolution. On tente de le couper ; verrouillé,
-                // on renonce à la reconnexion et on prévient, plutôt que de
-                // démarrer un VPN qui laisserait l'appareil sans internet.
-                if (PrivateDnsGuard.isStrictActive(context) && !PrivateDnsGuard.tryDisable(context)) {
-                    Log.w(TAG, "DNS privé verrouillé au niveau système : reconnexion VPN annulée")
-                    postPrivateDnsLockedNotification(context)
+                // Preserve an externally configured DoT even if last_method still says VPN.
+                if (PrivateDnsGuard.isStrictActive(context)) {
+                    Log.i(TAG, "System Private DNS is configured; preserving it instead of restarting the VPN.")
                     return@Thread
                 }
 

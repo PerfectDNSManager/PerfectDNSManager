@@ -61,7 +61,7 @@ class ProfileManager(private val context: Context) {
         val savedIds = saved.map { it.id }.toSet()
 
         // Mettre à jour les presets non-custom existants avec les valeurs actuelles
-        val updated = saved.map { profile ->
+        val updated = saved.filterNot(ProfileCatalog::isRetiredPreset).map { profile ->
             if (!profile.isCustom && profile.id in defaultsById) {
                 defaultsById[profile.id]!!
             } else {

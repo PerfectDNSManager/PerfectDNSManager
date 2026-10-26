@@ -461,12 +461,12 @@ class DnsVpnService : VpnService() {
                 // plus besoin de la map `pending` → pas de collision d'ID possible.
                 isDoH(real) -> {
                     val q = query
-                    submitQuery { val resp = doH(q, real); if (resp != null) writeTun(p, resp) }
+                    submitQuery { val resp = doH(q, real); writeUpstreamResult(p, resp) }
                 }
                 isDoQ(real) -> {
                     val q = query
                     val client = doqClient
-                    submitQuery { val resp = client?.query(q, real); if (resp != null) writeTun(p, resp) }
+                    submitQuery { val resp = client?.query(q, real); writeUpstreamResult(p, resp) }
                 }
                 else -> {
                     val q = query
@@ -475,7 +475,7 @@ class DnsVpnService : VpnService() {
                             val resp = DnsWire.exchange(InetAddress.getByName(real), q) { sock ->
                                 localGeneration == generation.get() && protect(sock)
                             }
-                            if (resp != null) writeTun(p, resp)
+                            writeUpstreamResult(p, resp)
                         }
                     }
                 }
@@ -498,6 +498,13 @@ class DnsVpnService : VpnService() {
 
     /** Dernier log de réponse rejetée (limitation de fréquence). */
     private val lastDropLog = java.util.concurrent.atomic.AtomicLong(0)
+
+    private fun writeUpstreamResult(p: Pending, response: ByteArray?) {
+        // Keep failures distinct from NODATA: an unavailable DNS transport does
+        // not mean that the domain has no IPv6 address. Never change providers.
+        val payload = response ?: DnsMessages.serverFailure(p.query) ?: return
+        writeTun(p, payload)
+    }
 
     private fun writeTun(p: Pending, payload: ByteArray) {
         if (p.generation != generation.get()) return
@@ -635,7 +642,7 @@ class DnsVpnService : VpnService() {
 
     /**
      * Résoudre un hostname en bypassant le VPN (requête DNS directe UDP).
-     * Bootstrap DNS sans Google : Cloudflare 1.1.1.1 d'abord, puis Quad9 9.9.9.9
+     * Bootstrap DNS sans Google : Cloudflare 1.1.1.1 d'abord, puis dns.sb 185.222.222.222
      * en fallback. Cohérent avec une app de DNS privé : on n'envoie pas le
      * hostname amorce à Google.
      */
@@ -647,7 +654,7 @@ class DnsVpnService : VpnService() {
             // l'ancienne version acceptait n'importe quel datagramme arrivant sur
             // le port, avec un ID de transaction constant 0x1234.
             bootstrapResolve(host, byteArrayOf(1, 1, 1, 1))
-                ?: bootstrapResolve(host, byteArrayOf(9, 9, 9, 9))
+                ?: bootstrapResolve(host, byteArrayOf(185.toByte(), 222.toByte(), 222.toByte(), 222.toByte()))
         }
     } catch (e: Exception) { Log.w(T, "resolveHostBypass: ${e.javaClass.simpleName}"); null }
 

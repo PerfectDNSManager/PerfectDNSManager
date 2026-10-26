@@ -151,36 +151,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        // Info DNS auto-reconnect
-        val tvAutoReconnectDns: TextView = findViewById(R.id.tvAutoReconnectDns)
-        fun updateAutoReconnectDnsInfo() {
-            if (!switchAutoReconnect.isChecked) {
-                tvAutoReconnectDns.visibility = View.GONE
-                return
-            }
-            val profileJson = prefs.getString("selected_profile_json", null)
-            if (profileJson != null) {
-                try {
-                    val profile = com.google.gson.Gson().fromJson(profileJson, app.perfectdnsmanager.data.DnsProfile::class.java)
-                    val typeLabel = when (profile.type) {
-                        app.perfectdnsmanager.data.DnsType.DOH -> "DoH"
-                        app.perfectdnsmanager.data.DnsType.DOT -> "DoT"
-                        app.perfectdnsmanager.data.DnsType.DOQ -> "DoQ"
-                        app.perfectdnsmanager.data.DnsType.DEFAULT -> "Standard"
-                    }
-                    val methodLabel = if (profile.type == app.perfectdnsmanager.data.DnsType.DOT) "ADB" else "VPN"
-                    tvAutoReconnectDns.text = getString(R.string.auto_reconnect_dns_info, "${profile.providerName} - ${profile.name} ($typeLabel / $methodLabel)")
-                    tvAutoReconnectDns.visibility = View.VISIBLE
-                } catch (_: Exception) {
-                    tvAutoReconnectDns.visibility = View.GONE
-                }
-            } else {
-                tvAutoReconnectDns.text = getString(R.string.auto_reconnect_no_dns)
-                tvAutoReconnectDns.visibility = View.VISIBLE
-            }
-        }
         updateAutoReconnectDnsInfo()
-
         switchAutoReconnect.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("auto_reconnect_dns", isChecked).apply()
             updateAutoReconnectDnsInfo()
@@ -1339,9 +1310,46 @@ class SettingsActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun updateAutoReconnectDnsInfo() {
+        val toggle = findViewById<SwitchCompat>(R.id.switchAutoReconnect)
+        val row = findViewById<LinearLayout>(R.id.rowAutoReconnect)
+        val info = findViewById<TextView>(R.id.tvAutoReconnectDns)
+        val host = adbDnsManager.getCurrentPrivateDnsHost()
+        val systemDot = adbDnsManager.getCurrentPrivateDnsMode() == "hostname" && host.isNotBlank()
+        // Android persists Private DNS independently of this VPN startup preference.
+        // Do not import or overwrite the user's saved PDM profile just to display it.
+        toggle.isEnabled = !systemDot
+        row.isEnabled = !systemDot
+        if (systemDot) {
+            info.text = getString(R.string.auto_reconnect_system_dot, host)
+            info.visibility = View.VISIBLE
+            return
+        }
+        if (!toggle.isChecked) {
+            info.visibility = View.GONE
+            return
+        }
+        val profile = runCatching {
+            com.google.gson.Gson().fromJson(prefs.getString("selected_profile_json", null),
+                app.perfectdnsmanager.data.DnsProfile::class.java)
+        }.getOrNull()?.takeIf { app.perfectdnsmanager.util.ProfileValidation.isUsable(it) }
+        info.text = if (profile == null) getString(R.string.auto_reconnect_no_dns) else {
+            val typeLabel = when (profile.type) {
+                app.perfectdnsmanager.data.DnsType.DOH -> "DoH"
+                app.perfectdnsmanager.data.DnsType.DOT -> "DoT"
+                app.perfectdnsmanager.data.DnsType.DOQ -> "DoQ"
+                app.perfectdnsmanager.data.DnsType.DEFAULT -> "Standard"
+            }
+            val methodLabel = if (profile.type == app.perfectdnsmanager.data.DnsType.DOT) "ADB" else "VPN"
+            getString(R.string.auto_reconnect_dns_info, "${profile.providerName} - ${profile.name} ($typeLabel / $methodLabel)")
+        }
+        info.visibility = View.VISIBLE
+    }
+
     override fun onResume() {
         super.onResume()
         updatePermissionUI()
+        updateAutoReconnectDnsInfo()
     }
 
     private fun showImportResult(result: app.perfectdnsmanager.data.ConfigManager.ImportResult) {

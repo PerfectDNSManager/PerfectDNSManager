@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.4.1-beta.design.1 — 26 octobre 2026
+
+- Refonte graphique et filtres DoH / DoT / DoQ / UDP ; profils Adblock sur activation explicite.
+- Cloudflare, Control D, dns.sb en tête ; retrait des presets Quad9, Surfshark et Mullvad.
+- FDN : DNS classique réservé aux réseaux FDN/FFDN, DoH et DoT publics conservés.
+- Correction des requêtes DoQ simultanées au démarrage ; erreurs DNS explicites en cas de panne amont.
+- IPv6 autorisé par défaut, interrupteur vérifié en connexion active.
+- Paramètres : détection du DNS privé DoT posé via ADB ou Android, même sans profil PDM enregistré. Explication de sa conservation par Android après redémarrage ; un ancien profil VPN ne remplace plus ce DoT automatiquement.
+- Durcissement des liens de partage, des lectures réseau et des journaux ; mise à jour Bouncy Castle.
+
+Validation : tests JVM et Android TV, matrice de 89 profils + contrôle négatif, site en 12 langues. Les tests physiques Firestick/Formuler restent à confirmer.
+
 ## 2.4.0 — 14 octobre 2026
 
 ### Fournisseurs et profils
