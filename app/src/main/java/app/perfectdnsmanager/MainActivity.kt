@@ -88,6 +88,7 @@ open class MainActivity : AppCompatActivity() {
     private var pendingVpnProfile: DnsProfile? = null
     private var isActive = false
     private var isActivating = false
+    private var skipSystemDotSyncOnce = false
     // Garde anti-race : checkStatus() peut voir DnsVpnService.isVpnRunning encore true
     // pendant ~1-2s après stopService → ré-active à tort le bouton juste après un disable
     // manuel. Tant que ce timestamp est récent, checkStatus reste sur "Activer".
@@ -142,6 +143,7 @@ open class MainActivity : AppCompatActivity() {
         if (result.resultCode == Activity.RESULT_OK) {
             val profileJson = result.data?.getStringExtra("SELECTED_PROFILE_JSON")
             if (profileJson != null) {
+                skipSystemDotSyncOnce = true
                 val newProfile = Gson().fromJson(profileJson, DnsProfile::class.java)
                 val wasActive = isActive
                 selectedProfile = newProfile
@@ -164,9 +166,11 @@ open class MainActivity : AppCompatActivity() {
                             getString(R.string.switching_disabling_dot),
                             Toast.LENGTH_SHORT
                         ).show()
+                        isActivating = true
                         lifecycleScope.launch(Dispatchers.IO) {
                             val freed = PrivateDnsGuard.tryDisable(this@MainActivity)
                             runOnUiThread {
+                                isActivating = false
                                 when {
                                     freed -> { stopDotMonitor(); setInactiveStatus(); applyDns() }
                                     // Nouveau profil DoT : applyDnsViaAdb remontera sa
@@ -547,6 +551,7 @@ open class MainActivity : AppCompatActivity() {
             }
         }
         if (!isActivating) {
+            if (!skipSystemDotSyncOnce) syncSystemDotSelection()
             // Gestion AUTO_RECONNECT (notification boot) → dernier DNS sélectionné
             if (isSelfOriginated() && intent?.getBooleanExtra("AUTO_RECONNECT", false) == true) {
                 intent?.removeExtra("AUTO_RECONNECT")
@@ -563,6 +568,7 @@ open class MainActivity : AppCompatActivity() {
             }
             checkStatus()
         }
+        skipSystemDotSyncOnce = false
         // Afficher les infos IP automatiquement
         refreshIpDisplay()
     }
@@ -1208,12 +1214,28 @@ open class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun syncSystemDotSelection(): Boolean {
+        val manager = app.perfectdnsmanager.data.ProfileManager(this)
+        val profiles = manager.loadProfiles()
+        val candidates = listOfNotNull(selectedProfile) + profiles
+        val detected = app.perfectdnsmanager.data.SystemDotProfile.resolve(
+            adbManager.getCurrentPrivateDnsMode(), adbManager.getCurrentPrivateDnsHost(), candidates
+        ) ?: return false
+        if (profiles.none { it.id == detected.id }) manager.addProfile(detected)
+        selectedProfile = detected
+        prefs.edit().putString("selected_profile_json", Gson().toJson(detected)).apply()
+        updateSelectButtonText()
+        return true
+    }
+
     private fun restoreState() {
         // Détecter si c'est un recreate dû à un changement de langue
         val isLanguageChange = prefs.getBoolean("language_change_pending", false)
         if (isLanguageChange) {
             prefs.edit().putBoolean("language_change_pending", false).apply()
         }
+
+        if (syncSystemDotSelection()) return
 
         val vpnReallyActive = DnsVpnService.isVpnRunning
         val vpnSavedActive = prefs.getBoolean("vpn_active", false)
@@ -1317,6 +1339,7 @@ open class MainActivity : AppCompatActivity() {
         rebindActivationListener()
 
         layoutSelectDns.setOnClickListener {
+            if (isActivating) return@setOnClickListener
             dnsSelectionLauncher.launch(Intent(this, DnsSelectionActivity::class.java))
         }
 
@@ -1403,9 +1426,11 @@ open class MainActivity : AppCompatActivity() {
             startService(Intent(this, DnsVpnService::class.java).apply { action = DnsVpnService.ACTION_STOP })
             prefs.edit().putBoolean("vpn_active", false).putString("vpn_label", "").apply()
         }
+        isActivating = true
         lifecycleScope.launch(Dispatchers.IO) {
             val success = adbManager.enablePrivateDns(profile.primary)
             runOnUiThread {
+                isActivating = false
                 if (success) {
                     val method = adbManager.lastMethod.ifEmpty { "ADB" }
                     prefs.edit().putString("last_method", method).apply()

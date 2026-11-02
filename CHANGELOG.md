@@ -1,5 +1,10 @@
 # Changelog
 
+## En préparation — non publié
+
+- Écran principal : reconnaissance du DNS privé DoT configuré dans Android/ADB, sélection du fournisseur et mémorisation du profil pour désactiver/réactiver en un clic. Les hôtes inconnus deviennent des profils personnels.
+- Dons : page web commune dans l’application, accès par QR depuis une TV, conversion SideShift vers USDT0 sur Polygon. Activation en attente de la configuration du compte SideShift et du serveur bêta.
+
 ## 2.4.5-beta.1 — 2 novembre 2026
 
 - Paramètres : lorsqu’un DNS privé DoT est configuré, l’interrupteur de démarrage est remplacé par « DoT géré automatiquement par Android ». Son adresse reste affichée.

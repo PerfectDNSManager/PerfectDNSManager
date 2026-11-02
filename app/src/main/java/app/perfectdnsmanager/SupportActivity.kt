@@ -1,94 +1,80 @@
 package app.perfectdnsmanager
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.view.View
-import android.widget.*
+import android.webkit.CookieManager
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import app.perfectdnsmanager.util.LocaleHelper
-import app.perfectdnsmanager.util.pdmDanger
 
+/** The website owns the donation form; the app only hosts it and links phones to it. */
 class SupportActivity : AppCompatActivity() {
-
+    private var web: WebView? = null
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleHelper.applyLocale(newBase))
     }
-
-    data class CryptoOption(
-        val label: String,
-        val address: String,
-        val qrDrawable: Int,
-        val color: Int,
-        val networks: String = ""
-    )
-
-    private val cryptos by lazy { listOf(
-        CryptoOption("₿ Bitcoin (BTC)", "bc1qfaqkqzvkj2cdlqhmzkh22lm5lcuk6a5y8raulz", R.drawable.qr_btc, 0xFFF7931A.toInt()),
-        CryptoOption("⬡ EVM (ETH / BNB / USDT / USDC…)", "0x71528115FA8aee4D9420F6caDEBfD0C043a316f7", R.drawable.qr_evm, 0xFF627EEA.toInt(), "Base · Polygon · Ethereum · BNB · Gnosis"),
-        CryptoOption("⚡ TRON (USDT / USDC / TRX)", "TV14NpEfmhz72CUBpVyYYRDrwB6hHXUQBu", R.drawable.qr_tron, pdmDanger()),
-        CryptoOption("💎 TON (USDT / TON)", "UQBvUM90I_T0_e1HAtamIYyCe_bPR4IkMmhzbOMrRde-OUt_", R.drawable.qr_ton, 0xFF0088CC.toInt()),
-        CryptoOption("◎ Solana (USDT / USDC / SOL)", "34i3oYht6hfyS6QdZbXnRZtmzQJYXqPcQtXwTmfEBM9y", R.drawable.qr_sol, 0xFF9945FF.toInt()),
-        CryptoOption("Ł Litecoin (LTC)", "ltc1qehl698y09u3e3p54zvuxe3d93d6tsfc0d5hdkr", R.drawable.qr_ltc, 0xFFBFBBBB.toInt()),
-        CryptoOption("🛡 Zcash (ZEC)", "t1VbmN4XXoUZuU4BcUQLMCCaH7CrMCyVf5g", R.drawable.qr_zec, 0xFFF4B728.toInt()),
-        CryptoOption("✕ XRP (XRP / RLUSD)", "rJcav6qAFHorerfAHFPbu8z2cLtEZGiJUM", R.drawable.qr_xrp, 0xFF00AAE4.toInt()),
-    ) }
-
-    private var hasSelected = false
-
+    private fun openBrowser(uri: Uri) {
+        if (uri.scheme == "https") runCatching { startActivity(Intent(Intent.ACTION_VIEW, uri)) }
+    }
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_support)
-
-        val btnBack: Button = findViewById(R.id.btnBack)
-        val btnSelectCrypto: Button = findViewById(R.id.btnSelectCrypto)
-        val tvCryptoName: TextView = findViewById(R.id.tvCryptoName)
-        val ivQrCode: ImageView = findViewById(R.id.ivQrCode)
-        val tvAddress: TextView = findViewById(R.id.tvAddress)
-        val tvNetworks: TextView = findViewById(R.id.tvNetworks)
-
-        btnBack.requestFocus()
-        btnBack.setOnClickListener { finish() }
-
-        // Affichage par défaut : cœur + invitation
-        tvCryptoName.text = "❤️"
-        tvCryptoName.textSize = 60f
-        tvCryptoName.setTextColor(pdmDanger())
-        ivQrCode.visibility = View.GONE
-        tvAddress.visibility = View.GONE
-        tvNetworks.visibility = View.GONE
-
-        btnSelectCrypto.text = getString(R.string.select_crypto_button)
-
-        btnSelectCrypto.setOnClickListener {
-            val labels = cryptos.map { it.label }.toTypedArray()
-            app.perfectdnsmanager.util.TvDialog.showMenuPicker(
-                this,
-                getString(R.string.choose_crypto_title),
-                labels
-            ) { which ->
-                hasSelected = true
-                val crypto = cryptos[which]
-
-                tvCryptoName.textSize = 18f
-                tvCryptoName.text = crypto.label
-                tvCryptoName.setTextColor(crypto.color)
-
-                ivQrCode.visibility = View.VISIBLE
-                ivQrCode.setImageResource(crypto.qrDrawable)
-
-                tvAddress.visibility = View.VISIBLE
-                tvAddress.text = crypto.address
-                tvAddress.setTextColor(crypto.color)
-
-                if (crypto.networks.isNotEmpty()) {
-                    tvNetworks.text = crypto.networks
-                    tvNetworks.visibility = View.VISIBLE
-                } else {
-                    tvNetworks.visibility = View.GONE
-                }
-
-                btnSelectCrypto.text = getString(R.string.select_crypto_button)
+        val base = Uri.parse(BuildConfig.PDM_BASE_URL)
+        val page = base.buildUpon().path("/support.html")
+            .appendQueryParameter("lang", (androidx.core.os.ConfigurationCompat.getLocales(resources.configuration)[0]?.language ?: "en")).build()
+        findViewById<Button>(R.id.btnBack).apply { setOnClickListener { finish() }; requestFocus() }
+        findViewById<TextView>(R.id.supportPageUrl).text = base.host + "/support.html"
+        findViewById<ImageButton>(R.id.supportPageQr).apply {
+            setImageResource(if (base.host == "beta.perfectdnsmanager.app") R.drawable.qr_support_beta else R.drawable.qr_support_stable)
+            setOnClickListener { openBrowser(page) }
+        }
+        // Some TV firmware omits WebView. The QR/browser link remains available there.
+        val browser = runCatching { WebView(this) }.getOrNull() ?: return
+        web = browser
+        browser.settings.apply {
+            javaScriptEnabled = true
+            allowFileAccess = false
+            allowContentAccess = false
+            mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+            javaScriptCanOpenWindowsAutomatically = false
+            setSupportMultipleWindows(false)
+            cacheMode = WebSettings.LOAD_NO_CACHE
+        }
+        CookieManager.getInstance().setAcceptThirdPartyCookies(browser, false)
+        browser.webViewClient = object : WebViewClient() {
+            @Suppress("DEPRECATION")
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                val uri = Uri.parse(url)
+                if (uri.scheme == "https" && uri.host == base.host && uri.port == base.port && uri.userInfo == null) return false
+                if (url == "https://sideshift.ai/legal") openBrowser(uri)
+                return true
+            }
+            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                val uri = request.url
+                val trusted = uri.scheme == "https" && uri.host == base.host && uri.port == base.port && uri.userInfo == null
+                if (trusted) return false
+                if (request.isForMainFrame && request.hasGesture()) openBrowser(uri)
+                return true
             }
         }
+        findViewById<FrameLayout>(R.id.supportWebContainer).addView(browser,
+            FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+        browser.loadUrl(page.buildUpon().appendQueryParameter("embed", "1").build().toString())
+    }
+    override fun onDestroy() {
+        web?.let { (it.parent as? FrameLayout)?.removeView(it); it.stopLoading(); it.destroy() }
+        web = null
+        super.onDestroy()
     }
 }
