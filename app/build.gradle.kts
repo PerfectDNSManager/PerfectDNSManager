@@ -137,14 +137,14 @@ dependencies {
     // Conscrypt pour exportKeyingMaterial (RFC 5705) requis par SPAKE2 pairing.
     implementation("org.bouncycastle:bcpkix-jdk18on:1.86")
     implementation("org.bouncycastle:bcprov-jdk18on:1.86")
-    implementation("org.conscrypt:conscrypt-android:2.5.2")
+    implementation("org.conscrypt:conscrypt-android:2.8.0")
 
     // QUIC client pour DoQ (DNS over QUIC)
     implementation("tech.kwik:kwik:0.10.8")
     implementation("tech.kwik:agent15:3.1") // Android RSA-PSS algorithm mapping
 
     // Argon2id KDF (JNI sur libargon2) — partage E2EE, remplace PBKDF2
-    implementation("com.lambdapioneer.argon2kt:argon2kt:1.5.0")
+    implementation("com.lambdapioneer.argon2kt:argon2kt:1.6.0")
 
     // Coroutines + lifecycleScope pour Activity-bound IO (replaces Thread { }.start())
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")

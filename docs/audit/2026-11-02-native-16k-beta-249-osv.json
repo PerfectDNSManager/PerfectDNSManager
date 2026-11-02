@@ -1,0 +1,191 @@
+[
+  {
+    "coordinate": "androidx.activity:activity:1.7.0"
+  },
+  {
+    "coordinate": "androidx.annotation:annotation-experimental:1.4.0"
+  },
+  {
+    "coordinate": "androidx.annotation:annotation-jvm:1.8.0"
+  },
+  {
+    "coordinate": "androidx.appcompat:appcompat-resources:1.7.0"
+  },
+  {
+    "coordinate": "androidx.appcompat:appcompat:1.7.0"
+  },
+  {
+    "coordinate": "androidx.arch.core:core-common:2.2.0"
+  },
+  {
+    "coordinate": "androidx.arch.core:core-runtime:2.2.0"
+  },
+  {
+    "coordinate": "androidx.collection:collection:1.1.0"
+  },
+  {
+    "coordinate": "androidx.concurrent:concurrent-futures:1.1.0"
+  },
+  {
+    "coordinate": "androidx.core:core-ktx:1.13.1"
+  },
+  {
+    "coordinate": "androidx.core:core:1.13.1"
+  },
+  {
+    "coordinate": "androidx.cursoradapter:cursoradapter:1.0.0"
+  },
+  {
+    "coordinate": "androidx.customview:customview-poolingcontainer:1.0.0"
+  },
+  {
+    "coordinate": "androidx.customview:customview:1.0.0"
+  },
+  {
+    "coordinate": "androidx.drawerlayout:drawerlayout:1.0.0"
+  },
+  {
+    "coordinate": "androidx.emoji2:emoji2-views-helper:1.3.0"
+  },
+  {
+    "coordinate": "androidx.emoji2:emoji2:1.3.0"
+  },
+  {
+    "coordinate": "androidx.fragment:fragment:1.5.4"
+  },
+  {
+    "coordinate": "androidx.interpolator:interpolator:1.0.0"
+  },
+  {
+    "coordinate": "androidx.lifecycle:lifecycle-common-jvm:2.8.4"
+  },
+  {
+    "coordinate": "androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.4"
+  },
+  {
+    "coordinate": "androidx.lifecycle:lifecycle-livedata-core:2.8.4"
+  },
+  {
+    "coordinate": "androidx.lifecycle:lifecycle-livedata:2.8.4"
+  },
+  {
+    "coordinate": "androidx.lifecycle:lifecycle-process:2.8.4"
+  },
+  {
+    "coordinate": "androidx.lifecycle:lifecycle-runtime-android:2.8.4"
+  },
+  {
+    "coordinate": "androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.4"
+  },
+  {
+    "coordinate": "androidx.lifecycle:lifecycle-viewmodel-android:2.8.4"
+  },
+  {
+    "coordinate": "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.4"
+  },
+  {
+    "coordinate": "androidx.lifecycle:lifecycle-viewmodel:2.8.4"
+  },
+  {
+    "coordinate": "androidx.loader:loader:1.0.0"
+  },
+  {
+    "coordinate": "androidx.profileinstaller:profileinstaller:1.3.1"
+  },
+  {
+    "coordinate": "androidx.recyclerview:recyclerview:1.3.2"
+  },
+  {
+    "coordinate": "androidx.resourceinspection:resourceinspection-annotation:1.0.1"
+  },
+  {
+    "coordinate": "androidx.savedstate:savedstate:1.2.1"
+  },
+  {
+    "coordinate": "androidx.startup:startup-runtime:1.1.1"
+  },
+  {
+    "coordinate": "androidx.tracing:tracing:1.0.0"
+  },
+  {
+    "coordinate": "androidx.vectordrawable:vectordrawable-animated:1.1.0"
+  },
+  {
+    "coordinate": "androidx.vectordrawable:vectordrawable:1.1.0"
+  },
+  {
+    "coordinate": "androidx.versionedparcelable:versionedparcelable:1.1.1"
+  },
+  {
+    "coordinate": "androidx.viewpager:viewpager:1.0.0"
+  },
+  {
+    "coordinate": "at.favre.lib:hkdf:2.0.0"
+  },
+  {
+    "coordinate": "com.google.code.gson:gson:2.15.0"
+  },
+  {
+    "coordinate": "com.google.errorprone:error_prone_annotations:2.50.0"
+  },
+  {
+    "coordinate": "com.google.guava:listenablefuture:1.0"
+  },
+  {
+    "coordinate": "com.io7m.repackage.io.whitfin:io.whitfin.siphash:2.0.1"
+  },
+  {
+    "coordinate": "com.lambdapioneer.argon2kt:argon2kt:1.6.0"
+  },
+  {
+    "coordinate": "com.squareup.okhttp3:okhttp:4.12.0"
+  },
+  {
+    "coordinate": "com.squareup.okio:okio-jvm:3.6.0"
+  },
+  {
+    "coordinate": "dnsjava:dnsjava:3.7.1"
+  },
+  {
+    "coordinate": "org.bouncycastle:bcpkix-jdk18on:1.86"
+  },
+  {
+    "coordinate": "org.bouncycastle:bcprov-jdk18on:1.86"
+  },
+  {
+    "coordinate": "org.bouncycastle:bcutil-jdk18on:1.86"
+  },
+  {
+    "coordinate": "org.conscrypt:conscrypt-android:2.8.0"
+  },
+  {
+    "coordinate": "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.10"
+  },
+  {
+    "coordinate": "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.10"
+  },
+  {
+    "coordinate": "org.jetbrains.kotlin:kotlin-stdlib:2.0.0"
+  },
+  {
+    "coordinate": "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1"
+  },
+  {
+    "coordinate": "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1"
+  },
+  {
+    "coordinate": "org.jetbrains:annotations:23.0.0"
+  },
+  {
+    "coordinate": "org.slf4j:slf4j-api:1.7.36"
+  },
+  {
+    "coordinate": "org.slf4j:slf4j-nop:1.7.36"
+  },
+  {
+    "coordinate": "tech.kwik:agent15:3.1"
+  },
+  {
+    "coordinate": "tech.kwik:kwik:0.10.8"
+  }
+]

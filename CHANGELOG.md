@@ -1,7 +1,9 @@
 # Changelog
 
-## Non publié — audit du 2 novembre 2026
+## 2.4.9-beta.1 — 2 novembre 2026
 
+- Compatibilité mémoire 16 Ko : Conscrypt 2.8.0 et Argon2kt 1.6.0, sans hausse du minimum Android 5/API 21 et avec conservation des quatre architectures.
+- Vérification automatique des bibliothèques natives et de l’alignement APK avant publication.
 - Retrait des dépendances et ressources inutilisées ; mise à jour Gson/dnsjava.
 - Bornes des messages DNS renforcées, import des profils indexé et protection des dialogues après destruction de l’écran.
 - Contrôle SHA-256 du téléchargement Gradle. Rapport détaillé dans docs/audit/2026-11-02-maintenance-audit.md.
