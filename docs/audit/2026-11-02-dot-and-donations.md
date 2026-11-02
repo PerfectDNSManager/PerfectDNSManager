@@ -1,4 +1,4 @@
-# DoT externe et dons communs — candidat local, non publié
+# DoT externe et dons communs — préparation et validation des bêtas
 
 ## DoT
 
@@ -31,8 +31,16 @@ liens externes ouverts dans le navigateur. QR disponible si WebView est absent.
 Réception confirmée par le propriétaire : USDT0 / Polygon,
 0x71528115FA8aee4D9420F6caDEBfD0C043a316f7.
 
-Le serveur et ses tests sont dans le dépôt pdm-worker, branche locale
-codex/pdm-site-design-beta, documentation docs/donations.md. Le compte SideShift de gestion client a été autorisé et validé en local. Le
-serveur de dons reste à déployer. Aucun ordre réel, transfert, déploiement du site ou APK bêta
-publié pour ce candidat. Déployer/valider le serveur bêta avant de distribuer cet
-écran ; ne pas pointer les utilisateurs vers une intégration non activée.
+Le serveur et ses tests sont dans le dépôt pdm-worker, branche
+codex/pdm-site-design-beta, documentation docs/donations.md. Le compte SideShift
+de gestion client a été autorisé, vérifié et installé dans les secrets du Worker
+bêta. Page publiée sur https://beta.perfectdnsmanager.app/support.html ; version
+Worker 509bc19b-2feb-4012-a3e9-d6b133cb63dd. Déploiement stable inchangé.
+
+Test supplémentaire DonationScreenInstrumentedTest sur Android TV API 31 : le
+formulaire réel et son sélecteur de crypto/réseau chargent dans WebView ; accès
+fichiers/contenu et cookies tiers désactivés, contenu mixte interdit, QR présent.
+Tests navigateur réels : limites LTC, sessions, refus des appels anonymes et
+cross-origin ; aucun ordre ou transfert réel. Les créations, délais et erreurs
+restent testés avec réponses simulées. Le serveur est disponible avant la
+publication de l'APK 2.4.7-beta.1 ; 2.4.6-beta.1 avait publié la correction DoT seule.

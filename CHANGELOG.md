@@ -1,8 +1,11 @@
 # Changelog
 
-## En préparation — non publié
+## 2.4.7-beta.1 — 2 novembre 2026
 
-- Dons : page web commune dans l’application, accès par QR depuis une TV, conversion SideShift vers USDT0 sur Polygon. Compte existant validé en local ; déploiement du serveur bêta à effectuer avant publication de cet écran.
+- Dons : crypto et réseau au choix via SideShift, réception en USDT0 sur Polygon, minimum/maximum et estimation affichés avant création.
+- Page de dons commune au site bêta et à l’application, avec QR pour continuer sur téléphone depuis une TV.
+- Adresse de remboursement et mémo si nécessaire ; suivi du dépôt, expiration des adresses et protection contre les doubles créations.
+- Conservation de la reconnaissance du DoT Android/ADB et de la réactivation en un clic de la 2.4.6-beta.1.
 
 ## 2.4.6-beta.1 — 2 novembre 2026
 
