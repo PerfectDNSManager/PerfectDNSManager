@@ -32,6 +32,7 @@ class SupportActivity : AppCompatActivity() {
         setContentView(R.layout.activity_support)
         val base = Uri.parse(BuildConfig.PDM_BASE_URL)
         val page = base.buildUpon().path("/support.html")
+            .appendQueryParameter("tv", if ((resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_TYPE_MASK) == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION) "1" else "0")
             .appendQueryParameter("lang", (androidx.core.os.ConfigurationCompat.getLocales(resources.configuration)[0]?.language ?: "en")).build()
         findViewById<Button>(R.id.btnBack).apply { setOnClickListener { finish() }; requestFocus() }
         findViewById<TextView>(R.id.supportPageUrl).text = base.host + "/support.html"
@@ -44,6 +45,7 @@ class SupportActivity : AppCompatActivity() {
         web = browser
         browser.settings.apply {
             javaScriptEnabled = true
+            domStorageEnabled = true // Favorites stay local to the trusted donation origin.
             allowFileAccess = false
             allowContentAccess = false
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW

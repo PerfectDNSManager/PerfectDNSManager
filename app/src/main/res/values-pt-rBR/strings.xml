@@ -358,6 +358,7 @@
     <string name="md_device_type">Tipo</string>
     <string name="md_device_model">Modelo</string>
     <string name="md_android_version">Versão do Android</string>
+    <string name="md_kernel_version">Versão do kernel Linux</string>
     <string name="md_app_version">Versão do app</string>
     <string name="device_type_tv">Android TV / Box</string>
     <string name="device_type_phone">Telefone</string>
@@ -583,4 +584,8 @@
     <string name="return_stable_title">Voltar à versão estável</string>
     <string name="return_stable_explanation">Desativar as atualizações beta afeta apenas as próximas atualizações. Não altera a versão instalada. Se a estável for mais antiga, o Android exige desinstalar a beta. Exporte a configuração e guarde o link E a senha fora do PDM. Depois baixe a APK estável e salve em Downloads.</string>
     <string name="return_stable_saved">APK estável salva. Esta versão é mais antiga. Após salvar a configuração fora do PDM, desinstale o PDM nas configurações do Android, abra a APK salva no gerenciador de arquivos e importe o backup. A desinstalação apaga os dados do PDM.</string>
+    <string name="update_connecting">Conectando ao servidor…</string>
+    <string name="update_verifying">Verificando a assinatura…</string>
+    <string name="update_opening_installer">Abrindo o instalador do Android…</string>
+    <string name="update_progress_amount">%1$d%% · %2$s / %3$s</string>
 </resources>

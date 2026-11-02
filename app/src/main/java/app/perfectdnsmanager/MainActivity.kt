@@ -512,6 +512,7 @@ open class MainActivity : AppCompatActivity() {
         sb.append("${getString(R.string.md_device_model)}: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}").append("\n")
         sb.append("${getString(R.string.md_device_type)}: $devType").append("\n")
         sb.append("${getString(R.string.md_android_version)}: ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})").append("\n")
+        sb.append("${getString(R.string.md_kernel_version)}: ${kernelVersion()}").append("\n")
         sb.append("${getString(R.string.md_app_version)}: ${BuildConfig.VERSION_NAME}")
 
         tvStatusInfo.setTextColor(pdmTextSecondary())
@@ -983,6 +984,13 @@ open class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    /** Only the kernel release: no hostname, build fingerprint or device identifier. */
+    private fun kernelVersion(): String = runCatching {
+        android.system.Os.uname().release
+            .replace(Regex("[\\r\\n|]"), " ").trim().take(256)
+            .takeIf { it.isNotEmpty() }
+    }.getOrNull() ?: getString(R.string.wan_ip_error)
+
     private fun uploadReport(includeNetwork: Boolean, includeSpeed: Boolean, includeLeak: Boolean, includeBlocking: Boolean, includeDevice: Boolean = true, expiresIn: String = "24h") {
         Toast.makeText(this, getString(R.string.report_generating), Toast.LENGTH_SHORT).show()
         btnShareReport.isEnabled = false
@@ -1165,6 +1173,7 @@ open class MainActivity : AppCompatActivity() {
                         appendLine("| **${getString(R.string.md_device_model)}** | ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL} |")
                         appendLine("| **${getString(R.string.md_device_type)}** | $devType |")
                         appendLine("| **${getString(R.string.md_android_version)}** | ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT}) |")
+                        appendLine("| **${getString(R.string.md_kernel_version)}** | ${kernelVersion()} |")
                         appendLine("| **${getString(R.string.md_app_version)}** | $appVersion |")
                         appendLine()
                     }

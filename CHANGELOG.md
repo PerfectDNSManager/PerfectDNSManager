@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.4.8-beta.1 — 2 novembre 2026
+
+- Rapport sécurisé : version du noyau Linux dans la rubrique optionnelle Informations appareil, aux côtés d’Android, du niveau d’API, du modèle et de la version de PDM.
+
+- Mise à jour : fenêtre persistante avec connexion, progression en pourcentage et volume téléchargé, vérification de signature et ouverture de l’installateur Android. Annulation réelle du téléchargement et erreurs visibles.
+- Dons : écran TV compact, suppression du montant à saisir et de l’adresse de remboursement personnelle ; montant libre dans les limites SideShift.
+- Recherche de blockchain et de crypto, sélection dans les deux sens, favoris locaux et couples courants proposés en premier.
+- En cas d’échec de conversion, transfert vers le wallet PDM compatible dans la crypto d’origine, indiqué avant le don. Les réseaux sans wallet PDM configuré sont exclus.
+
 ## 2.4.7-beta.1 — 2 novembre 2026
 
 - Dons : crypto et réseau au choix via SideShift, réception en USDT0 sur Polygon, minimum/maximum et estimation affichés avant création.

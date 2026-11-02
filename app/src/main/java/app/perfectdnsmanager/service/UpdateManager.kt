@@ -31,6 +31,7 @@ class UpdateManager(private val context: Context) {
     private val mainHandler = Handler(Looper.getMainLooper())
 
     companion object {
+        private val transferActive = java.util.concurrent.atomic.AtomicBoolean(false)
         private const val TAG = "UpdateManager"
         private const val GITHUB_REPO = "PerfectDNSManager/PerfectDNSManager"
         private const val LATEST_BETA_TAG = "latest-beta"
@@ -259,7 +260,7 @@ class UpdateManager(private val context: Context) {
         return if (preferredUrl != null) preferredUrl to preferredSize else fallbackUrl to fallbackSize
     }
 
-    private fun downloadAndInstallUpdate(apkUrl: String, expectedSize: Long = 0, verifiedDownload: ((File) -> Unit)? = null) {
+    private fun downloadAndInstallUpdate(apkUrl: String, expectedSize: Long = 0, verifiedDownload: ((File, UpdateProgressUi) -> Unit)? = null) {
         // A5 : l'URL vient d'un JSON distant — on refuse tout hôte inattendu.
         val host = try { java.net.URL(apkUrl).host?.lowercase() } catch (_: Exception) { null }
         if (!apkUrl.startsWith("https://") || host == null || host !in ALLOWED_APK_HOSTS) {
@@ -268,7 +269,20 @@ class UpdateManager(private val context: Context) {
             return
         }
 
-        showToastOnMainThread(appContext.getString(R.string.update_downloading))
+        runOnMainThread {
+        val activity = context as? Activity ?: return@runOnMainThread
+        if (activity.isFinishing || activity.isDestroyed) return@runOnMainThread
+        if (!transferActive.compareAndSet(false,true)) {
+            showToastOnMainThread(appContext.getString(R.string.update_downloading))
+            return@runOnMainThread
+        }
+        val activeCall = java.util.concurrent.atomic.AtomicReference<okhttp3.Call?>()
+        val progressUi = UpdateProgressUi(activity) { activeCall.get()?.cancel() }
+        try { progressUi.show() } catch (_: Exception) {
+            transferActive.set(false)
+            showToastOnMainThread(appContext.getString(R.string.update_download_error))
+            return@runOnMainThread
+        }
         // Plafond : la taille annoncée par l'API + une marge. Sans lui, une URL
         // hostile pouvait remplir le cache avant même la vérif de signature.
         val maxBytes = if (expectedSize in 1..(200L * 1024 * 1024 - SIZE_SLACK)) expectedSize + SIZE_SLACK else 200L * 1024 * 1024
@@ -286,36 +300,55 @@ class UpdateManager(private val context: Context) {
                 val dest = File.createTempFile("update-", ".apk", updatesDir)
                 destination = dest
                 val req = Request.Builder().url(apkUrl).build()
-                http.newCall(req).execute().use { resp ->
+                val call = http.newCall(req)
+                activeCall.set(call)
+                if (progressUi.cancelled.get()) throw java.io.IOException("cancelled")
+                call.execute().use { resp ->
                     if (!resp.isSuccessful) throw java.io.IOException("HTTP ${resp.code}")
                     val body = resp.body ?: throw java.io.IOException("empty body")
                     var written = 0L
+                    val total = body.contentLength().takeIf { it > 0 } ?: expectedSize
+                    progressUi.progress(0,total)
                     body.byteStream().use { input ->
                         dest.outputStream().use { output ->
                             val buf = ByteArray(64 * 1024)
                             while (true) {
+                                if (progressUi.cancelled.get()) throw java.io.IOException("cancelled")
                                 val n = input.read(buf)
                                 if (n < 0) break
                                 written += n
                                 if (written > maxBytes) throw java.io.IOException("APK trop volumineux")
                                 output.write(buf, 0, n)
+                                progressUi.progress(written,total)
                             }
                         }
                     }
                 }
                 Log.i(TAG, "Download complete: ${dest.absolutePath}")
-                if (verifiedDownload == null) installApk(dest) else {
+                if (progressUi.cancelled.get()) throw java.io.IOException("cancelled")
+                progressUi.stage(R.string.update_verifying)
+                if (verifiedDownload == null) installApk(dest,progressUi) else {
                     if (!verifyApkSignature(dest)) {
                         dest.delete()
-                        showToastOnMainThread(appContext.getString(R.string.update_signature_mismatch))
-                    } else verifiedDownload(dest)
+                        finishTransfer(progressUi,appContext.getString(R.string.update_signature_mismatch))
+                    } else if (progressUi.cancelled.get()) {
+                        dest.delete(); finishTransfer(progressUi)
+                    } else verifiedDownload(dest,progressUi)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Download error: ${e.javaClass.simpleName}: ${e.message}")
                 destination?.delete()
-                showToastOnMainThread(appContext.getString(R.string.update_download_error))
+                finishTransfer(progressUi,if(progressUi.cancelled.get()) null else appContext.getString(R.string.update_download_error))
             }
         }.start()
+        }
+    }
+
+    private fun finishTransfer(ui: UpdateProgressUi, error: String? = null) {
+        runOnMainThread {
+            transferActive.set(false)
+            if(error == null || ui.cancelled.get()) ui.close() else ui.error(error)
+        }
     }
 
     /** Explicit stable return, independently of the currently installed beta version. */
@@ -325,25 +358,28 @@ class UpdateManager(private val context: Context) {
                 showToastOnMainThread(appContext.getString(R.string.update_download_error))
                 return@fetchBestRelease
             }
-            downloadAndInstallUpdate(release.apkUrl, release.apkSize) { file ->
+            downloadAndInstallUpdate(release.apkUrl, release.apkSize) { file, ui ->
                 val pm = appContext.packageManager
                 val archive = pm.getPackageArchiveInfo(file.absolutePath, 0)
                 // Reject mislabeled prereleases even if the API calls them stable.
                 if (archive == null || archive.versionName.isNullOrBlank() || archive.versionName!!.contains('-')) {
                     file.delete()
-                    showToastOnMainThread(appContext.getString(R.string.update_download_error))
+                    finishTransfer(ui,appContext.getString(R.string.update_download_error))
                 } else {
                     val installed = pm.getPackageInfo(appContext.packageName, 0)
                     @Suppress("DEPRECATION")
                     val older = if (Build.VERSION.SDK_INT >= 28) archive.longVersionCode < installed.longVersionCode
                         else archive.versionCode < installed.versionCode
-                    if (older) runOnMainThread { saveOlderApk(file) } else installApk(file)
+                    if (older) runOnMainThread {
+                        finishTransfer(ui)
+                        if(ui.cancelled.get()) file.delete() else saveOlderApk(file)
+                    } else installApk(file,ui)
                 }
             }
         }
     }
 
-    private fun installApk(apkFile: File) {
+    private fun installApk(apkFile: File, ui: UpdateProgressUi) {
         // Déjà appelé depuis un thread de fond (cf. downloadAndInstallUpdate),
         // mais on garde le Thread : la vérif de signature parse l'APK entier et
         // ne doit jamais approcher le main thread (ANR).
@@ -357,7 +393,7 @@ class UpdateManager(private val context: Context) {
                 // mismatch côté système, mais on échoue plus tôt et plus clair).
                 if (!verifyApkSignature(apkFile)) {
                     Log.e(TAG, "APK signature mismatch — install aborted")
-                    showToastOnMainThread(appContext.getString(R.string.update_signature_mismatch))
+                    finishTransfer(ui,appContext.getString(R.string.update_signature_mismatch))
                     apkFile.delete()
                     return@Thread
                 }
@@ -367,14 +403,23 @@ class UpdateManager(private val context: Context) {
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
-                runOnMainThread { appContext.startActivity(intent) }
+                ui.stage(R.string.update_opening_installer)
+                runOnMainThread {
+                    if(ui.cancelled.get()) { apkFile.delete(); finishTransfer(ui); return@runOnMainThread }
+                    try {
+                        appContext.startActivity(intent)
+                        finishTransfer(ui)
+                    } catch (_: Exception) {
+                        finishTransfer(ui,appContext.getString(R.string.update_install_error))
+                    }
+                }
                 // A4 : l'APK ne restait dans le cache que sur le chemin d'échec.
                 // On le supprime après que l'installateur a eu le temps de lire
                 // l'URI (le FileProvider garde l'accès le temps de la lecture).
                 mainHandler.postDelayed({ runCatching { apkFile.delete() } }, 24 * 60 * 60_000L)
             } catch (e: Exception) {
                 Log.e(TAG, "APK install error", e)
-                showToastOnMainThread(appContext.getString(R.string.update_install_error))
+                finishTransfer(ui,appContext.getString(R.string.update_install_error))
             }
         }.start()
     }

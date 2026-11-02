@@ -358,6 +358,7 @@
     <string name="md_device_type">النوع</string>
     <string name="md_device_model">الطراز</string>
     <string name="md_android_version">إصدار Android</string>
+    <string name="md_kernel_version">إصدار نواة Linux</string>
     <string name="md_app_version">إصدار التطبيق</string>
     <string name="device_type_tv">Android TV / جهاز بث</string>
     <string name="device_type_phone">هاتف</string>
@@ -587,4 +588,8 @@
     <string name="return_stable_title">العودة إلى الإصدار المستقر</string>
     <string name="return_stable_explanation">إيقاف تحديثات بيتا يؤثر فقط على التحديثات القادمة ولا يغير الإصدار المثبت. إذا كان المستقر أقدم، يتطلب Android إزالة بيتا. صدّر الإعدادات واحتفظ بالرابط وكلمة المرور خارج PDM قبل الإزالة. ثم نزّل APK المستقر واحفظه في التنزيلات.</string>
     <string name="return_stable_saved">تم حفظ APK المستقر. هذا الإصدار أقدم. بعد حفظ الإعدادات خارج PDM، أزل PDM من إعدادات Android وافتح APK المحفوظ بمدير الملفات ثم استورد النسخة الاحتياطية. الإزالة تمسح بيانات PDM.</string>
+    <string name="update_connecting">جارٍ الاتصال بالخادم…</string>
+    <string name="update_verifying">جارٍ التحقق من التوقيع…</string>
+    <string name="update_opening_installer">جارٍ فتح مثبّت Android…</string>
+    <string name="update_progress_amount">%1$d%% · %2$s / %3$s</string>
 </resources>

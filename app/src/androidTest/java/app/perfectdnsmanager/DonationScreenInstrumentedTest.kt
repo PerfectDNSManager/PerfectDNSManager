@@ -28,6 +28,7 @@ class DonationScreenInstrumentedTest {
                 assertNotNull(a.findViewById<ImageButton>(R.id.supportPageQr).drawable)
                 web = a.findViewById<FrameLayout>(R.id.supportWebContainer).getChildAt(0) as WebView
                 assertTrue(web.settings.javaScriptEnabled)
+                assertTrue(web.settings.domStorageEnabled)
                 assertFalse(web.settings.allowFileAccess)
                 assertFalse(web.settings.allowContentAccess)
                 assertEquals(WebSettings.MIXED_CONTENT_NEVER_ALLOW,web.settings.mixedContentMode)
@@ -38,13 +39,25 @@ class DonationScreenInstrumentedTest {
             while(android.os.SystemClock.elapsedRealtime()<deadline) {
                 val latch=CountDownLatch(1)
                 inst.runOnMainSync {
-                    web.evaluateJavascript("document.querySelectorAll('#asset option').length") { options=it;latch.countDown() }
+                    web.evaluateJavascript("document.querySelectorAll('#coin option').length") { options=it;latch.countDown() }
                 }
                 assertTrue(latch.await(5,TimeUnit.SECONDS))
                 if((options.toIntOrNull() ?: 0)>0)break
                 android.os.SystemClock.sleep(500)
             }
             assertTrue("Live donation asset selector did not load",(options.toIntOrNull() ?: 0)>0)
+            val rendered=CountDownLatch(1)
+            inst.runOnMainSync {
+                web.postVisualStateCallback(1,object : WebView.VisualStateCallback() {
+                    override fun onComplete(requestId: Long) { rendered.countDown() }
+                })
+            }
+            assertTrue(rendered.await(10,TimeUnit.SECONDS))
+            inst.waitForIdleSync()
+            android.os.SystemClock.sleep(1000)
+            val screenshot=inst.uiAutomation.takeScreenshot()
+            java.io.File(inst.targetContext.cacheDir,"donation-screen.png").outputStream().use { screenshot.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it) }
+            screenshot.recycle()
             scenario.onActivity { assertTrue(web.url?.startsWith(BuildConfig.PDM_BASE_URL+"/support.html?")==true) }
         }
     }

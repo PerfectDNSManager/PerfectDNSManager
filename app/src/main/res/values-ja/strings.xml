@@ -358,6 +358,7 @@
     <string name="md_device_type">タイプ</string>
     <string name="md_device_model">モデル</string>
     <string name="md_android_version">Androidバージョン</string>
+    <string name="md_kernel_version">Linuxカーネルのバージョン</string>
     <string name="md_app_version">アプリバージョン</string>
     <string name="device_type_tv">Android TV / ボックス</string>
     <string name="device_type_phone">電話</string>
@@ -577,4 +578,8 @@
     <string name="return_stable_title">安定版に戻す</string>
     <string name="return_stable_explanation">ベータ更新を無効にしても、インストール済みのバージョンは変わりません。安定版が古い場合、Android はベータ版のアンインストールを要求します。先に設定をエクスポートし、リンクとパスワードの両方を PDM の外に保存してください。その後、安定版 APK をダウンロードフォルダに保存します。</string>
     <string name="return_stable_saved">安定版 APK を保存しました。このバージョンは古いため、先に設定を PDM の外に保存し、Android 設定から PDM をアンインストールしてください。ファイル管理アプリで保存した APK を開き、バックアップをインポートします。アンインストールすると PDM のデータが消去されます。</string>
+    <string name="update_connecting">サーバーに接続中…</string>
+    <string name="update_verifying">署名を確認中…</string>
+    <string name="update_opening_installer">Android インストーラーを開いています…</string>
+    <string name="update_progress_amount">%1$d%% · %2$s / %3$s</string>
 </resources>

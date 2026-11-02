@@ -358,6 +358,7 @@
     <string name="md_device_type">Tipo</string>
     <string name="md_device_model">Modello</string>
     <string name="md_android_version">Versione Android</string>
+    <string name="md_kernel_version">Versione del kernel Linux</string>
     <string name="md_app_version">Versione app</string>
     <string name="device_type_tv">Android TV / Box</string>
     <string name="device_type_phone">Telefono</string>
@@ -583,4 +584,8 @@
     <string name="return_stable_title">Torna alla versione stabile</string>
     <string name="return_stable_explanation">Disattivare gli aggiornamenti beta riguarda solo gli aggiornamenti futuri. Non cambia la versione installata. Se la stabile è precedente, Android richiede di disinstallare la beta. Esporta la configurazione e conserva link E password fuori da PDM. Poi scarica la APK stabile e salvala in Download.</string>
     <string name="return_stable_saved">APK stabile salvata. Questa versione è precedente. Dopo aver salvato la configurazione fuori da PDM, disinstalla PDM dalle impostazioni Android, apri la APK salvata con il gestore file e importa il backup. La disinstallazione elimina i dati di PDM.</string>
+    <string name="update_connecting">Connessione al server…</string>
+    <string name="update_verifying">Verifica della firma…</string>
+    <string name="update_opening_installer">Apertura del programma di installazione Android…</string>
+    <string name="update_progress_amount">%1$d%% · %2$s / %3$s</string>
 </resources>

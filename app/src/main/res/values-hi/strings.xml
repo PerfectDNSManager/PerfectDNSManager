@@ -358,6 +358,7 @@
     <string name="md_device_type">प्रकार</string>
     <string name="md_device_model">मॉडल</string>
     <string name="md_android_version">Android संस्करण</string>
+    <string name="md_kernel_version">Linux कर्नेल संस्करण</string>
     <string name="md_app_version">ऐप संस्करण</string>
     <string name="device_type_tv">Android TV / बॉक्स</string>
     <string name="device_type_phone">फ़ोन</string>
@@ -579,4 +580,8 @@
     <string name="return_stable_title">स्थिर संस्करण पर वापस जाएँ</string>
     <string name="return_stable_explanation">बीटा अपडेट बंद करने से केवल आगे के अपडेट बदलते हैं, इंस्टॉल किया संस्करण नहीं। स्थिर संस्करण पुराना होने पर Android बीटा हटाने को कहता है। पहले कॉन्फ़िगरेशन निर्यात करें और लिंक तथा पासवर्ड दोनों PDM से बाहर सहेजें। फिर स्थिर APK डाउनलोड करके Downloads में सहेजें।</string>
     <string name="return_stable_saved">स्थिर APK सहेजा गया। यह संस्करण पुराना है। कॉन्फ़िगरेशन PDM से बाहर सहेजने के बाद Android सेटिंग से PDM हटाएँ, फ़ाइल प्रबंधक से सहेजा APK खोलें और बैकअप आयात करें। ऐप हटाने से PDM का डेटा मिट जाता है।</string>
+    <string name="update_connecting">सर्वर से कनेक्ट हो रहा है…</string>
+    <string name="update_verifying">हस्ताक्षर की जाँच हो रही है…</string>
+    <string name="update_opening_installer">Android इंस्टॉलर खुल रहा है…</string>
+    <string name="update_progress_amount">%1$d%% · %2$s / %3$s</string>
 </resources>

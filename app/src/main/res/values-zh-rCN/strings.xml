@@ -358,6 +358,7 @@
     <string name="md_device_type">类型</string>
     <string name="md_device_model">型号</string>
     <string name="md_android_version">Android 版本</string>
+    <string name="md_kernel_version">Linux 内核版本</string>
     <string name="md_app_version">应用版本</string>
     <string name="device_type_tv">Android TV / 机顶盒</string>
     <string name="device_type_phone">手机</string>
@@ -577,4 +578,8 @@
     <string name="return_stable_title">返回稳定版</string>
     <string name="return_stable_explanation">关闭测试版更新仅影响后续更新，不会改变已安装的版本。如果稳定版更旧，Android 要求先卸载测试版。请先导出配置，并在 PDM 外保存链接和密码。然后下载稳定版 APK 并保存到下载文件夹。</string>
     <string name="return_stable_saved">稳定版 APK 已保存。此版本更旧。请先在 PDM 外保存配置，再通过 Android 设置卸载 PDM，用文件管理器打开保存的 APK，然后导入备份。卸载会清除 PDM 数据。</string>
+    <string name="update_connecting">正在连接服务器…</string>
+    <string name="update_verifying">正在验证签名…</string>
+    <string name="update_opening_installer">正在打开 Android 安装程序…</string>
+    <string name="update_progress_amount">%1$d%% · %2$s / %3$s</string>
 </resources>

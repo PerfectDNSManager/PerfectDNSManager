@@ -394,6 +394,7 @@
     <string name="md_device_type">Type</string>
     <string name="md_device_model">Modèle</string>
     <string name="md_android_version">Version Android</string>
+    <string name="md_kernel_version">Version du noyau Linux</string>
     <string name="md_app_version">Version app</string>
     <string name="device_type_tv">Android TV / Box</string>
     <string name="device_type_phone">Téléphone</string>
@@ -597,4 +598,8 @@
     <string name="return_stable_title">Revenir à la version stable</string>
     <string name="return_stable_explanation">Désactiver le canal bêta limite les prochaines mises à jour aux versions stables. Cela ne change pas la version installée. Si la stable est plus ancienne, Android impose de désinstaller la bêta. Exportez votre configuration et conservez le lien ET le mot de passe hors de PDM avant toute désinstallation. Téléchargez ensuite la stable et enregistrez son APK dans Téléchargements.</string>
     <string name="return_stable_saved">APK stable enregistré. Cette version est plus ancienne. Après avoir sauvegardé votre configuration hors de PDM, désinstallez PDM depuis les paramètres Android, ouvrez l’APK enregistré avec votre gestionnaire de fichiers, puis importez la sauvegarde. La désinstallation efface les données de PDM.</string>
+    <string name="update_connecting">Connexion au serveur…</string>
+    <string name="update_verifying">Vérification de la signature…</string>
+    <string name="update_opening_installer">Ouverture de l’installateur Android…</string>
+    <string name="update_progress_amount">%1$d%% · %2$s / %3$s</string>
 </resources>

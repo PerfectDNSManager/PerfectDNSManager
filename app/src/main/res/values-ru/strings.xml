@@ -358,6 +358,7 @@
     <string name="md_device_type">Тип</string>
     <string name="md_device_model">Модель</string>
     <string name="md_android_version">Версия Android</string>
+    <string name="md_kernel_version">Версия ядра Linux</string>
     <string name="md_app_version">Версия приложения</string>
     <string name="device_type_tv">Android TV / Приставка</string>
     <string name="device_type_phone">Телефон</string>
@@ -583,4 +584,8 @@
     <string name="return_stable_title">Вернуться к стабильной версии</string>
     <string name="return_stable_explanation">Отключение бета-обновлений влияет только на будущие обновления. Установленная версия не меняется. Если стабильная версия старее, Android требует удалить бета-версию. Экспортируйте настройки и сохраните ссылку И пароль вне PDM. Затем загрузите стабильный APK в папку загрузок.</string>
     <string name="return_stable_saved">Стабильный APK сохранён. Эта версия старее. Сохраните настройки вне PDM, удалите PDM через настройки Android, откройте сохранённый APK в файловом менеджере и импортируйте копию. Удаление приложения стирает данные PDM.</string>
+    <string name="update_connecting">Подключение к серверу…</string>
+    <string name="update_verifying">Проверка подписи…</string>
+    <string name="update_opening_installer">Открытие установщика Android…</string>
+    <string name="update_progress_amount">%1$d%% · %2$s / %3$s</string>
 </resources>
