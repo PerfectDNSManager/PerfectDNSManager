@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.4.6-beta.1 — 2 novembre 2026
+
+- Écran principal : reconnaissance du DNS privé DoT configuré dans Android ou via ADB, avec affichage du fournisseur et du profil réellement utilisés.
+- Profil conservé après désactivation pour réactiver le même serveur en un clic, avec les autorisations Android/ADB habituelles.
+- Les hôtes DoT inconnus sont ajoutés aux profils personnels ; la sélection est actualisée au retour dans PDM si le DNS Android a changé.
+- Protection contre l’écrasement du profil pendant un changement ou une activation en cours.
+
 ## 2.4.5-beta.1 — 2 novembre 2026
 
 - Paramètres : lorsqu’un DNS privé DoT est configuré, l’interrupteur de démarrage est remplacé par « DoT géré automatiquement par Android ». Son adresse reste affichée.
