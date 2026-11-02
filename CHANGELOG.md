@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.4.5-beta.1 — 2 novembre 2026
+
+- Paramètres : lorsqu’un DNS privé DoT est configuré, l’interrupteur de démarrage est remplacé par « DoT géré automatiquement par Android ». Son adresse reste affichée.
+- L’interrupteur réapparaît si le DoT système est retiré, avec le choix précédent conservé. Navigation TV adaptée et traductions mises à jour dans les 12 langues.
+
 ## 2.4.4-beta.1 — 26 octobre 2026
 
 - Télécommande : haut/bas reste dans la même colonne de la liste des fournisseurs DNS, y compris pendant le défilement. Gauche/droite permet de passer entre le fournisseur et ses profils.

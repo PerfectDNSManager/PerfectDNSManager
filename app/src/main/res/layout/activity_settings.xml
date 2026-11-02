@@ -97,6 +97,15 @@
                 android:clickable="false" />
         </LinearLayout>
         <TextView
+            android:id="@+id/tvSystemDotManaged"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/system_dot_managed"
+            android:textColor="@color/pdm_text_primary"
+            android:textSize="15sp"
+            android:padding="8dp"
+            android:visibility="gone" />
+        <TextView
             android:id="@+id/tvAutoReconnectDns"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

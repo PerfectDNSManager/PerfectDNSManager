@@ -1367,6 +1367,10 @@ class SettingsActivity : AppCompatActivity() {
         // Do not import or overwrite the user's saved PDM profile just to display it.
         toggle.isEnabled = !systemDot
         row.isEnabled = !systemDot
+        row.visibility = if (systemDot) View.GONE else View.VISIBLE
+        findViewById<TextView>(R.id.tvSystemDotManaged).visibility = if (systemDot) View.VISIBLE else View.GONE
+        findViewById<View>(R.id.rowDisableIpv6).nextFocusUpId = if (systemDot) R.id.rowTheme else R.id.rowAutoReconnect
+        findViewById<View>(R.id.rowTheme).nextFocusDownId = if (systemDot) R.id.rowDisableIpv6 else R.id.rowAutoReconnect
         if (systemDot) {
             info.text = getString(R.string.auto_reconnect_system_dot, host)
             info.visibility = View.VISIBLE

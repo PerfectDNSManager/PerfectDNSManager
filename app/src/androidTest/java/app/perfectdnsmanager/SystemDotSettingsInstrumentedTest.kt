@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.ParcelFileDescriptor
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.test.core.app.ActivityScenario
@@ -33,7 +34,11 @@ class SystemDotSettingsInstrumentedTest {
                 scenario.onActivity { a ->
                     assertEquals(a.getString(R.string.auto_reconnect_system_dot, "dns.google"),
                         a.findViewById<TextView>(R.id.tvAutoReconnectDns).text.toString())
-                    assertFalse(a.findViewById<SwitchCompat>(R.id.switchAutoReconnect).isEnabled)
+                    assertFalse(a.findViewById<SwitchCompat>(R.id.switchAutoReconnect).isShown)
+                    assertEquals(View.GONE, a.findViewById<View>(R.id.rowAutoReconnect).visibility)
+                    assertEquals(a.getString(R.string.system_dot_managed), a.findViewById<TextView>(R.id.tvSystemDotManaged).text.toString())
+                    assertTrue(a.findViewById<View>(R.id.tvSystemDotManaged).isShown)
+                    assertEquals(R.id.rowTheme, a.findViewById<View>(R.id.rowDisableIpv6).nextFocusUpId)
                     assertNull(prefs.getString("selected_profile_json", null))
                     assertTrue(prefs.getBoolean("auto_reconnect_dns", false))
                 }
@@ -42,6 +47,10 @@ class SystemDotSettingsInstrumentedTest {
                 scenario.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED)
                 scenario.onActivity { a ->
                     assertTrue(a.findViewById<SwitchCompat>(R.id.switchAutoReconnect).isEnabled)
+                    assertTrue(a.findViewById<SwitchCompat>(R.id.switchAutoReconnect).isShown)
+                    assertTrue(a.findViewById<SwitchCompat>(R.id.switchAutoReconnect).isChecked)
+                    assertEquals(View.GONE, a.findViewById<View>(R.id.tvSystemDotManaged).visibility)
+                    assertEquals(R.id.rowAutoReconnect, a.findViewById<View>(R.id.rowDisableIpv6).nextFocusUpId)
                     assertEquals(a.getString(R.string.auto_reconnect_no_dns),
                         a.findViewById<TextView>(R.id.tvAutoReconnectDns).text.toString())
                 }
