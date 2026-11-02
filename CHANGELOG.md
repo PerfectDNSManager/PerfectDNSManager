@@ -2,8 +2,14 @@
 
 ## En préparation — non publié
 
-- Écran principal : reconnaissance du DNS privé DoT configuré dans Android/ADB, sélection du fournisseur et mémorisation du profil pour désactiver/réactiver en un clic. Les hôtes inconnus deviennent des profils personnels.
-- Dons : page web commune dans l’application, accès par QR depuis une TV, conversion SideShift vers USDT0 sur Polygon. Activation en attente de la configuration du compte SideShift et du serveur bêta.
+- Dons : page web commune dans l’application, accès par QR depuis une TV, conversion SideShift vers USDT0 sur Polygon. Compte existant validé en local ; déploiement du serveur bêta à effectuer avant publication de cet écran.
+
+## 2.4.6-beta.1 — 2 novembre 2026
+
+- Écran principal : reconnaissance du DNS privé DoT configuré dans Android ou via ADB, avec affichage du fournisseur et du profil réellement utilisés.
+- Profil conservé après désactivation pour réactiver le même serveur en un clic, avec les autorisations Android/ADB habituelles.
+- Les hôtes DoT inconnus sont ajoutés aux profils personnels ; la sélection est actualisée au retour dans PDM si le DNS Android a changé.
+- Protection contre l’écrasement du profil pendant un changement ou une activation en cours.
 
 ## 2.4.5-beta.1 — 2 novembre 2026
 

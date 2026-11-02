@@ -32,7 +32,7 @@ Réception confirmée par le propriétaire : USDT0 / Polygon,
 0x71528115FA8aee4D9420F6caDEBfD0C043a316f7.
 
 Le serveur et ses tests sont dans le dépôt pdm-worker, branche locale
-codex/pdm-site-design-beta, documentation docs/donations.md. Le compte SideShift
-reste à configurer. Aucun ordre réel, transfert, déploiement du site ou APK bêta
+codex/pdm-site-design-beta, documentation docs/donations.md. Le compte SideShift de gestion client a été autorisé et validé en local. Le
+serveur de dons reste à déployer. Aucun ordre réel, transfert, déploiement du site ou APK bêta
 publié pour ce candidat. Déployer/valider le serveur bêta avant de distribuer cet
 écran ; ne pas pointer les utilisateurs vers une intégration non activée.
