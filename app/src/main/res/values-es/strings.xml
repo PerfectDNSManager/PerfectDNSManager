@@ -46,7 +46,6 @@
     <!-- Beta updates -->
     <string name="beta_updates_label">Recibir actualizaciones beta</string>
     <string name="beta_updates_description">Incluir versiones beta en la verificación automática de actualizaciones</string>
-    <string name="beta_updates_locked">Ya estás en una versión beta — esta opción está activada permanentemente.</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_reconnect_label">Activar DNS al arrancar</string>
@@ -129,9 +128,6 @@
 
     <!-- Support -->
     <string name="support_us_title">Apóyame ❤️</string>
-    <string name="support_us_message">¿Te gusta la aplicación? ¿Te ha ayudado?\n¡No dudes en hacer un pequeño gesto para el desarrollador!</string>
-    <string name="select_crypto_button">👉 Haz clic aquí para elegir la crypto a enviar 👈</string>
-    <string name="choose_crypto_title">Elegir una crypto</string>
 
     <!-- AboutActivity -->
     <string name="about_title">Acerca de Perfect DNS Manager</string>
@@ -254,8 +250,6 @@
 
 
     <!-- DNS Ratings -->
-    <string name="speed_label">Velocidad</string>
-    <string name="privacy_label">Privacidad</string>
 
     <!-- DNS Speedtest -->
     <string name="dns_speedtest_button">Iniciar prueba</string>
@@ -459,24 +453,19 @@
 
     <string name="dns_desc_custom">Perfil personalizado</string>
     <string name="dns_desc_isp_fmt">DNS del operador %1$s</string>
-    <string name="es_err_password_required">Se requiere contraseña</string>
     <string name="es_err_download_failed_fmt">Descarga fallida (%1$d)</string>
     <string name="es_err_format_unsupported">Formato no soportado (¿enlace antiguo?)</string>
     <string name="es_err_content_too_short_fmt">Contenido demasiado corto (%1$d bytes)</string>
     <string name="es_err_wrong_password">Contraseña incorrecta o contenido corrupto</string>
-    <string name="es_err_legacy_unsupported">Formato heredado no soportado</string>
     <string name="es_err_invalid_code_fmt">Código inválido: %1$s</string>
     <string name="adb_err_key_creation_failed">No se pudieron crear las claves ADB</string>
     <string name="adb_err_key_load_failed">No se pudo cargar/crear la clave ADB</string>
     <string name="adb_err_check_setup_fmt">Verifica que:\n1. La depuración ADB está activada\n2. La depuración inalámbrica está activada\n3. Reinicia el dispositivo si es necesario\n\nPuertos probados: %1$s</string>
     <string name="adb_err_permission_denied_fmt">Permiso WRITE_SECURE_SETTINGS denegado.\n\nResultado: %1$s</string>
-    <string name="share_text_format">Enlace (cifrado de extremo a extremo):\n%1$s\n\nContraseña:\n%2$s\n\nCopiado al portapapeles. Comparte enlace y contraseña por separado. La clave nunca se envía al servidor.\n\nCaduca en %3$s.</string>
     <string name="share_clip_password_fmt">Contraseña: %1$s</string>
     <string name="dns_desc_anti_malware">Anti-Malware</string>
     <string name="dns_desc_ad_blocker">Bloqueador de anuncios</string>
-    <string name="dns_desc_ad_malware_blocker">Bloqueador de anuncios + malware</string>
     <string name="dns_desc_blocks_ads_trackers">Bloquea anuncios y rastreadores</string>
-    <string name="dns_desc_privacy">Privacidad</string>
     <string name="dns_desc_neutral_dnssec">DNS neutral, sin ánimo de lucro, DNSSEC</string>
     <string name="dns_desc_no_logs">Sin registros</string>
     <string name="dns_desc_family_protection">Protección familiar</string>
@@ -507,7 +496,6 @@
     <string name="split_tunnel_all_apps_label">Todas las aplicaciones</string>    <string name="primary_dns_invalid">DNS principal no válido. Compruebe el formato según el protocolo elegido.</string>    <string name="update_signature_mismatch">Error: la firma del APK no coincide. Actualización cancelada.</string>    <string name="btn_stop">⏹ Detener</string>
     <string name="speedtest_stop">Detener</string>
     <string name="speedtest_fast_urls_loaded_fmt">%1$d URL(s) de prueba cargadas.</string>
-    <string name="speedtest_upload_unsupported">--- Subida: no admitida (N/A) ---</string>
     <string name="speedtest_providers_count_fmt">%1$d proveedores</string>
     <string name="speedtest_cancelled">>> Cancelado.</string>
     <string name="speedtest_finished">Hecho.</string>
@@ -572,9 +560,6 @@
     <string name="dns_desc_xdp_standard">DNS público español sin bloqueo de anuncios; reescribe algunas IP bloqueadas.</string>
     <string name="allow_adblock_profiles">Permitir perfiles Adblock</string>
     <string name="allow_adblock_profiles_help">Muestra los DNS que bloquean anuncios. Ocultarlos no cambia el DNS activo ni los perfiles personales.</string>
-    <string name="dns_desc_ads_social">Bloquea anuncios, rastreadores, malware y redes sociales</string>
-    <string name="dns_desc_ads_family">Bloquea anuncios, rastreadores, malware, contenido para adultos y apuestas</string>
-    <string name="dns_desc_ads_all">Bloquea anuncios, rastreadores, malware, contenido para adultos, apuestas y redes sociales</string>
     <string name="mullvad_dns_retirement">Fin del servicio anunciado para el 2 de noviembre de 2026</string>
     <string name="copy_share">Copiar el enlace</string>
     <string name="share_result_text">Enlace cifrado:\n%1$s\n\nContraseña:\n%2$s\n\nCaduca en %3$s.\nCopia solo si quieres el enlace y la contraseña en el portapapeles.</string>

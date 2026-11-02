@@ -70,6 +70,22 @@ class DnsMessagesTest {
         assertEquals(target, answers[2].name)
         assertNotNull(result.opt)
     }
+    @Test fun rejectsOversizedQueriesAndForgedSectionCounts() {
+        val q = query().toWire()
+        val r = response(Message(q)).toWire()
+        val oversized = q.copyOf(DnsMessages.MAX_BYTES + 1)
+        assertFalse(DnsMessages.matches(oversized, r))
+        assertNull(DnsMessages.rewriteQuery(oversized, "destination.example."))
+        assertNull(DnsMessages.restoreResponse(r, oversized))
+        assertNull(DnsMessages.restoreResponse(r.copyOf(DnsMessages.MAX_BYTES + 1), q))
+        for (section in 0..3) {
+            val forged = ByteArray(12)
+            forged[4 + section * 2] = 0xff.toByte()
+            forged[5 + section * 2] = 0xff.toByte()
+            assertFalse(DnsMessages.matches(q, forged))
+            assertNull(DnsMessages.serverFailure(forged))
+        }
+    }
     @Test fun rejectsTruncatedFrames() {
         try { DnsMessages.readFrame(byteArrayOf(0, 20, 1).inputStream()); fail() } catch (_: java.io.EOFException) {}
         try { DnsMessages.readFrame(byteArrayOf(0, 1, 0).inputStream()); fail() } catch (_: IllegalArgumentException) {}

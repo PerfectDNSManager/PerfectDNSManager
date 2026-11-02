@@ -46,7 +46,6 @@
     <!-- Beta updates -->
     <string name="beta_updates_label">बीटा अपडेट प्राप्त करें</string>
     <string name="beta_updates_description">स्वचालित अपडेट जाँच में बीटा संस्करण शामिल करें</string>
-    <string name="beta_updates_locked">आप पहले से बीटा संस्करण उपयोग कर रहे हैं — यह विकल्प हमेशा सक्रिय।</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_reconnect_label">बूट पर DNS सक्रिय करें</string>
@@ -129,9 +128,6 @@
 
     <!-- Support -->
     <string name="support_us_title">मुझे सहयोग दें ❤️</string>
-    <string name="support_us_message">क्या आपको ऐप पसंद आया? क्या इससे आपको मदद मिली?\nडेवलपर के लिए एक छोटा सा योगदान देने में संकोच न करें!</string>
-    <string name="select_crypto_button">👉 भेजने के लिए क्रिप्टो चुनने हेतु यहाँ क्लिक करें 👈</string>
-    <string name="choose_crypto_title">क्रिप्टो चुनें</string>
 
     <!-- AboutActivity -->
     <string name="about_title">Perfect DNS Manager के बारे में</string>
@@ -254,8 +250,6 @@
 
 
     <!-- DNS Ratings -->
-    <string name="speed_label">गति</string>
-    <string name="privacy_label">गोपनीयता</string>
 
     <!-- DNS Speedtest -->
     <string name="dns_speedtest_button">टेस्ट शुरू करें</string>
@@ -459,24 +453,19 @@
 
     <string name="dns_desc_custom">कस्टम प्रोफ़ाइल</string>
     <string name="dns_desc_isp_fmt">ISP DNS — %1$s</string>
-    <string name="es_err_password_required">पासवर्ड चाहिए</string>
     <string name="es_err_download_failed_fmt">डाउनलोड विफल (%1$d)</string>
     <string name="es_err_format_unsupported">असमर्थित प्रारूप (पुराना लिंक?)</string>
     <string name="es_err_content_too_short_fmt">सामग्री बहुत छोटी (%1$d बाइट)</string>
     <string name="es_err_wrong_password">गलत पासवर्ड या भ्रष्ट सामग्री</string>
-    <string name="es_err_legacy_unsupported">लीगेसी प्रारूप समर्थित नहीं</string>
     <string name="es_err_invalid_code_fmt">अमान्य कोड: %1$s</string>
     <string name="adb_err_key_creation_failed">ADB कुंजियाँ नहीं बना सके</string>
     <string name="adb_err_key_load_failed">ADB कुंजी लोड/बनाने में विफल</string>
     <string name="adb_err_check_setup_fmt">जाँचें:\n1. ADB डिबगिंग चालू है\n2. वायरलेस डिबगिंग चालू है\n3. आवश्यक हो तो डिवाइस रीस्टार्ट करें\n\nपरीक्षित पोर्ट: %1$s</string>
     <string name="adb_err_permission_denied_fmt">WRITE_SECURE_SETTINGS अनुमति अस्वीकृत।\n\nपरिणाम: %1$s</string>
-    <string name="share_text_format">लिंक (एंड-टू-एंड एन्क्रिप्टेड):\n%1$s\n\nपासवर्ड:\n%2$s\n\nक्लिपबोर्ड पर कॉपी हो गया। लिंक और पासवर्ड अलग से साझा करें। कुंजी कभी सर्वर को नहीं भेजी जाती।\n\n%3$s में समाप्त।</string>
     <string name="share_clip_password_fmt">पासवर्ड: %1$s</string>
     <string name="dns_desc_anti_malware">एंटी-मैलवेयर</string>
     <string name="dns_desc_ad_blocker">विज्ञापन ब्लॉकर</string>
-    <string name="dns_desc_ad_malware_blocker">विज्ञापन + मैलवेयर ब्लॉकर</string>
     <string name="dns_desc_blocks_ads_trackers">विज्ञापन और ट्रैकर्स ब्लॉक</string>
-    <string name="dns_desc_privacy">गोपनीयता</string>
     <string name="dns_desc_neutral_dnssec">तटस्थ, गैर-लाभकारी, DNSSEC</string>
     <string name="dns_desc_no_logs">कोई लॉग नहीं</string>
     <string name="dns_desc_family_protection">पारिवारिक सुरक्षा</string>
@@ -507,7 +496,6 @@
     <string name="split_tunnel_all_apps_label">सभी ऐप्स</string>    <string name="primary_dns_invalid">प्राथमिक DNS अमान्य। चुने गए प्रोटोकॉल के अनुसार प्रारूप जांचें।</string>    <string name="update_signature_mismatch">त्रुटि : APK हस्ताक्षर मेल नहीं खाते। अपडेट रद्द किया गया।</string>    <string name="btn_stop">⏹ रोकें</string>
     <string name="speedtest_stop">रोकें</string>
     <string name="speedtest_fast_urls_loaded_fmt">%1$d परीक्षण URL लोड हुए।</string>
-    <string name="speedtest_upload_unsupported">--- अपलोड : समर्थित नहीं (N/A) ---</string>
     <string name="speedtest_providers_count_fmt">%1$d प्रदाता</string>
     <string name="speedtest_cancelled">>> रद्द किया गया।</string>
     <string name="speedtest_finished">पूरा हुआ।</string>
@@ -568,9 +556,6 @@
     <string name="dns_desc_xdp_standard">विज्ञापन-अवरोधन के बिना स्पेनिश सार्वजनिक DNS; कुछ अवरुद्ध IP को बदल देता है.</string>
     <string name="allow_adblock_profiles">Adblock प्रोफ़ाइल की अनुमति दें</string>
     <string name="allow_adblock_profiles_help">विज्ञापन रोकने वाले DNS दिखाता है. इन्हें छिपाने से सक्रिय DNS या निजी प्रोफ़ाइल नहीं बदलतीं.</string>
-    <string name="dns_desc_ads_social">विज्ञापन, ट्रैकर, मैलवेयर और सोशल मीडिया रोकता है</string>
-    <string name="dns_desc_ads_family">विज्ञापन, ट्रैकर, मैलवेयर, वयस्क सामग्री और जुआ रोकता है</string>
-    <string name="dns_desc_ads_all">विज्ञापन, ट्रैकर, मैलवेयर, वयस्क सामग्री, जुआ और सोशल मीडिया रोकता है</string>
     <string name="mullvad_dns_retirement">सेवा 2 नवंबर 2026 को बंद होने की घोषणा</string>
     <string name="copy_share">शेयर कॉपी करें</string>
     <string name="share_result_text">एन्क्रिप्टेड लिंक:\n%1$s\n\nपासवर्ड:\n%2$s\n\n%3$s में समाप्त.\nकेवल तभी कॉपी करें जब आप लिंक और पासवर्ड क्लिपबोर्ड में रखना चाहते हों.</string>

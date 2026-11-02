@@ -46,7 +46,6 @@
     <!-- Beta updates -->
     <string name="beta_updates_label">تلقّي تحديثات البيتا</string>
     <string name="beta_updates_description">تضمين إصدارات البيتا في الفحص التلقائي للتحديثات</string>
-    <string name="beta_updates_locked">أنت تستخدم نسخة بيتا بالفعل — هذا الخيار مفعّل دائمًا.</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_reconnect_label">تفعيل DNS عند الإقلاع</string>
@@ -129,9 +128,6 @@
 
     <!-- Support -->
     <string name="support_us_title">ادعمني ❤️</string>
-    <string name="support_us_message">هل أعجبك التطبيق؟ هل ساعدك؟\nلا تتردد في تقديم بادرة صغيرة للمطوّر!</string>
-    <string name="select_crypto_button">👉 اضغط هنا لاختيار العملة الرقمية للإرسال 👈</string>
-    <string name="choose_crypto_title">اختر عملة رقمية</string>
 
     <!-- AboutActivity -->
     <string name="about_title">حول Perfect DNS Manager</string>
@@ -254,8 +250,6 @@
 
 
     <!-- DNS Ratings -->
-    <string name="speed_label">السرعة</string>
-    <string name="privacy_label">الخصوصية</string>
 
     <!-- DNS Speedtest -->
     <string name="dns_speedtest_button">بدء الاختبار</string>
@@ -459,24 +453,19 @@
 
     <string name="dns_desc_custom">ملف مخصص</string>
     <string name="dns_desc_isp_fmt">DNS المزود — %1$s</string>
-    <string name="es_err_password_required">كلمة المرور مطلوبة</string>
     <string name="es_err_download_failed_fmt">فشل التنزيل (%1$d)</string>
     <string name="es_err_format_unsupported">تنسيق غير مدعوم (رابط قديم؟)</string>
     <string name="es_err_content_too_short_fmt">المحتوى قصير جدًا (%1$d بايت)</string>
     <string name="es_err_wrong_password">كلمة مرور خاطئة أو محتوى تالف</string>
-    <string name="es_err_legacy_unsupported">التنسيق القديم غير مدعوم</string>
     <string name="es_err_invalid_code_fmt">رمز غير صالح: %1$s</string>
     <string name="adb_err_key_creation_failed">فشل إنشاء مفاتيح ADB</string>
     <string name="adb_err_key_load_failed">فشل تحميل/إنشاء مفتاح ADB</string>
     <string name="adb_err_check_setup_fmt">تحقق من:\n1. تفعيل تصحيح ADB\n2. تفعيل التصحيح اللاسلكي\n3. إعادة تشغيل الجهاز إذا لزم الأمر\n\nالمنافذ المختبرة: %1$s</string>
     <string name="adb_err_permission_denied_fmt">تم رفض إذن WRITE_SECURE_SETTINGS.\n\nالنتيجة: %1$s</string>
-    <string name="share_text_format">الرابط (مشفر بالكامل):\n%1$s\n\nكلمة المرور:\n%2$s\n\nنُسخ إلى الحافظة. شارك الرابط وكلمة المرور بشكل منفصل. لا يُرسل المفتاح إلى الخادم أبدًا.\n\nتنتهي صلاحيته خلال %3$s.</string>
     <string name="share_clip_password_fmt">كلمة المرور: %1$s</string>
     <string name="dns_desc_anti_malware">مكافحة البرمجيات الخبيثة</string>
     <string name="dns_desc_ad_blocker">حاجب الإعلانات</string>
-    <string name="dns_desc_ad_malware_blocker">حاجب الإعلانات + البرمجيات الخبيثة</string>
     <string name="dns_desc_blocks_ads_trackers">يحجب الإعلانات والمتعقبات</string>
-    <string name="dns_desc_privacy">الخصوصية</string>
     <string name="dns_desc_neutral_dnssec">محايد، غير ربحي، DNSSEC</string>
     <string name="dns_desc_no_logs">بدون سجلات</string>
     <string name="dns_desc_family_protection">حماية العائلة</string>
@@ -507,7 +496,6 @@
     <string name="split_tunnel_all_apps_label">كل التطبيقات</string>    <string name="primary_dns_invalid">DNS الأساسي غير صالح. تحقق من التنسيق وفقاً للبروتوكول المختار.</string>    <string name="update_signature_mismatch">خطأ : توقيع APK غير متطابق. تم إلغاء التحديث.</string>    <string name="btn_stop">⏹ إيقاف</string>
     <string name="speedtest_stop">إيقاف</string>
     <string name="speedtest_fast_urls_loaded_fmt">تم تحميل %1$d عنوان URL للاختبار.</string>
-    <string name="speedtest_upload_unsupported">--- رفع : غير مدعوم (N/A) ---</string>
     <string name="speedtest_providers_count_fmt">%1$d موفر</string>
     <string name="speedtest_cancelled">>> ملغى.</string>
     <string name="speedtest_finished">تم.</string>
@@ -576,9 +564,6 @@
     <string name="dns_desc_xdp_standard">نظام DNS عام إسباني دون حظر للإعلانات؛ يعيد كتابة بعض عناوين IP المحظورة.</string>
     <string name="allow_adblock_profiles">السماح بملفات حظر الإعلانات</string>
     <string name="allow_adblock_profiles_help">يعرض خوادم DNS التي تحظر الإعلانات. إخفاؤها لا يغيّر DNS النشط ولا الملفات الشخصية.</string>
-    <string name="dns_desc_ads_social">يحظر الإعلانات والمتتبعات والبرمجيات الخبيثة ووسائل التواصل الاجتماعي</string>
-    <string name="dns_desc_ads_family">يحظر الإعلانات والمتتبعات والبرمجيات الخبيثة والمحتوى الإباحي والمراهنات</string>
-    <string name="dns_desc_ads_all">يحظر الإعلانات والمتتبعات والبرمجيات الخبيثة والمحتوى الإباحي والمراهنات ووسائل التواصل الاجتماعي</string>
     <string name="mullvad_dns_retirement">أُعلن عن إيقاف الخدمة في 2 نوفمبر 2026</string>
     <string name="copy_share">نسخ المشاركة</string>
     <string name="share_result_text">رابط مشفّر:\n%1$s\n\nكلمة المرور:\n%2$s\n\nتنتهي الصلاحية بعد %3$s.\nانسخ فقط إذا أردت وضع الرابط وكلمة المرور في الحافظة.</string>

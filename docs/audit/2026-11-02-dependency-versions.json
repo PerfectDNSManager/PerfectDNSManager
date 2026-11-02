@@ -1,0 +1,140 @@
+[
+  {
+    "package": "androidx.appcompat:appcompat",
+    "current": "1.7.0",
+    "latestStable": "1.8.0",
+    "source": "https://dl.google.com/dl/android/maven2/androidx/appcompat/appcompat/maven-metadata.xml"
+  },
+  {
+    "package": "com.google.android.material:material",
+    "current": "1.12.0",
+    "latestStable": "1.14.0",
+    "source": "https://dl.google.com/dl/android/maven2/com/google/android/material/material/maven-metadata.xml"
+  },
+  {
+    "package": "androidx.constraintlayout:constraintlayout",
+    "current": "2.1.4",
+    "latestStable": "2.2.2",
+    "source": "https://dl.google.com/dl/android/maven2/androidx/constraintlayout/constraintlayout/maven-metadata.xml"
+  },
+  {
+    "package": "androidx.recyclerview:recyclerview",
+    "current": "1.3.2",
+    "latestStable": "1.4.0",
+    "source": "https://dl.google.com/dl/android/maven2/androidx/recyclerview/recyclerview/maven-metadata.xml"
+  },
+  {
+    "package": "com.google.code.gson:gson",
+    "current": "2.11.0",
+    "latestStable": "2.15.0",
+    "source": "https://repo.maven.apache.org/maven2/com/google/code/gson/gson/maven-metadata.xml"
+  },
+  {
+    "package": "com.squareup.okhttp3:okhttp",
+    "current": "4.12.0",
+    "latestStable": "5.5.1",
+    "source": "https://repo.maven.apache.org/maven2/com/squareup/okhttp3/okhttp/maven-metadata.xml"
+  },
+  {
+    "package": "dnsjava:dnsjava",
+    "current": "3.6.5",
+    "latestStable": "3.7.1",
+    "source": "https://repo.maven.apache.org/maven2/dnsjava/dnsjava/maven-metadata.xml"
+  },
+  {
+    "package": "org.slf4j:slf4j-nop",
+    "current": "1.7.36",
+    "latestStable": "2.0.20",
+    "source": "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-nop/maven-metadata.xml"
+  },
+  {
+    "package": "org.bouncycastle:bcpkix-jdk18on",
+    "current": "1.86",
+    "latestStable": "1.86",
+    "source": "https://repo.maven.apache.org/maven2/org/bouncycastle/bcpkix-jdk18on/maven-metadata.xml"
+  },
+  {
+    "package": "org.bouncycastle:bcprov-jdk18on",
+    "current": "1.86",
+    "latestStable": "1.86",
+    "source": "https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/maven-metadata.xml"
+  },
+  {
+    "package": "org.conscrypt:conscrypt-android",
+    "current": "2.5.2",
+    "latestStable": "2.8.0",
+    "source": "https://repo.maven.apache.org/maven2/org/conscrypt/conscrypt-android/maven-metadata.xml"
+  },
+  {
+    "package": "tech.kwik:kwik",
+    "current": "0.10.8",
+    "latestStable": "0.12.1",
+    "source": "https://repo.maven.apache.org/maven2/tech/kwik/kwik/maven-metadata.xml"
+  },
+  {
+    "package": "tech.kwik:agent15",
+    "current": "3.1",
+    "latestStable": "4.0",
+    "source": "https://repo.maven.apache.org/maven2/tech/kwik/agent15/maven-metadata.xml"
+  },
+  {
+    "package": "com.lambdapioneer.argon2kt:argon2kt",
+    "current": "1.5.0",
+    "latestStable": "1.6.0",
+    "source": "https://repo.maven.apache.org/maven2/com/lambdapioneer/argon2kt/argon2kt/maven-metadata.xml"
+  },
+  {
+    "package": "org.jetbrains.kotlinx:kotlinx-coroutines-android",
+    "current": "1.8.1",
+    "latestStable": "1.11.0",
+    "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/maven-metadata.xml"
+  },
+  {
+    "package": "androidx.lifecycle:lifecycle-runtime-ktx",
+    "current": "2.8.4",
+    "latestStable": "2.11.0",
+    "source": "https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-runtime-ktx/maven-metadata.xml"
+  },
+  {
+    "package": "com.android.tools:desugar_jdk_libs",
+    "current": "2.0.4",
+    "latestStable": "2.1.5",
+    "source": "https://dl.google.com/dl/android/maven2/com/android/tools/desugar_jdk_libs/maven-metadata.xml"
+  },
+  {
+    "package": "junit:junit",
+    "current": "4.13.2",
+    "latestStable": "4.13.2",
+    "source": "https://repo.maven.apache.org/maven2/junit/junit/maven-metadata.xml"
+  },
+  {
+    "package": "androidx.test.ext:junit",
+    "current": "1.2.1",
+    "latestStable": "1.3.0",
+    "source": "https://dl.google.com/dl/android/maven2/androidx/test/ext/junit/maven-metadata.xml"
+  },
+  {
+    "package": "androidx.test.espresso:espresso-core",
+    "current": "3.6.1",
+    "latestStable": "3.7.0",
+    "source": "https://dl.google.com/dl/android/maven2/androidx/test/espresso/espresso-core/maven-metadata.xml"
+  },
+  {
+    "package": "androidx.core:core-ktx",
+    "current": "1.13.1",
+    "latestStable": "1.19.1",
+    "source": "https://dl.google.com/dl/android/maven2/androidx/core/core-ktx/maven-metadata.xml"
+  },
+  {
+    "package": "com.android.tools.build:gradle",
+    "current": "8.7.3",
+    "latestStable": "9.5.0",
+    "source": "https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/maven-metadata.xml"
+  },
+  {
+    "package": "org.jetbrains.kotlin:kotlin-gradle-plugin",
+    "current": "2.0.0",
+    "latestStable": "2.4.21",
+    "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin/maven-metadata.xml"
+  }
+]

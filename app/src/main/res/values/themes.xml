@@ -41,11 +41,6 @@
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
-    <style name="PDMText.Title">
-        <item name="android:textSize">18sp</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:letterSpacing">0.01</item>
-    </style>
 
     <style name="PDMText.Subtitle">
         <item name="android:textSize">15sp</item>
@@ -63,12 +58,6 @@
         <item name="android:textColor">@color/pdm_text_secondary</item>
     </style>
 
-    <style name="PDMText.Mono">
-        <item name="android:fontFamily">monospace</item>
-        <item name="android:textColor">@color/pdm_text_primary</item>
-        <item name="android:textSize">13sp</item>
-        <item name="android:letterSpacing">0.02</item>
-    </style>
 
     <!-- ─── Boutons ─── -->
     <style name="PDMButton" parent="Widget.AppCompat.Button">
@@ -88,10 +77,6 @@
         <item name="android:textColor">@color/pdm_accent</item>
     </style>
 
-    <style name="PDMButton.Danger">
-        <item name="android:background">@drawable/pdm_btn_danger</item>
-        <item name="android:textColor">@color/pdm_danger</item>
-    </style>
 
     <style name="PDMButton.Ghost">
         <item name="android:background">@drawable/pdm_btn_ghost</item>
@@ -120,19 +105,7 @@
     </style>
 
     <!-- ─── Inputs ─── -->
-    <style name="PDMInput" parent="Widget.AppCompat.EditText">
-        <item name="android:background">@drawable/pdm_input_bg</item>
-        <item name="android:textColor">@color/pdm_text_primary</item>
-        <item name="android:textColorHint">@color/pdm_text_disabled</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:padding">12dp</item>
-        <item name="android:minHeight">44dp</item>
-    </style>
 
     <!-- ─── Card / Surface ─── -->
-    <style name="PDMCard">
-        <item name="android:background">@drawable/pdm_card_bg</item>
-        <item name="android:padding">16dp</item>
-    </style>
 
 </resources>

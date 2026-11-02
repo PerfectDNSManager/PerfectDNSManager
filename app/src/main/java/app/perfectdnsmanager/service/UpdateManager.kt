@@ -129,7 +129,7 @@ class UpdateManager(private val context: Context) {
                 val sizeStr = if (release.apkSize > 0)
                     String.format(java.util.Locale.getDefault(), "%.1f Mo", release.apkSize / 1_000_000.0) else ""
                 runOnMainThread {
-                    if (context is Activity && !context.isFinishing) {
+                    if (context is Activity && !context.isFinishing && !context.isDestroyed) {
                         AlertDialog.Builder(context)
                             .setTitle(context.getString(R.string.update_dialog_title))
                             .setMessage(context.getString(R.string.update_dialog_message, release.version, sizeStr))
@@ -163,7 +163,7 @@ class UpdateManager(private val context: Context) {
 
             val sizeStr = if (release.apkSize > 0) String.format(java.util.Locale.getDefault(), "%.1f Mo", release.apkSize / 1_000_000.0) else ""
             runOnMainThread {
-                if (context is Activity && !context.isFinishing) {
+                if (context is Activity && !context.isFinishing && !context.isDestroyed) {
                     AlertDialog.Builder(context)
                         .setTitle(context.getString(R.string.update_dialog_title))
                         .setMessage(context.getString(R.string.update_dialog_message, release.version, sizeStr))

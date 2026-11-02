@@ -46,7 +46,6 @@
     <!-- Beta updates -->
     <string name="beta_updates_label">接收测试版更新</string>
     <string name="beta_updates_description">在自动更新检查中包含测试版本</string>
-    <string name="beta_updates_locked">您已在使用 Beta 版本 — 此选项始终启用。</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_reconnect_label">开机自动启用 DNS</string>
@@ -129,9 +128,6 @@
 
     <!-- Support -->
     <string name="support_us_title">支持我 ❤️</string>
-    <string name="support_us_message">您喜欢这个应用吗？它对您有帮助吗？\n欢迎为开发者做一个小小的支持！</string>
-    <string name="select_crypto_button">👉 点击此处选择要发送的加密货币 👈</string>
-    <string name="choose_crypto_title">选择加密货币</string>
 
     <!-- AboutActivity -->
     <string name="about_title">关于 Perfect DNS Manager</string>
@@ -254,8 +250,6 @@
 
 
     <!-- DNS Ratings -->
-    <string name="speed_label">速度</string>
-    <string name="privacy_label">隐私</string>
 
     <!-- DNS Speedtest -->
     <string name="dns_speedtest_button">开始测试</string>
@@ -459,24 +453,19 @@
 
     <string name="dns_desc_custom">自定义配置</string>
     <string name="dns_desc_isp_fmt">运营商 DNS — %1$s</string>
-    <string name="es_err_password_required">需要密码</string>
     <string name="es_err_download_failed_fmt">下载失败 (%1$d)</string>
     <string name="es_err_format_unsupported">不支持的格式 (旧链接?)</string>
     <string name="es_err_content_too_short_fmt">内容过短 (%1$d 字节)</string>
     <string name="es_err_wrong_password">密码错误或内容损坏</string>
-    <string name="es_err_legacy_unsupported">不支持旧版格式</string>
     <string name="es_err_invalid_code_fmt">无效代码: %1$s</string>
     <string name="adb_err_key_creation_failed">无法创建 ADB 密钥</string>
     <string name="adb_err_key_load_failed">无法加载/创建 ADB 密钥</string>
     <string name="adb_err_check_setup_fmt">请检查:\n1. ADB 调试已启用\n2. 无线调试已启用\n3. 如有必要请重启设备\n\n测试端口: %1$s</string>
     <string name="adb_err_permission_denied_fmt">WRITE_SECURE_SETTINGS 权限被拒绝。\n\n结果: %1$s</string>
-    <string name="share_text_format">链接 (端到端加密):\n%1$s\n\n密码:\n%2$s\n\n已复制到剪贴板。请分别共享链接和密码。密钥从不发送至服务器。\n\n%3$s 后过期。</string>
     <string name="share_clip_password_fmt">密码: %1$s</string>
     <string name="dns_desc_anti_malware">反恶意软件</string>
     <string name="dns_desc_ad_blocker">广告拦截器</string>
-    <string name="dns_desc_ad_malware_blocker">广告 + 恶意软件拦截</string>
     <string name="dns_desc_blocks_ads_trackers">拦截广告与追踪器</string>
-    <string name="dns_desc_privacy">隐私</string>
     <string name="dns_desc_neutral_dnssec">中立、非营利、DNSSEC</string>
     <string name="dns_desc_no_logs">无日志</string>
     <string name="dns_desc_family_protection">家庭保护</string>
@@ -507,7 +496,6 @@
     <string name="split_tunnel_all_apps_label">所有应用</string>    <string name="primary_dns_invalid">主 DNS 无效。请根据所选协议检查格式。</string>    <string name="update_signature_mismatch">错误：APK 签名不匹配，更新已中止。</string>    <string name="btn_stop">⏹ 停止</string>
     <string name="speedtest_stop">停止</string>
     <string name="speedtest_fast_urls_loaded_fmt">已加载 %1$d 个测试 URL。</string>
-    <string name="speedtest_upload_unsupported">--- 上传：不支持 (N/A) ---</string>
     <string name="speedtest_providers_count_fmt">%1$d 家服务商</string>
     <string name="speedtest_cancelled">>> 已取消。</string>
     <string name="speedtest_finished">完成。</string>
@@ -566,9 +554,6 @@
     <string name="dns_desc_xdp_standard">西班牙公共 DNS，不拦截广告；会改写部分被封锁的 IP。</string>
     <string name="allow_adblock_profiles">允许广告拦截配置</string>
     <string name="allow_adblock_profiles_help">显示可拦截广告的 DNS。隐藏它们不会改变当前 DNS 或个人配置。</string>
-    <string name="dns_desc_ads_social">拦截广告、跟踪器、恶意软件和社交媒体</string>
-    <string name="dns_desc_ads_family">拦截广告、跟踪器、恶意软件、成人内容和赌博</string>
-    <string name="dns_desc_ads_all">拦截广告、跟踪器、恶意软件、成人内容、赌博和社交媒体</string>
     <string name="mullvad_dns_retirement">服务已宣布于 2026 年 11 月 2 日停止</string>
     <string name="copy_share">复制分享</string>
     <string name="share_result_text">加密链接：\n%1$s\n\n密码：\n%2$s\n\n%3$s 后过期。\n仅在您希望将链接和密码放入剪贴板时复制。</string>

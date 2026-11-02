@@ -1,0 +1,50 @@
+[
+  {
+    "package": "androidx.appcompat:appcompat",
+    "version": "1.8.0",
+    "minSdk": [
+      "23"
+    ],
+    "aarMetadata": "aarFormatVersion=1.0\naarMetadataVersion=1.0\nminCompileSdk=34\nminCompileSdkExtension=0\nminAndroidGradlePluginVersion=8.1.1\ncoreLibraryDesugaringEnabled=false\n"
+  },
+  {
+    "package": "androidx.recyclerview:recyclerview",
+    "version": "1.4.0",
+    "minSdk": [
+      "21"
+    ],
+    "aarMetadata": "aarFormatVersion=1.0\naarMetadataVersion=1.0\nminCompileSdk=35\nminCompileSdkExtension=0\nminAndroidGradlePluginVersion=1.0.0\ncoreLibraryDesugaringEnabled=false\n"
+  },
+  {
+    "package": "org.conscrypt:conscrypt-android",
+    "version": "2.8.0",
+    "minSdk": [
+      "21"
+    ],
+    "aarMetadata": "aarFormatVersion=1.0\naarMetadataVersion=1.0\nminCompileSdk=1\nminCompileSdkExtension=0\nminAndroidGradlePluginVersion=1.0.0\n"
+  },
+  {
+    "package": "com.lambdapioneer.argon2kt:argon2kt",
+    "version": "1.6.0",
+    "minSdk": [
+      "21"
+    ],
+    "aarMetadata": "aarFormatVersion=1.0\naarMetadataVersion=1.0\nminCompileSdk=1\nminCompileSdkExtension=0\nminAndroidGradlePluginVersion=1.0.0\ncoreLibraryDesugaringEnabled=false\n"
+  },
+  {
+    "package": "androidx.lifecycle:lifecycle-runtime-ktx",
+    "version": "2.11.0",
+    "minSdk": [
+      "23"
+    ],
+    "aarMetadata": ""
+  },
+  {
+    "package": "androidx.core:core-ktx",
+    "version": "1.19.1",
+    "minSdk": [
+      "23"
+    ],
+    "aarMetadata": "aarFormatVersion=1.0\naarMetadataVersion=1.0\nminCompileSdk=37\nminCompileMinorSdk=0\nminCompileSdkExtension=0\nminAndroidGradlePluginVersion=9.1.0\ncoreLibraryDesugaringEnabled=false\n"
+  }
+]

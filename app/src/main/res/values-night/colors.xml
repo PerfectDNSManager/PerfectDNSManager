@@ -9,7 +9,6 @@
     <color name="pdm_surface_input">#14161A</color>
     <color name="pdm_surface_pressed">#22262E</color>
     <color name="pdm_border">#2A2E36</color>
-    <color name="pdm_border_focus">#4CAF50</color>
 
     <color name="pdm_text_primary">#E6E9EE</color>
     <color name="pdm_text_secondary">#8A93A3</color>
@@ -22,8 +21,6 @@
     <color name="pdm_danger">#FF5252</color>
     <color name="pdm_warning">#FFCC00</color>
 
-    <color name="pdm_focus_ring">#804CAF50</color>
-    <color name="pdm_scrim">#B3000000</color>
 
     <!-- Surfaces teintées (overlays sémantiques sobres) -->
     <color name="pdm_tint_neutral">#14FFFFFF</color>
@@ -37,7 +34,6 @@
     <color name="pdm_accent_support">#FFB74D</color>
     <color name="pdm_accent_gold">#FFD54F</color>
     <color name="pdm_accent_purple">#CE93D8</color>
-    <color name="pdm_accent_purple_deep">#AB47BC</color>
 
     <!-- Dark mode : on garde la teinte system par défaut (suffisamment visible sur fond noir) -->
     <color name="pdm_toggle_off">#6B6F78</color>

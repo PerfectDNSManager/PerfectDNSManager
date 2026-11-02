@@ -143,12 +143,10 @@ class DnsVpnService : VpnService() {
     @Volatile private var rewriteRules = listOf<DnsRewriteRule>()
 
     // Pending: on stocke aussi le qname original encodé pour restaurer la réponse si rewrite.
-    // origId = ID de transaction ORIGINAL du client (pour le restaurer sur le chemin UDP
-    // où l'ID sortant est réécrit en ID unique).
     data class Pending(
         val srcIp: ByteArray, val dstIp: ByteArray, val srcPort: Int,
-        val time: Long, val wasRewritten: Boolean, val originalQnameEncoded: ByteArray?,
-        val origId: Int = 0, val generation: Long = 0, val query: ByteArray = byteArrayOf()
+        val wasRewritten: Boolean, val originalQnameEncoded: ByteArray?,
+        val generation: Long = 0, val query: ByteArray = byteArrayOf()
     )
     companion object {
         const val ACTION_START = "app.perfectdnsmanager.START_VPN"
@@ -410,7 +408,6 @@ class DnsVpnService : VpnService() {
             val off = ihl + 8
             if (buf.size - off < 12) return
             var query = buf.copyOfRange(off, buf.size)
-            val origId = (query[0].toInt() and 0xFF) shl 8 or (query[1].toInt() and 0xFF)
 
             // Early-exit chemin chaud : ne parser le qname (ByteBuffer + String par
             // label) que si une règle de rewrite OU un split-horizon DoQ est actif —
@@ -438,7 +435,7 @@ class DnsVpnService : VpnService() {
                     }
                     if (ip != null) {
                         val resp = synthesizeDnsResponse(query, ip)
-                        writeTun(Pending(srcIp, dstIp, srcPort, System.currentTimeMillis(), false, null, origId, localGeneration, query), resp)
+                        writeTun(Pending(srcIp, dstIp, srcPort, false, null, localGeneration, query), resp)
                         return
                     }
                 }
@@ -454,7 +451,7 @@ class DnsVpnService : VpnService() {
                 wasRewritten = true
             }
 
-            val p = Pending(srcIp, dstIp, srcPort, System.currentTimeMillis(), wasRewritten, originalQnameEncoded, origId, localGeneration, query)
+            val p = Pending(srcIp, dstIp, srcPort, wasRewritten, originalQnameEncoded, localGeneration, query)
 
             when {
                 // DoH/DoQ : la réponse est traitée dans la tâche même (closure sur `p`),

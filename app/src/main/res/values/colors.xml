@@ -9,7 +9,6 @@
     <color name="pdm_surface_input">#F0F2F5</color>
     <color name="pdm_surface_pressed">#E8EBF0</color>
     <color name="pdm_border">#E2E5EA</color>
-    <color name="pdm_border_focus">#2E7D32</color>
 
     <color name="pdm_text_primary">#1A1D22</color>
     <color name="pdm_text_secondary">#5E6673</color>
@@ -22,8 +21,6 @@
     <color name="pdm_danger">#C62828</color>
     <color name="pdm_warning">#E65100</color>
 
-    <color name="pdm_focus_ring">#4D2E7D32</color>
-    <color name="pdm_scrim">#80000000</color>
 
     <!-- Surfaces teintées (overlays sémantiques sobres) -->
     <color name="pdm_tint_neutral">#0F000000</color>
@@ -37,15 +34,8 @@
     <color name="pdm_accent_support">#E65100</color>
     <color name="pdm_accent_gold">#B8860B</color>
     <color name="pdm_accent_purple">#6A1B9A</color>
-    <color name="pdm_accent_purple_deep">#4A148C</color>
 
     <!-- ─── Legacy (conservés pour éviter de casser d'anciennes références) ─── -->
-    <color name="background_gradient_start">#000000</color>
-    <color name="background_gradient_end">#DDDDDD</color>
-    <color name="fastlane_background">#0096a6</color>
-    <color name="search_opaque">#ffaa3f</color>
-    <color name="selected_background">#ffaa3f</color>
-    <color name="default_background">#3d3d3d</color>
 
     <!-- Piste d'un switch OFF. Light mode : gris moyen visible sur fond blanc.
          Surchargé en values-night/colors.xml pour le dark mode. -->

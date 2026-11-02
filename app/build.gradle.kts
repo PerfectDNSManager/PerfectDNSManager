@@ -125,12 +125,10 @@ android.applicationVariants.all {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("com.google.code.gson:gson:2.15.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("dnsjava:dnsjava:3.6.5")
+    implementation("dnsjava:dnsjava:3.7.1")
     implementation("org.slf4j:slf4j-nop:1.7.36")
 
     // ─── ADB pairing (Android 11+ Wireless Debugging) ───

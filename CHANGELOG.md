@@ -1,5 +1,11 @@
 # Changelog
 
+## Non publié — audit du 2 novembre 2026
+
+- Retrait des dépendances et ressources inutilisées ; mise à jour Gson/dnsjava.
+- Bornes des messages DNS renforcées, import des profils indexé et protection des dialogues après destruction de l’écran.
+- Contrôle SHA-256 du téléchargement Gradle. Rapport détaillé dans docs/audit/2026-11-02-maintenance-audit.md.
+
 ## 2.4.8-beta.1 — 2 novembre 2026
 
 - Rapport sécurisé : version du noyau Linux dans la rubrique optionnelle Informations appareil, aux côtés d’Android, du niveau d’API, du modèle et de la version de PDM.

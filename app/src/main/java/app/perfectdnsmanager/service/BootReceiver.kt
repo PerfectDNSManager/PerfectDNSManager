@@ -10,7 +10,6 @@ import android.net.VpnService
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import app.perfectdnsmanager.MainActivity
 import app.perfectdnsmanager.R
 import app.perfectdnsmanager.data.DnsProfile
 import app.perfectdnsmanager.util.PrivateDnsGuard
@@ -24,7 +23,6 @@ class BootReceiver : BroadcastReceiver() {
         private const val BOOT_DELAY_MS = 8_000L
         private const val CHANNEL_ID = "boot_notification"
         private const val NOTIF_ID = 9001
-        private const val NOTIF_ID_DNS_LOCKED = 9002
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -127,35 +125,6 @@ class BootReceiver : BroadcastReceiver() {
                 nm.createNotificationChannel(channel)
             }
         }
-    }
-
-    /**
-     * Le DNS privé (DoT) est verrouillé au niveau système : on ne peut ni le
-     * couper, ni monter le VPN sans casser la résolution. On envoie
-     * l'utilisateur vers l'écran système via MainActivity.
-     */
-    private fun postPrivateDnsLockedNotification(context: Context) {
-        ensureNotificationChannel(context)
-        val intent = Intent(context, app.perfectdnsmanager.NotificationActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            putExtra(MainActivity.EXTRA_OPEN_PRIVATE_DNS_SETTINGS, true)
-        }
-        val pi = PendingIntent.getActivity(
-            context, 2, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        val text = context.getString(R.string.private_dns_locked_boot)
-        val notif = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle(context.getString(R.string.app_name))
-            .setContentText(text)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
-            .setContentIntent(pi)
-            .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .build()
-        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        nm.notify(NOTIF_ID_DNS_LOCKED, notif)
     }
 
     private fun postVpnPermissionNotification(context: Context) {

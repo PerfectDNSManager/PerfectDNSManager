@@ -46,7 +46,6 @@
     <!-- Beta updates -->
     <string name="beta_updates_label">Receive beta updates</string>
     <string name="beta_updates_description">Include beta versions in the automatic update check</string>
-    <string name="beta_updates_locked">You\'re already on a beta build — this option is locked on.</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_reconnect_label">Auto-start DNS at boot</string>
@@ -129,9 +128,6 @@
 
     <!-- Support -->
     <string name="support_us_title">Support me ❤️</string>
-    <string name="support_us_message">Do you like the app? Did it help you?\nFeel free to make a small gesture for the developer!</string>
-    <string name="select_crypto_button">👉 Click here to choose which crypto to send 👈</string>
-    <string name="choose_crypto_title">Choose a crypto</string>
 
     <!-- AboutActivity -->
     <string name="about_title">About Perfect DNS Manager</string>
@@ -274,8 +270,6 @@
 
 
     <!-- DNS Ratings -->
-    <string name="speed_label">Speed</string>
-    <string name="privacy_label">Privacy</string>
 
     <!-- Missing from FR -->
 
@@ -478,24 +472,19 @@
 
     <string name="dns_desc_custom">Custom profile</string>
     <string name="dns_desc_isp_fmt">ISP DNS — %1$s</string>
-    <string name="es_err_password_required">Password required</string>
     <string name="es_err_download_failed_fmt">Download failed (%1$d)</string>
     <string name="es_err_format_unsupported">Unsupported format (old link?)</string>
     <string name="es_err_content_too_short_fmt">Content too short (%1$d bytes)</string>
     <string name="es_err_wrong_password">Wrong password or corrupted content</string>
-    <string name="es_err_legacy_unsupported">Legacy format not supported</string>
     <string name="es_err_invalid_code_fmt">Invalid code: %1$s</string>
     <string name="adb_err_key_creation_failed">Failed to create ADB keys</string>
     <string name="adb_err_key_load_failed">Failed to load/create ADB key</string>
     <string name="adb_err_check_setup_fmt">Check that:\n1. ADB debugging is enabled\n2. Wireless debugging is enabled\n3. Reboot the device if needed\n\nPorts tried: %1$s</string>
     <string name="adb_err_permission_denied_fmt">WRITE_SECURE_SETTINGS permission denied.\n\nResult: %1$s</string>
-    <string name="share_text_format">Link (end-to-end encrypted):\n%1$s\n\nPassword:\n%2$s\n\nCopied to clipboard. Share link + password separately. The key is never sent to the server.\n\nExpires in %3$s.</string>
     <string name="share_clip_password_fmt">Password: %1$s</string>
     <string name="dns_desc_anti_malware">Anti-Malware</string>
     <string name="dns_desc_ad_blocker">Ad blocker</string>
-    <string name="dns_desc_ad_malware_blocker">Ad + malware blocker</string>
     <string name="dns_desc_blocks_ads_trackers">Blocks ads &amp; trackers</string>
-    <string name="dns_desc_privacy">Privacy</string>
     <string name="dns_desc_neutral_dnssec">Neutral, non-profit, DNSSEC</string>
     <string name="dns_desc_no_logs">No logs</string>
     <string name="dns_desc_family_protection">Family protection</string>
@@ -526,7 +515,6 @@
     <string name="split_tunnel_all_apps_label">All applications</string>    <string name="primary_dns_invalid">Invalid primary DNS. Check the format for the chosen protocol.</string>    <string name="update_signature_mismatch">Error: APK signature mismatch. Update aborted.</string>    <string name="btn_stop">⏹ Stop</string>
     <string name="speedtest_stop">Stop</string>
     <string name="speedtest_fast_urls_loaded_fmt">%1$d test URL(s) loaded.</string>
-    <string name="speedtest_upload_unsupported">--- Upload: not supported (N/A) ---</string>
     <string name="speedtest_providers_count_fmt">%1$d providers</string>
     <string name="speedtest_cancelled">>> Cancelled.</string>
     <string name="speedtest_finished">Done.</string>
@@ -587,9 +575,6 @@
     <string name="dns_desc_xdp_standard">Spanish public DNS without adblock; rewrites some blocked IP addresses.</string>
     <string name="allow_adblock_profiles">Allow Adblock profiles</string>
     <string name="allow_adblock_profiles_help">Show DNS presets that block ads. Hiding them does not change the active DNS or personal profiles.</string>
-    <string name="dns_desc_ads_social">Blocks ads, trackers, malware and social media</string>
-    <string name="dns_desc_ads_family">Blocks ads, trackers, malware, adult content and gambling</string>
-    <string name="dns_desc_ads_all">Blocks ads, trackers, malware, adult content, gambling and social media</string>
     <string name="mullvad_dns_retirement">Service ends November 2, 2026</string>
     <string name="copy_share">Copy share</string>
     <string name="share_result_text">Encrypted link:\n%1$s\n\nPassword:\n%2$s\n\nExpires in %3$s.\nCopy only if you want the link and password in your clipboard.</string>

@@ -93,9 +93,5 @@ class ProviderAdapter(
         }
     }
 
-    private fun starsText(count: Int): String {
-        return "★".repeat(count) + "☆".repeat(5 - count)
-    }
-
     override fun getItemCount() = providers.size
 }

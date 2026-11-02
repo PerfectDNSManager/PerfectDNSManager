@@ -55,21 +55,6 @@ data class DnsProfile(
     }
 
     companion object {
-        data class ProviderRating(val speed: Int, val privacy: Int)
-
-        val providerRatings = mapOf(
-            "ControlD"    to ProviderRating(speed = 5, privacy = 5),
-            "Mullvad"     to ProviderRating(speed = 5, privacy = 5),
-            "NextDNS"     to ProviderRating(speed = 4, privacy = 5),
-            "Quad9"       to ProviderRating(speed = 5, privacy = 4),
-            "dns.sb"      to ProviderRating(speed = 3, privacy = 5),
-            "Surfshark"   to ProviderRating(speed = 3, privacy = 4),
-            "AdGuard"     to ProviderRating(speed = 5, privacy = 4),
-            "Cloudflare"  to ProviderRating(speed = 5, privacy = 5),
-            "FDN"         to ProviderRating(speed = 3, privacy = 5),
-            "Yandex"      to ProviderRating(speed = 4, privacy = 3),
-            "Google"      to ProviderRating(speed = 5, privacy = 5)
-        )
         fun getProviderIcon(providerName: String): Int = when {
             providerName.contains("AdGuard", true) -> R.drawable.ic_adguard
             providerName.contains("Cloudflare", true) -> R.drawable.ic_cloudflare

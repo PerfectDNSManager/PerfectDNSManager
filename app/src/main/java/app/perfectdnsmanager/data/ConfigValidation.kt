@@ -41,6 +41,7 @@ object ConfigValidation {
         fun bool(e: JsonElement?) {
             require(e != null && e.isJsonPrimitive && e.asJsonPrimitive.isBoolean) { "Expected boolean" }
         }
+        val presetsById by lazy { DnsProfile.getDefaultPresets().associateBy { it.id } }
         fun profile(e: JsonElement) {
             require(e.isJsonObject) { "Invalid profile" }
             val o = e.asJsonObject
@@ -53,7 +54,7 @@ object ConfigValidation {
             o.addProperty("descResId", 0); o.remove("descResIdArg")
             o.addProperty("primary", ProfileValidation.normalizeEndpoint(p.primary))
             p.secondary?.let { o.addProperty("secondary", ProfileValidation.normalizeEndpoint(it)) }
-            val preset = DnsProfile.getDefaultPresets().find { it.id == p.id }
+            val preset = presetsById[p.id]
             o.addProperty("isCustom", preset == null || preset.primary != p.primary || preset.type != p.type || preset.secondary != p.secondary)
         }
         // Un profil invalide n'invalide plus toute la sauvegarde : il est écarté

@@ -19,7 +19,7 @@ object DnsMessages {
     }
 
     fun matches(query: ByteArray, response: ByteArray): Boolean = try {
-        if (query.size < 12 || response.size !in 12..MAX_BYTES) false else {
+        if (query.size !in 12..MAX_BYTES || response.size !in 12..MAX_BYTES) false else {
             val q = Message(query); val r = Message(response)
             !q.header.getFlag(Flags.QR.toInt()) && r.header.getFlag(Flags.QR.toInt()) &&
                 q.header.id == r.header.id && q.header.opcode == r.header.opcode &&
@@ -44,6 +44,7 @@ object DnsMessages {
     } catch (_: Exception) { null }
 
     fun rewriteQuery(query: ByteArray, domain: String): ByteArray? = try {
+        require(query.size in 12..MAX_BYTES)
         val m = Message(query)
         require(m.header.getCount(Section.QUESTION) == 1 && m.tsig == null && !m.isSigned)
         val q = m.question
@@ -53,6 +54,7 @@ object DnsMessages {
     } catch (_: Exception) { null }
 
     fun restoreResponse(response: ByteArray, originalQuery: ByteArray): ByteArray? = try {
+        require(response.size in 12..MAX_BYTES && originalQuery.size in 12..MAX_BYTES)
         val m = Message(response); val q = Message(originalQuery).question
         require(m.header.getCount(Section.QUESTION) == 1 && m.tsig == null && !m.isSigned)
         val target = m.question.name

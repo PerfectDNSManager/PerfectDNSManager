@@ -46,7 +46,6 @@
     <!-- Beta updates -->
     <string name="beta_updates_label">Получать бета-обновления</string>
     <string name="beta_updates_description">Включить бета-версии в автоматическую проверку обновлений</string>
-    <string name="beta_updates_locked">Вы уже используете бета-версию — этот параметр всегда включён.</string>
 
     <!-- Auto-start / Auto-reconnect -->
     <string name="auto_reconnect_label">Включать DNS при запуске</string>
@@ -129,9 +128,6 @@
 
     <!-- Support -->
     <string name="support_us_title">Поддержать меня ❤️</string>
-    <string name="support_us_message">Вам нравится приложение? Оно вам помогло?\nНе стесняйтесь сделать небольшой жест для разработчика!</string>
-    <string name="select_crypto_button">👉 Нажмите здесь, чтобы выбрать криптовалюту для отправки 👈</string>
-    <string name="choose_crypto_title">Выбрать криптовалюту</string>
 
     <!-- AboutActivity -->
     <string name="about_title">О Perfect DNS Manager</string>
@@ -254,8 +250,6 @@
 
 
     <!-- DNS Ratings -->
-    <string name="speed_label">Скорость</string>
-    <string name="privacy_label">Конфиденциальность</string>
 
     <!-- DNS Speedtest -->
     <string name="dns_speedtest_button">Запустить тест</string>
@@ -459,24 +453,19 @@
 
     <string name="dns_desc_custom">Пользовательский профиль</string>
     <string name="dns_desc_isp_fmt">DNS провайдера %1$s</string>
-    <string name="es_err_password_required">Требуется пароль</string>
     <string name="es_err_download_failed_fmt">Ошибка скачивания (%1$d)</string>
     <string name="es_err_format_unsupported">Формат не поддерживается (старая ссылка?)</string>
     <string name="es_err_content_too_short_fmt">Содержимое слишком короткое (%1$d байт)</string>
     <string name="es_err_wrong_password">Неверный пароль или повреждённое содержимое</string>
-    <string name="es_err_legacy_unsupported">Устаревший формат не поддерживается</string>
     <string name="es_err_invalid_code_fmt">Неверный код: %1$s</string>
     <string name="adb_err_key_creation_failed">Не удалось создать ключи ADB</string>
     <string name="adb_err_key_load_failed">Не удалось загрузить/создать ключ ADB</string>
     <string name="adb_err_check_setup_fmt">Проверьте, что:\n1. Отладка ADB включена\n2. Отладка по Wi-Fi включена\n3. Перезагрузите устройство при необходимости\n\nПротестированы порты: %1$s</string>
     <string name="adb_err_permission_denied_fmt">Разрешение WRITE_SECURE_SETTINGS отклонено.\n\nРезультат: %1$s</string>
-    <string name="share_text_format">Ссылка (E2E зашифровано):\n%1$s\n\nПароль:\n%2$s\n\nСкопировано в буфер. Передавайте ссылку и пароль отдельно. Ключ никогда не отправляется на сервер.\n\nИстекает через %3$s.</string>
     <string name="share_clip_password_fmt">Пароль: %1$s</string>
     <string name="dns_desc_anti_malware">Anti-Malware</string>
     <string name="dns_desc_ad_blocker">Блокировщик рекламы</string>
-    <string name="dns_desc_ad_malware_blocker">Блок рекламы + вредоносного ПО</string>
     <string name="dns_desc_blocks_ads_trackers">Блокирует рекламу и трекеры</string>
-    <string name="dns_desc_privacy">Приватность</string>
     <string name="dns_desc_neutral_dnssec">Нейтральный DNS, некоммерческий, DNSSEC</string>
     <string name="dns_desc_no_logs">Без логов</string>
     <string name="dns_desc_family_protection">Семейная защита</string>
@@ -507,7 +496,6 @@
     <string name="split_tunnel_all_apps_label">Все приложения</string>    <string name="primary_dns_invalid">Неверный основной DNS. Проверьте формат для выбранного протокола.</string>    <string name="update_signature_mismatch">Ошибка: подпись APK не совпадает. Обновление отменено.</string>    <string name="btn_stop">⏹ Стоп</string>
     <string name="speedtest_stop">Стоп</string>
     <string name="speedtest_fast_urls_loaded_fmt">Загружено тестовых URL: %1$d.</string>
-    <string name="speedtest_upload_unsupported">--- Загрузка: не поддерживается (N/A) ---</string>
     <string name="speedtest_providers_count_fmt">%1$d провайдеров</string>
     <string name="speedtest_cancelled">>> Отменено.</string>
     <string name="speedtest_finished">Готово.</string>
@@ -572,9 +560,6 @@
     <string name="dns_desc_xdp_standard">Испанский публичный DNS без блокировки рекламы; подменяет некоторые заблокированные IP.</string>
     <string name="allow_adblock_profiles">Разрешить профили Adblock</string>
     <string name="allow_adblock_profiles_help">Показывает DNS, блокирующие рекламу. Скрытие не меняет активный DNS и личные профили.</string>
-    <string name="dns_desc_ads_social">Блокирует рекламу, трекеры, вредоносное ПО и соцсети</string>
-    <string name="dns_desc_ads_family">Блокирует рекламу, трекеры, вредоносное ПО, контент для взрослых и азартные игры</string>
-    <string name="dns_desc_ads_all">Блокирует рекламу, трекеры, вредоносное ПО, контент для взрослых, азартные игры и соцсети</string>
     <string name="mullvad_dns_retirement">Прекращение работы сервиса объявлено на 2 ноября 2026 г.</string>
     <string name="copy_share">Копировать ссылку</string>
     <string name="share_result_text">Зашифрованная ссылка:\n%1$s\n\nПароль:\n%2$s\n\nИстекает через %3$s.\nКопируйте, только если хотите поместить ссылку и пароль в буфер обмена.</string>
