@@ -479,7 +479,7 @@
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
     <string name="import_link_label">短链接（或8位代码）：</string>
     <string name="import_link_hint">perfectdnsmanager.app/d/…</string>
-    <string name="import_password_label">密码（6位字符）：</string>
+    <string name="import_password_label">密码：</string>
     <string name="no_search_results_fmt">"%1$s" 无结果</string>
     <string name="result_error">错误</string>
     <string name="speedtest_fast_api_error_fmt">Fast.com API 错误: %1$s</string>

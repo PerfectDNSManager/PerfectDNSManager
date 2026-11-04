@@ -37,6 +37,15 @@ class NativeCompatibilityInstrumentedTest {
         assertEquals("10c4a1edca412df1d3d067b556e2c6c1", result.joinToString("") { "%02x".format(it.toInt() and 255) })
     }
 
+    @Test fun oldAndNewSharePasswordsRemainCompatibleWithArgon2V2() {
+        val companion = EncryptedSharer.Companion
+        val method = companion.javaClass.getDeclaredMethod("argon2id", ByteArray::class.java, ByteArray::class.java, Int::class.javaPrimitiveType).apply { isAccessible = true }
+        fun derive(password: String): String = (method.invoke(companion, password.toByteArray(), "pdm-test-salt-16!".toByteArray(), 16) as ByteArray)
+            .joinToString("") { "%02x".format(it.toInt() and 255) }
+        assertEquals("9cc7512d2e4cf6b3a969695bd5625f8e", derive("abc234"))
+        assertEquals("23f4a060bc44af7d07a5a1e595865834", derive("abcdefghjkmnpqrstuvwx"))
+    }
+
     @Test fun conscryptTls13WorksAndExporterOnAdbSupportedAndroid() {
         assertTrue(Conscrypt.isAvailable())
         val provider = Conscrypt.newProvider()
@@ -77,6 +86,7 @@ class NativeCompatibilityInstrumentedTest {
     @Test fun adbSpakeNativeContextLoadsAndReleasesOnSupportedAndroid() {
         assumeTrue(Build.VERSION.SDK_INT >= 30) // Wireless ADB pairing is an Android 11+ feature.
         System.loadLibrary("adb")
+        assertTrue(moe.shizuku.manager.adb.AdbPairingClient.available())
         val type=Class.forName("moe.shizuku.manager.adb.PairingContext")
         val create=type.getDeclaredMethod("nativeConstructor",Boolean::class.javaPrimitiveType,ByteArray::class.java).apply{isAccessible=true}
         val constructor=type.getDeclaredConstructor(Long::class.javaPrimitiveType).apply{isAccessible=true}
@@ -86,8 +96,13 @@ class NativeCompatibilityInstrumentedTest {
         try {
             assertTrue(invoke(client,"initCipher",invoke(server,"getMsg")) as Boolean)
             assertTrue(invoke(server,"initCipher",invoke(client,"getMsg")) as Boolean)
-            val plain="synthetic pairing data".toByteArray()
+            val plain=ByteArray(8192) { (it % 251).toByte() } // Full ADB PeerInfo plus GCM tag on the wire.
             assertArrayEquals(plain,invoke(server,"decrypt",invoke(client,"encrypt",plain)) as ByteArray)
-        } finally { invoke(client,"destroy");invoke(server,"destroy") }
+            assertNull(invoke(client,"encrypt",ByteArray(16385)))
+        } finally {
+            invoke(client,"destroy");invoke(client,"destroy")
+            invoke(server,"destroy");invoke(server,"destroy")
+            assertNull(invoke(client,"encrypt",byteArrayOf(1)))
+        }
     }
 }

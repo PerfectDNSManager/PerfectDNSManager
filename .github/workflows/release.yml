@@ -21,7 +21,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       # Force Node.js 24 sur les actions encore livrées sous Node 20 (deprecation
       # GH 2026-06-02). Sans ça : warning sur chaque run + actions cassées à terme.
@@ -40,7 +40,7 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
         with:
-          packages: platform-tools platforms;android-34 build-tools;34.0.0 build-tools;35.0.0
+          packages: platform-tools platforms;android-36 build-tools;34.0.0 build-tools;35.0.0 ndk;29.0.14206865 cmake;3.22.1
 
       - name: Cache Gradle
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
@@ -50,6 +50,9 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}
           restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Build ADB native libraries from pinned source
+        run: python3 tools/build_adb_native.py
 
       - name: Run unit tests
         run: bash ./gradlew :app:testDebugUnitTest :app:lintDebug --no-daemon
@@ -184,6 +187,9 @@ jobs:
           echo "pretty=$PRETTY_PATH" >> "$GITHUB_OUTPUT"
           echo "legacy=$LEGACY_PATH" >> "$GITHUB_OUTPUT"
 
+      - name: Preserve optimized crash mapping
+        run: gzip -c app/build/outputs/mapping/release/mapping.txt > app/build/outputs/mapping/release/mapping.txt.gz
+
       - name: Create GitHub Release
         if: github.event_name == 'push' || github.event.inputs.create_release == 'true'
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
@@ -192,6 +198,7 @@ jobs:
           name: ${{ steps.meta.outputs.release_name }}
           prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
           files: |
+            app/build/outputs/mapping/release/mapping.txt.gz
             ${{ steps.apk.outputs.path }}
             ${{ steps.stable_apk.outputs.pretty }}
             ${{ steps.stable_apk.outputs.legacy }}

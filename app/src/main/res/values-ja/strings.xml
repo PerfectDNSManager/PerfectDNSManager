@@ -479,7 +479,7 @@
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
     <string name="import_link_label">短縮リンク（または8文字コード）：</string>
     <string name="import_link_hint">perfectdnsmanager.app/d/…</string>
-    <string name="import_password_label">パスワード（6文字）：</string>
+    <string name="import_password_label">パスワード：</string>
     <string name="no_search_results_fmt">"%1$s" の結果なし</string>
     <string name="result_error">エラー</string>
     <string name="speedtest_fast_api_error_fmt">Fast.com APIエラー: %1$s</string>

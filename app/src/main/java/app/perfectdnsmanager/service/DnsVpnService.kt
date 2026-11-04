@@ -15,7 +15,7 @@ import androidx.core.app.NotificationCompat
 import app.perfectdnsmanager.MainActivity
 import app.perfectdnsmanager.R
 import app.perfectdnsmanager.data.DnsRewriteRepository
-import app.perfectdnsmanager.data.DnsRewriteRule
+import app.perfectdnsmanager.data.DnsRewriteIndex
 import app.perfectdnsmanager.util.DnsMessages
 import app.perfectdnsmanager.util.PrivateDnsGuard
 import app.perfectdnsmanager.util.ProfileValidation
@@ -140,7 +140,7 @@ class DnsVpnService : VpnService() {
     }
 
     // DNS Rewrite
-    @Volatile private var rewriteRules = listOf<DnsRewriteRule>()
+    @Volatile private var rewriteRules = DnsRewriteIndex.empty()
 
     // Pending: on stocke aussi le qname original encodé pour restaurer la réponse si rewrite.
     data class Pending(
@@ -203,7 +203,7 @@ class DnsVpnService : VpnService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startForeground(NOTIF_ID, mkNotif(getString(R.string.notif_starting)))
         if (intent?.action == ACTION_RELOAD_RULES) {
-            control.execute { rewriteRules = DnsRewriteRepository(this).getAllRules().filter { it.isEnabled } }
+            control.execute { rewriteRules = DnsRewriteIndex.from(DnsRewriteRepository(this).getAllRules()) }
             return START_STICKY
         }
         val requestGeneration = generation.incrementAndGet()
@@ -271,7 +271,7 @@ class DnsVpnService : VpnService() {
             Log.i(T, "=== START VPN ===  primary=${redactDnsUrl(dnsServer)}  secondary=${redactDnsUrl(dnsServerSecondary)}")
 
             // Load rewrite rules
-            rewriteRules = DnsRewriteRepository(this).getAllRules().filter { it.isEnabled }
+            rewriteRules = DnsRewriteIndex.from(DnsRewriteRepository(this).getAllRules())
             Log.i(T, "Loaded ${rewriteRules.size} DNS rewrite rules.")
 
             val builder = Builder()
@@ -529,8 +529,8 @@ class DnsVpnService : VpnService() {
 
     private fun getQNameAndApplyRewrite(query: ByteArray): Pair<String, ByteArray?> {
         val qname = DnsWire.decodeQName(query, 12, query.size) ?: return Pair("", null)
-        rewriteRules.find { it.fromDomain.equals(qname, ignoreCase = true) }?.let {
-            return Pair(qname, buildNewQuery(query, it.toDomain))
+        rewriteRules.target(qname)?.let {
+            return Pair(qname, buildNewQuery(query, it))
         }
         return Pair(qname, null)
     }
@@ -733,7 +733,7 @@ class DnsVpnService : VpnService() {
         tunReaderThread?.interrupt()
         try { tunReaderThread?.join(1000) } catch (_: InterruptedException) { Thread.currentThread().interrupt() }
         tunReaderThread = null
-        localDnsMap.clear(); rewriteRules = emptyList()
+        localDnsMap.clear(); rewriteRules = DnsRewriteIndex.empty()
         getSharedPreferences("prefs", MODE_PRIVATE).edit().putBoolean("vpn_active", false).putString("vpn_label", "").apply()
         // Keep foreground status during a profile change. Android removes it when the service stops.
     }

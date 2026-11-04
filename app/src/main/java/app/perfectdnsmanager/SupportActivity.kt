@@ -74,6 +74,14 @@ class SupportActivity : AppCompatActivity() {
             FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
         browser.loadUrl(page.buildUpon().appendQueryParameter("embed", "1").build().toString())
     }
+    override fun onPause() {
+        web?.onPause()
+        super.onPause()
+    }
+    override fun onResume() {
+        super.onResume()
+        web?.onResume()
+    }
     override fun onDestroy() {
         web?.let { (it.parent as? FrameLayout)?.removeView(it); it.stopLoading(); it.destroy() }
         web = null

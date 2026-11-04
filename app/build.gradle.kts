@@ -28,7 +28,7 @@ val buildTimestamp = SimpleDateFormat("yyyyMMdd-HHmm", Locale.US).format(Date())
 
 android {
     namespace = "app.perfectdnsmanager"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "app.perfectdnsmanager"
@@ -94,6 +94,9 @@ android {
             versionNameSuffix = "-local"
         }
         release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             val ksPath = System.getenv("KEYSTORE_FILE")
                 ?: rootProject.file("signing/release-keystore.jks").takeIf { it.exists() }?.absolutePath
             if (ksPath != null) {
@@ -124,36 +127,36 @@ android.applicationVariants.all {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("com.google.code.gson:gson:2.15.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("dnsjava:dnsjava:3.7.1")
-    implementation("org.slf4j:slf4j-nop:1.7.36")
+    implementation(libs.androidx.appcompat.appcompat)
+    implementation(libs.androidx.recyclerview.recyclerview)
+    implementation(libs.com.google.code.gson.gson)
+    implementation(libs.com.squareup.okhttp3.okhttp)
+    implementation(libs.dnsjava.dnsjava)
+    implementation(libs.org.slf4j.slf4j.nop)
 
     // ─── ADB pairing (Android 11+ Wireless Debugging) ───
     // Vendored from Shizuku (Apache 2.0) : voir app/src/main/java/moe/shizuku/manager/adb/.
     // BouncyCastle pour cert X509 (AdbKey signe son cert avec sa propre RSA).
     // Conscrypt pour exportKeyingMaterial (RFC 5705) requis par SPAKE2 pairing.
-    implementation("org.bouncycastle:bcpkix-jdk18on:1.86")
-    implementation("org.bouncycastle:bcprov-jdk18on:1.86")
-    implementation("org.conscrypt:conscrypt-android:2.8.0")
+    implementation(libs.org.bouncycastle.bcpkix.jdk18on)
+    implementation(libs.org.bouncycastle.bcprov.jdk18on)
+    implementation(libs.org.conscrypt.conscrypt.android)
 
     // QUIC client pour DoQ (DNS over QUIC)
-    implementation("tech.kwik:kwik:0.10.8")
-    implementation("tech.kwik:agent15:3.1") // Android RSA-PSS algorithm mapping
+    implementation(libs.tech.kwik.kwik)
+    implementation(libs.tech.kwik.agent15) // Android RSA-PSS algorithm mapping
 
     // Argon2id KDF (JNI sur libargon2) — partage E2EE, remplace PBKDF2
-    implementation("com.lambdapioneer.argon2kt:argon2kt:1.6.0")
+    implementation(libs.com.lambdapioneer.argon2kt.argon2kt)
 
     // Coroutines + lifecycleScope pour Activity-bound IO (replaces Thread { }.start())
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
+    implementation(libs.org.jetbrains.kotlinx.kotlinx.coroutines.android)
+    implementation(libs.androidx.lifecycle.lifecycle.runtime.ktx)
 
     // Core library desugaring (java.time.Duration requis par kwik, API 26+)
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    coreLibraryDesugaring(libs.com.android.tools.desugar.jdk.libs)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    testImplementation(libs.junit.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.espresso.core)
 }

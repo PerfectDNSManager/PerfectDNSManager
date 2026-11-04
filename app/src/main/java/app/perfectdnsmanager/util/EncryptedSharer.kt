@@ -20,7 +20,7 @@ import javax.crypto.spec.SecretKeySpec
 /**
  * Partage E2EE avec lien court + mot de passe.
  *
- * Modèle : user partage deux choses (URL courte + password 6 chars).
+ * Modèle : user partage deux choses (URL courte + password 20 chars).
  * Clé AES-128 dérivée via Argon2id(m=32 MiB, t=3, p=1, salt=16B).
  * Ciphertext stocké côté serveur sans aucun secret ; le password transite via
  * canal utilisateur (oral, SMS, etc.) et n'atteint jamais le serveur.
@@ -44,13 +44,8 @@ class EncryptedSharer {
         private const val ARGON2_T_COST = 3
         private const val ARGON2_PARALLEL = 1
 
-        /**
-         * Six characters preserve the existing TV-friendly sharing workflow (~29.7 bits).
-         * Argon2id slows guessing; it does not make this a high-entropy secret.
-         * A downloaded ciphertext can be attacked offline indefinitely, even after expiry.
-         * Use a trusted channel for the password; do not use this for long-term secret storage.
-         */
-        private const val PASSWORD_LEN = 6
+        // 20 random characters provide ~98 bits of entropy. Existing six-character
+        // shares remain readable: the v2 encryption format and KDF are unchanged.
 
         private const val PDM_BASE_URL = app.perfectdnsmanager.BuildConfig.PDM_BASE_URL
 
@@ -61,9 +56,6 @@ class EncryptedSharer {
         // l'espace (36^4 ≈ 1,7 M) était énumérable. On accepte 4-16 en LECTURE
         // pour que les anciens liens (4 et 8 chars) continuent de résoudre.
         private val SLUG_RE = Regex("^[a-z0-9]{4,16}$")
-
-        // Alphabet sans caractères ambigus (0/O, 1/l/I exclus) pour dictée orale.
-        private const val PWD_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789"
 
         data class UploadResult(
             val shortCode: String,
@@ -76,7 +68,7 @@ class EncryptedSharer {
             require(content.length <= MAX_BLOB_BYTES && content.toByteArray(Charsets.UTF_8).size <= MAX_BLOB_BYTES - 45) { "Content too large" }
             val rng = SecureRandom()
 
-            val password = generatePassword(rng, PASSWORD_LEN)
+            val password = SharePassword.generate(rng)
             val salt = ByteArray(SALT_SIZE).also { rng.nextBytes(it) }
             val keyBytes = argon2id(password.toByteArray(Charsets.UTF_8), salt, AES_KEY_BYTES)
             val secretKey: SecretKey = SecretKeySpec(keyBytes, "AES")
@@ -225,7 +217,6 @@ class EncryptedSharer {
             return result.rawHashAsByteArray()
         }
 
-        private fun generatePassword(rng: SecureRandom, len: Int): String =
-            (1..len).map { PWD_ALPHABET[rng.nextInt(PWD_ALPHABET.length)] }.joinToString("")
+
     }
 }

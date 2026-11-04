@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.Switch
+import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import app.perfectdnsmanager.R
@@ -36,12 +36,13 @@ class DnsRewriteAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvFromDomain: TextView = itemView.findViewById(R.id.tvFromDomain)
         private val tvToDomain: TextView = itemView.findViewById(R.id.tvToDomain)
-        private val switchEnable: Switch = itemView.findViewById(R.id.switchEnableRule)
+        private val switchEnable: CompoundButton = itemView.findViewById(R.id.switchEnableRule)
         private val btnDelete: ImageButton = itemView.findViewById(R.id.btnDeleteRule)
 
         fun bind(rule: DnsRewriteRule) {
             tvFromDomain.text = rule.fromDomain
             tvToDomain.text = "→ ${rule.toDomain}"
+            switchEnable.setOnCheckedChangeListener(null)
             switchEnable.isChecked = rule.isEnabled
 
             switchEnable.setOnCheckedChangeListener { _, isChecked ->

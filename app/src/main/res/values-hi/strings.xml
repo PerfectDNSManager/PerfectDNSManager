@@ -479,7 +479,7 @@
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
     <string name="import_link_label">छोटा लिंक (या 8-वर्ण कोड):</string>
     <string name="import_link_hint">perfectdnsmanager.app/d/…</string>
-    <string name="import_password_label">पासवर्ड (6 वर्ण):</string>
+    <string name="import_password_label">पासवर्ड:</string>
     <string name="no_search_results_fmt">"%1$s" के लिए कोई परिणाम नहीं</string>
     <string name="result_error">त्रुटि</string>
     <string name="speedtest_fast_api_error_fmt">Fast.com API त्रुटि: %1$s</string>

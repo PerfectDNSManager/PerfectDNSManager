@@ -162,7 +162,7 @@ class AdbKey(private val adbKeyStore: AdbKeyStore, name: String) {
             }
         }
         if (privateKey == null) {
-            val keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
+            val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
             keyPairGenerator.initialize(RSAKeyGenParameterSpec(2048, RSAKeyGenParameterSpec.F4))
             val keyPair = keyPairGenerator.generateKeyPair()
             privateKey = keyPair.private as RSAPrivateKey

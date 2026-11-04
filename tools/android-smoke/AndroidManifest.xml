@@ -1,0 +1,5 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="app.perfectdnsmanager.smoke">
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
+    <application android:label="PDM smoke tests" />
+    <instrumentation android:name=".SmokeRunner" android:targetPackage="app.perfectdnsmanager" android:functionalTest="true" />
+</manifest>

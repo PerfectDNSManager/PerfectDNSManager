@@ -1,5 +1,7 @@
 # Audit de maintenance et sécurité — 2 novembre 2026
 
+> Rapport historique : la compatibilité 16 Ko et les bibliothèques natives ont été traitées en 2.4.9. Voir aussi le suivi `2026-11-04-maintenance-beta-2410.md` pour les corrections et optimisations suivantes.
+
 Base Android : 2132d26 (2.4.8-beta.1 publiée). Site : b0f7081. Corrections de cette passe préparées dans les branches de travail ; aucune nouvelle release ni aucun déploiement.
 
 ## Périmètre et méthode

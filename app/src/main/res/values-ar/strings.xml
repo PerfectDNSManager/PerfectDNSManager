@@ -479,7 +479,7 @@
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
     <string name="import_link_label">رابط قصير (أو رمز من 8 أحرف):</string>
     <string name="import_link_hint">perfectdnsmanager.app/d/…</string>
-    <string name="import_password_label">كلمة المرور (6 أحرف):</string>
+    <string name="import_password_label">كلمة المرور:</string>
     <string name="no_search_results_fmt">لا نتائج لـ "%1$s"</string>
     <string name="result_error">خطأ</string>
     <string name="speedtest_fast_api_error_fmt">خطأ Fast.com API: %1$s</string>

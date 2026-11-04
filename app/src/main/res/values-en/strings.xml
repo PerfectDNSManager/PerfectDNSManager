@@ -498,7 +498,7 @@
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
     <string name="import_link_label">Short link (or 8-char code):</string>
     <string name="import_link_hint">perfectdnsmanager.app/d/…</string>
-    <string name="import_password_label">Password (6 characters):</string>
+    <string name="import_password_label">Password:</string>
     <string name="no_search_results_fmt">No results for "%1$s"</string>
     <string name="result_error">Error</string>
     <string name="speedtest_fast_api_error_fmt">Fast.com API error: %1$s</string>

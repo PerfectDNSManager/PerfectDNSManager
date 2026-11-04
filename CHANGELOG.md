@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.4.10-beta.1 — 4 novembre 2026
+
+- Nouveaux partages sécurisés : secrets aléatoires de 20 caractères ; lecture des anciens partages conservée.
+- Règles DNS : recherche indexée et correction des interrupteurs lors du recyclage des lignes.
+- Rapports : génération isolée de l’écran, à partir d’un instantané des résultats et des rubriques sélectionnées.
+- Dons : pause du suivi en arrière-plan, reprise au retour et cycle de vie WebView respecté.
+- Bibliothèque ADB reconstruite depuis des sources épinglées pour les quatre architectures ; contrôles JNI renforcés et fermeture répétée sans double libération.
+- Réduction du code et des ressources de l’APK, avec règles de conservation pour les sauvegardes et les appels natifs.
+- Dépendances réseau/QUIC, coroutines et outils de compilation modernisés avec versions compatibles Android 5 ; catalogue des dépendances centralisé.
+- Champs de saisie des profils corrigés ; métadonnées RSA compatibles API 21.
+- Android 5 minimum et alignement 16 Ko conservés ; protection ciblée contre une incompatibilité R8 de l’écran principal sur Android 5 et contrôles de publication maintenus.
+
 ## 2.4.9-beta.1 — 2 novembre 2026
 
 - Compatibilité mémoire 16 Ko : Conscrypt 2.8.0 et Argon2kt 1.6.0, sans hausse du minimum Android 5/API 21 et avec conservation des quatre architectures.

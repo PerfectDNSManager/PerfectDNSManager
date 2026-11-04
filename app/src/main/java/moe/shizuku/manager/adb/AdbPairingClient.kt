@@ -127,7 +127,7 @@ private class PairingPacketHeader(
     }
 }
 
-private class PairingContext private constructor(private val nativePtr: Long) {
+private class PairingContext private constructor(private var nativePtr: Long) {
 
     val msg: ByteArray
 
@@ -135,13 +135,18 @@ private class PairingContext private constructor(private val nativePtr: Long) {
         msg = nativeMsg(nativePtr)
     }
 
-    fun initCipher(theirMsg: ByteArray) = nativeInitCipher(nativePtr, theirMsg)
+    @Synchronized fun initCipher(theirMsg: ByteArray) = nativePtr != 0L && nativeInitCipher(nativePtr, theirMsg)
 
-    fun encrypt(`in`: ByteArray) = nativeEncrypt(nativePtr, `in`)
+    @Synchronized fun encrypt(`in`: ByteArray) = if (nativePtr != 0L) nativeEncrypt(nativePtr, `in`) else null
 
-    fun decrypt(`in`: ByteArray) = nativeDecrypt(nativePtr, `in`)
+    @Synchronized fun decrypt(`in`: ByteArray) = if (nativePtr != 0L) nativeDecrypt(nativePtr, `in`) else null
 
-    fun destroy() = nativeDestroy(nativePtr)
+    @Synchronized fun destroy() {
+        if (nativePtr == 0L) return
+        val ptr = nativePtr
+        nativePtr = 0L
+        nativeDestroy(ptr)
+    }
 
     private external fun nativeMsg(nativePtr: Long): ByteArray
 

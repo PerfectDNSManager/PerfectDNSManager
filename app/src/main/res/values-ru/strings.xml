@@ -479,7 +479,7 @@
     <string name="dns_desc_with_type_fmt">%1$s (%2$s)</string>
     <string name="import_link_label">Короткая ссылка (или 8-значный код):</string>
     <string name="import_link_hint">perfectdnsmanager.app/d/…</string>
-    <string name="import_password_label">Пароль (6 символов):</string>
+    <string name="import_password_label">Пароль:</string>
     <string name="no_search_results_fmt">Нет результатов для "%1$s"</string>
     <string name="result_error">Ошибка</string>
     <string name="speedtest_fast_api_error_fmt">Ошибка API Fast.com: %1$s</string>

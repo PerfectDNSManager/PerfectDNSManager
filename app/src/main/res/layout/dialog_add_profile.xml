@@ -39,7 +39,7 @@
             android:background="@drawable/edit_text_background"
             android:padding="10dp"
             android:layout_marginBottom="10dp"
-            android:focusable="true" />
+            android:focusable="true" android:inputType="textNoSuggestions" android:importantForAutofill="no" />
 
         <!-- Type DNS -->
         <TextView
@@ -117,7 +117,7 @@
             android:background="@drawable/edit_text_background"
             android:padding="10dp"
             android:layout_marginBottom="8dp"
-            android:focusable="true" />
+            android:focusable="true" android:inputType="textNoSuggestions" android:importantForAutofill="no" />
 
         <!-- DNS Secondaire -->
         <TextView
@@ -141,7 +141,7 @@
             android:padding="10dp"
             android:layout_marginBottom="8dp"
             android:visibility="gone"
-            android:focusable="true"/>
+            android:focusable="true" android:inputType="textNoSuggestions" android:importantForAutofill="no" />
 
         <!-- IPv6 Primaire -->
         <TextView
@@ -165,7 +165,7 @@
             android:padding="10dp"
             android:layout_marginBottom="8dp"
             android:visibility="gone"
-            android:focusable="true"/>
+            android:focusable="true" android:inputType="textNoSuggestions" android:importantForAutofill="no" />
 
         <!-- IPv6 Secondaire -->
         <EditText
@@ -179,7 +179,7 @@
             android:padding="10dp"
             android:layout_marginBottom="10dp"
             android:visibility="gone"
-            android:focusable="true"/>
+            android:focusable="true" android:inputType="textNoSuggestions" android:importantForAutofill="no" />
 
         <!-- Boutons -->
         <LinearLayout
