@@ -33,3 +33,14 @@ Validation and release results are recorded below after execution.
 - Workflow YAML parsed and changelog extraction executed successfully against version 2.4.10-beta.1.
 - API 36 emulator with actual 16 KiB pages: optimized-release framework smoke passed, including Argon2, native ADB full PeerInfo/input bounds/repeated close, Gson compatibility and all four screens.
 - API 36/16 KiB: both localization tests plus report privacy and Gson tests passed. The final adapter/UI test was interrupted by the emulator's low-memory killer during boot (`ApplicationExitInfo: LOW_MEMORY`, confirmed in logcat); an isolated retry passed. No Java/native application crash was reported.
+
+## Published beta
+
+- Source: `35150f6840239a42fb7b35061af211b31fe5f418`, tag `v2.4.10-beta.1` (the previous local-only tag had never been pushed).
+- [GitHub Actions run 42016846732](https://github.com/PerfectDNSManager/PerfectDNSManager/actions/runs/42016846732): successful, including native rebuild, translation guard, unit tests/lint, optimized signed APK, native alignment and certificate checks.
+- [Numbered prerelease](https://github.com/PerfectDNSManager/PerfectDNSManager/releases/tag/v2.4.10-beta.1) and `latest-beta` both published with the version's CHANGELOG text. Optimization mapping is attached to the numbered release.
+- Independently downloaded both APK assets: identical SHA-256 `b1af01ed60f6cbc4b505fac41df5957b2e3c7a4cbe5cea18bb7c1136dc364658`, 8,863,604 bytes.
+- Production signer SHA-256 matches previous releases: `c7fd0c977b2c8911c32268e3fa15e9fe50b14dccfae18f7232b28a9faa858f6d`.
+- Published APK: versionName `2.4.10-beta.1`, versionCode `20410`, minSdk 21, targetSdk 34, all four ABIs; independent native/alignment check passed.
+- Actual signed upgrade from 2.4.9-beta.1 to the downloaded 2.4.10-beta.1 succeeded on the owned API 36/16 KiB emulator. Relaunch showed the preserved French language and Cloudflare Standard DoH profile; DNS remained inactive as before the update.
+- Latest stable release verified unchanged: `v2.4.0`, published 14 October 2026. No production website deployment in this change.
