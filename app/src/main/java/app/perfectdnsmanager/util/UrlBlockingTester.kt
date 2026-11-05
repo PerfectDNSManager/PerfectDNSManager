@@ -69,7 +69,7 @@ object UrlBlockingTester {
      */
     fun testBeforeAfter(context: Context, domain: String = "ygg.re"): BlockingResult {
         val ispResult = resolveViaProtectedSocket(context, domain).annotate(context)
-        val activeResult = resolveViaSystem(domain).annotate(context)
+        val activeResult = resolveViaSystem(context, domain).annotate(context)
         return BlockingResult(domain, ispResult, activeResult)
     }
 
@@ -111,9 +111,9 @@ object UrlBlockingTester {
                          caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
                 }
                 val linkProps = physicalNetwork?.let { cm.getLinkProperties(it) }
-                linkProps?.dnsServers?.firstOrNull() ?: return unknown("ISP DNS unavailable")
+                linkProps?.dnsServers?.firstOrNull() ?: return unknown(context.getString(app.perfectdnsmanager.R.string.isp_dns_unavailable))
             } else {
-                return unknown("ISP DNS unavailable")
+                return unknown(context.getString(app.perfectdnsmanager.R.string.isp_dns_unavailable))
             }
 
             // Créer un socket : protégé si VPN actif, normal sinon.
@@ -157,7 +157,7 @@ object UrlBlockingTester {
                 resolved(ip)
             } catch (e: java.net.UnknownHostException) {
                 // NXDOMAIN via le résolveur système = réponse négative réelle.
-                unknown("DNS resolution failed")
+                unknown(context.getString(app.perfectdnsmanager.R.string.dns_resolution_failed))
             } catch (e: Exception) {
                 Log.w(TAG, "System fallback resolve ${redactHost(domain)}: ${e.javaClass.simpleName}")
                 udpResult ?: unknown(e.message)
@@ -165,19 +165,19 @@ object UrlBlockingTester {
         }
 
         // VPN actif mais la requête UDP a échoué : on ne conclut PAS au blocage.
-        return udpResult ?: unknown("DNS query failed")
+        return udpResult ?: unknown(context.getString(app.perfectdnsmanager.R.string.dns_resolution_failed))
     }
 
     /**
      * Resolve domain via system DNS (goes through VPN/active DNS config).
      */
-    private fun resolveViaSystem(domain: String): ResolutionResult {
+    private fun resolveViaSystem(context: Context, domain: String): ResolutionResult {
         return try {
             val addr = InetAddress.getByName(domain)
             val ip = addr.hostAddress ?: ""
             resolved(ip)
         } catch (e: java.net.UnknownHostException) {
-            unknown("DNS resolution failed")
+            unknown(context.getString(app.perfectdnsmanager.R.string.dns_resolution_failed))
         } catch (e: Exception) {
             Log.w(TAG, "System resolve ${redactHost(domain)}: ${e.javaClass.simpleName}")
             unknown(e.message)

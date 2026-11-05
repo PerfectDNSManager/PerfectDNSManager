@@ -26,21 +26,21 @@ object SpeedTester {
      * Uses Cloudflare speed test endpoints. Fallback to tele2 for download.
      * Must be called from a background thread.
      */
-    fun runFullTest(onProgress: ((String) -> Unit)? = null): SpeedResult {
+    fun runFullTest(onProgress: ((Int) -> Unit)? = null): SpeedResult {
         var downloadMbps = 0.0
         var uploadMbps = 0.0
         var pingMs = 0L
 
         // 1. Ping test (3x HTTP HEAD, take median)
-        onProgress?.invoke("Ping...")
+        onProgress?.invoke(app.perfectdnsmanager.R.string.speed_ping_label)
         pingMs = measurePing()
 
         // 2. Download test
-        onProgress?.invoke("Download...")
+        onProgress?.invoke(app.perfectdnsmanager.R.string.speed_download_label)
         downloadMbps = measureDownload()
 
         // 3. Upload test
-        onProgress?.invoke("Upload...")
+        onProgress?.invoke(app.perfectdnsmanager.R.string.speed_upload_label)
         uploadMbps = measureUpload()
 
         return SpeedResult(downloadMbps, uploadMbps, pingMs)

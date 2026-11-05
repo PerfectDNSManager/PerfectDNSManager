@@ -1,6 +1,7 @@
 package app.perfectdnsmanager.data
 
 import android.content.Context
+import app.perfectdnsmanager.R
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -234,12 +235,12 @@ class ConfigManager(private val context: Context) {
             val sb = StringBuilder()
 
             // Version
-            val version = if (root.has("version")) root.get("version").asString else "unknown"
-            sb.appendLine("Version: $version")
+            val version = if (root.has("version")) root.get("version").asString else context.getString(R.string.report_conn_unknown)
+            sb.appendLine(context.getString(R.string.label_value_fmt, context.getString(R.string.version_label), version))
 
             // Export date
             if (root.has("exportDate") && !root.get("exportDate").isJsonNull) {
-                sb.appendLine("Date: ${root.get("exportDate").asString}")
+                sb.appendLine(context.getString(R.string.label_value_fmt, context.getString(R.string.md_date), root.get("exportDate").asString))
             }
 
             // Profiles
@@ -253,7 +254,7 @@ class ConfigManager(private val context: Context) {
                         false
                     }
                 }
-                sb.appendLine("Profiles: $total ($customCount custom)")
+                sb.appendLine(context.getString(R.string.config_profiles_summary, total, customCount))
                 // Les endpoints DNS sont le VRAI contenu d'une config partagée :
                 // sans eux, l'utilisateur validait un import à l'aveugle.
                 val endpoints = profileArray.mapNotNull { element ->
@@ -267,7 +268,7 @@ class ConfigManager(private val context: Context) {
                 endpoints.take(12).forEach { sb.appendLine(it) }
                 if (endpoints.size > 12) sb.appendLine("  · … +${endpoints.size - 12}")
             } else {
-                sb.appendLine("Profiles: 0")
+                sb.appendLine(context.getString(R.string.config_profiles_summary, 0, 0))
             }
 
             // Selected profile
@@ -277,13 +278,13 @@ class ConfigManager(private val context: Context) {
                     val provider = sp.get("providerName")?.asString ?: ""
                     val name = sp.get("name")?.asString ?: ""
                     val primary = sp.get("primary")?.asString ?: "?"
-                    sb.appendLine("Selected profile: $provider - $name")
+                    sb.appendLine(context.getString(R.string.label_value_fmt, context.getString(R.string.export_toggle_selected_dns), "$provider - $name"))
                     sb.appendLine("  → $primary")
                 } catch (_: Exception) {
-                    sb.appendLine("Selected profile: yes")
+                    sb.appendLine(context.getString(R.string.label_value_fmt, context.getString(R.string.export_toggle_selected_dns), context.getString(R.string.enabled)))
                 }
             } else {
-                sb.appendLine("Selected profile: none")
+                sb.appendLine(context.getString(R.string.label_value_fmt, context.getString(R.string.export_toggle_selected_dns), context.getString(R.string.report_label_none)))
             }
 
             // Rewrite rules
@@ -296,13 +297,13 @@ class ConfigManager(private val context: Context) {
                         false
                     }
                 }
-                sb.appendLine("Rewrite rules: ${rulesArray.size()} ($enabledCount enabled)")
+                sb.appendLine(context.getString(R.string.config_rules_summary, rulesArray.size(), enabledCount))
                 rulesArray.take(16).forEach { rule ->
                     val o = rule.asJsonObject
                     sb.appendLine("  · ${o.get("fromDomain").asString} → ${o.get("toDomain").asString}")
                 }
             } else {
-                sb.appendLine("Rewrite rules: 0")
+                sb.appendLine(context.getString(R.string.config_rules_summary, 0, 0))
             }
 
             // NextDNS profiles
@@ -310,9 +311,9 @@ class ConfigManager(private val context: Context) {
                 val nextDnsArray = root.getAsJsonArray("nextDnsProfiles")
                 if (nextDnsArray.size() > 0) {
                     val ids = nextDnsArray.map { it.asString }
-                    sb.appendLine("NextDNS profiles: ${ids.joinToString(", ")}")
+                    sb.appendLine(context.getString(R.string.label_value_fmt, context.getString(R.string.export_toggle_nextdns), ids.joinToString(", ")))
                 } else {
-                    sb.appendLine("NextDNS profiles: none")
+                    sb.appendLine(context.getString(R.string.label_value_fmt, context.getString(R.string.export_toggle_nextdns), context.getString(R.string.report_label_none)))
                 }
             }
 
@@ -326,14 +327,14 @@ class ConfigManager(private val context: Context) {
                         false
                     }
                 }
-                sb.appendLine("Test domains: ${domainsArray.size()} ($enabledCount enabled)")
+                sb.appendLine(context.getString(R.string.config_domains_summary, domainsArray.size(), enabledCount))
             }
 
             // Excluded apps (split tunneling)
             if (root.has("excludedApps") && !root.get("excludedApps").isJsonNull) {
                 val appsArray = root.getAsJsonArray("excludedApps")
                 if (appsArray.size() > 0) {
-                    sb.appendLine("Excluded apps (split tunnel): ${appsArray.size()}")
+                    sb.appendLine(context.getString(R.string.label_value_fmt, context.getString(R.string.split_tunnel_title), appsArray.size().toString()))
                     appsArray.take(32).forEach { sb.appendLine("  · ${it.asString}") }
                 }
             }
@@ -343,23 +344,39 @@ class ConfigManager(private val context: Context) {
                 val settings = root.getAsJsonObject("settings")
                 val enabledSettings = settings.entrySet()
                     .filter { it.value.asBoolean }
-                    .map { it.key.replace("_", " ") }
+                    .map { entry -> settingLabel(entry.key) }
                 if (enabledSettings.isNotEmpty()) {
-                    sb.appendLine("Settings enabled: ${enabledSettings.joinToString(", ")}")
+                    sb.appendLine(context.getString(R.string.config_settings_enabled, enabledSettings.joinToString(", ")))
                 } else {
-                    sb.appendLine("Settings: all disabled")
+                    sb.appendLine(context.getString(R.string.config_settings_disabled))
                 }
             }
 
             sb.toString().trimEnd()
         } catch (e: Exception) {
-            "Invalid configuration file: ${e.message}"
+            context.getString(R.string.config_invalid_fmt, e.message ?: context.getString(R.string.result_error))
         }
     }
 
     // ══════════════════════════════════════════════════════════════
     //  Helpers
     // ══════════════════════════════════════════════════════════════
+
+    private fun settingLabel(key: String): String {
+        val resource = when (key) {
+            "auto_reconnect_dns" -> R.string.auto_reconnect_label
+            "disable_ipv6" -> R.string.disable_ipv6_label
+            "adb_dot_enabled" -> R.string.dns_dot_adb
+            "operator_dns_enabled" -> R.string.show_operator_dns
+            "advanced_features_enabled" -> R.string.advanced_features_title
+            "allow_adblock_profiles" -> R.string.allow_adblock_profiles
+            "show_doq_dns" -> R.string.show_doq_dns
+            "show_profile_variants" -> R.string.show_profile_variants
+            "show_standard_dns" -> R.string.show_standard_dns
+            else -> return key
+        }
+        return context.getString(resource)
+    }
 
     private fun iso8601Now(): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)

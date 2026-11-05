@@ -17,7 +17,7 @@ class SecureReportBuilder(context: Context, private val snapshot: Snapshot) : Co
         val appVersion = runCatching { packageManager.getPackageInfo(packageName, 0).versionName }.getOrNull() ?: "?"
         return buildString {
                     appendLine("# Perfect DNS Manager \u2014 ${getString(R.string.md_report_title)}")
-                    appendLine("*Version : $appVersion*")
+                    appendLine("*${getString(R.string.label_value_fmt, getString(R.string.version_label), appVersion)}*")
                     appendLine()
 
                     // Always include network info from saved fields (was tvStatusInfo, désormais peuplé via les 3 cards status)
@@ -49,9 +49,9 @@ class SecureReportBuilder(context: Context, private val snapshot: Snapshot) : Co
                         appendLine()
                         appendLine("| ${getString(R.string.md_field)} | ${getString(R.string.md_value)} |")
                         appendLine("|-------|--------|")
-                        appendLine("| **Connexion** | $connType |")
+                        appendLine("| **${getString(R.string.connection_label)}** | $connType |")
                         if (!snapshot.lastCarrierName.isNullOrEmpty()) {
-                            appendLine("| **Op\u00e9rateur** | `${snapshot.lastCarrierName}` |")
+                            appendLine("| **${getString(R.string.carrier_label)}** | `${snapshot.lastCarrierName}` |")
                         }
                         appendLine("| **${getString(R.string.md_local_ip)}** | `$localIp` |")
                         appendLine("| **IPv4** | `${snapshot.lastIpv4 ?: "N/A"}` |")
@@ -98,7 +98,7 @@ class SecureReportBuilder(context: Context, private val snapshot: Snapshot) : Co
 
                     // 2. DNS Leak test
                     if (includeLeak && snapshot.lastLeakResult != null) {
-                        appendLine("## DNS Leak Test")
+                        appendLine("## ${getString(R.string.share_toggle_leak)}")
                         appendLine()
 
                         // ISP DNS (sans VPN)
@@ -152,13 +152,13 @@ class SecureReportBuilder(context: Context, private val snapshot: Snapshot) : Co
                     // 3. Speedtest (basique)
                     if (includeSpeed && snapshot.lastSpeedResult != null) {
                         val speed = snapshot.lastSpeedResult!!
-                        appendLine("## Speedtest (basique)")
+                        appendLine("## ${getString(R.string.share_toggle_speedtest)}")
                         appendLine()
                         appendLine("| ${getString(R.string.md_measure)} | ${getString(R.string.md_result)} |")
                         appendLine("|--------|----------|")
-                        if (speed.pingMs >= 0) appendLine("| **Ping** | ${speed.pingMs} ms |")
-                        appendLine("| **Download** | ${String.format(java.util.Locale.getDefault(), "%.1f", speed.downloadMbps)} Mbps |")
-                        appendLine("| **Upload** | ${String.format(java.util.Locale.getDefault(), "%.1f", speed.uploadMbps)} Mbps |")
+                        if (speed.pingMs >= 0) appendLine("| **${getString(R.string.speed_ping_label)}** | ${speed.pingMs} ms |")
+                        appendLine("| **${getString(R.string.speed_download_label)}** | ${String.format(java.util.Locale.getDefault(), "%.1f", speed.downloadMbps)} Mbps |")
+                        appendLine("| **${getString(R.string.speed_upload_label)}** | ${String.format(java.util.Locale.getDefault(), "%.1f", speed.uploadMbps)} Mbps |")
                         appendLine()
                     }
 

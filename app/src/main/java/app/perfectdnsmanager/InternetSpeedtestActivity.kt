@@ -332,8 +332,8 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             gravity = Gravity.CENTER_VERTICAL
             layoutParams = lp(matchParent, wrapContent).apply { bottomMargin = dp(8) }
         }
-        tvPing = metricBlock(pingRow, "PING", "-- ms", COLOR_CYAN, dp(0))
-        tvJitter = metricBlock(pingRow, "JITTER", "-- ms", COLOR_CYAN, dp(0))
+        tvPing = metricBlock(pingRow, getString(R.string.speed_ping_label), "-- ms", COLOR_CYAN, dp(0))
+        tvJitter = metricBlock(pingRow, getString(R.string.speed_jitter_label), "-- ms", COLOR_CYAN, dp(0))
         resultsCard.addView(pingRow)
 
         // Download
@@ -346,7 +346,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             gravity = Gravity.CENTER_VERTICAL
             layoutParams = lp(matchParent, wrapContent).apply { bottomMargin = dp(4) }
         }
-        dlRow.addView(label("\u2B07 DOWNLOAD", COLOR_GREEN, 13f, dp(0)))
+        dlRow.addView(label("\u2B07 ${getString(R.string.speed_download_label)}", COLOR_GREEN, 13f, dp(0)))
         tvDownload = TextView(this).apply {
             text = "-- Mbps"; setTextColor(COLOR_WHITE); textSize = 20f
             setTypeface(typeface, Typeface.BOLD); gravity = Gravity.END
@@ -367,7 +367,7 @@ class InternetSpeedtestActivity : AppCompatActivity() {
             gravity = Gravity.CENTER_VERTICAL
             layoutParams = lp(matchParent, wrapContent).apply { bottomMargin = dp(4) }
         }
-        ulRow.addView(label("\u2B06 UPLOAD", COLOR_VIOLET, 13f, dp(0)))
+        ulRow.addView(label("\u2B06 ${getString(R.string.speed_upload_label)}", COLOR_VIOLET, 13f, dp(0)))
         tvUpload = TextView(this).apply {
             text = "-- Mbps"; setTextColor(COLOR_WHITE); textSize = 20f
             setTypeface(typeface, Typeface.BOLD); gravity = Gravity.END

@@ -199,7 +199,7 @@ open class MainActivity : AppCompatActivity() {
                         }
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
                             startForegroundService(svcIntent) else startService(svcIntent)
-                        val label = "DNS via VPN: ${newProfile.providerName}\n${newProfile.primary}"
+                        val label = getString(R.string.dns_active_vpn_fmt, newProfile.providerName, "VPN") + "\n${newProfile.primary}"
                         prefs.edit()
                             .putBoolean("vpn_active", true)
                             .putString("vpn_label", label)
@@ -829,13 +829,13 @@ open class MainActivity : AppCompatActivity() {
             }
             try {
                 val speed = SpeedTester.runFullTest { progress ->
-                    val snap = display.toString() + "\n⏳ $progress"
+                    val snap = display.toString() + "\n⏳ ${getString(progress)}…"
                     runOnUiThread { tvReportContent.text = renderReport(snap, titleBlocking, titleLeak, titleSpeedtest) }
                 }
                 lastSpeedResult = speed
-                if (speed.pingMs >= 0) display.append("\nPing : ${speed.pingMs} ms")
-                display.append("\n↓ Download : ${String.format(java.util.Locale.getDefault(), "%.1f", speed.downloadMbps)} Mbps")
-                display.append("\n↑ Upload : ${String.format(java.util.Locale.getDefault(), "%.1f", speed.uploadMbps)} Mbps")
+                if (speed.pingMs >= 0) display.append("\n${getString(R.string.speed_ping_label)} : ${speed.pingMs} ms")
+                display.append("\n↓ ${getString(R.string.speed_download_label)} : ${String.format(java.util.Locale.getDefault(), "%.1f", speed.downloadMbps)} Mbps")
+                display.append("\n↑ ${getString(R.string.speed_upload_label)} : ${String.format(java.util.Locale.getDefault(), "%.1f", speed.uploadMbps)} Mbps")
             } catch (e: Exception) {
                 display.append("\n❌ ${e.message}")
             }
@@ -1373,7 +1373,7 @@ open class MainActivity : AppCompatActivity() {
         }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) startForegroundService(intent)
         else startService(intent)
-        val label = "DNS via VPN: ${profile.providerName}\n${profile.primary}"
+        val label = getString(R.string.dns_active_vpn_fmt, profile.providerName, "VPN") + "\n${profile.primary}"
         prefs.edit()
             .putBoolean("vpn_active", true)
             .putString("vpn_label", label)

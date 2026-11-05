@@ -54,6 +54,9 @@ jobs:
       - name: Build ADB native libraries from pinned source
         run: python3 tools/build_adb_native.py
 
+      - name: Validate all translations
+        run: python3 tools/check_translations.py
+
       - name: Run unit tests
         run: bash ./gradlew :app:testDebugUnitTest :app:lintDebug --no-daemon
 
@@ -190,6 +193,22 @@ jobs:
       - name: Preserve optimized crash mapping
         run: gzip -c app/build/outputs/mapping/release/mapping.txt > app/build/outputs/mapping/release/mapping.txt.gz
 
+      - name: Prepare changelog notes
+        if: github.event_name == 'push' || github.event.inputs.create_release == 'true'
+        env:
+          CURRENT_VERSION: ${{ steps.meta.outputs.version_name }}
+        run: |
+          python3 - <<'PYTHON'
+          import os, re
+          from pathlib import Path
+          version = os.environ["CURRENT_VERSION"]
+          changelog = Path("CHANGELOG.md").read_text()
+          section = re.search(r"^## " + re.escape(version) + r"[^\n]*\n(.*?)(?=^## |\Z)", changelog, re.M | re.S)
+          if not section:
+              raise SystemExit("Missing changelog for " + version)
+          Path("release-notes.md").write_text("Build actuel : **v" + version + "**\n\n" + section[1].strip() + "\n")
+          PYTHON
+
       - name: Create GitHub Release
         if: github.event_name == 'push' || github.event.inputs.create_release == 'true'
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
@@ -202,7 +221,7 @@ jobs:
             ${{ steps.apk.outputs.path }}
             ${{ steps.stable_apk.outputs.pretty }}
             ${{ steps.stable_apk.outputs.legacy }}
-          generate_release_notes: true
+          body_path: release-notes.md
 
       - name: Stage stable-name APK for latest-beta pointer
         if: steps.meta.outputs.prerelease == 'true' && (github.event_name == 'push' || github.event.inputs.create_release == 'true')
@@ -220,15 +239,7 @@ jobs:
           tag_name: latest-beta
           name: Latest beta
           prerelease: true
-          body: |
-            Lien stable pointant toujours vers la dernière bêta publiée.
-
-            Build actuel : **v${{ steps.meta.outputs.version_name }}**
-
-            Installation :
-            ```
-            https://github.com/PerfectDNSManager/PerfectDNSManager/releases/download/latest-beta/PerfectDNSManager-latest-beta.apk
-            ```
+          body_path: release-notes.md
           files: ${{ steps.beta_apk.outputs.path }}
 
       # Purge des bêtas précédentes : on ne garde que la nouvelle (TAG_NAME) et

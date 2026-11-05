@@ -1,7 +1,9 @@
 # Changelog
 
-## 2.4.10-beta.1 — 4 novembre 2026
+## 2.4.10-beta.1 — 5 novembre 2026
 
+- Relecture des 12 langues : terminologie DNS/VPN, instructions ADB et Fire TV, pluriels, ponctuation et messages de diagnostic corrigés.
+- Rapports, tests de débit et aperçus d’import traduits ; contrôles automatiques des clés et paramètres de traduction avant publication.
 - Nouveaux partages sécurisés : secrets aléatoires de 20 caractères ; lecture des anciens partages conservée.
 - Règles DNS : recherche indexée et correction des interrupteurs lors du recyclage des lignes.
 - Rapports : génération isolée de l’écran, à partir d’un instantané des résultats et des rubriques sélectionnées.

@@ -8,7 +8,7 @@
     <string name="deactivate">إلغاء التفعيل</string>
     <string name="no_active_dns">لا يوجد DNS نشط</string>
     <string name="select_a_profile">اختر ملفًا</string>
-    <string name="private_dns_supports_only_dot">Private DNS يدعم DoT فقط</string>
+    <string name="private_dns_supports_only_dot">يدعم DNS الخاص في Android بروتوكول DoT فقط</string>
     <string name="adb_requires_root_or_pc">تعذّر تعديل الإعدادات.\n\nتأكد من منح الإذن عبر الكمبيوتر:\n\nadb shell pm grant %1$s android.permission.WRITE_SECURE_SETTINGS\n\n(أو أن جهازك يملك صلاحيات Root)</string>
     <string name="vpn_permission_denied">تم رفض إذن VPN</string>
     <string name="switching_disabling_dot">جارٍ تعطيل DoT السابق…</string>
@@ -21,8 +21,8 @@
     <string name="settings_content_description">الإعدادات</string>
     <string name="wan_ip_error">غير متوفر</string>
     <string name="wan_ipv6_blocked">محظور ✓</string>
-    <string name="share_ip_success_title">تم مشاركة التقرير المشفر</string>
-    <string name="share_ip_error">خطأ أثناء مشاركة عناوين IP</string>
+    <string name="share_ip_success_title">تمت مشاركة التقرير المشفّر</string>
+    <string name="share_ip_error">خطأ أثناء مشاركة التقرير</string>
 
     <!-- Navigation -->
     <string name="back_arrow">← رجوع</string>
@@ -33,8 +33,8 @@
     <string name="adb_status_active">🟢 تصحيح ADB: نشط</string>
     <string name="adb_status_inactive">🔴 تصحيح ADB: غير نشط</string>
     <string name="advanced_features_title">⚙️ إعدادات DNS متقدمة</string>
-    <string name="url_rewrite_warning">URL Rewrite يعمل فقط مع DNS DoH أو القياسي (ليس DoT/ADB)</string>
-    <string name="url_rewrite_button">🔀 URL Rewrite</string>
+    <string name="url_rewrite_warning">تعمل قواعد إعادة كتابة DNS مع DoH وDoQ وDNS التقليدي عبر VPN المحلي، ولا تعمل مع DoT/ADB.</string>
+    <string name="url_rewrite_button">🔀 إعادة كتابة DNS</string>
     <string name="restore_dns_button">🔄 استعادة DNS الأولي</string>
     <string name="show_operator_dns">🇫🇷 عرض DNS المشغّلين الفرنسيين (Orange/Bouygues/SFR/Free/OVH)</string>
     <string name="show_standard_dns">عرض DNS الكلاسيكي (غير مشفر)</string>
@@ -54,7 +54,7 @@
 
     <!-- Import / Export -->
     <string name="import_export_title">💾 ملف التكوين</string>
-    <string name="export_config_button">📤 تصدير الإعدادات المشفرة (AES-256-GCM)</string>
+    <string name="export_config_button">📤 تصدير الإعدادات المشفرة</string>
     <string name="import_config_button">📥 استيراد الإعدادات المشفرة</string>
     <string name="uploading">جارٍ التشفير والإرسال…</string>
     <string name="upload_success_title">🔒 تم إرسال الملف المشفر!</string>
@@ -91,10 +91,10 @@
     <string name="all_reset">تمت إعادة تعيين الكل!</string>
 
     <!-- URL Rewrite -->
-    <string name="url_rewrite_title">🔀 URL Rewrite</string>
+    <string name="url_rewrite_title">🔀 إعادة كتابة DNS</string>
     <string name="add_new_rule">➕ إضافة قاعدة جديدة</string>
     <string name="close">إغلاق</string>
-    <string name="new_rewrite_rule_title">➕ قاعدة Rewrite جديدة</string>
+    <string name="new_rewrite_rule_title">➕ قاعدة جديدة لإعادة كتابة DNS</string>
     <string name="rewrite_explain">يعيد توجيه نطاق إلى نطاق آخر.\nمفيد لتجاوز حظر DNS من المشغّل.</string>
     <string name="source_domain">النطاق المصدر:</string>
     <string name="source_domain_hint">مثال: ygg.re</string>
@@ -103,8 +103,8 @@
     <string name="add_button">إضافة</string>
     <string name="rewrite_added">تمت إضافة إعادة الكتابة: %1$s → %2$s</string>
     <string name="status_label">الحالة: %1$s</string>
-    <string name="enabled">مفعّل</string>
-    <string name="disabled">معطّل</string>
+    <string name="enabled">مفعّلة</string>
+    <string name="disabled">معطّلة</string>
     <string name="enable_button">تفعيل</string>
     <string name="disable_button">تعطيل</string>
     <string name="rule_enabled">تم تفعيل القاعدة</string>
@@ -112,7 +112,7 @@
     <string name="delete_rule_confirm">حذف القاعدة %1$s → %2$s؟</string>
     <string name="rule_deleted">تم حذف القاعدة</string>
 <!-- Language dialog -->
-    <string name="choose_language_title">Choose your language / Choisissez votre langue</string>
+    <string name="choose_language_title">🌍 اللغة / Language</string>
     <string name="lang_francais">🇫🇷 Français</string>
     <string name="lang_english">🇬🇧 English</string>
     <string name="lang_espanol">🇪🇸 Español</string>
@@ -196,7 +196,7 @@
     <string name="howto_firestick_title">🔥 Firestick / Fire TV</string>
     <string name="howto_firestick_desc">على Firestick، طريقة الاتصال التلقائي بـ ADB غالبًا لا تعمل. يُنصح باستخدام طريقة VPN التي تعمل بدون أي إعداد.\n\nإذا كنت تريد استخدام ADB:\n1. ثبّت ADB على الكمبيوتر (platform-tools)\n2. اتصل بـ Firestick:\n   adb connect IP_FIRESTICK:5555\n3. امنح الإذن:\n   adb shell pm grant app.perfectdnsmanager android.permission.WRITE_SECURE_SETTINGS\n4. بعد ذلك، سيتمكن التطبيق من تغيير DNS مباشرة.</string>
     <string name="howto_recommendation_title">✅ توصية</string>
-    <string name="howto_recommendation_desc">طريقة VPN هي الأبسط: تعمل على جميع الأجهزة بدون أي إعداد خاص. تنشئ VPN محلي يعيد توجيه طلبات DNS فقط إلى الخادم الذي تختاره.</string>
+    <string name="howto_recommendation_desc">لا تتطلب طريقة VPN استخدام ADB أو صلاحيات root. وافق على طلب اتصال VPN الذي يعرضه Android. يرسل VPN المحلي استعلامات DNS إلى الخادم المحدد، لكنه لا يخفي عنوان IP العام.</string>
 
     <!-- Notification -->
     <string name="notif_starting">DNS: جارٍ البدء…</string>
@@ -239,21 +239,21 @@
     <string name="self_grant_step_connecting">الاتصال بـ ADB…</string>
     <string name="self_grant_step_port">محاولة المنفذ %1$s…</string>
     <string name="self_grant_step_granting">منح الإذن…</string>
-    <string name="self_grant_success">تم منح الإذن بنجاح! DNS الخاص يعمل الآن بدون ADB pairing.</string>
+    <string name="self_grant_success">تم منح الإذن. يستطيع PDM الآن تغيير DNS الخاص في Android.</string>
     <string name="self_grant_adb_unreachable">ADB غير متاح. قم بتفعيل تصحيح أخطاء ADB.</string>
     <string name="self_grant_failed">فشل منح الإذن.</string>
     <string name="self_grant_not_effective">نجح الأمر لكن الإذن غير فعال. أعد تشغيل الجهاز.</string>
     <string name="self_grant_error">خطأ: %1$s</string>
     <string name="self_grant_help_title">مساعدة — ADB غير متاح</string>
-    <string name="self_grant_help_firetv">على Fire TV / Fire Stick:\n\n1. اذهب إلى الإعدادات ← My Fire TV ← خيارات المطور\n2. فعّل \"تصحيح أخطاء ADB\"\n3. فعّل \"التطبيقات من مصادر غير معروفة\"\n4. ارجع هنا واضغط \"منح تلقائيًا\"\n\nإذا لم تظهر قائمة المطور، اذهب إلى الإعدادات ← My Fire TV ← حول ← اضغط 7 مرات على \"الرقم التسلسلي\".</string>
-    <string name="self_grant_help_phone">على هاتف/جهاز لوحي Android:\n\n1. اذهب إلى الإعدادات ← حول الهاتف ← اضغط 7 مرات على \"رقم الإصدار\"\n2. فعّل \"تصحيح أخطاء USB\" في خيارات المطور\n3. فعّل \"التصحيح اللاسلكي\" (Android 11+)\n4. ارجع هنا واضغط \"منح تلقائيًا\"\n\nملاحظة: على بعض الهواتف، قد لا يعمل المنح التلقائي. استخدم ADB pairing أو حاسوب مع ADB.</string>
+    <string name="self_grant_help_firetv">على Fire TV بنظام Android/Fire OS:\n1. افتح الإعدادات ← My Fire TV ← خيارات المطور.\n2. فعّل تصحيح ADB.\n3. عُد إلى PDM وجرّب المنح التلقائي.\n\nإذا كانت القائمة مخفية، افتح My Fire TV ← حول، واضغط على اسم الجهاز سبع مرات. تمنع بعض الطرز الوصول المحلي إلى ADB؛ استخدم حاسوبًا أو طريقة VPN حينها.</string>
+    <string name="self_grant_help_phone">على Android 11 أو أحدث:\n1. فعّل خيارات المطور بالضغط على رقم الإصدار سبع مرات.\n2. فعّل تصحيح الأخطاء اللاسلكي.\n3. افتح إقران الجهاز باستخدام رمز ودوّن الرمز المكوّن من ستة أرقام.\n4. عُد إلى PDM واختر إقران ADB لاسلكيًا ثم أدخل الرمز.\n\nيمكن أيضًا استخدام حاسوب مع ADB عبر USB.</string>
 
 
     <!-- DNS Ratings -->
 
     <!-- DNS Speedtest -->
     <string name="dns_speedtest_button">بدء الاختبار</string>
-    <string name="dns_speedtest_title">⚡ DNS Speedtest</string>
+    <string name="dns_speedtest_title">⚡ اختبار سرعة DNS</string>
 
     <!-- Export granulaire -->
     <string name="export_select_title">📤 ماذا تريد أن تصدّر؟</string>
@@ -261,12 +261,12 @@
 
     <string name="export_toggle_selected_dns">DNS المحدد</string>
     <string name="export_toggle_nextdns">ملفات NextDNS المخصصة</string>
-    <string name="export_toggle_rewrite">قواعد URL Rewrite</string>
+    <string name="export_toggle_rewrite">قواعد إعادة كتابة DNS</string>
     <string name="export_toggle_settings">الإعدادات</string>
     <string name="export_button">تصدير</string>
 
     <!-- IPv6 VPN reconnect -->
-    <string name="vpn_reconnecting_ipv6">تمت إعادة اتصال VPN (تم تغيير IPv6)</string>
+    <string name="vpn_reconnecting_ipv6">أُعيد اتصال VPN (تم تغيير IPv6)</string>
 
 
     <!-- DNS Rewrite screen -->
@@ -278,7 +278,7 @@
     <!-- DNS Leak Test -->
 
     <!-- Rapport enrichi -->
-    <string name="report_generating">جاري إنشاء التقرير…</string>
+    <string name="report_generating">جارٍ إنشاء التقرير…</string>
 
     <!-- أدوات الاختبار (وحدة موحدة) -->
     <string name="generate_report_button">▶ إنشاء تقرير</string>
@@ -288,7 +288,7 @@
     <string name="share_toggle_network">معلومات الشبكة (IP, DNS)</string>
     <string name="share_toggle_speedtest">اختبار سرعة الإنترنت</string>
     <string name="share_toggle_leak">اختبار تسرب DNS</string>
-    <string name="share_toggle_blocking">اختبار حجب URL</string>
+    <string name="share_toggle_blocking">اختبار حظر DNS</string>
     <string name="report_progress_speedtest">⏳ جارٍ اختبار السرعة…</string>
     <string name="report_progress_leak">⏳ جارٍ اختبار تسرب DNS…</string>
     <string name="report_progress_blocking">⏳ جارٍ اختبار الحجب…</string>
@@ -312,7 +312,7 @@
     <!-- Report content strings -->
     <string name="report_label_profile">الملف الشخصي</string>
     <string name="report_label_none">لا شيء</string>
-    <string name="report_no_leak">تغيرت المحللات → لا تسرب DNS!</string>
+    <string name="report_no_leak">تختلف خوادم التحليل المكتشفة، لكن هذا وحده لا يستبعد جميع تسربات DNS.</string>
     <string name="report_leak_detected">نفس المحللات → تسرب DNS محتمل!</string>
     <string name="report_isp_dns_label">DNS المزود (بدون VPN)</string>
     <string name="report_active_dns_label">DNS النشط (مع VPN)</string>
@@ -335,10 +335,10 @@
     <string name="md_resolver_ip">IP المحلل</string>
     <string name="md_country">البلد</string>
     <string name="md_isp">المزود</string>
-    <string name="md_url_blocking_test">اختبار حظر URL</string>
+    <string name="md_url_blocking_test">اختبار حظر DNS</string>
     <string name="md_tested_domain">النطاق المختبر</string>
     <string name="md_step">الخطوة</string>
-    <string name="md_authority">السلطة</string>
+    <string name="md_authority">جهة الحظر</string>
     <string name="md_isp_dns_no_vpn">DNS المزود (بدون VPN)</string>
     <string name="md_active_dns_with_vpn">DNS النشط (مع VPN)</string>
     <string name="md_dns_unblocks_success">DNS النشط يفتح هذا النطاق بنجاح.</string>
@@ -369,7 +369,7 @@
     <string name="domain_tester_edit_title">تعديل النطاق</string>
     <string name="domain_tester_delete_title">حذف النطاق؟</string>
     <string name="domain_tester_run">▶ اختبار النطاقات</string>
-    <string name="domain_tester_testing">جاري الاختبار…</string>
+    <string name="domain_tester_testing">جارٍ الاختبار…</string>
     <string name="domain_tester_no_result">لم يتم إجراء أي اختبار.</string>
     <string name="domain_tester_no_enabled">لا يوجد نطاق مفعّل.</string>
     <string name="domain_tester_dns_all">الكل</string>
@@ -391,29 +391,29 @@
     <string name="dns_type_standard_label">قياسي (UDP غير مشفر)</string>
     <string name="primary_dns_v6_optional">DNS أساسي IPv6 (اختياري)</string>
     <string name="secondary_dns_v6_hint">DNS ثانوي IPv6 (اختياري)</string>
-    <string name="primary_dns_v6_hint">ex: 2606:4700:4700::1111</string>
+    <string name="primary_dns_v6_hint">مثال: 2606:4700:4700::1111</string>
     <string name="adb_pair_wireless">إقران ADB لاسلكيًا (Android 11+)</string>
     <string name="adb_pair_wireless_instructions">على هذا الجهاز:\n1. خيارات المطور → تصحيح الأخطاء اللاسلكي → تشغيل\n2. الإقران باستخدام رمز → دوّن الرمز المكون من 6 أرقام\n\nأدخل الرمز هنا:</string>
     <string name="adb_pair_submit">إقران</string>
     <string name="adb_pair_invalid_code">رمز غير صالح (مطلوب 6 أرقام)</string>
-    <string name="adb_pair_in_progress">جاري إقران ADB…</string>
+    <string name="adb_pair_in_progress">جارٍ إقران ADB…</string>
     <string name="adb_pair_step_discovering">اكتشاف منفذ ADB عبر mDNS…</string>
     <string name="adb_pair_step_pairing">إقران TLS-PSK…</string>
     <string name="adb_pair_step_connecting">اتصال ADB مشفر…</string>
     <string name="adb_pair_step_granting">منح WRITE_SECURE_SETTINGS…</string>
-    <string name="adb_pair_success">تم الإقران بنجاح! تم منح الإذن مدى الحياة.</string>
+    <string name="adb_pair_success">تم الإقران بنجاح ومنح الإذن.</string>
     <string name="adb_pair_failed">فشل الإقران: %1$s</string>
     <string name="share_expires_label">انتهاء صلاحية الرابط:</string>
-    <string name="share_exp_1h">1 h</string>
-    <string name="share_exp_6h">6 h</string>
-    <string name="share_exp_24h">24 h</string>
-    <string name="share_exp_72h">72 h</string>
+    <string name="share_exp_1h">1 س</string>
+    <string name="share_exp_6h">6 س</string>
+    <string name="share_exp_24h">24 س</string>
+    <string name="share_exp_72h">72 س</string>
     <string name="speedtest_adv_title">اختبار سرعة الإنترنت</string>
     <string name="speedtest_start">بدء الاختبار</string>
     <string name="speedtest_log">سجل الاختبار</string>
     <string name="speedtest_waiting">الانتظار… </string>
     <string name="speedtest_backend_cf">الخلفية: Cloudflare (speed.cloudflare.com)</string>
-    <string name="speedtest_backend_netflix">الخلفية: Netflix / Fast.com (التحميل غير مدعوم)</string>
+    <string name="speedtest_backend_netflix">الخادم: Netflix / Fast.com (الرفع غير مدعوم)</string>
     <string name="speedtest_start_msg">=== بدء الاختبار %1$s ===</string>
     <string name="speedtest_done_msg">=== انتهى الاختبار ===</string>
     <string name="speedtest_stopping_msg">إيقاف الاختبار…</string>
@@ -444,9 +444,9 @@
     <string name="dt_vpn_active_fmt">🟢 VPN نشط (%1$s)</string>
     <string name="dt_vpn_active">🟢 VPN نشط</string>
     <string name="dt_dot_active">🟢 DNS الخاص نشط</string>
-    <string name="dt_no_dns">🔴 لا يوجد DNS نشط (دقة من المزود)</string>
+    <string name="dt_no_dns">🔴 لا يوجد DNS نشط (تحليل الأسماء لدى مزود الإنترنت)</string>
     <string name="current_version_fmt">الإصدار الحالي: %1$s</string>
-    <string name="cancelling">جاري الإلغاء…</string>
+    <string name="cancelling">جارٍ الإلغاء…</string>
     <string name="support_qr_content_description">رمز QR لعنوان التبرع</string>
 
 
@@ -480,7 +480,7 @@
     <string name="import_link_label">رابط قصير (أو رمز من 8 أحرف):</string>
     <string name="import_link_hint">perfectdnsmanager.app/d/…</string>
     <string name="import_password_label">كلمة المرور:</string>
-    <string name="no_search_results_fmt">لا نتائج لـ "%1$s"</string>
+    <string name="no_search_results_fmt">لا نتائج لـ \"%1$s\"</string>
     <string name="result_error">خطأ</string>
     <string name="speedtest_fast_api_error_fmt">خطأ Fast.com API: %1$s</string>
     <string name="speedtest_fast_error_fmt">خطأ Fast.com: %1$s</string>
@@ -514,7 +514,7 @@
         <item quantity="other">%d ملف</item>
     </plurals>    <string name="search_refine_hint">… حسّن البحث</string>
     <string name="nextdns_profile_id_label">معرّف ملف NextDNS :</string>    <string name="speedtest_backend_label_fmt">خادم الاختبار : %1$s  ▾</string>
-    <string name="speedtest_backend_picker_title">اختر خادم الاختبار</string>    <string name="speedtest_ookla_loading">جاري تحميل قائمة خوادم Ookla…</string>
+    <string name="speedtest_backend_picker_title">اختر خادم الاختبار</string>    <string name="speedtest_ookla_loading">جارٍ تحميل قائمة خوادم Ookla…</string>
     <string name="speedtest_ookla_latency">اختبار زمن وصول خوادم Ookla…</string>
     <string name="speedtest_ookla_loaded_fmt">تم تحميل %1$d خادم Ookla.</string>
     <string name="speedtest_ookla_err_code_fmt">خطأ خادم Ookla: %1$d</string>
@@ -528,7 +528,7 @@
     <string name="domain_tester_isp_dns">DNS المزود</string>
     <string name="domain_tester_no_a_record">لا يوجد سجل A</string>
     <string name="domain_tester_isp_not_blocked">غير محظور من قبل المزود</string>
-    <string name="domain_tester_join_and"> و </string>
+    <string name="domain_tester_join_and">\u0020و\u0020</string>
     <string name="domain_tester_error_fmt">%1$s: خطأ — %2$s</string>
     <plurals name="domain_tester_unblocks_fmt">
         <item quantity="zero">%1$s لا يفتح المحتوى</item>
@@ -552,7 +552,7 @@
     <string name="nextdns_profile_name_fmt">الملف الشخصي %1$s</string>
     <string name="dot_active_fmt">نظام أسماء النطاقات الخاص مفعّل: %1$s. اضغط «تعطيل» إذا فقدت الإنترنت.</string>
     <string name="dot_warning_unreachable">⚠ خادم نظام أسماء النطاقات الخاص لم يعد يستجيب — قد ينقطع الإنترنت. جارٍ التعطيل التلقائي…</string>
-    <string name="dot_autodisabled">تم تعطيل نظام أسماء النطاقات الخاص تلقائياً (الخادم غير متاح). عاد الإنترنت. يمكنك تفعيله مجدداً من التطبيق.</string>
+    <string name="dot_autodisabled">تم تعطيل DNS الخاص تلقائيًا لتعذّر الوصول إلى الخادم. تحقق من اتصال الإنترنت. يمكنك تفعيله مجددًا من PDM.</string>
     <string name="dot_disable_action">تعطيل</string>
     <string name="report_undetermined">غير محدد</string>
     <string name="md_blocking_undetermined">الاختبار غير حاسم: فشلت ترجمة أسماء النطاقات (الشبكة غير متاحة أو الخادم لا يستجيب). لا يمكن استنتاج وجود حجب.</string>
@@ -577,4 +577,22 @@
     <string name="update_verifying">جارٍ التحقق من التوقيع…</string>
     <string name="update_opening_installer">جارٍ فتح مثبّت Android…</string>
     <string name="update_progress_amount">%1$d%% · %2$s / %3$s</string>
+    <string name="label_value_fmt">%1$s: %2$s</string>
+    <string name="version_label">الإصدار</string>
+    <string name="connection_label">الاتصال</string>
+    <string name="carrier_label">مشغّل الشبكة</string>
+    <string name="speed_download_label">التنزيل</string>
+    <string name="speed_upload_label">الرفع</string>
+    <string name="speed_ping_label">زمن الاستجابة</string>
+    <string name="speed_jitter_label">تذبذب زمن الاستجابة</string>
+    <string name="config_profiles_summary">ملفات DNS: %1$d، منها %2$d مخصصة</string>
+    <string name="config_rules_summary">قواعد DNS: %1$d، منها %2$d مفعّلة</string>
+    <string name="config_domains_summary">نطاقات الاختبار: %1$d، منها %2$d مفعّلة</string>
+    <string name="config_settings_enabled">الإعدادات المفعّلة: %1$s</string>
+    <string name="config_settings_disabled">جميع الإعدادات المضمّنة معطّلة</string>
+    <string name="config_invalid_fmt">تكوين غير صالح: %1$s</string>
+    <string name="dns_resolution_failed">فشل تحليل DNS</string>
+    <string name="isp_dns_unavailable">DNS مزود الإنترنت غير متاح</string>
+    <string name="leak_isp_not_detected">تعذّر اكتشاف خوادم التحليل لدى مزود الإنترنت</string>
+    <string name="leak_active_not_detected">تعذّر اكتشاف خوادم التحليل النشطة</string>
 </resources>

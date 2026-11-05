@@ -314,7 +314,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         layout.addView(tvId)
 
         val etProfileId = EditText(this).apply {
-            hint = "ex: abc123"
+            hint = "abc123"
             setTextColor(pdmTextPrimary())
             setHintTextColor(pdmTextDisabled())
             textSize = 14f

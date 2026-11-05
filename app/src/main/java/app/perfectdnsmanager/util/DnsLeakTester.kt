@@ -62,11 +62,11 @@ object DnsLeakTester {
         return LeakComparisonResult(
             LeakResult(
                 ispResolvers.map { geoCache[it] ?: ResolverInfo(it, null, null) },
-                if (ispResolvers.isEmpty()) "Could not detect ISP resolvers" else null
+                if (ispResolvers.isEmpty()) context.getString(app.perfectdnsmanager.R.string.leak_isp_not_detected) else null
             ),
             LeakResult(
                 vpnResolvers.map { geoCache[it] ?: ResolverInfo(it, null, null) },
-                if (vpnResolvers.isEmpty()) "Could not detect VPN resolvers" else null
+                if (vpnResolvers.isEmpty()) context.getString(app.perfectdnsmanager.R.string.leak_active_not_detected) else null
             )
         )
     }

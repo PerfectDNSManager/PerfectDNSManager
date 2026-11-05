@@ -7,8 +7,8 @@
     <string name="activate">ACTIVER</string>
     <string name="deactivate">DÉSACTIVER</string>
     <string name="no_active_dns">Aucun DNS actif</string>
-    <string name="select_a_profile">Sélectionne un profil</string>
-    <string name="private_dns_supports_only_dot">Private DNS ne supporte que DoT</string>
+    <string name="select_a_profile">Choisissez un profil</string>
+    <string name="private_dns_supports_only_dot">Le DNS privé Android prend uniquement en charge DoT</string>
     <string name="adb_requires_root_or_pc">Impossible de modifier les paramètres.\n\nAssurez-vous d\'avoir accordé la permission via un PC :\n\nadb shell pm grant %1$s android.permission.WRITE_SECURE_SETTINGS\n\n(Ou que votre appareil est Rooté)</string>
     <string name="vpn_permission_denied">Permission VPN refusée</string>
     <string name="switching_disabling_dot">Désactivation du DoT précédent…</string>
@@ -22,7 +22,7 @@
     <string name="wan_ip_error">indisponible</string>
     <string name="wan_ipv6_blocked">bloqué ✓</string>
     <string name="share_ip_success_title">Rapport chiffré partagé</string>
-    <string name="share_ip_error">Erreur lors du partage des IPs</string>
+    <string name="share_ip_error">Erreur lors du partage du rapport</string>
 
     <!-- Navigation -->
     <string name="back_arrow">← Retour</string>
@@ -33,11 +33,11 @@
     <string name="adb_status_active">🟢 Débogage ADB : Actif</string>
     <string name="adb_status_inactive">🔴 Débogage ADB : Inactif</string>
     <string name="advanced_features_title">⚙️ Paramètres DNS avancés</string>
-    <string name="url_rewrite_warning">URL Rewrite fonctionne uniquement en DNS DoH, DoQ, Standard via la fonction VPN (pas en DoT/ADB)</string>
-    <string name="url_rewrite_button">🔀 URL Rewrite</string>
+    <string name="url_rewrite_warning">Les règles DNS fonctionnent avec DoH, DoQ et le DNS classique via le VPN local, mais pas avec DoT/ADB.</string>
+    <string name="url_rewrite_button">🔀 Réécriture DNS</string>
     <string name="restore_dns_button">🔄 Restaurer les DNS initiaux</string>
     <string name="show_operator_dns">🇫🇷 Afficher les DNS op\u00e9rateurs France (Orange/Bouygues/SFR/Free/OVH)</string>
-    <string name="show_standard_dns">Afficher les DNS classiques (non chiffr\u00e9)</string>
+    <string name="show_standard_dns">Afficher les DNS classiques (non chiffrés)</string>
     <string name="show_profile_variants">Afficher les différents profils des fournisseurs DNS</string>
     <string name="dns_dot_adb">📡 Afficher les DNS DoT via ADB</string>
     <string name="adb_warning">La méthode ADB modifie les paramètres système. En cas de problème de connectivité, désactivez cette option et utilisez la méthode VPN.</string>
@@ -59,17 +59,17 @@
 
     <!-- Import / Export -->
     <string name="import_export_title">💾 Fichier de configuration</string>
-    <string name="export_config_button">📤 Exporter la configuration chiffrée (AES-256-GCM)</string>
+    <string name="export_config_button">📤 Exporter la configuration chiffrée</string>
     <string name="import_config_button">📥 Importer une configuration chiffrée</string>
     <string name="uploading">Chiffrement et envoi…</string>
     <string name="upload_success_title">🔒 Fichier chiffré envoyé !</string>
-    <string name="upload_error">Erreur envoi: %1$s</string>
-    <string name="export_error">Erreur export: %1$s</string>
+    <string name="upload_error">Erreur d’envoi : %1$s</string>
+    <string name="export_error">Erreur d’exportation : %1$s</string>
     <string name="import_from_code_title">🔒 Import d\'une configuration chiffrée</string>
     <string name="import_code_explain">Générez ce code via Exporter dans les paramètres.\n\nLe fichier sera téléchargé et déchiffré automatiquement.\n\nVérification : https://perfectdnsmanager.app/decrypt.html</string>
     <string name="download_button">Télécharger</string>
     <string name="downloading">Téléchargement…</string>
-    <string name="read_error">Erreur lecture: %1$s</string>
+    <string name="read_error">Erreur de lecture : %1$s</string>
     <string name="confirm_import_title">📥 Confirmer l\'import</string>
     <string name="confirm_import_message">Contenu de la configuration :\n\n%1$s\n\nCela remplacera votre configuration actuelle.</string>
     <string name="import_with_settings">Importer (avec paramètres)</string>
@@ -79,15 +79,15 @@
     <string name="import_done">✅ Import terminé !</string>
     <string name="import_profiles_count">• %1$d profils DNS</string>
 
-    <string name="import_rewrite_count">• %1$d règles rewrite</string>
-    <string name="import_nextdns_count">• %1$d profils NextDNS custom</string>
+    <string name="import_rewrite_count">• %1$d règles de réécriture DNS</string>
+    <string name="import_nextdns_count">• %1$d profils NextDNS personnalisés</string>
     <string name="import_selected_restored">• DNS sélectionné restauré</string>
     <string name="import_settings_restored">• Paramètres restaurés</string>
 
     <!-- Restore DNS -->
     <string name="restore_dns_title">Restaurer les DNS</string>
     <string name="restore_dns_message">Choisissez une option :</string>
-    <string name="restore_defaults">Restaurer les défauts\n(garde les custom)</string>
+    <string name="restore_defaults">Restaurer les profils par défaut\n(conserver les profils personnels)</string>
     <string name="reset_all">Tout réinitialiser</string>
     <string name="confirm_title">Confirmer</string>
     <string name="reset_all_confirm">Cela supprimera TOUS vos profils personnalisés. Continuer ?</string>
@@ -96,18 +96,18 @@
     <string name="all_reset">Tout réinitialisé !</string>
 
     <!-- URL Rewrite -->
-    <string name="url_rewrite_title">🔀 URL Rewrite</string>
+    <string name="url_rewrite_title">🔀 Réécriture DNS</string>
     <string name="add_new_rule">➕ Ajouter une nouvelle règle</string>
     <string name="close">Fermer</string>
-    <string name="new_rewrite_rule_title">➕ Nouvelle règle Rewrite</string>
+    <string name="new_rewrite_rule_title">➕ Nouvelle règle DNS</string>
     <string name="rewrite_explain">Redirige un domaine vers un autre domaine.\nUtile pour contourner le blocage DNS opérateur.</string>
     <string name="source_domain">Domaine source :</string>
     <string name="source_domain_hint">ex: ygg.re</string>
     <string name="dest_domain">Domaine destination :</string>
     <string name="dest_domain_hint">ex: ygg.unblocked.re</string>
     <string name="add_button">Ajouter</string>
-    <string name="rewrite_added">Rewrite ajouté: %1$s → %2$s</string>
-    <string name="status_label">Status: %1$s</string>
+    <string name="rewrite_added">Règle ajoutée : %1$s → %2$s</string>
+    <string name="status_label">Statut : %1$s</string>
     <string name="enabled">Activée</string>
     <string name="disabled">Désactivée</string>
     <string name="enable_button">Activer</string>
@@ -117,7 +117,7 @@
     <string name="delete_rule_confirm">Supprimer la règle %1$s → %2$s ?</string>
     <string name="rule_deleted">Règle supprimée</string>
 <!-- Language dialog -->
-    <string name="choose_language_title">🌍 Langue / Language / Idioma</string>
+    <string name="choose_language_title">🌍 Langue / Language</string>
     <string name="lang_francais">🇫🇷 Français</string>
     <string name="lang_english">🇬🇧 English</string>
     <string name="lang_espanol">🇪🇸 Español</string>
@@ -159,7 +159,7 @@
     <string name="dns_type_standard_label">Standard (UDP non chiffré)</string>
     <string name="primary_dns_v6_optional">DNS Primaire IPv6 (optionnel)</string>
     <string name="secondary_dns_v6_hint">DNS Secondaire IPv6 (optionnel)</string>
-    <string name="primary_dns_v6_hint">ex: 2606:4700:4700::1111</string>
+    <string name="primary_dns_v6_hint">Ex. : 2606:4700:4700::1111</string>
     <string name="cancel">Annuler</string>
     <string name="save">Enregistrer</string>
     <string name="name_required">Nom requis</string>
@@ -212,7 +212,7 @@
     <string name="howto_firestick_title">🔥 Firestick / Fire TV</string>
     <string name="howto_firestick_desc">Sur Firestick, la méthode ADB auto-connexion ne fonctionne souvent pas. Il est recommandé d\'utiliser la méthode VPN qui marche sans configuration.\n\nSi vous voulez quand même utiliser ADB :\n1. Installez ADB sur un PC (platform-tools)\n2. Connectez-vous à la Firestick :\n   adb connect IP_FIRESTICK:5555\n3. Accordez la permission :\n   adb shell pm grant app.perfectdnsmanager android.permission.WRITE_SECURE_SETTINGS\n4. Après ça, l\'app pourra changer le DNS directement.</string>
     <string name="howto_recommendation_title">✅ Recommandation</string>
-    <string name="howto_recommendation_desc">La méthode VPN est la plus simple : elle fonctionne sur tous les appareils sans aucune configuration spéciale. Elle crée un VPN local qui redirige uniquement les requêtes DNS vers le serveur de votre choix.</string>
+    <string name="howto_recommendation_desc">La méthode VPN ne nécessite ni ADB ni accès root. Acceptez la demande de connexion VPN affichée par Android. Le VPN local transmet les requêtes DNS au serveur choisi ; il ne masque pas votre adresse IP publique.</string>
 
     <!-- Notification -->
     <string name="notif_starting">DNS: démarrage…</string>
@@ -255,7 +255,7 @@
     <string name="self_grant_step_connecting">Connexion ADB…</string>
     <string name="self_grant_step_port">Tentative port %1$s…</string>
     <string name="self_grant_step_granting">Attribution de la permission…</string>
-    <string name="self_grant_success">Permission accordée avec succès ! Le DNS privé fonctionne maintenant sans ADB.</string>
+    <string name="self_grant_success">Permission accordée. PDM peut maintenant modifier le DNS privé Android.</string>
 
     <!-- ADB pairing Wireless Debugging (Android 11+ phone, no PC needed) -->
     <string name="adb_pair_wireless">Coupler ADB sans fil (Android 11+)</string>
@@ -267,30 +267,30 @@
     <string name="adb_pair_step_pairing">Couplage TLS-PSK…</string>
     <string name="adb_pair_step_connecting">Connexion ADB chiffrée…</string>
     <string name="adb_pair_step_granting">Accord WRITE_SECURE_SETTINGS…</string>
-    <string name="adb_pair_success">Couplage réussi ! Permission accordée à vie.</string>
+    <string name="adb_pair_success">Appairage réussi ! Permission accordée.</string>
     <string name="adb_pair_failed">Échec du couplage : %1$s</string>
     <string name="self_grant_adb_unreachable">ADB non accessible. Activez le débogage ADB.</string>
     <string name="self_grant_failed">Échec de l\'attribution de la permission.</string>
     <string name="self_grant_not_effective">La commande a réussi mais la permission n\'est pas effective. Redémarrez l\'appareil.</string>
     <string name="self_grant_error">Erreur : %1$s</string>
     <string name="self_grant_help_title">Aide — ADB non accessible</string>
-    <string name="self_grant_help_firetv">Sur Fire TV / Fire Stick :\n\n1. Allez dans Paramètres → Ma Fire TV → Options pour les développeurs\n2. Activez \"Débogage ADB\"\n3. Activez \"Applications de sources inconnues\"\n4. Revenez ici et appuyez sur \"Accorder automatiquement\"\n\nSi le menu développeur n\'apparaît pas, allez dans Paramètres → Ma Fire TV → À propos → cliquez 7 fois sur \"Numéro de série\".</string>
-    <string name="self_grant_help_phone">Sur téléphone/tablette Android :\n\n1. Allez dans Paramètres → À propos → cliquez 7 fois sur \"Numéro de build\"\n2. Activez le \"Débogage sans fil\" (Android 11+) dans les Options développeur\n3. Tapez \"Coupler avec un code\" — notez le code 6 chiffres\n4. Revenez ici et utilisez \"Coupler ADB sans fil\"\n\nAlternative : un PC avec ADB filaire reste possible.</string>
+    <string name="self_grant_help_firetv">Sur Fire TV sous Android/Fire OS :\n1. Ouvrez Paramètres → Ma Fire TV → Options pour les développeurs.\n2. Activez le débogage ADB.\n3. Revenez dans PDM et essayez « Accorder automatiquement ».\n\nSi le menu est masqué, ouvrez Ma Fire TV → À propos et appuyez sept fois sur le nom de votre appareil. Certains modèles bloquent l’accès ADB local : utilisez alors un PC ou la méthode VPN.</string>
+    <string name="self_grant_help_phone">Sur Android 11 ou plus récent :\n1. Activez les options développeur en appuyant sept fois sur le numéro de build.\n2. Activez le débogage sans fil.\n3. Ouvrez « Associer l’appareil avec un code d’association » et notez le code à six chiffres.\n4. Revenez dans PDM, choisissez l’appairage ADB sans fil et saisissez ce code.\n\nUn PC avec ADB par USB reste une alternative.</string>
 
 
     <!-- DNS Ratings -->
 
     <!-- DNS Speedtest -->
     <string name="dns_speedtest_button">Démarrer le test</string>
-    <string name="dns_speedtest_title">⚡ DNS Speedtest</string>
+    <string name="dns_speedtest_title">⚡ Test de vitesse DNS</string>
 
     <!-- Export granulaire -->
     <string name="export_select_title">📤 Que souhaitez-vous exporter ?</string>
     <string name="export_toggle_profiles">Profils DNS</string>
 
     <string name="export_toggle_selected_dns">DNS sélectionné</string>
-    <string name="export_toggle_nextdns">Profils NextDNS custom</string>
-    <string name="export_toggle_rewrite">Règles URL Rewrite</string>
+    <string name="export_toggle_nextdns">Profils NextDNS personnalisés</string>
+    <string name="export_toggle_rewrite">Règles de réécriture DNS</string>
     <string name="export_toggle_settings">Paramètres</string>
     <string name="export_button">Exporter</string>
 
@@ -315,11 +315,11 @@
     <string name="no_report_yet">Aucun rapport généré.\nAppuyez sur le bouton ci-dessus pour lancer les tests.</string>
     <string name="share_report_button">📤 Partager le rapport</string>
     <string name="share_toggle_network">Informations réseau (IP, DNS)</string>
-    <string name="share_toggle_speedtest">Speedtest Internet</string>
-    <string name="share_toggle_leak">DNS Leak Test</string>
-    <string name="share_toggle_blocking">Test de blocage URL</string>
-    <string name="report_progress_speedtest">⏳ Speedtest en cours…</string>
-    <string name="report_progress_leak">⏳ Test DNS Leak en cours…</string>
+    <string name="share_toggle_speedtest">Test de débit Internet</string>
+    <string name="share_toggle_leak">Test de fuite DNS</string>
+    <string name="share_toggle_blocking">Test de blocage DNS</string>
+    <string name="report_progress_speedtest">⏳ Test de débit en cours…</string>
+    <string name="report_progress_leak">⏳ Test de fuite DNS en cours…</string>
     <string name="report_progress_blocking">⏳ Test de blocage en cours…</string>
     <string name="report_complete">✅ Rapport généré</string>
     <string name="no_report_to_share">Générez d\'abord un rapport</string>
@@ -341,7 +341,7 @@
     <!-- Report content strings -->
     <string name="report_label_profile">Profil</string>
     <string name="report_label_none">aucun</string>
-    <string name="report_no_leak">Les résolveurs changent → pas de fuite DNS !</string>
+    <string name="report_no_leak">Les résolveurs détectés diffèrent. Cela ne suffit pas à exclure toute fuite DNS.</string>
     <string name="report_leak_detected">Mêmes résolveurs → fuite DNS possible !</string>
     <string name="report_isp_dns_label">DNS FAI (sans VPN)</string>
     <string name="report_active_dns_label">DNS actif (avec VPN)</string>
@@ -364,7 +364,7 @@
     <string name="md_resolver_ip">IP Résolveur</string>
     <string name="md_country">Pays</string>
     <string name="md_isp">FAI</string>
-    <string name="md_url_blocking_test">Test de blocage URL</string>
+    <string name="md_url_blocking_test">Test de blocage DNS</string>
     <string name="md_tested_domain">Domaine testé</string>
     <string name="md_step">Étape</string>
     <string name="md_authority">Autorité</string>
@@ -410,14 +410,13 @@
     <string name="domain_tester_no_enabled">Aucun domaine activé.</string>
     <string name="domain_tester_dns_all">Tous</string>
 <string name="internet_speedtest_advanced">⚡ Test débit Internet</string>
-    <string name="dns_speedtest_shortcut">⚡ DNS Speedtest</string>
+    <string name="dns_speedtest_shortcut">⚡ Test de vitesse DNS</string>
 
     <!-- Speedtest Internet (avancé) -->
     <string name="speedtest_adv_title">Test débit Internet</string>
     <string name="speedtest_start">Démarrer le test</string>
     <string name="speedtest_log">Journal du test</string>
-    <string name="speedtest_waiting">En attente…
-</string>
+    <string name="speedtest_waiting">En attente…\n</string>
     <string name="speedtest_backend_cf">Backend : Cloudflare (speed.cloudflare.com)</string>
     <string name="speedtest_backend_netflix">Backend : Netflix / Fast.com (upload non supporté)</string>
     <string name="speedtest_start_msg">=== Début du test %1$s ===</string>
@@ -425,15 +424,12 @@
     <string name="speedtest_stopping_msg">Arrêt du test…</string>
     <string name="speedtest_interrupted">Test interrompu.</string>
     <string name="speedtest_error_fmt">Erreur : %1$s</string>
-    <string name="speedtest_ping_section_fmt">
---- Ping %1$s (%2$d requêtes) ---</string>
+    <string name="speedtest_ping_section_fmt">\n--- Ping %1$s (%2$d requêtes) ---</string>
     <string name="speedtest_ping_attempt_fmt">  #%1$d : %2$.1f ms</string>
     <string name="speedtest_ping_fail_fmt">  #%1$d : échec</string>
     <string name="speedtest_ping_avg_fmt">  Moy : %1$.1f ms | Jitter : %2$.1f ms</string>
-    <string name="speedtest_dl_section_fmt">
---- Download %1$s (%2$d conn., %3$ds) ---</string>
-    <string name="speedtest_ul_section_fmt">
---- Upload %1$s (%2$d conn., %3$ds) ---</string>
+    <string name="speedtest_dl_section_fmt">\n--- Download %1$s (%2$d conn., %3$ds) ---</string>
+    <string name="speedtest_ul_section_fmt">\n--- Upload %1$s (%2$d conn., %3$ds) ---</string>
     <string name="speedtest_mbps_fmt">  %1$.2f Mbps (%2$.1f Mo / %3$.1fs)</string>
 <string name="speedtest_ip_none">IP : --</string>
     <string name="speedtest_netflix_title">Netflix / Fast.com</string>
@@ -499,7 +495,7 @@
     <string name="import_link_label">Lien court (ou code 8 caractères) :</string>
     <string name="import_link_hint">perfectdnsmanager.app/d/…</string>
     <string name="import_password_label">Mot de passe :</string>
-    <string name="no_search_results_fmt">Aucun résultat pour "%1$s"</string>
+    <string name="no_search_results_fmt">Aucun résultat pour \"%1$s\"</string>
     <string name="result_error">Erreur</string>
     <string name="speedtest_fast_api_error_fmt">Erreur Fast.com API : %1$s</string>
     <string name="speedtest_fast_error_fmt">Erreur Fast.com : %1$s</string>
@@ -543,7 +539,7 @@
     <string name="domain_tester_isp_dns">DNS FAI</string>
     <string name="domain_tester_no_a_record">Aucun enregistrement A</string>
     <string name="domain_tester_isp_not_blocked">Non bloqué par le FAI</string>
-    <string name="domain_tester_join_and"> et </string>
+    <string name="domain_tester_join_and">\u0020et\u0020</string>
     <string name="domain_tester_error_fmt">%1$s : Erreur — %2$s</string>
     <plurals name="domain_tester_unblocks_fmt">
         <item quantity="one">%1$s débloque le contenu</item>
@@ -552,7 +548,7 @@
     <!-- Moniteur DNS privé (DoT) -->
     <string name="dot_active_fmt">DNS privé actif : %1$s. Appuyez sur « Désactiver » si vous perdez internet.</string>
     <string name="dot_warning_unreachable">⚠ Le serveur DNS privé ne répond plus — internet risque d\'être coupé. Désactivation automatique en cours…</string>
-    <string name="dot_autodisabled">DNS privé désactivé automatiquement (serveur injoignable). Internet rétabli. Vous pouvez le réactiver depuis l\'app.</string>
+    <string name="dot_autodisabled">DNS privé désactivé automatiquement : serveur injoignable. Vérifiez votre connexion Internet. Vous pouvez réactiver ce DNS depuis PDM.</string>
     <string name="dot_disable_action">Désactiver</string>
     <!-- DNS privé (DoT) verrouillé au niveau système -->
     <string name="retry">Réessayer</string>
@@ -587,4 +583,22 @@
     <string name="update_verifying">Vérification de la signature…</string>
     <string name="update_opening_installer">Ouverture de l’installateur Android…</string>
     <string name="update_progress_amount">%1$d%% · %2$s / %3$s</string>
+    <string name="label_value_fmt">%1$s : %2$s</string>
+    <string name="version_label">Version</string>
+    <string name="connection_label">Connexion</string>
+    <string name="carrier_label">Opérateur</string>
+    <string name="speed_download_label">Réception</string>
+    <string name="speed_upload_label">Envoi</string>
+    <string name="speed_ping_label">Latence</string>
+    <string name="speed_jitter_label">Gigue</string>
+    <string name="config_profiles_summary">Profils DNS : %1$d, dont %2$d personnalisés</string>
+    <string name="config_rules_summary">Règles DNS : %1$d, dont %2$d actives</string>
+    <string name="config_domains_summary">Domaines de test : %1$d, dont %2$d actifs</string>
+    <string name="config_settings_enabled">Paramètres activés : %1$s</string>
+    <string name="config_settings_disabled">Tous les paramètres inclus sont désactivés</string>
+    <string name="config_invalid_fmt">Configuration invalide : %1$s</string>
+    <string name="dns_resolution_failed">Échec de la résolution DNS</string>
+    <string name="isp_dns_unavailable">DNS du fournisseur Internet indisponible</string>
+    <string name="leak_isp_not_detected">Impossible de détecter les résolveurs du fournisseur Internet</string>
+    <string name="leak_active_not_detected">Impossible de détecter les résolveurs actifs</string>
 </resources>
