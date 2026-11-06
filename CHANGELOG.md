@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.4.11 — 6 novembre 2026
+
+Version stable regroupant les améliorations testées dans les bêtas 2.4.1 à 2.4.10.
+
+- Détection et affichage du DNS privé DoT configuré par Android/ADB ; activation et désactivation depuis PDM. Le DoT est présenté comme géré par Android.
+- Fournisseur Digitale Gesellschaft, ordre des fournisseurs et navigation à la télécommande améliorés. DoH par défaut, autres protocoles activables dans les paramètres.
+- Progression du téléchargement et de la vérification des mises à jour ; choix du canal bêta et parcours de retour à la stable clarifiés.
+- Dons SideShift : montant libre dans les limites du prestataire, choix crypto/réseau dans les deux sens, recherche et favoris, interface adaptée aux box. Réception en USDT0/Polygon ; traitement de repli affiché avant le don.
+- Rapports sécurisés : versions Android et noyau dans la rubrique appareil optionnelle, respect des sections choisies et textes localisés.
+- Secrets de partage aléatoires de 20 caractères ; anciens partages toujours lisibles. Règles DNS indexées et interrupteurs corrigés.
+- Bibliothèques natives reconstruites et contrôlées, dépendances compatibles modernisées, réduction du code et des ressources de l’APK.
+- Relecture des 12 langues de l’application et des pages de présentation du site ; guides, traductions manquantes et descriptions des fonctions corrigés.
+- Android 5/API 21 minimum, quatre architectures et pages mémoire de 16 Ko conservés. IPv6 reste autorisé par défaut.
+- Numéro interne 20411 : mise à jour possible depuis la stable 2.4.0 et la bêta 2.4.10 sans désinstallation.
+
 ## 2.4.10-beta.1 — 5 novembre 2026
 
 - Relecture des 12 langues : terminologie DNS/VPN, instructions ADB et Fire TV, pluriels, ponctuation et messages de diagnostic corrigés.
