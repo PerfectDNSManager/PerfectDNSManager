@@ -325,7 +325,8 @@ class SettingsActivity : AppCompatActivity() {
             prefs.edit().putBoolean("advanced_features_enabled", isChecked).apply()
             layoutAdvanced.visibility = if (isChecked) View.VISIBLE else View.GONE
             updateFocusChain()
-            // Cascade : si on désactive les fonctions avancées, tout ce qui est dedans se désactive
+            // Désactiver les protocoles avancés et les réécritures.
+            // Conserver le filtre Adblock choisi : il ne configure pas le transport DNS.
             if (!isChecked) {
                 switchOperatorDns.isChecked = false
                 prefs.edit().putBoolean("operator_dns_enabled", false).apply()
@@ -516,6 +517,7 @@ class SettingsActivity : AppCompatActivity() {
      */
     private fun updateFocusChain() {
         val rowAdvanced = findViewById<LinearLayout>(R.id.rowAdvanced)
+        val rowAdblock = findViewById<LinearLayout>(R.id.rowAdblock)
         val rowProfileVariants = findViewById<LinearLayout>(R.id.rowProfileVariants)
         val layoutAdvanced = findViewById<LinearLayout>(R.id.layoutAdvancedSection)
         val rowImportExport = findViewById<LinearLayout>(R.id.rowImportExport)
@@ -529,7 +531,8 @@ class SettingsActivity : AppCompatActivity() {
             .visibility == View.VISIBLE
 
         rowAdvanced.nextFocusDownId =
-            if (advancedOpen) rowProfileVariants.id else rowImportExport.id
+            if (advancedOpen) rowAdblock.id else rowImportExport.id
+        rowProfileVariants.nextFocusUpId = rowAdblock.id
         btnSplitTunnel.nextFocusDownId = rowImportExport.id
         rowImportExport.nextFocusUpId =
             if (advancedOpen) btnSplitTunnel.id else rowAdvanced.id

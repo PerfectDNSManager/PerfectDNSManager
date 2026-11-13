@@ -1,5 +1,9 @@
 # Changelog
 
+## À publier
+
+- Déplacement de « Autoriser les profils Adblock » dans les paramètres DNS avancés, avec navigation à la télécommande ajustée et conservation du choix enregistré.
+
 ## 2.4.11 — 6 novembre 2026
 
 Version stable regroupant les améliorations testées dans les bêtas 2.4.1 à 2.4.10.
