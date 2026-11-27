@@ -109,3 +109,30 @@ Une interface d’abonnement automatique aux catalogues n’est pas implémenté
   bornée / nouvelles tentatives : succès ; aucune erreur de démarrage persistante.
 - Recompilation finale et 53 tests / lint : succès. Publication bêta lancée après
   ces contrôles ; la signature et les pointeurs sont contrôlés après la CI.
+
+
+## Publication vérifiée
+
+- Tag `v2.4.13-beta.1`, code 20413, source `89cf8e342b9c094632a88db397183d24cde710c7`.
+- CI réussie : https://github.com/PerfectDNSManager/PerfectDNSManager/actions/runs/45974550236
+- Release : https://github.com/PerfectDNSManager/PerfectDNSManager/releases/tag/v2.4.13-beta.1
+- APK numéroté et alias `latest-beta` retéléchargés : identiques, 20 475 876 octets,
+  SHA-256 `999ec4e950757f6ce97bc5442b40a58094ddeb56cd7848cb56f67fa31aaf356d`,
+  conforme aux empreintes des assets GitHub.
+- Signature de production inchangée :
+  `c7fd0c977b2c8911c32268e3fa15e9fe50b14dccfae18f7232b28a9faa858f6d`.
+- Vérification indépendante de l’alignement 16 Ko, des quatre ABI et minSdk 21.
+- Installation réelle de l’APK publié par-dessus la bêta 2.4.12-beta.1 signée
+  production sur l’AVD API 30 : `install -r` réussi sans désinstallation entre
+  ces deux versions ; lancement à froid réussi (1462 ms).
+- Le dernier APK local optimisé a également repassé DoH A/AAAA/HTTPS et les
+  routes IPv6 OFF/ON/OFF avec les bootstraps publics UDP bloqués, après extraction
+  du helper commun utilisé par Unbound.
+- Stable inchangée : release `v2.4.11`, ID 436358160, SHA-256 de l’APK stable
+  `ef6086e0b950e4b168d6911f855923b0ed9440f87e7ec4af035ec1d1917be361`.
+- Aucune modification de main, aucune publication stable, aucun déploiement Worker,
+  aucun commentaire ou changement d’état des issues.
+
+La CI conserve les avertissements connus de dépréciation des actions Node 20
+(forcées sous Node 24) et setup-java v4 ; ils n’ont pas empêché les contrôles.
+Les essais physiques Formuler / accès Internet IPv6 natif restent nécessaires.

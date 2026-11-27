@@ -42,3 +42,20 @@ Il ne répare pas la connectivité IPv6 d'une box ou d'un FAI.
 Voir `../audit/2026-11-27-unbound-beta.md`. Les résultats sur émulateur ne remplacent
 pas un essai sur les box physiques, notamment ARM 32 bits et réseaux changeants.
 Aucune publication stable n'est autorisée par cette préparation.
+
+## Unbound peut-il fonctionner sans fournisseur ?
+
+Oui. Unbound sait être un résolveur récursif autonome : racine DNS → serveurs du
+TLD → serveurs faisant autorité pour le domaine. Dans ce mode, il ne demande pas
+la réponse complète à Cloudflare, ControlD ou un autre résolveur public.
+DNSSEC authentifie les données des zones signées ; il ne chiffre pas ces échanges.
+La récursion directe utilise généralement le DNS classique UDP/TCP 53, car les
+serveurs faisant autorité ne proposent pas tous un transport chiffré utilisable.
+
+PDM expose actuellement uniquement le mode forwarder avec DoT authentifié, pour
+la demande de sortie chiffrée et de choix du fournisseur. Le JNI configure
+`ub_ctx_set_fwd`, `ub_ctx_set_tls(1)` et `do-udp: no`. Un mode récursif autonome
+serait une autre option explicite, avec des exigences réseau et de confidentialité
+différentes ; il n’est pas activé dans cette bêta.
+
+Documentation officielle : https://unbound.docs.nlnetlabs.nl/en/latest/
