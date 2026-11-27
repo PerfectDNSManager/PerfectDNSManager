@@ -104,6 +104,7 @@ public class SmokeRunner extends Instrumentation {
             for(int i=0;i<15&&!ready;i++){try{dns(1);ready=true;}catch(Throwable e){last=e;SystemClock.sleep(500);}}
             if(!ready)throw new AssertionError("VPN DNS readiness",last);
             dns(28);
+            if ("true".equals(args.getString("ipv6Toggle"))) ipv6Toggle();
             if ("true".equals(args.getString("dnsOnly"))) {
                 pass("optimized VPN "+endpoint+": A and AAAA; IPv6 block disabled (separate HTTPS probe omitted)");
                 return;
@@ -113,6 +114,34 @@ public class SmokeRunner extends Instrumentation {
             try {check(connection.getResponseCode()==200,"HTTPS after DNS VPN");}finally{connection.disconnect();}
             pass("optimized VPN "+endpoint+": A, AAAA and HTTPS; IPv6 block disabled");
         } finally {context.startService(new Intent("app.perfectdnsmanager.STOP_VPN").setClassName(context,"app.perfectdnsmanager.service.DnsVpnService"));}
+    }
+    private void ipv6Toggle() throws Exception {
+        Context context=getTargetContext();
+        android.net.ConnectivityManager cm=(android.net.ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        for(boolean blocked : new boolean[]{false,true,false}) {
+            context.getSharedPreferences("prefs",0).edit().putBoolean("disable_ipv6",blocked).commit();
+            boolean matched=false;
+            for(int i=0;i<100&&!matched;i++) {
+                for(android.net.Network n:cm.getAllNetworks()) {
+                    android.net.NetworkCapabilities caps=cm.getNetworkCapabilities(n);
+                    android.net.LinkProperties lp=cm.getLinkProperties(n);
+                    if(caps==null||lp==null||!caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_VPN))continue;
+                    boolean hasBlock=false;
+                    for(android.net.RouteInfo route:lp.getRoutes())
+                        if(route.getDestination().getAddress() instanceof java.net.Inet6Address && route.getDestination().getPrefixLength()==0)hasBlock=true;
+                    matched=hasBlock==blocked;
+                }
+                if(!matched)SystemClock.sleep(100);
+            }
+            check(matched,"Live IPv6 route matches preference: "+blocked);
+            Throwable last=null;boolean ready=false;
+            for(int i=0;i<10&&!ready;i++) {
+                try { dns(1);dns(28);ready=true; }
+                catch(Throwable error) { last=error;SystemClock.sleep(300); }
+            }
+            if(!ready)throw new AssertionError("DNS after IPv6 route change: "+blocked,last);
+        }
+        pass("IPv6 routes OFF/ON/OFF follow direct preference changes; A/AAAA continue resolving");
     }
     private void dns(int type) throws Exception {
         byte[] q={0x12,0x34,1,0,0,1,0,0,0,0,0,0,7,'e','x','a','m','p','l','e',3,'c','o','m',0,0,(byte)type,0,1};

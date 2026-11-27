@@ -208,8 +208,9 @@ class SettingsActivity : AppCompatActivity() {
         switchDisableIpv6.isChecked = prefs.getBoolean("disable_ipv6", false)
         switchDisableIpv6.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean("disable_ipv6", isChecked).apply()
-            // Auto-reconnexion VPN si actif
-            restartVpnIfRunning(R.string.vpn_reconnecting_ipv6)
+            // The service observes this preference, including changes made by imports.
+            if (app.perfectdnsmanager.service.DnsVpnService.isVpnRunning)
+                Toast.makeText(this, R.string.vpn_reconnecting_ipv6, Toast.LENGTH_SHORT).show()
         }
 
         // ── DNS DoT via ADB : toggle show/hide ADB sub-section ──

@@ -44,6 +44,7 @@ import javax.net.SocketFactory
  */
 class DnsVpnService : VpnService() {
 
+    private var activeStartId = 0
     private var vpnInterface: ParcelFileDescriptor? = null
     private var dnsServer: String = "1.1.1.1"
     private var dnsServerSecondary: String? = null
@@ -119,16 +120,16 @@ class DnsVpnService : VpnService() {
                         return socket
                     } catch (e: Exception) { socket.close(); throw e }
                 }
-                override fun createSocket(host: String, port: Int): Socket = connected(resolveHostBypass(host) ?: throw java.net.UnknownHostException(), port)
-                override fun createSocket(host: String, port: Int, localHost: InetAddress, localPort: Int): Socket = connected(resolveHostBypass(host) ?: throw java.net.UnknownHostException(), port, localHost, localPort)
+                override fun createSocket(host: String, port: Int): Socket = connected(resolveHostBypass(host).firstOrNull() ?: throw java.net.UnknownHostException(), port)
+                override fun createSocket(host: String, port: Int, localHost: InetAddress, localPort: Int): Socket = connected(resolveHostBypass(host).firstOrNull() ?: throw java.net.UnknownHostException(), port, localHost, localPort)
                 override fun createSocket(host: InetAddress, port: Int): Socket = connected(host, port)
                 override fun createSocket(host: InetAddress, port: Int, localAddress: InetAddress, localPort: Int): Socket = connected(host, port, localAddress, localPort)
             })
             .dns(object : Dns {
                 override fun lookup(hostname: String): List<InetAddress> {
-                    val resolved = resolveHostBypass(hostname)
-                        ?: throw java.net.UnknownHostException("Cannot resolve $hostname")
-                    return listOf(resolved)
+                    return resolveHostBypass(hostname).ifEmpty {
+                        throw java.net.UnknownHostException("Cannot resolve DNS provider")
+                    }
                 }
             })
             .connectTimeout(5, TimeUnit.SECONDS)
@@ -143,6 +144,18 @@ class DnsVpnService : VpnService() {
     private val unboundBackends = ConcurrentHashMap<String, UnboundBackend>()
     @Volatile private var prefilter = app.perfectdnsmanager.data.DnsPrefilter()
     private val prefilterListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == "disable_ipv6" && !destroyed && isRunning) {
+            val expected = generation.get()
+            control.execute {
+                // Includes changes from configuration import. Restart the live endpoint,
+                // not a potentially different saved selection. A newer command wins.
+                if (!destroyed && isRunning && expected == generation.get()) {
+                    sessionGeneration = generation.incrementAndGet()
+                    stopVpn()
+                    startVpn(activeStartId)
+                }
+            }
+        }
         if (key?.startsWith(app.perfectdnsmanager.data.DnsPrefilterRepository.PREFIX) == true && !destroyed) {
             control.execute {
                 if (isRunning) {
@@ -283,6 +296,7 @@ class DnsVpnService : VpnService() {
     private fun isDoQ(s: String) = s.startsWith("quic://", true)
 
     private fun startVpn(startId: Int) {
+        activeStartId = startId
         // Garde anti double-start : si une pile VPN tourne déjà (ex. deux ACTION_RESTART
         // rapprochés, ou restart différé + start), on la ferme d'abord — sinon on écrase
         // vpnInterface/tunOut/sockets/executor/doqClient sans les libérer (grosse fuite).
@@ -405,7 +419,7 @@ class DnsVpnService : VpnService() {
             startForeground(NOTIF_ID, mkNotif("DNS: ${redactDnsUrl(dnsServer)}"))
             getSharedPreferences("prefs", MODE_PRIVATE).edit().putBoolean("vpn_active", true).apply()
         } catch (e: Exception) {
-            Log.e(T, "Start err", e); stopVpn(); stopSelfResult(startId)
+            Log.e(T, "Start err: ${e.javaClass.simpleName}"); stopVpn(); stopSelfResult(startId)
         }
     }
 
@@ -673,23 +687,21 @@ class DnsVpnService : VpnService() {
         return out.toByteArray()
     }
 
-    /**
-     * Résoudre un hostname en bypassant le VPN (requête DNS directe UDP).
-     * Bootstrap DNS sans Google : Cloudflare 1.1.1.1 d'abord, puis dns.sb 185.222.222.222
-     * en fallback. Cohérent avec une app de DNS privé : on n'envoie pas le
-     * hostname amorce à Google.
+    /** Resolve only the provider hostname outside the VPN, never application queries.
+     * Network.getAllByName preserves all A/AAAA candidates and uses the physical
+     * network's resolver (also works where public UDP/53 is blocked).
+     * Protected public bootstrap remains a last resort for broken router DNS.
      */
-    private fun resolveHostBypass(host: String): InetAddress? = try {
-        if (host.matches(IPV4_RE)) {
-            InetAddress.getByName(host)
-        } else {
-            // Socket connecté + ID aléatoire + réponse validée (cf. DnsWire) :
-            // l'ancienne version acceptait n'importe quel datagramme arrivant sur
-            // le port, avec un ID de transaction constant 0x1234.
-            bootstrapResolve(host, byteArrayOf(1, 1, 1, 1))
-                ?: bootstrapResolve(host, byteArrayOf(185.toByte(), 222.toByte(), 222.toByte(), 222.toByte()))
-        }
-    } catch (e: Exception) { Log.w(T, "resolveHostBypass: ${e.javaClass.simpleName}"); null }
+    private fun resolveHostBypass(host: String): List<InetAddress> {
+        if (ProfileValidation.isIpv4(host)) return listOf(InetAddress.getByName(host))
+        return app.perfectdnsmanager.util.BootstrapAddresses.resolve(
+            listOf({ app.perfectdnsmanager.util.PhysicalDnsBootstrap.lookup(this, host) }),
+            listOf(
+                { listOfNotNull(bootstrapResolve(host, byteArrayOf(1, 1, 1, 1))) },
+                { listOfNotNull(bootstrapResolve(host, byteArrayOf(185.toByte(), 222.toByte(), 222.toByte(), 222.toByte()))) }
+            )
+        )
+    }
 
     private fun bootstrapResolve(host: String, serverIp: ByteArray): InetAddress? =
         DnsWire.resolveA(InetAddress.getByAddress(serverIp), host) { sock -> protect(sock) }

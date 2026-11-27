@@ -19,3 +19,8 @@ omits the separate HTTPS request made with Android's system TLS stack. Use it
 with `-e endpoint unbound://one.one.one.one` on the pristine API 21 emulator,
 whose system CA store is obsolete. Unbound's own authenticated DoT connection
 remains fully verified with its bundled CA store; no trust check is disabled.
+
+`-e ipv6Toggle true` additionally changes the IPv6 preference OFF → ON → OFF
+without using SettingsActivity. It verifies the active VPN's IPv6 default route
+and A/AAAA DNS responses after each change, covering settings imported while a
+VPN is running. It does not claim external IPv6 reachability on an IPv4-only host.

@@ -190,19 +190,12 @@ class DnsSpeedtestActivity : AppCompatActivity() {
                 val advancedEnabled = prefs.getBoolean("advanced_features_enabled", false)
                 val operatorEnabled = prefs.getBoolean("operator_dns_enabled", false)
 
-                val presets = DnsProfile.getDefaultPresets()
-                val seenKeys = mutableSetOf<String>()
-                val testProfiles = presets.filter { p ->
-                    if (p.isAdblock && !prefs.getBoolean("allow_adblock_profiles", false)) return@filter false
-                    if (p.isOperatorDns && !(advancedEnabled && operatorEnabled)) return@filter false
-                    // The local resolver is started only for an explicitly selected profile.
-                    if (p.type == DnsType.UNBOUND) return@filter false
-                    if (p.type == DnsType.DOT && !advancedEnabled) return@filter false
-                    val key = "${p.providerName}|${p.type}"
-                    if (key in seenKeys) return@filter false
-                    seenKeys.add(key)
-                    true
-                }
+                val testProfiles = app.perfectdnsmanager.data.BenchmarkProfiles.select(
+                    app.perfectdnsmanager.data.ProfileManager(this).loadProfiles(),
+                    allowAdblock = prefs.getBoolean("allow_adblock_profiles", false),
+                    allowOperator = advancedEnabled && operatorEnabled,
+                    allowDot = advancedEnabled
+                )
 
                 appendProgress(getString(R.string.speedtest_providers_count_fmt, testProfiles.size), COLOR_WHITE)
 
@@ -219,7 +212,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
 
                     val typeLabel = DnsColors.labelForType(profile.type)
 
-                    appendProgress("[${index + 1}/${testProfiles.size}] ${profile.providerName} ($typeLabel)...", COLOR_WHITE)
+                    appendProgress("[${index + 1}/${testProfiles.size}] ${profile.providerName} · ${profile.name} ($typeLabel)...", COLOR_WHITE)
 
                     val latency = try {
                         when (profile.type) {
@@ -248,7 +241,7 @@ class DnsSpeedtestActivity : AppCompatActivity() {
                         appendProgress("   ${getString(R.string.speedtest_error_timeout)}", COLOR_GREY)
                     }
 
-                    results.add(SpeedResult(profile.providerName, profile.primary, latency, typeLabel))
+                    results.add(SpeedResult("${profile.providerName} · ${profile.name}", profile.primary, latency, typeLabel))
                     updatePanels(results, final = false)
                 }
 

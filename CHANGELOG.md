@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.4.13-beta.1 — 27 novembre 2026
+
+- Amorçage DoH par le DNS du réseau physique, avec conservation des adresses IPv4/IPv6 et des adresses alternatives ; les DNS publics UDP restent un dernier recours. Évite la dépendance exclusive à UDP/53 public pour joindre le fournisseur DoH.
+- Redémarrage Unbound : amorçage sur le réseau physique pour éviter de résoudre le fournisseur via un ancien VPN en cours de fermeture, notamment sur Android 5.
+- Réglage du blocage IPv6 appliqué au VPN actif même après un import de configuration ; le service conserve le fournisseur réellement connecté. IPv6 toujours autorisé par défaut.
+- Mesures IPv4/IPv6 avec une nouvelle connexion, sans réutiliser une connexion datant du précédent état du VPN.
+- Benchmark DNS : inclusion des profils personnels/importés et des variantes à adresses distinctes ; suppression des doublons par endpoint, respect des restrictions Adblock/opérateur/DoT, aucun démarrage implicite d’Unbound.
+- Outil de conversion explicite des entrées DoH compatibles de YogaDNS et DNSCrypt vers un import PDM, avec préservation des profils sauvegardés. Pins non représentables et relais exclus. Aucune ingestion automatique de catalogue dans l’application.
+- Revue des quatre issues GitHub : aucune lecture du presse-papiers trouvée, copie uniquement sur action explicite. Les signalements Formuler et IPv6 restent à confirmer sur les appareils et réseaux concernés.
+
+Validation : 53 tests unitaires, lint Android, 12 langues, APK optimisé sur Android 5 et Android 11, bascules des routes IPv6, DoH avec les anciens bootstraps UDP bloqués, alignement natif 16 Ko. La connectivité Internet IPv6 native et les appareils Formuler restent à confirmer.
+
+Bêta uniquement ; stable 2.4.11 inchangée. Les fonctions de la bêta précédente sont conservées.
+
 ## 2.4.12-beta.1 — 27 novembre 2026
 
 - DNSForge et DNS4EU : profils sans filtre par défaut, variantes filtrées selon les paramètres, DoH/DoT et DNS classique ; DoQ pour DNSForge. Profils Unbound correspondants disponibles avec l’option expérimentale.

@@ -28,8 +28,8 @@ et Android lui-même ne sont pas mis à jour par cette option.
 
 Les connexions restent authentifiées : ne pas désactiver la vérification TLS
 pour compenser une horloge incorrecte, un certificat expiré ou un fournisseur
-injoignable. Le hostname du fournisseur est résolu une fois par le DNS système
-avant le démarrage du VPN ; les requêtes des applications transmises par ce
+injoignable. Le hostname du fournisseur est résolu une fois par le DNS du réseau physique
+avant le démarrage du VPN (sans utiliser un ancien VPN en cours de fermeture) ; les requêtes des applications transmises par ce
 moteur utilisent ensuite le DoT, sans repli DNS non chiffré.
 
 Si le DoH existant fonctionne déjà bien, le bénéfice peut être limité. Unbound

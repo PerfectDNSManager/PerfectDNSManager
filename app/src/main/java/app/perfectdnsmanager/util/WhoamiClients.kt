@@ -7,10 +7,11 @@ import okhttp3.ConnectionPool
 import okhttp3.Dns
 import okhttp3.OkHttpClient
 
-/** Reuse two pools. Sharing one pool would defeat the IPv4/IPv6 measurement. */
+/** Each measurement opens a fresh connection: an old protected/bound socket
+ * must not survive a VPN or IPv6 setting change and misreport connectivity. */
 object WhoamiClients {
     private fun create(ipv4Only: Boolean): OkHttpClient = Http.withTimeouts(6, 6).newBuilder()
-        .connectionPool(ConnectionPool())
+        .connectionPool(ConnectionPool(0, 1, java.util.concurrent.TimeUnit.SECONDS))
         .dns(object : Dns {
             override fun lookup(hostname: String): List<java.net.InetAddress> =
             Dns.SYSTEM.lookup(hostname).filter {

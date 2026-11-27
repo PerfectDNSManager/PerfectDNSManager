@@ -5,7 +5,6 @@ import app.perfectdnsmanager.util.DnsMessages
 import app.perfectdnsmanager.util.ProfileValidation
 import java.io.Closeable
 import java.io.File
-import java.net.InetAddress
 import java.net.URI
 import java.util.concurrent.atomic.AtomicLong
 import org.xbill.DNS.*
@@ -50,7 +49,8 @@ class UnboundBackend private constructor(handle: Long) : Closeable {
             val uri = URI(endpoint)
             val host = uri.host
             val port = if (uri.port == -1) 853 else uri.port
-            val addresses = InetAddress.getAllByName(host).filter { !it.isAnyLocalAddress && !it.isMulticastAddress }
+            val addresses = app.perfectdnsmanager.util.PhysicalDnsBootstrap.lookup(context, host)
+                .ifEmpty { throw java.net.UnknownHostException("Cannot resolve Unbound provider on a physical network") }
                 .take(8).map { "${it.hostAddress!!.substringBefore('%')}@$port#$host" }.toTypedArray()
             val dir = File(context.filesDir, "unbound").apply { mkdirs() }
             fun asset(name: String): File {
