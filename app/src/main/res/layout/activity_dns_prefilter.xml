@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent"
+        android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/prefilter_title"
+        android:textColor="@color/pdm_text_primary"
+        android:textSize="16sp"
+        android:padding="8dp"
+        android:textStyle="bold"/>
+<CheckBox
+        android:id="@+id/prefilterEnabled"
+        android:nextFocusUp="@id/prefilterEnabled"
+        android:nextFocusDown="@id/prefilterBuiltin"
+        android:focusableInTouchMode="true" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:text="@string/prefilter_enabled"
+        android:textColor="@color/pdm_text_primary"
+        android:background="@drawable/btn_focus_foreground"
+        android:focusable="true"/>
+<CheckBox
+        android:id="@+id/prefilterBuiltin"
+        android:nextFocusUp="@id/prefilterEnabled"
+        android:nextFocusDown="@id/prefilterBlocked"
+        android:focusableInTouchMode="true" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:text="@string/prefilter_builtin"
+        android:textColor="@color/pdm_text_primary"
+        android:background="@drawable/btn_focus_foreground"
+        android:focusable="true"/>
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/prefilter_help"
+        android:textColor="@color/pdm_text_primary"
+        android:textSize="16sp"
+        android:padding="8dp" />
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/prefilter_hint"
+        android:textColor="@color/pdm_text_primary"
+        android:textSize="16sp"
+        android:padding="8dp" />
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/prefilter_blocked"
+        android:textColor="@color/pdm_text_primary"
+        android:textSize="16sp"
+        android:padding="8dp"
+        android:labelFor="@+id/prefilterBlocked"/>
+<EditText
+        android:id="@id/prefilterBlocked"
+        android:nextFocusUp="@id/prefilterBuiltin"
+        android:nextFocusDown="@id/prefilterAllowed" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:minHeight="72dp"
+        android:minLines="2"
+        android:maxLines="5"
+        android:maxLength="32768"
+        android:gravity="top|start"
+        android:inputType="textMultiLine|textNoSuggestions"
+        android:textColor="@color/pdm_text_primary"
+        android:textColorHint="@color/pdm_text_secondary"
+        android:importantForAutofill="no"/>
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/prefilter_allowed"
+        android:textColor="@color/pdm_text_primary"
+        android:textSize="16sp"
+        android:padding="8dp"
+        android:labelFor="@+id/prefilterAllowed"/>
+<EditText
+        android:id="@id/prefilterAllowed"
+        android:nextFocusUp="@id/prefilterBlocked"
+        android:nextFocusDown="@id/prefilterSave" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:minHeight="72dp"
+        android:minLines="2"
+        android:maxLines="5"
+        android:maxLength="32768"
+        android:gravity="top|start"
+        android:inputType="textMultiLine|textNoSuggestions"
+        android:textColor="@color/pdm_text_primary"
+        android:textColorHint="@color/pdm_text_secondary"
+        android:importantForAutofill="no"/>
+<Button
+        android:id="@+id/prefilterSave"
+        android:nextFocusUp="@id/prefilterAllowed"
+        android:nextFocusDown="@id/prefilterCancel" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:text="@string/save"
+        android:textColor="@color/pdm_text_primary"
+        android:background="@drawable/pdm_btn_primary"/>
+<Button
+        android:id="@+id/prefilterCancel"
+        android:nextFocusUp="@id/prefilterSave"
+        android:nextFocusDown="@id/prefilterCancel" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:text="@string/cancel"
+        android:textColor="@color/pdm_text_primary"
+        android:background="@drawable/pdm_btn_primary"/>
+    </LinearLayout>
+</ScrollView>

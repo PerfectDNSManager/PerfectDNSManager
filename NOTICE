@@ -30,3 +30,10 @@ a separate Shizuku installation or PC.
 
 A full copy of the Apache 2.0 license can be found at LICENSE-APACHE-2.0
 or at http://www.apache.org/licenses/LICENSE-2.0
+
+HaGeZi Multi LIGHT DNS blocklist
+-------------------------------
+Bundled unmodified in app/src/main/assets/prefilter/hagezi-light.txt.
+Project and author: HaGeZi — https://github.com/hagezi/dns-blocklists
+License: GNU GPL v3; a copy is included in app/src/main/assets/prefilter/LICENSE.
+Pinned revision and checksum: app/src/main/assets/prefilter/README.txt.

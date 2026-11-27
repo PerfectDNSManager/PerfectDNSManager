@@ -587,4 +587,14 @@
     <string name="isp_dns_unavailable">ইন্টারনেট প্রদানকারীর DNS পাওয়া যাচ্ছে না</string>
     <string name="leak_isp_not_detected">ইন্টারনেট প্রদানকারীর রিজলভার শনাক্ত করা যায়নি</string>
     <string name="leak_active_not_detected">সক্রিয় রিজলভার শনাক্ত করা যায়নি</string>
+
+    <string name="prefilter_title">স্থানীয় DNS প্রিফিল্টার</string>
+    <string name="prefilter_enabled">স্থানীয় প্রিফিল্টার চালু করুন</string>
+    <string name="prefilter_builtin">HaGeZi Light (অন্তর্ভুক্ত তালিকা) ব্যবহার করুন</string>
+    <string name="prefilter_help">ফিল্টার করার পরেও PDM-এ বেছে নেওয়া প্রদানকারীই ব্যবহার হবে। PDM-এর VPN প্রয়োজন: Android DoT, বাদ দেওয়া অ্যাপ ও তাদের নিজস্ব এনক্রিপ্ট করা DNS ফিল্টার হয় না। অন্তর্ভুক্ত তালিকা PDM আপডেটের সঙ্গে আপডেট হয়। ব্যতিক্রম শুধু এই ফিল্টারে প্রযোজ্য, প্রদানকারীর ফিল্টারে নয়।</string>
+    <string name="prefilter_blocked">ব্লক করার ডোমেন</string>
+    <string name="prefilter_allowed">অনুমোদিত ব্যতিক্রম</string>
+    <string name="prefilter_hint">প্রতি লাইনে একটি ডোমেন, URL বা * ছাড়া। সাবডোমেনও অন্তর্ভুক্ত। প্রতি তালিকায় সর্বোচ্চ ১,০০০ লাইন ও ৩২,৭৬৮ অক্ষর।</string>
+    <string name="prefilter_invalid">তালিকাটি সঠিক নয়। প্রতি লাইনে একটি ডোমেন লিখুন এবং সীমা মেনে চলুন।</string>
+    <string name="prefilter_save_error">নিয়ম সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।</string>
 </resources>

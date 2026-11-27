@@ -595,4 +595,14 @@
     <string name="isp_dns_unavailable">DNS مزود الإنترنت غير متاح</string>
     <string name="leak_isp_not_detected">تعذّر اكتشاف خوادم التحليل لدى مزود الإنترنت</string>
     <string name="leak_active_not_detected">تعذّر اكتشاف خوادم التحليل النشطة</string>
+
+    <string name="prefilter_title">تصفية DNS محلية مسبقة</string>
+    <string name="prefilter_enabled">تفعيل التصفية المحلية</string>
+    <string name="prefilter_builtin">استخدام HaGeZi Light (قائمة مضمّنة)</string>
+    <string name="prefilter_help">يبقى مزوّد PDM المحدد مستخدمًا بعد التصفية. تتطلب شبكة VPN الخاصة بـ PDM: لا تُصفّي DoT في Android أو التطبيقات المستثناة أو DNS المشفّر الخاص بها. تُحدّث القائمة المضمّنة مع تحديثات PDM. تنطبق الاستثناءات على هذه التصفية فقط، لا على تصفية المزوّد.</string>
+    <string name="prefilter_blocked">نطاقات للحظر</string>
+    <string name="prefilter_allowed">استثناءات مسموح بها</string>
+    <string name="prefilter_hint">نطاق واحد في كل سطر، دون URL أو *. يشمل النطاقات الفرعية. الحد الأقصى لكل قائمة: 1,000 سطر و32,768 حرفًا.</string>
+    <string name="prefilter_invalid">قائمة غير صالحة. أدخل نطاقًا واحدًا في كل سطر والتزم بالحدود.</string>
+    <string name="prefilter_save_error">تعذّر حفظ القواعد. حاول مجددًا.</string>
 </resources>

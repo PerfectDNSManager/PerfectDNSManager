@@ -93,6 +93,17 @@ object ConfigValidation {
                 require(key in settingsKeys) { "Unknown setting: $key" }; bool(v)
             }
         }
+        root.get("dnsPrefilter")?.let { value ->
+            require(value.isJsonObject)
+            val filter = value.asJsonObject
+            require(filter.keySet() == setOf("enabled", "builtin", "blocked", "allowed"))
+            bool(filter.get("enabled")); bool(filter.get("builtin"))
+            for (key in listOf("blocked", "allowed")) {
+                val v = filter.get(key)
+                require(v.isJsonPrimitive && v.asJsonPrimitive.isString)
+                DnsPrefilter.parseDomains(v.asString)
+            }
+        }
         root.get("version")?.let { text(it, 64) }
         root.get("exportDate")?.let { text(it, 64) }
         return root

@@ -587,4 +587,14 @@
     <string name="isp_dns_unavailable">इंटरनेट प्रदाता का DNS उपलब्ध नहीं</string>
     <string name="leak_isp_not_detected">इंटरनेट प्रदाता के रिज़ॉल्वर नहीं मिल सके</string>
     <string name="leak_active_not_detected">सक्रिय रिज़ॉल्वर नहीं मिल सके</string>
+
+    <string name="prefilter_title">स्थानीय DNS प्रीफ़िल्टर</string>
+    <string name="prefilter_enabled">स्थानीय प्रीफ़िल्टर चालू करें</string>
+    <string name="prefilter_builtin">HaGeZi Light (शामिल सूची) का उपयोग करें</string>
+    <string name="prefilter_help">फ़िल्टर करने के बाद भी PDM में चुने गए प्रदाता का उपयोग होगा। PDM का VPN आवश्यक है: Android DoT, बाहर रखे गए ऐप और उनके अपने एन्क्रिप्टेड DNS फ़िल्टर नहीं होते। शामिल सूची PDM के अपडेट के साथ अपडेट होती है। अपवाद केवल इस फ़िल्टर पर लागू होते हैं, प्रदाता के फ़िल्टर पर नहीं।</string>
+    <string name="prefilter_blocked">ब्लॉक किए जाने वाले डोमेन</string>
+    <string name="prefilter_allowed">अनुमति वाले अपवाद</string>
+    <string name="prefilter_hint">प्रति पंक्ति एक डोमेन, बिना URL या * के। सबडोमेन भी शामिल हैं। प्रति सूची अधिकतम 1,000 पंक्तियाँ और 32,768 वर्ण।</string>
+    <string name="prefilter_invalid">सूची अमान्य है। प्रति पंक्ति एक डोमेन लिखें और सीमाओं का पालन करें।</string>
+    <string name="prefilter_save_error">नियम सेव नहीं हो सके। फिर से प्रयास करें।</string>
 </resources>

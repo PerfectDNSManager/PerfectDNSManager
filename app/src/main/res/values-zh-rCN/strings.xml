@@ -585,4 +585,14 @@
     <string name="isp_dns_unavailable">网络运营商 DNS 不可用</string>
     <string name="leak_isp_not_detected">无法检测网络运营商的解析器</string>
     <string name="leak_active_not_detected">无法检测当前解析器</string>
+
+    <string name="prefilter_title">本地 DNS 预过滤</string>
+    <string name="prefilter_enabled">启用本地预过滤</string>
+    <string name="prefilter_builtin">使用 HaGeZi Light（内置列表）</string>
+    <string name="prefilter_help">过滤后仍使用您在 PDM 中选择的服务商。需要 PDM VPN：不会过滤 Android DoT、已排除的应用或应用自身的加密 DNS。内置列表随 PDM 更新。例外规则仅适用于此过滤器，不影响服务商的过滤规则。</string>
+    <string name="prefilter_blocked">要拦截的域名</string>
+    <string name="prefilter_allowed">允许的例外域名</string>
+    <string name="prefilter_hint">每行一个域名，不含 URL 或 *。包含子域名。每份列表最多 1,000 行、32,768 个字符。</string>
+    <string name="prefilter_invalid">列表无效。请每行输入一个域名，并遵守数量限制。</string>
+    <string name="prefilter_save_error">无法保存规则，请重试。</string>
 </resources>

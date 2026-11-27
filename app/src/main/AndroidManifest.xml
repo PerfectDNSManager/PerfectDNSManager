@@ -111,6 +111,7 @@
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:theme="@android:style/Theme.NoDisplay" />
+        <activity android:name=".DnsPrefilterActivity" android:exported="false" />
         <activity android:name=".SettingsActivity" android:exported="false" />
         <activity android:name=".DnsSelectionActivity" android:exported="false" />
         <activity android:name=".HowToActivity" android:exported="false" />

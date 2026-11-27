@@ -389,6 +389,9 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // URL Rewrite (fonction avancée)
+        findViewById<Button>(R.id.btnDnsPrefilter).setOnClickListener {
+            startActivity(Intent(this, DnsPrefilterActivity::class.java))
+        }
         btnUrlRewrite.setOnClickListener { showUrlRewriteDialog() }
 
         // Split tunneling (bypass VPN per-app)

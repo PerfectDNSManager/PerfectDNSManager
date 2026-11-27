@@ -591,4 +591,14 @@
     <string name="isp_dns_unavailable">DNS интернет-провайдера недоступен</string>
     <string name="leak_isp_not_detected">Не удалось обнаружить резолверы интернет-провайдера</string>
     <string name="leak_active_not_detected">Не удалось обнаружить активные резолверы</string>
+
+    <string name="prefilter_title">Локальный DNS-фильтр</string>
+    <string name="prefilter_enabled">Включить локальную фильтрацию</string>
+    <string name="prefilter_builtin">Использовать HaGeZi Light (встроенный список)</string>
+    <string name="prefilter_help">После фильтрации запросы по-прежнему отправляются выбранному в PDM провайдеру. Нужен VPN PDM: DoT Android, исключённые приложения и их собственный шифрованный DNS не фильтруются. Встроенный список обновляется вместе с PDM. Исключения действуют только для этого фильтра, а не для фильтра провайдера.</string>
+    <string name="prefilter_blocked">Блокируемые домены</string>
+    <string name="prefilter_allowed">Разрешённые исключения</string>
+    <string name="prefilter_hint">Один домен на строку, без URL и *. Включает поддомены. Не более 1 000 строк и 32 768 символов на список.</string>
+    <string name="prefilter_invalid">Недопустимый список. Укажите по одному домену на строку и соблюдайте ограничения.</string>
+    <string name="prefilter_save_error">Не удалось сохранить правила. Повторите попытку.</string>
 </resources>

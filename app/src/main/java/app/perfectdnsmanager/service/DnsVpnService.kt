@@ -139,7 +139,25 @@ class DnsVpnService : VpnService() {
             .build()
     }
 
-    // DNS Rewrite
+    // Local prefilter: immutable snapshots swapped by the control executor.
+    @Volatile private var prefilter = app.perfectdnsmanager.data.DnsPrefilter()
+    private val prefilterListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key?.startsWith(app.perfectdnsmanager.data.DnsPrefilterRepository.PREFIX) == true && !destroyed) {
+            control.execute {
+                if (isRunning) {
+                    // Keep the previous valid policy if a load fails; never silently disable filtering.
+                    try { prefilter = app.perfectdnsmanager.data.DnsPrefilterRepository(this).load() }
+                    catch (_: Exception) { Log.e(T, "Cannot reload local DNS prefilter") }
+                }
+            }
+        }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        getSharedPreferences("prefs", MODE_PRIVATE).registerOnSharedPreferenceChangeListener(prefilterListener)
+    }
+
     @Volatile private var rewriteRules = DnsRewriteIndex.empty()
 
     // Pending: on stocke aussi le qname original encodé pour restaurer la réponse si rewrite.
@@ -270,7 +288,8 @@ class DnsVpnService : VpnService() {
         try {
             Log.i(T, "=== START VPN ===  primary=${redactDnsUrl(dnsServer)}  secondary=${redactDnsUrl(dnsServerSecondary)}")
 
-            // Load rewrite rules
+            // Load local policy before accepting any DNS packets.
+            prefilter = app.perfectdnsmanager.data.DnsPrefilterRepository(this).load()
             rewriteRules = DnsRewriteIndex.from(DnsRewriteRepository(this).getAllRules())
             Log.i(T, "Loaded ${rewriteRules.size} DNS rewrite rules.")
 
@@ -441,6 +460,12 @@ class DnsVpnService : VpnService() {
                 }
                 if (modifiedQuery != null) originalQnameEncoded =
                     query.copyOf()
+            }
+
+            // The upstream selection is untouched. Rejected names never enter its query pool.
+            prefilter.response(query, modifiedQuery)?.let { response ->
+                writeTun(Pending(srcIp, dstIp, srcPort, false, null, localGeneration, query), response)
+                return
             }
 
             modifiedQuery?.let {
@@ -733,7 +758,7 @@ class DnsVpnService : VpnService() {
         tunReaderThread?.interrupt()
         try { tunReaderThread?.join(1000) } catch (_: InterruptedException) { Thread.currentThread().interrupt() }
         tunReaderThread = null
-        localDnsMap.clear(); rewriteRules = DnsRewriteIndex.empty()
+        localDnsMap.clear(); rewriteRules = DnsRewriteIndex.empty(); prefilter = app.perfectdnsmanager.data.DnsPrefilter()
         getSharedPreferences("prefs", MODE_PRIVATE).edit().putBoolean("vpn_active", false).putString("vpn_label", "").apply()
         // Keep foreground status during a profile change. Android removes it when the service stops.
     }
@@ -754,6 +779,7 @@ class DnsVpnService : VpnService() {
     }
 
     override fun onDestroy() {
+        getSharedPreferences("prefs", MODE_PRIVATE).unregisterOnSharedPreferenceChangeListener(prefilterListener)
         destroyed = true; generation.incrementAndGet()
         control.execute { stopVpn() }
         control.shutdown()

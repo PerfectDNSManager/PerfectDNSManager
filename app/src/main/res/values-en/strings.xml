@@ -602,4 +602,14 @@
     <string name="isp_dns_unavailable">ISP DNS unavailable</string>
     <string name="leak_isp_not_detected">Could not detect ISP resolvers</string>
     <string name="leak_active_not_detected">Could not detect active resolvers</string>
+
+    <string name="prefilter_title">Local DNS prefilter</string>
+    <string name="prefilter_enabled">Enable local prefilter</string>
+    <string name="prefilter_builtin">Use HaGeZi Light (bundled list)</string>
+    <string name="prefilter_help">Your selected PDM provider is still used after filtering. Requires the PDM VPN: does not filter Android DoT, excluded apps or their own encrypted DNS. The bundled list is refreshed with PDM updates. Exceptions apply only to this filter, not the provider’s filter.</string>
+    <string name="prefilter_blocked">Domains to block</string>
+    <string name="prefilter_allowed">Domains to allow</string>
+    <string name="prefilter_hint">One domain per line, without a URL or *. Includes subdomains. Maximum: 1,000 lines and 32,768 characters per list.</string>
+    <string name="prefilter_invalid">Invalid list. Enter one domain per line and stay within the limits.</string>
+    <string name="prefilter_save_error">Could not save rules. Please try again.</string>
 </resources>

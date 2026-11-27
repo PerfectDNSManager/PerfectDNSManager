@@ -587,4 +587,14 @@
     <string name="isp_dns_unavailable">DNS des Internetanbieters nicht verfügbar</string>
     <string name="leak_isp_not_detected">Resolver des Internetanbieters konnten nicht erkannt werden</string>
     <string name="leak_active_not_detected">Aktive Resolver konnten nicht erkannt werden</string>
+
+    <string name="prefilter_title">Lokaler DNS-Vorfilter</string>
+    <string name="prefilter_enabled">Lokalen Vorfilter aktivieren</string>
+    <string name="prefilter_builtin">HaGeZi Light verwenden (enthaltene Liste)</string>
+    <string name="prefilter_help">Der in PDM gewählte Anbieter bleibt nach der Filterung aktiv. Erfordert das PDM-VPN: Android-DoT, ausgeschlossene Apps und deren eigenes verschlüsseltes DNS werden nicht gefiltert. Die enthaltene Liste wird mit PDM aktualisiert. Ausnahmen gelten nur für diesen Filter, nicht für den Filter des Anbieters.</string>
+    <string name="prefilter_blocked">Zu blockierende Domains</string>
+    <string name="prefilter_allowed">Erlaubte Ausnahmen</string>
+    <string name="prefilter_hint">Eine Domain pro Zeile, ohne URL oder *. Gilt auch für Subdomains. Höchstens 1.000 Zeilen und 32.768 Zeichen pro Liste.</string>
+    <string name="prefilter_invalid">Ungültige Liste. Eine Domain pro Zeile eingeben und die Grenzen beachten.</string>
+    <string name="prefilter_save_error">Regeln konnten nicht gespeichert werden. Bitte erneut versuchen.</string>
 </resources>

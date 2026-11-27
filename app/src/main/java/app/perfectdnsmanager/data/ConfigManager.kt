@@ -88,6 +88,7 @@ class ConfigManager(private val context: Context) {
             settings.addProperty("show_profile_variants", prefs.getBoolean("show_profile_variants", false))
             settings.addProperty("show_standard_dns", prefs.getBoolean("show_standard_dns", false))
             root.add("settings", settings)
+            root.add("dnsPrefilter", DnsPrefilterRepository(context).export())
         }
 
         // Test domains
@@ -215,6 +216,13 @@ class ConfigManager(private val context: Context) {
             settingsRestored = true
         }
 
+        if (importSettings && root.has("dnsPrefilter")) {
+            val filter = root.getAsJsonObject("dnsPrefilter")
+            DnsPrefilterRepository(context).save(DnsPrefilterRepository.Settings(
+                filter.get("enabled").asBoolean, filter.get("builtin").asBoolean,
+                filter.get("blocked").asString, filter.get("allowed").asString))
+            settingsRestored = true
+        }
         return ImportResult(
             profileCount = profileCount,
             rejectedProfileCount = rejectedProfileCount,

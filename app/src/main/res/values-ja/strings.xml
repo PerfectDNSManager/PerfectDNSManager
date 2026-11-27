@@ -585,4 +585,14 @@
     <string name="isp_dns_unavailable">インターネット接続事業者の DNS を利用できません</string>
     <string name="leak_isp_not_detected">インターネット接続事業者のリゾルバーを検出できませんでした</string>
     <string name="leak_active_not_detected">使用中のリゾルバーを検出できませんでした</string>
+
+    <string name="prefilter_title">ローカル DNS プレフィルター</string>
+    <string name="prefilter_enabled">ローカルフィルターを有効にする</string>
+    <string name="prefilter_builtin">HaGeZi Light（同梱リスト）を使用</string>
+    <string name="prefilter_help">フィルタリング後も PDM で選択したプロバイダーを使用します。PDM の VPN が必要です。Android の DoT、除外したアプリ、アプリ独自の暗号化 DNS は対象外です。同梱リストは PDM の更新時に更新されます。例外はこのフィルターのみに適用され、プロバイダーのフィルターには適用されません。</string>
+    <string name="prefilter_blocked">ブロックするドメイン</string>
+    <string name="prefilter_allowed">許可する例外ドメイン</string>
+    <string name="prefilter_hint">1 行に 1 ドメイン。URL や * は不要です。サブドメインも含みます。各リストは最大 1,000 行、32,768 文字です。</string>
+    <string name="prefilter_invalid">リストが無効です。1 行に 1 ドメインを入力し、上限を守ってください。</string>
+    <string name="prefilter_save_error">ルールを保存できませんでした。再試行してください。</string>
 </resources>
