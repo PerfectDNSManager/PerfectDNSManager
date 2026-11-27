@@ -1,6 +1,6 @@
 # Changelog
 
-## À publier
+## 2.4.12-beta.1 — 27 novembre 2026
 
 - DNSForge et DNS4EU : profils sans filtre par défaut, variantes filtrées selon les paramètres, DoH/DoT et DNS classique ; DoQ pour DNSForge. Profils Unbound correspondants disponibles avec l’option expérimentale.
 - Conservation du code xdp et préparation d’un Worker DoH privé de secours, désactivé et non déployé, avec réécritures temporaires explicites sans suppression d’IPv6.
@@ -12,6 +12,10 @@
 - Modifications des règles à chaud, sauvegarde/restauration avec les paramètres, écran traduit dans les 12 langues. Liste intégrée mise à jour avec l’application, sans téléchargement automatique.
 
 - Déplacement de « Autoriser les profils Adblock » dans les paramètres DNS avancés, avec navigation à la télécommande ajustée et conservation du choix enregistré.
+
+Validation : compilation, 48 tests unitaires, traductions dans les 12 langues, tests réseau DNSForge/DNS4EU, tests Unbound/préfiltre sur Android 5 et Android 16 avec pages mémoire de 16 Ko. Quatre architectures conservées, IPv6 autorisé par défaut. La connectivité directe IPv6 des nouveaux fournisseurs et les performances sur les box physiques restent à confirmer.
+
+Le secours Worker est du code préparé et testé localement, non déployé et absent du catalogue public. Aucun moteur anti-DPI de type ByeByeDPI n’est activé. Cette version est une bêta ; la stable 2.4.11 reste inchangée.
 
 ## 2.4.11 — 6 novembre 2026
 
