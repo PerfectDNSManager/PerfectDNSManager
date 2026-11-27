@@ -13,3 +13,9 @@ Default checks: actual page size; production Argon2 known vector; API 30+ native
 On API 21, use `-e allowConsentDialog true` and accept the normal Android VPN consent dialog on the owned AVD; the newer ACTIVATE_VPN appops command is unavailable there. The runner waits up to 60 seconds for consent.
 
 `-e mode tls` diagnoses the platform TLS trust chain without starting a VPN. The pristine API 21 emulator has an obsolete root store; see the audit CA-fixture record for the network-test setup. No trust override is implemented by the runner.
+
+`-e dnsOnly true` tests the selected DNS transport through the optimized VPN but
+omits the separate HTTPS request made with Android's system TLS stack. Use it
+with `-e endpoint unbound://one.one.one.one` on the pristine API 21 emulator,
+whose system CA store is obsolete. Unbound's own authenticated DoT connection
+remains fully verified with its bundled CA store; no trust check is disabled.

@@ -104,6 +104,10 @@ public class SmokeRunner extends Instrumentation {
             for(int i=0;i<15&&!ready;i++){try{dns(1);ready=true;}catch(Throwable e){last=e;SystemClock.sleep(500);}}
             if(!ready)throw new AssertionError("VPN DNS readiness",last);
             dns(28);
+            if ("true".equals(args.getString("dnsOnly"))) {
+                pass("optimized VPN "+endpoint+": A and AAAA; IPv6 block disabled (separate HTTPS probe omitted)");
+                return;
+            }
             javax.net.ssl.HttpsURLConnection connection=(javax.net.ssl.HttpsURLConnection)new URL("https://example.com/").openConnection();
             connection.setConnectTimeout(20000);connection.setReadTimeout(20000);
             try {check(connection.getResponseCode()==200,"HTTPS after DNS VPN");}finally{connection.disconnect();}
