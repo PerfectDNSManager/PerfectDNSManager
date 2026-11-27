@@ -605,4 +605,5 @@
     <string name="unbound_help">Затем выберите Unbound · DoT у нужного провайдера. Локальный модуль запускается только для этого профиля: кеш DNS, проверка DNSSEC и шифрованный DoT. Использует VPN PDM без ADB. Перехода на незашифрованный DNS нет.</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
+    <string name="dns4eu_legal_note">Блокировки по требованиям закона могут применяться даже к профилю без фильтрации.</string>
 </resources>

@@ -7,6 +7,19 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ProviderProfilesTest {
+    @Test fun europeanProvidersKeepStandardDefaultAndAdblockOptIn() {
+        val profiles = DnsProfile.getDefaultPresets()
+        for (provider in listOf("DNSForge", "DNS4EU")) {
+            val own = profiles.filter { it.providerName == provider }
+            assertTrue(own.isNotEmpty())
+            assertTrue(own.all(ProfileValidation::isUsable))
+            assertEquals("Standard", ProfileCatalog.visible(own.filter { it.type == DnsType.DOH }, false, false).single().name)
+            assertFalse(ProfileCatalog.visible(own, false, true).any { it.isAdblock })
+            assertEquals(own.count { it.isAdblock }, ProfileCatalog.visible(own, true, true).count { it.isAdblock })
+        }
+        assertEquals(4, profiles.count { it.providerName == "DNSForge" && it.type == DnsType.DOQ })
+        assertFalse(profiles.any { it.providerName == "DNS4EU" && it.type == DnsType.DOQ })
+    }
     @Test fun cataloguePriorityAndRetirementPreservePersonalProfiles() {
         val presets = DnsProfile.getDefaultPresets()
         assertEquals(listOf("Cloudflare", "ControlD", "dns.sb"), presets.map { it.providerName }.distinct().take(3))

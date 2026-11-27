@@ -40,7 +40,7 @@ data class DnsProfile(
             context.getString(descResId, descResIdArg)
         else
             context.getString(descResId) } catch (_: android.content.res.Resources.NotFoundException) { return description }
-        val providerNote = if (providerName == "Mullvad") " — " + context.getString(R.string.mullvad_dns_retirement) else ""
+        val providerNote = if (providerName == "DNS4EU") " — " + context.getString(R.string.dns4eu_legal_note) else if (providerName == "Mullvad") " — " + context.getString(R.string.mullvad_dns_retirement) else ""
         // Pas de suffixe sur les types DEFAULT (UDP cleartext) — la variante
         // est implicite par la liste UI.
         val suffix = when (type) {
@@ -434,7 +434,7 @@ data class DnsProfile(
             DnsProfile(id = 2005, providerName = "🇫🇷 OVH", name = "DNS OVH", type = DnsType.DEFAULT,
                 primary = "213.186.33.99", secondary = "213.251.128.140",
                 descResId = R.string.dns_desc_isp_fmt, descResIdArg = "OVH/OVHcloud", isOperatorDns = true)
-            ).sortedBy { ProfileCatalog.providerOrder.indexOf(it.providerName).let { rank -> if (rank < 0) Int.MAX_VALUE else rank } }
+            ).plus(EuropeanDnsPresets.profiles).sortedBy { ProfileCatalog.providerOrder.indexOf(it.providerName).let { rank -> if (rank < 0) Int.MAX_VALUE else rank } }
         }
 
         private val presetsWithUnbound by lazy {

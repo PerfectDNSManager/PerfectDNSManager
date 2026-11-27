@@ -616,4 +616,5 @@
     <string name="unbound_help">Then choose Unbound · DoT under your preferred provider. The local engine starts only for that profile: DNS cache, DNSSEC validation and encrypted DoT. Uses the PDM VPN, without ADB. No fallback to unencrypted DNS.</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
+    <string name="dns4eu_legal_note">Legal blocks may apply, including to the unfiltered profile.</string>
 </resources>

@@ -2,6 +2,9 @@
 
 ## À publier
 
+- DNSForge et DNS4EU : profils sans filtre par défaut, variantes filtrées selon les paramètres, DoH/DoT et DNS classique ; DoQ pour DNSForge. Profils Unbound correspondants disponibles avec l’option expérimentale.
+- Conservation du code xdp et préparation d’un Worker DoH privé de secours, désactivé et non déployé, avec réécritures temporaires explicites sans suppression d’IPv6.
+
 - Option expérimentale Unbound local : cache et validation DNSSEC, transmission exclusivement en DoT authentifié au fournisseur sélectionné ; moteur démarré uniquement pour ce profil. Désactivée par défaut, compatible avec le préfiltre local.
 
 - Préfiltre DNS local optionnel dans les paramètres avancés : liste HaGeZi Light incluse, domaines personnels et exceptions prioritaires, sans changer le fournisseur DNS choisi.

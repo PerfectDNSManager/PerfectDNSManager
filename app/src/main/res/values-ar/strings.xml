@@ -609,4 +609,5 @@
     <string name="unbound_help">اختر بعدها Unbound · DoT لدى المزوّد المطلوب. يعمل المحرّك المحلي لهذا الملف فقط: ذاكرة DNS مؤقتة، وتحقق DNSSEC، واتصال DoT مشفّر. يستخدم VPN الخاص بـ PDM دون ADB. لا يعود إلى DNS غير مشفّر.</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
+    <string name="dns4eu_legal_note">قد تُطبَّق قيود حجب قانونية حتى على الملف غير المصفّى.</string>
 </resources>

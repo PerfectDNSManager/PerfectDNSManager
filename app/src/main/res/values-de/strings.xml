@@ -601,4 +601,5 @@
     <string name="unbound_help">Wähle anschließend Unbound · DoT beim gewünschten Anbieter. Die lokale Engine startet nur für dieses Profil: DNS-Cache, DNSSEC-Prüfung und verschlüsseltes DoT. Nutzt das PDM-VPN ohne ADB. Kein Rückfall auf unverschlüsseltes DNS.</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
+    <string name="dns4eu_legal_note">Rechtliche Sperren können auch für das ungefilterte Profil gelten.</string>
 </resources>

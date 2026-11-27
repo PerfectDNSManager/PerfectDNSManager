@@ -599,4 +599,5 @@
     <string name="unbound_help">然后在所需服务商下选择 Unbound · DoT。本地引擎仅在使用此配置时启动，提供 DNS 缓存、DNSSEC 验证和加密 DoT。使用 PDM VPN，无需 ADB。不会回退到未加密的 DNS。</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
+    <string name="dns4eu_legal_note">即使使用无过滤配置，也可能受到法律要求的屏蔽。</string>
 </resources>

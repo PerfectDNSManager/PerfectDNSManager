@@ -615,4 +615,5 @@
     <string name="unbound_help">Choisissez ensuite Unbound · DoT chez le fournisseur souhaité. Le moteur local ne démarre que pour ce profil : cache DNS, validation DNSSEC et connexion DoT chiffrée. Utilise le VPN PDM, sans ADB. Aucun repli en DNS non chiffré.</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
+    <string name="dns4eu_legal_note">Des blocages légaux peuvent s’appliquer, même au profil sans filtre.</string>
 </resources>

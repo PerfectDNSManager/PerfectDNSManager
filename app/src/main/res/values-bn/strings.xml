@@ -601,4 +601,5 @@
     <string name="unbound_help">এরপর পছন্দের প্রদানকারীর অধীনে Unbound · DoT বেছে নিন। স্থানীয় ইঞ্জিন শুধু এই প্রোফাইলের জন্য চলে: DNS ক্যাশ, DNSSEC যাচাই ও এনক্রিপ্ট করা DoT। ADB ছাড়াই PDM-এর VPN ব্যবহার করে। এনক্রিপশনহীন DNS-এ ফিরে যায় না।</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
+    <string name="dns4eu_legal_note">ফিল্টারবিহীন প্রোফাইলেও আইনি কারণে ব্লক প্রযোজ্য হতে পারে।</string>
 </resources>

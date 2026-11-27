@@ -1,0 +1,1235 @@
+{
+  "domain": "example.com",
+  "results": [
+    {
+      "providerName": "DNSForge",
+      "name": "Standard",
+      "type": "DOH",
+      "field": "primary",
+      "endpoint": "https://blank.dnsforge.de/dns-query",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "104.20.23.154",
+          "172.66.147.243"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Standard",
+      "type": "DOT",
+      "field": "primary",
+      "endpoint": "blank.dnsforge.de",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Standard",
+      "type": "DEFAULT",
+      "field": "primary",
+      "endpoint": "138.199.149.249",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "error": "TimeoutError: timed out"
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Standard",
+      "type": "DEFAULT",
+      "field": "secondary",
+      "endpoint": "78.47.71.194",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "error": "TimeoutError: timed out"
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Standard",
+      "type": "DEFAULT",
+      "field": "primaryV6",
+      "endpoint": "2a01:4f8:c17:7aa5::249",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Standard",
+      "type": "DEFAULT",
+      "field": "secondaryV6",
+      "endpoint": "2a01:4f8:c013:aae9::194",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Normal",
+      "type": "DOH",
+      "field": "primary",
+      "endpoint": "https://dnsforge.de/dns-query",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::6814:179a",
+          "2606:4700:10::ac42:93f3"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Normal",
+      "type": "DOT",
+      "field": "primary",
+      "endpoint": "dnsforge.de",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::6814:179a",
+          "2606:4700:10::ac42:93f3"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Normal",
+      "type": "DEFAULT",
+      "field": "primary",
+      "endpoint": "49.12.67.122",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "error": "TimeoutError: timed out"
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Normal",
+      "type": "DEFAULT",
+      "field": "secondary",
+      "endpoint": "91.99.154.175",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "error": "TimeoutError: timed out"
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Normal",
+      "type": "DEFAULT",
+      "field": "primaryV6",
+      "endpoint": "2a01:4f8:c013:29d::122",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Normal",
+      "type": "DEFAULT",
+      "field": "secondaryV6",
+      "endpoint": "2a01:4f8:c010:8c35::175",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Clean",
+      "type": "DOH",
+      "field": "primary",
+      "endpoint": "https://clean.dnsforge.de/dns-query",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Clean",
+      "type": "DOT",
+      "field": "primary",
+      "endpoint": "clean.dnsforge.de",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "104.20.23.154",
+          "172.66.147.243"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Clean",
+      "type": "DEFAULT",
+      "field": "primary",
+      "endpoint": "49.12.223.2",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Clean",
+      "type": "DEFAULT",
+      "field": "secondary",
+      "endpoint": "49.12.43.208",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Clean",
+      "type": "DEFAULT",
+      "field": "primaryV6",
+      "endpoint": "2a01:4f8:c17:4fbc::2",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Clean",
+      "type": "DEFAULT",
+      "field": "secondaryV6",
+      "endpoint": "2a01:4f8:c012:ed89::208",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Hard",
+      "type": "DOH",
+      "field": "primary",
+      "endpoint": "https://hard.dnsforge.de/dns-query",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::6814:179a",
+          "2606:4700:10::ac42:93f3"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Hard",
+      "type": "DOT",
+      "field": "primary",
+      "endpoint": "hard.dnsforge.de",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::6814:179a",
+          "2606:4700:10::ac42:93f3"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Hard",
+      "type": "DEFAULT",
+      "field": "primary",
+      "endpoint": "49.12.222.213",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Hard",
+      "type": "DEFAULT",
+      "field": "secondary",
+      "endpoint": "88.198.122.154",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Hard",
+      "type": "DEFAULT",
+      "field": "primaryV6",
+      "endpoint": "2a01:4f8:c17:2c61::213",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Hard",
+      "type": "DEFAULT",
+      "field": "secondaryV6",
+      "endpoint": "2a01:4f8:c013:5ec0::154",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Standard",
+      "type": "DOH",
+      "field": "primary",
+      "endpoint": "https://unfiltered.joindns4.eu/dns-query",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::6814:179a",
+          "2606:4700:10::ac42:93f3"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Standard",
+      "type": "DOT",
+      "field": "primary",
+      "endpoint": "unfiltered.joindns4.eu",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Standard",
+      "type": "DEFAULT",
+      "field": "primary",
+      "endpoint": "86.54.11.100",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Standard",
+      "type": "DEFAULT",
+      "field": "secondary",
+      "endpoint": "86.54.11.200",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Standard",
+      "type": "DEFAULT",
+      "field": "primaryV6",
+      "endpoint": "2a13:1001::86:54:11:100",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Standard",
+      "type": "DEFAULT",
+      "field": "secondaryV6",
+      "endpoint": "2a13:1001::86:54:11:200",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Protective",
+      "type": "DOH",
+      "field": "primary",
+      "endpoint": "https://protective.joindns4.eu/dns-query",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "104.20.23.154",
+          "172.66.147.243"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Protective",
+      "type": "DOT",
+      "field": "primary",
+      "endpoint": "protective.joindns4.eu",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "104.20.23.154",
+          "172.66.147.243"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::6814:179a",
+          "2606:4700:10::ac42:93f3"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Protective",
+      "type": "DEFAULT",
+      "field": "primary",
+      "endpoint": "86.54.11.1",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Protective",
+      "type": "DEFAULT",
+      "field": "secondary",
+      "endpoint": "86.54.11.201",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Protective",
+      "type": "DEFAULT",
+      "field": "primaryV6",
+      "endpoint": "2a13:1001::86:54:11:1",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Protective",
+      "type": "DEFAULT",
+      "field": "secondaryV6",
+      "endpoint": "2a13:1001::86:54:11:201",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Child",
+      "type": "DOH",
+      "field": "primary",
+      "endpoint": "https://child.joindns4.eu/dns-query",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::6814:179a",
+          "2606:4700:10::ac42:93f3"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Child",
+      "type": "DOT",
+      "field": "primary",
+      "endpoint": "child.joindns4.eu",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "104.20.23.154",
+          "172.66.147.243"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::6814:179a",
+          "2606:4700:10::ac42:93f3"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Child",
+      "type": "DEFAULT",
+      "field": "primary",
+      "endpoint": "86.54.11.12",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Child",
+      "type": "DEFAULT",
+      "field": "secondary",
+      "endpoint": "86.54.11.212",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Child",
+      "type": "DEFAULT",
+      "field": "primaryV6",
+      "endpoint": "2a13:1001::86:54:11:12",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Child",
+      "type": "DEFAULT",
+      "field": "secondaryV6",
+      "endpoint": "2a13:1001::86:54:11:212",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Adblock",
+      "type": "DOH",
+      "field": "primary",
+      "endpoint": "https://noads.joindns4.eu/dns-query",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "104.20.23.154",
+          "172.66.147.243"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Adblock",
+      "type": "DOT",
+      "field": "primary",
+      "endpoint": "noads.joindns4.eu",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Adblock",
+      "type": "DEFAULT",
+      "field": "primary",
+      "endpoint": "86.54.11.13",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Adblock",
+      "type": "DEFAULT",
+      "field": "secondary",
+      "endpoint": "86.54.11.213",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Adblock",
+      "type": "DEFAULT",
+      "field": "primaryV6",
+      "endpoint": "2a13:1001::86:54:11:13",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Adblock",
+      "type": "DEFAULT",
+      "field": "secondaryV6",
+      "endpoint": "2a13:1001::86:54:11:213",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Child + Adblock",
+      "type": "DOH",
+      "field": "primary",
+      "endpoint": "https://child-noads.joindns4.eu/dns-query",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "104.20.23.154",
+          "172.66.147.243"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Child + Adblock",
+      "type": "DOT",
+      "field": "primary",
+      "endpoint": "child-noads.joindns4.eu",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::6814:179a",
+          "2606:4700:10::ac42:93f3"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Child + Adblock",
+      "type": "DEFAULT",
+      "field": "primary",
+      "endpoint": "86.54.11.11",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Child + Adblock",
+      "type": "DEFAULT",
+      "field": "secondary",
+      "endpoint": "86.54.11.211",
+      "A": {
+        "error": "TimeoutError: timed out"
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Child + Adblock",
+      "type": "DEFAULT",
+      "field": "primaryV6",
+      "endpoint": "2a13:1001::86:54:11:11",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Child + Adblock",
+      "type": "DEFAULT",
+      "field": "secondaryV6",
+      "endpoint": "2a13:1001::86:54:11:211",
+      "A": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      },
+      "AAAA": {
+        "error": "OSError: [Errno 101] Network is unreachable"
+      }
+    }
+  ],
+  "doq": [
+    {
+      "host": "blank.dnsforge.de",
+      "type": "A",
+      "rcode": 0,
+      "answers": [
+        "172.66.147.243",
+        "104.20.23.154"
+      ]
+    },
+    {
+      "host": "blank.dnsforge.de",
+      "type": "AAAA",
+      "rcode": 0,
+      "answers": [
+        "2606:4700:10::ac42:93f3",
+        "2606:4700:10::6814:179a"
+      ]
+    },
+    {
+      "host": "dnsforge.de",
+      "type": "A",
+      "rcode": 0,
+      "answers": [
+        "172.66.147.243",
+        "104.20.23.154"
+      ]
+    },
+    {
+      "host": "dnsforge.de",
+      "type": "AAAA",
+      "rcode": 0,
+      "answers": [
+        "2606:4700:10::6814:179a",
+        "2606:4700:10::ac42:93f3"
+      ]
+    },
+    {
+      "host": "clean.dnsforge.de",
+      "type": "A",
+      "rcode": 0,
+      "answers": [
+        "104.20.23.154",
+        "172.66.147.243"
+      ]
+    },
+    {
+      "host": "clean.dnsforge.de",
+      "type": "AAAA",
+      "rcode": 0,
+      "answers": [
+        "2606:4700:10::ac42:93f3",
+        "2606:4700:10::6814:179a"
+      ]
+    },
+    {
+      "host": "hard.dnsforge.de",
+      "type": "A",
+      "rcode": 0,
+      "answers": [
+        "104.20.23.154",
+        "172.66.147.243"
+      ]
+    },
+    {
+      "host": "hard.dnsforge.de",
+      "type": "AAAA",
+      "rcode": 0,
+      "answers": [
+        "2606:4700:10::6814:179a",
+        "2606:4700:10::ac42:93f3"
+      ]
+    }
+  ],
+  "udpRetry": [
+    {
+      "providerName": "DNSForge",
+      "name": "Standard",
+      "type": "DEFAULT",
+      "field": "primary",
+      "endpoint": "138.199.149.249",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Standard",
+      "type": "DEFAULT",
+      "field": "secondary",
+      "endpoint": "78.47.71.194",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Normal",
+      "type": "DEFAULT",
+      "field": "primary",
+      "endpoint": "49.12.67.122",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNSForge",
+      "name": "Normal",
+      "type": "DEFAULT",
+      "field": "secondary",
+      "endpoint": "91.99.154.175",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    },
+    {
+      "providerName": "DNS4EU",
+      "name": "Child + Adblock",
+      "type": "DEFAULT",
+      "field": "secondary",
+      "endpoint": "86.54.11.211",
+      "A": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "172.66.147.243",
+          "104.20.23.154"
+        ]
+      },
+      "AAAA": {
+        "rcode": 0,
+        "truncated": false,
+        "addresses": [
+          "2606:4700:10::ac42:93f3",
+          "2606:4700:10::6814:179a"
+        ]
+      }
+    }
+  ],
+  "date": "2026-11-27",
+  "limitations": "No IPv6 route from test host: IPv6 transport unreachable, AAAA answers tested over IPv4. Five UDP endpoints needed a retry; all retries passed."
+}

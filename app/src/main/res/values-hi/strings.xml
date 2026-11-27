@@ -601,4 +601,5 @@
     <string name="unbound_help">फिर अपने प्रदाता के अंतर्गत Unbound · DoT चुनें। स्थानीय इंजन केवल इस प्रोफ़ाइल के लिए चलता है: DNS कैश, DNSSEC सत्यापन और एन्क्रिप्टेड DoT। ADB के बिना PDM का VPN उपयोग होता है। बिना एन्क्रिप्शन वाले DNS पर वापस नहीं जाता।</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
+    <string name="dns4eu_legal_note">बिना फ़िल्टर वाली प्रोफ़ाइल पर भी कानूनी प्रतिबंध लागू हो सकते हैं।</string>
 </resources>

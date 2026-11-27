@@ -599,4 +599,5 @@
     <string name="unbound_help">次に希望するプロバイダーの Unbound · DoT を選択してください。このプロファイルの使用時のみローカルエンジンが起動し、DNS キャッシュ、DNSSEC 検証、暗号化 DoT を提供します。ADB なしで PDM の VPN を使用します。非暗号化 DNS には切り替わりません。</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
+    <string name="dns4eu_legal_note">フィルタリングなしのプロファイルにも、法令に基づくブロックが適用される場合があります。</string>
 </resources>
