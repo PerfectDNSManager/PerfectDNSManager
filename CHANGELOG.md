@@ -2,8 +2,10 @@
 
 ## À publier
 
+- Option expérimentale Unbound local : cache et validation DNSSEC, transmission exclusivement en DoT authentifié au fournisseur sélectionné ; moteur démarré uniquement pour ce profil. Désactivée par défaut, compatible avec le préfiltre local.
+
 - Préfiltre DNS local optionnel dans les paramètres avancés : liste HaGeZi Light incluse, domaines personnels et exceptions prioritaires, sans changer le fournisseur DNS choisi.
-- Filtrage avant envoi au fournisseur, pour les connexions passant par le VPN PDM (DoH, DoQ et DNS standard). Les règles s’appliquent aussi aux sous-domaines et aux destinations réécrites ; le DoT Android et les applications exclues restent hors de ce filtre.
+- Filtrage avant envoi au fournisseur, pour les connexions passant par le VPN PDM (DoH, DoQ, Unbound/DoT et DNS standard). Les règles s’appliquent aussi aux sous-domaines et aux destinations réécrites ; le DoT Android et les applications exclues restent hors de ce filtre.
 - Modifications des règles à chaud, sauvegarde/restauration avec les paramètres, écran traduit dans les 12 langues. Liste intégrée mise à jour avec l’application, sans téléchargement automatique.
 
 - Déplacement de « Autoriser les profils Adblock » dans les paramètres DNS avancés, avec navigation à la télécommande ajustée et conservation du choix enregistré.

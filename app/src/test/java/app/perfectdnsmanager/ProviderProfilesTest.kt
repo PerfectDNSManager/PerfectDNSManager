@@ -55,7 +55,7 @@ class ProviderProfilesTest {
         }
     }
     @Test fun personalProfilesSurviveExportImportValidation() {
-        for (type in listOf(DnsType.DOH, DnsType.DOT, DnsType.DOQ)) {
+        for (type in listOf(DnsType.DOH, DnsType.DOT, DnsType.DOQ, DnsType.UNBOUND)) {
             val profile = DnsProfile(id = 50001, providerName = "ControlD", name = "My TV",
                 type = type, primary = ControlDProfiles.primary("abc12345", type), isCustom = true)
             assertTrue(ProfileValidation.isUsable(profile))
@@ -70,8 +70,8 @@ class ProviderProfilesTest {
         val all = DnsProfile.getDefaultPresets()
         assertEquals(all.size, all.map { it.id }.distinct().size)
         val xdp = all.filter { it.providerName == "xdp.es" }
-        assertEquals(8, xdp.size)
-        assertEquals(4, xdp.count { it.isAdblock })
+        assertEquals(10, xdp.size)
+        assertEquals(5, xdp.count { it.isAdblock })
         assertTrue(xdp.all(ProfileValidation::isUsable))
         assertEquals("https://lite.xdp.es/dns-query", xdp.single { it.name == "Standard" && it.type == DnsType.DOH }.primary)
     }

@@ -21,7 +21,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     env:
       # Force Node.js 24 sur les actions encore livrées sous Node 20 (deprecation
       # GH 2026-06-02). Sans ça : warning sur chaque run + actions cassées à terme.
@@ -53,6 +53,9 @@ jobs:
 
       - name: Build ADB native libraries from pinned source
         run: python3 tools/build_adb_native.py
+
+      - name: Build optional Unbound native libraries from pinned sources
+        run: python3 tools/build_unbound_native.py
 
       - name: Validate all translations
         run: python3 tools/check_translations.py

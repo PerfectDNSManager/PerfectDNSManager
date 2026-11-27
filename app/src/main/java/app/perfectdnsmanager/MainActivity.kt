@@ -112,6 +112,7 @@ open class MainActivity : AppCompatActivity() {
     }
 
     private fun typeLabelFor(type: DnsType) = when (type) {
+        DnsType.UNBOUND -> "Unbound · DoT"
         DnsType.DOH -> "DoH"; DnsType.DOT -> "DoT"; DnsType.DOQ -> "DoQ"; DnsType.DEFAULT -> "Standard"
     }
 

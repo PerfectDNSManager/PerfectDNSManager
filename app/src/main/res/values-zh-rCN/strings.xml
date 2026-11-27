@@ -595,4 +595,8 @@
     <string name="prefilter_hint">每行一个域名，不含 URL 或 *。包含子域名。每份列表最多 1,000 行、32,768 个字符。</string>
     <string name="prefilter_invalid">列表无效。请每行输入一个域名，并遵守数量限制。</string>
     <string name="prefilter_save_error">无法保存规则，请重试。</string>
+    <string name="unbound_profiles">显示 Unbound 配置（通过 VPN 使用 DoT）</string>
+    <string name="unbound_help">然后在所需服务商下选择 Unbound · DoT。本地引擎仅在使用此配置时启动，提供 DNS 缓存、DNSSEC 验证和加密 DoT。使用 PDM VPN，无需 ADB。不会回退到未加密的 DNS。</string>
+    <string name="unbound_label">Unbound · DoT</string>
+    <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
 </resources>

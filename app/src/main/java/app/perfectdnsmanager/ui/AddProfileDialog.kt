@@ -81,6 +81,11 @@ class AddProfileDialog(
         rbDoq.buttonTintList = ColorStateList.valueOf(DnsColors.colorForType(DnsType.DOQ))
         rbStandard.buttonTintList = ColorStateList.valueOf(DnsColors.colorForType(DnsType.DEFAULT))
 
+        findViewById<RadioButton>(R.id.rbUnbound).apply {
+            visibility = if (advancedEnabled && context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                .getBoolean("show_unbound_dns", false)) View.VISIBLE else View.GONE
+            buttonTintList = ColorStateList.valueOf(DnsColors.colorForType(DnsType.UNBOUND))
+        }
         rbDoh.isChecked = true
         etSecondary.visibility = View.GONE
         tvSecondaryLabel.visibility = View.GONE
@@ -108,6 +113,7 @@ class AddProfileDialog(
             }
 
             etPrimary.hint = when (checkedId) {
+                R.id.rbUnbound -> context.getString(R.string.unbound_endpoint_hint)
                 R.id.rbDoh -> "Ex: https://dns.adguard-dns.com/dns-query"
                 R.id.rbDoq -> "Ex: quic://dns.adguard-dns.com"
                 R.id.rbDot -> "Ex: dns.adguard-dns.com"
@@ -120,6 +126,7 @@ class AddProfileDialog(
         btnSave.setOnClickListener {
             if (validateInput()) {
                 val selectedType = when (rgType.checkedRadioButtonId) {
+                    R.id.rbUnbound -> DnsType.UNBOUND
                     R.id.rbDoh -> DnsType.DOH
                     R.id.rbDot -> DnsType.DOT
                     R.id.rbDoq -> DnsType.DOQ
@@ -159,6 +166,7 @@ class AddProfileDialog(
             return false
         }
         val type = when (rgType.checkedRadioButtonId) {
+            R.id.rbUnbound -> DnsType.UNBOUND
             R.id.rbDoh -> DnsType.DOH
             R.id.rbDot -> DnsType.DOT
             R.id.rbDoq -> DnsType.DOQ

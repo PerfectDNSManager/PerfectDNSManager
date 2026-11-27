@@ -52,6 +52,7 @@ object ControlDProfiles {
         require(tokenPattern.matches(id)) { "Invalid Control D resolver ID" }
         return when (type) {
             DnsType.DOH -> "https://dns.controld.com/" + id.replaceFirst('-', '/')
+            DnsType.UNBOUND -> "unbound://$id.dns.controld.com"
             DnsType.DOT -> "$id.dns.controld.com"
             DnsType.DOQ -> "quic://$id.dns.controld.com:853"
             DnsType.DEFAULT -> throw IllegalArgumentException("Personal resolvers require a secure endpoint")

@@ -134,6 +134,13 @@ class DnsSelectionActivity : AppCompatActivity() {
                             primary = "quic://$pid.dns.nextdns.io", descResId = R.string.dns_desc_nextdns_custom,
                             isCustom = true, testUrl = "https://test.nextdns.io/"
                         ))
+                        if (prefsMain.getBoolean("show_unbound_dns", false)) {
+                            customProfiles.add(DnsProfile(
+                                providerName = "NextDNS", name = getString(R.string.nextdns_profile_name_fmt, pid), type = DnsType.UNBOUND,
+                                primary = "unbound://$pid.dns.nextdns.io", descResId = R.string.dns_desc_nextdns_custom,
+                                isCustom = true, testUrl = "https://test.nextdns.io/"
+                            ))
+                        }
                         if (adbDotEnabled) {
                             customProfiles.add(DnsProfile(
                                 providerName = "NextDNS", name = getString(R.string.nextdns_profile_name_fmt, pid), type = DnsType.DOT,
@@ -157,6 +164,7 @@ class DnsSelectionActivity : AppCompatActivity() {
         ) { _, profiles ->
             val best = profiles.minByOrNull {
                 when (it.type) {
+                    DnsType.UNBOUND -> 4
                     DnsType.DOH -> 0; DnsType.DOQ -> 1; DnsType.DOT -> 2; DnsType.DEFAULT -> 3
                 }
             }

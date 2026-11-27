@@ -48,6 +48,10 @@ object ProfileValidation {
             val uri = URI(normalized)
             validUrl(normalized, "quic") && uri.rawPath in listOf("", "/") && uri.rawQuery == null
         } catch (_: Exception) { false }
+        DnsType.UNBOUND -> try {
+            val uri = URI(raw)
+            validUrl(raw, "unbound") && isHostname(uri.host) && uri.rawPath in listOf("", "/") && uri.rawQuery == null
+        } catch (_: Exception) { false }
         DnsType.DOT -> isHostname(raw)
         DnsType.DEFAULT -> isIpv4(raw)
     }

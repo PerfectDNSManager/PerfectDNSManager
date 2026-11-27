@@ -131,6 +131,23 @@ class DnsPrefilterInstrumentedTest {
             }
         } finally { stop(); instrumentation.runOnMainSync { activity.finish() } }
     }
+    @Test fun unboundVpnPreservesBothFamiliesAndRunsPrefilterBeforeResolution() {
+        val activity = prepare()
+        try {
+            repository.save(DnsPrefilterRepository.Settings(true, false, "blocked.prefilter.test", ""))
+            start("unbound://one.one.one.one")
+            assertEquals(Rcode.NXDOMAIN, request("blocked.prefilter.test").rcode)
+            for (type in listOf(Type.A, Type.AAAA)) {
+                val reply = request("cloudflare.com", type)
+                assertEquals(Rcode.NOERROR, reply.rcode)
+                assertTrue(reply.getSection(Section.ANSWER).any { it.type == type })
+                assertTrue(reply.header.getFlag(Flags.AD.toInt()))
+            }
+            assertFalse(context.getSharedPreferences("prefs", Context.MODE_PRIVATE).getBoolean("disable_ipv6", false))
+            stop()
+            assertFalse(DnsVpnService.isVpnRunning)
+        } finally { stop(); instrumentation.runOnMainSync { activity.finish() } }
+    }
     @Test fun screenSavesWithoutStartingVpnAndKeepsSelectedProvider() {
         val main = prepare()
         val activity = instrumentation.startActivitySync(Intent(context, DnsPrefilterActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))

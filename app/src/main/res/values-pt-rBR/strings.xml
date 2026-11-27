@@ -601,4 +601,8 @@
     <string name="prefilter_hint">Um domínio por linha, sem URL nem *. Inclui subdomínios. Máximo: 1.000 linhas e 32.768 caracteres por lista.</string>
     <string name="prefilter_invalid">Lista inválida. Insira um domínio por linha e respeite os limites.</string>
     <string name="prefilter_save_error">Não foi possível guardar as regras. Tente novamente.</string>
+    <string name="unbound_profiles">Mostrar perfis Unbound (DoT via VPN)</string>
+    <string name="unbound_help">Depois escolha Unbound · DoT no provedor desejado. O mecanismo local só inicia para esse perfil: cache DNS, validação DNSSEC e DoT criptografado. Usa a VPN do PDM, sem ADB. Não recorre a DNS sem criptografia.</string>
+    <string name="unbound_label">Unbound · DoT</string>
+    <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
 </resources>

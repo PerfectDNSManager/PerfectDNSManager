@@ -16,6 +16,6 @@ fun redactDnsUrl(value: String?): String {
 }
 
 private val PERSONAL_HOST = Regex(
-    "^((?:https|quic|tls)://)?[^./:]+(\\.dns\\.(?:nextdns\\.io|controld\\.com))(?=[:/?#]|$)",
+    "^((?:https|quic|tls|unbound)://)?[^./:]+(\\.dns\\.(?:nextdns\\.io|controld\\.com))(?=[:/?#]|$)",
     RegexOption.IGNORE_CASE
 )

@@ -1,6 +1,9 @@
 # Optional local recursive resolver: Unbound
 
-Status: feasibility/design note, 2026-11-27. Not integrated or published.
+Status: original feasibility note, superseded by the optional authenticated DoT
+forwarder implementation described in `../../native/unbound/README.md`.
+Autonomous recursion below remains a design alternative, not an implemented
+mode. No publication.
 
 Suggested user-facing choice: “Local resolution — Unbound”, alongside existing
 DNS providers. Start the engine only while this profile is active, release its

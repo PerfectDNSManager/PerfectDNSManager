@@ -480,7 +480,7 @@
 
             <Button
                 android:id="@+id/btnUrlRewrite"
-                android:nextFocusDown="@id/btnDnsPrefilter"
+                android:nextFocusDown="@id/cbUnboundProfiles"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:text="@string/url_rewrite_button"
@@ -491,6 +491,23 @@
                 android:layout_marginBottom="4dp"
                 android:focusable="true" />
 
+            <CheckBox
+                android:id="@+id/cbUnboundProfiles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/unbound_profiles"
+                android:textColor="@color/pdm_text_primary"
+                android:background="@drawable/btn_focus_foreground"
+                android:focusable="true"
+                android:nextFocusUp="@id/btnUrlRewrite"
+                android:nextFocusDown="@id/btnDnsPrefilter" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/unbound_help"
+                android:textColor="@color/pdm_text_secondary"
+                android:padding="8dp" />
             <Button
                 android:id="@+id/btnDnsPrefilter"
                 android:layout_width="match_parent"
@@ -500,7 +517,7 @@
                 android:background="@drawable/pdm_btn_primary"
                 android:foreground="@drawable/btn_focus_foreground"
                 android:textColor="@color/pdm_text_primary"
-                android:nextFocusUp="@id/btnUrlRewrite"
+                android:nextFocusUp="@id/cbUnboundProfiles"
                 android:nextFocusDown="@id/btnSplitTunnel"
                 android:focusable="true" />
 

@@ -21,15 +21,16 @@ class ProtocolFiltersInstrumentedTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         check(context.packageName.endsWith(".design"))
         val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        val keys = listOf("adb_dot_enabled", "show_doq_dns", "show_standard_dns", "operator_dns_enabled")
+        val keys = listOf("adb_dot_enabled", "show_doq_dns", "show_standard_dns", "operator_dns_enabled", "show_unbound_dns")
         val profiles = ProfileManager(context).loadProfiles()
         try {
-            for (mask in 0..15) {
+            for (mask in 0..31) {
                 prefs.edit().apply { keys.forEachIndexed { i, key -> putBoolean(key, mask and (1 shl i) != 0) } }.commit()
                 val visible = profiles.filter { DnsProtocolVisibility.isVisible(it, prefs) }
                 assertTrue(visible.any { it.type == DnsType.DOH })
                 for (profile in profiles) {
                     val expected = (!profile.isOperatorDns || mask and 8 != 0) && when(profile.type) {
+                        DnsType.UNBOUND -> mask and 16 != 0
                         DnsType.DOH -> true
                         DnsType.DOT -> mask and 1 != 0
                         DnsType.DOQ -> mask and 2 != 0

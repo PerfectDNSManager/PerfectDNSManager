@@ -87,6 +87,7 @@ class ConfigManager(private val context: Context) {
             settings.addProperty("show_doq_dns", prefs.getBoolean("show_doq_dns", false))
             settings.addProperty("show_profile_variants", prefs.getBoolean("show_profile_variants", false))
             settings.addProperty("show_standard_dns", prefs.getBoolean("show_standard_dns", false))
+            settings.addProperty("show_unbound_dns", prefs.getBoolean("show_unbound_dns", false))
             root.add("settings", settings)
             root.add("dnsPrefilter", DnsPrefilterRepository(context).export())
         }
@@ -212,6 +213,7 @@ class ConfigManager(private val context: Context) {
 
             if (settings.has("show_profile_variants")) editor.putBoolean("show_profile_variants", settings.get("show_profile_variants").asBoolean)
             if (settings.has("show_standard_dns")) editor.putBoolean("show_standard_dns", settings.get("show_standard_dns").asBoolean)
+            if (settings.has("show_unbound_dns")) editor.putBoolean("show_unbound_dns", settings.get("show_unbound_dns").asBoolean)
             editor.apply()
             settingsRestored = true
         }
@@ -372,6 +374,7 @@ class ConfigManager(private val context: Context) {
 
     private fun settingLabel(key: String): String {
         val resource = when (key) {
+            "show_unbound_dns" -> R.string.unbound_profiles
             "auto_reconnect_dns" -> R.string.auto_reconnect_label
             "disable_ipv6" -> R.string.disable_ipv6_label
             "adb_dot_enabled" -> R.string.dns_dot_adb

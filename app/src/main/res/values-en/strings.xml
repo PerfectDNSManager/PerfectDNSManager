@@ -612,4 +612,8 @@
     <string name="prefilter_hint">One domain per line, without a URL or *. Includes subdomains. Maximum: 1,000 lines and 32,768 characters per list.</string>
     <string name="prefilter_invalid">Invalid list. Enter one domain per line and stay within the limits.</string>
     <string name="prefilter_save_error">Could not save rules. Please try again.</string>
+    <string name="unbound_profiles">Show Unbound profiles (DoT over VPN)</string>
+    <string name="unbound_help">Then choose Unbound · DoT under your preferred provider. The local engine starts only for that profile: DNS cache, DNSSEC validation and encrypted DoT. Uses the PDM VPN, without ADB. No fallback to unencrypted DNS.</string>
+    <string name="unbound_label">Unbound · DoT</string>
+    <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
 </resources>

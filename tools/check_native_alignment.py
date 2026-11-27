@@ -7,7 +7,7 @@ import zipfile
 
 def check(path):
     required = {'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'}
-    libraries = {'libadb.so', 'libargon2jni.so', 'libargon2native.so', 'libconscrypt_jni.so'}
+    libraries = {'libpdm_unbound.so', 'libadb.so', 'libargon2jni.so', 'libargon2native.so', 'libconscrypt_jni.so'}
     seen = set()
     with zipfile.ZipFile(path) as apk, open(path, 'rb') as raw:
         for info in apk.infolist():

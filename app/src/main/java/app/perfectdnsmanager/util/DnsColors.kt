@@ -19,6 +19,7 @@ object DnsColors {
     fun colorResForType(type: DnsType): Int = when (type) {
         DnsType.DOH -> R.color.dns_type_doh
         DnsType.DOQ -> R.color.dns_type_doq
+        DnsType.UNBOUND -> R.color.dns_type_doq
         DnsType.DOT -> R.color.dns_type_dot
         DnsType.DEFAULT -> R.color.dns_type_default
     }
@@ -33,6 +34,7 @@ object DnsColors {
     fun colorForType(type: DnsType): Int = when (type) {
         DnsType.DOH -> 0xFF2E9E44.toInt()  // Vert (compromis clair/sombre)
         DnsType.DOQ -> 0xFF7B68EE.toInt()  // Bleu-violet (rare)
+        DnsType.UNBOUND -> 0xFF7B68EE.toInt()
         DnsType.DOT -> 0xFFC08A00.toInt()  // Or foncé (lisible sur blanc)
         DnsType.DEFAULT -> 0xFF888888.toInt()  // Gris (commun)
     }
@@ -45,6 +47,7 @@ object DnsColors {
     fun labelForType(type: DnsType): String = when (type) {
         DnsType.DOH -> "DoH"
         DnsType.DOQ -> "DoQ"
+        DnsType.UNBOUND -> "Unbound · DoT"
         DnsType.DOT -> "DoT"
         DnsType.DEFAULT -> "Standard"
     }

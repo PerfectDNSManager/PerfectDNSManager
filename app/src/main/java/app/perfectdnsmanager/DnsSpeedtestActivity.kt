@@ -195,6 +195,8 @@ class DnsSpeedtestActivity : AppCompatActivity() {
                 val testProfiles = presets.filter { p ->
                     if (p.isAdblock && !prefs.getBoolean("allow_adblock_profiles", false)) return@filter false
                     if (p.isOperatorDns && !(advancedEnabled && operatorEnabled)) return@filter false
+                    // The local resolver is started only for an explicitly selected profile.
+                    if (p.type == DnsType.UNBOUND) return@filter false
                     if (p.type == DnsType.DOT && !advancedEnabled) return@filter false
                     val key = "${p.providerName}|${p.type}"
                     if (key in seenKeys) return@filter false

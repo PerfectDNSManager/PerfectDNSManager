@@ -389,6 +389,10 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // URL Rewrite (fonction avancée)
+        findViewById<android.widget.CheckBox>(R.id.cbUnboundProfiles).apply {
+            isChecked = prefs.getBoolean("show_unbound_dns", false)
+            setOnCheckedChangeListener { _, checked -> prefs.edit().putBoolean("show_unbound_dns", checked).apply() }
+        }
         findViewById<Button>(R.id.btnDnsPrefilter).setOnClickListener {
             startActivity(Intent(this, DnsPrefilterActivity::class.java))
         }
@@ -1392,6 +1396,7 @@ class SettingsActivity : AppCompatActivity() {
         }.getOrNull()?.takeIf { app.perfectdnsmanager.util.ProfileValidation.isUsable(it) }
         info.text = if (profile == null) getString(R.string.auto_reconnect_no_dns) else {
             val typeLabel = when (profile.type) {
+                app.perfectdnsmanager.data.DnsType.UNBOUND -> "Unbound · DoT"
                 app.perfectdnsmanager.data.DnsType.DOH -> "DoH"
                 app.perfectdnsmanager.data.DnsType.DOT -> "DoT"
                 app.perfectdnsmanager.data.DnsType.DOQ -> "DoQ"

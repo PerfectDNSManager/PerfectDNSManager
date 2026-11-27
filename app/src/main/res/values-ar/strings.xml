@@ -605,4 +605,8 @@
     <string name="prefilter_hint">نطاق واحد في كل سطر، دون URL أو *. يشمل النطاقات الفرعية. الحد الأقصى لكل قائمة: 1,000 سطر و32,768 حرفًا.</string>
     <string name="prefilter_invalid">قائمة غير صالحة. أدخل نطاقًا واحدًا في كل سطر والتزم بالحدود.</string>
     <string name="prefilter_save_error">تعذّر حفظ القواعد. حاول مجددًا.</string>
+    <string name="unbound_profiles">عرض ملفات Unbound ‏(DoT عبر VPN)</string>
+    <string name="unbound_help">اختر بعدها Unbound · DoT لدى المزوّد المطلوب. يعمل المحرّك المحلي لهذا الملف فقط: ذاكرة DNS مؤقتة، وتحقق DNSSEC، واتصال DoT مشفّر. يستخدم VPN الخاص بـ PDM دون ADB. لا يعود إلى DNS غير مشفّر.</string>
+    <string name="unbound_label">Unbound · DoT</string>
+    <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
 </resources>

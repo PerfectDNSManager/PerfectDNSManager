@@ -595,4 +595,8 @@
     <string name="prefilter_hint">1 行に 1 ドメイン。URL や * は不要です。サブドメインも含みます。各リストは最大 1,000 行、32,768 文字です。</string>
     <string name="prefilter_invalid">リストが無効です。1 行に 1 ドメインを入力し、上限を守ってください。</string>
     <string name="prefilter_save_error">ルールを保存できませんでした。再試行してください。</string>
+    <string name="unbound_profiles">Unbound プロファイルを表示（VPN 経由の DoT）</string>
+    <string name="unbound_help">次に希望するプロバイダーの Unbound · DoT を選択してください。このプロファイルの使用時のみローカルエンジンが起動し、DNS キャッシュ、DNSSEC 検証、暗号化 DoT を提供します。ADB なしで PDM の VPN を使用します。非暗号化 DNS には切り替わりません。</string>
+    <string name="unbound_label">Unbound · DoT</string>
+    <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
 </resources>

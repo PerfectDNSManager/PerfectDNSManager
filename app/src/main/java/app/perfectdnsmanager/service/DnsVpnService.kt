@@ -140,6 +140,7 @@ class DnsVpnService : VpnService() {
     }
 
     // Local prefilter: immutable snapshots swapped by the control executor.
+    private val unboundBackends = ConcurrentHashMap<String, UnboundBackend>()
     @Volatile private var prefilter = app.perfectdnsmanager.data.DnsPrefilter()
     private val prefilterListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         if (key?.startsWith(app.perfectdnsmanager.data.DnsPrefilterRepository.PREFIX) == true && !destroyed) {
@@ -247,7 +248,8 @@ class DnsVpnService : VpnService() {
                 }
                 fun usable(v: String) = ProfileValidation.isIpv4(v) ||
                     ProfileValidation.isValidPrimary(app.perfectdnsmanager.data.DnsType.DOH, v) ||
-                    ProfileValidation.isValidPrimary(app.perfectdnsmanager.data.DnsType.DOQ, v)
+                    ProfileValidation.isValidPrimary(app.perfectdnsmanager.data.DnsType.DOQ, v) ||
+                    ProfileValidation.isValidPrimary(app.perfectdnsmanager.data.DnsType.UNBOUND, v)
                 require(usable(primary) && (secondary.isNullOrBlank() || usable(secondary)))
                 if (!PrivateDnsGuard.tryDisable(this)) {
                     postPrivateDnsLockedNotification()
@@ -293,6 +295,10 @@ class DnsVpnService : VpnService() {
             rewriteRules = DnsRewriteIndex.from(DnsRewriteRepository(this).getAllRules())
             Log.i(T, "Loaded ${rewriteRules.size} DNS rewrite rules.")
 
+            for (endpoint in listOfNotNull(dnsServer, dnsServerSecondary).distinct()) {
+                if (endpoint.startsWith("unbound://")) unboundBackends[endpoint] = UnboundBackend.open(this, endpoint)
+            }
+            if (sessionGeneration != generation.get()) { stopVpn(); return }
             val builder = Builder()
                 .setSession("Perfect DNS Manager")
                 .setMtu(1500)
@@ -481,6 +487,11 @@ class DnsVpnService : VpnService() {
             when {
                 // DoH/DoQ : la réponse est traitée dans la tâche même (closure sur `p`),
                 // plus besoin de la map `pending` → pas de collision d'ID possible.
+                real.startsWith("unbound://") -> {
+                    val backend = unboundBackends[real]
+                    val q = query
+                    submitQuery { writeUpstreamResult(p, backend?.query(q)) }
+                }
                 isDoH(real) -> {
                     val q = query
                     submitQuery { val resp = doH(q, real); writeUpstreamResult(p, resp) }
@@ -758,6 +769,7 @@ class DnsVpnService : VpnService() {
         tunReaderThread?.interrupt()
         try { tunReaderThread?.join(1000) } catch (_: InterruptedException) { Thread.currentThread().interrupt() }
         tunReaderThread = null
+        unboundBackends.values.forEach { it.close() }; unboundBackends.clear()
         localDnsMap.clear(); rewriteRules = DnsRewriteIndex.empty(); prefilter = app.perfectdnsmanager.data.DnsPrefilter()
         getSharedPreferences("prefs", MODE_PRIVATE).edit().putBoolean("vpn_active", false).putString("vpn_label", "").apply()
         // Keep foreground status during a profile change. Android removes it when the service stops.

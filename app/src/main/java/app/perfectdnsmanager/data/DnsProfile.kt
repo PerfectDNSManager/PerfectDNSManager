@@ -45,6 +45,7 @@ data class DnsProfile(
         // est implicite par la liste UI.
         val suffix = when (type) {
             DnsType.DOH -> "DoH"
+            DnsType.UNBOUND -> "Unbound · DoT"
             DnsType.DOT -> "DoT"
             DnsType.DOQ -> "DoQ"
             else -> null
@@ -436,6 +437,12 @@ data class DnsProfile(
             ).sortedBy { ProfileCatalog.providerOrder.indexOf(it.providerName).let { rank -> if (rank < 0) Int.MAX_VALUE else rank } }
         }
 
-        fun getDefaultPresets(): List<DnsProfile> = cachedDefaultPresets
+        private val presetsWithUnbound by lazy {
+            cachedDefaultPresets + cachedDefaultPresets.filter { it.type == DnsType.DOT }.map {
+                it.copy(id = it.id + 100000L, type = DnsType.UNBOUND,
+                    primary = "unbound://${it.primary}", secondary = it.secondary?.let { host -> "unbound://$host" })
+            }
+        }
+        fun getDefaultPresets(): List<DnsProfile> = presetsWithUnbound
     }
 }

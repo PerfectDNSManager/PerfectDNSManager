@@ -7,6 +7,7 @@ import app.perfectdnsmanager.data.DnsType
 internal object DnsProtocolVisibility {
     fun allowedTypes(prefs: SharedPreferences): Set<DnsType> = buildSet {
         add(DnsType.DOH)
+        if (prefs.getBoolean("show_unbound_dns", false)) add(DnsType.UNBOUND)
         if (prefs.getBoolean("adb_dot_enabled", false)) add(DnsType.DOT)
         if (prefs.getBoolean("show_doq_dns", false)) add(DnsType.DOQ)
         if (prefs.getBoolean("show_standard_dns", false) || prefs.getBoolean("operator_dns_enabled", false)) add(DnsType.DEFAULT)

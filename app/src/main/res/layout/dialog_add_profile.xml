@@ -96,6 +96,15 @@
                 android:background="@drawable/focusable_item_background"
                 android:padding="8dp"
                 android:focusable="true" />
+            <RadioButton
+                android:id="@+id/rbUnbound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/unbound_label"
+                android:textColor="@color/pdm_text_primary"
+                android:background="@drawable/focusable_item_background"
+                android:focusable="true" />
         </RadioGroup>
 
         <!-- DNS Primaire -->

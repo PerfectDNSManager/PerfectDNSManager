@@ -90,7 +90,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         }
 
         // Group profiles by type, ordered: DoH > DoQ > DoT > Standard
-        val typeOrder = listOf(DnsType.DOH, DnsType.DOQ, DnsType.DOT, DnsType.DEFAULT)
+        val typeOrder = listOf(DnsType.DOH, DnsType.DOQ, DnsType.DOT, DnsType.UNBOUND, DnsType.DEFAULT)
         val grouped = typeOrder.mapNotNull { type ->
             val typeProfiles = profiles.filter { it.type == type }
             if (typeProfiles.isNotEmpty()) type to typeProfiles else null
@@ -245,19 +245,21 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         }
         layout.addView(tvProto)
 
-        val protocols = arrayOf("DoH (recommand\u00e9)", "DoQ", "DoT", "Standard (DNS classique)")
-        val protoCodes = arrayOf(DnsType.DOH, DnsType.DOQ, DnsType.DOT, DnsType.DEFAULT)
+        val protocols = arrayOf("DoH (recommand\u00e9)", "DoQ", "DoT", "Standard (DNS classique)", "Unbound · DoT")
+        val protoCodes = arrayOf(DnsType.DOH, DnsType.DOQ, DnsType.DOT, DnsType.DEFAULT, DnsType.UNBOUND)
         val protoColors = arrayOf(
             DnsColors.colorForType(DnsType.DOH),
             DnsColors.colorForType(DnsType.DOQ),
             DnsColors.colorForType(DnsType.DOT),
-            DnsColors.colorForType(DnsType.DEFAULT)
+            DnsColors.colorForType(DnsType.DEFAULT),
+            DnsColors.colorForType(DnsType.UNBOUND)
         )
         var selectedProto = 0
         val rgProto = RadioGroup(this).apply { orientation = RadioGroup.VERTICAL }
         for (i in protocols.indices) {
             val rb = RadioButton(this).apply {
                 text = protocols[i]
+                if (protoCodes[i] == DnsType.UNBOUND && !getSharedPreferences("prefs", MODE_PRIVATE).getBoolean("show_unbound_dns", false)) visibility = View.GONE
                 setTextColor(pdmTextPrimary())
                 buttonTintList = ColorStateList.valueOf(protoColors[i])
                 id = View.generateViewId()
@@ -335,12 +337,14 @@ class DnsProviderDetailActivity : AppCompatActivity() {
                 val typeLabel = when (type) {
                     DnsType.DOQ -> "DoQ"
                     DnsType.DOH -> "DoH"
+                    DnsType.UNBOUND -> "Unbound · DoT"
                     DnsType.DOT -> "DoT"
                     DnsType.DEFAULT -> "Standard"
                 }
                 val primary = when (type) {
                     DnsType.DOQ -> "quic://$profileId.dns.nextdns.io"
                     DnsType.DOH -> "https://dns.nextdns.io/$profileId"
+                    DnsType.UNBOUND -> "unbound://$profileId.dns.nextdns.io"
                     DnsType.DOT -> "$profileId.dns.nextdns.io"
                     DnsType.DEFAULT -> "45.90.28.0"
                 }
@@ -392,12 +396,13 @@ class DnsProviderDetailActivity : AppCompatActivity() {
         val types = mutableListOf(DnsType.DOH)
         if (prefs.getBoolean("show_doq_dns", false)) types.add(DnsType.DOQ)
         if (prefs.getBoolean("adb_dot_enabled", false)) types.add(DnsType.DOT)
+        if (prefs.getBoolean("show_unbound_dns", false)) types.add(DnsType.UNBOUND)
         layout.addView(TextView(this).apply { setText(R.string.protocol_label); setTextColor(pdmTextSecondary()) })
         val group = RadioGroup(this)
         val ids = types.map { type ->
             val button = RadioButton(this).apply {
                 id = View.generateViewId(); text = when (type) {
-                    DnsType.DOH -> "DoH"; DnsType.DOQ -> "DoQ"; else -> "DoT"
+                    DnsType.DOH -> "DoH"; DnsType.DOQ -> "DoQ"; DnsType.UNBOUND -> "Unbound · DoT"; else -> "DoT"
                 }
                 setTextColor(pdmTextPrimary()); isFocusable = true
             }

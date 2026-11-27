@@ -597,4 +597,8 @@
     <string name="prefilter_hint">প্রতি লাইনে একটি ডোমেন, URL বা * ছাড়া। সাবডোমেনও অন্তর্ভুক্ত। প্রতি তালিকায় সর্বোচ্চ ১,০০০ লাইন ও ৩২,৭৬৮ অক্ষর।</string>
     <string name="prefilter_invalid">তালিকাটি সঠিক নয়। প্রতি লাইনে একটি ডোমেন লিখুন এবং সীমা মেনে চলুন।</string>
     <string name="prefilter_save_error">নিয়ম সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।</string>
+    <string name="unbound_profiles">Unbound প্রোফাইল দেখান (VPN দিয়ে DoT)</string>
+    <string name="unbound_help">এরপর পছন্দের প্রদানকারীর অধীনে Unbound · DoT বেছে নিন। স্থানীয় ইঞ্জিন শুধু এই প্রোফাইলের জন্য চলে: DNS ক্যাশ, DNSSEC যাচাই ও এনক্রিপ্ট করা DoT। ADB ছাড়াই PDM-এর VPN ব্যবহার করে। এনক্রিপশনহীন DNS-এ ফিরে যায় না।</string>
+    <string name="unbound_label">Unbound · DoT</string>
+    <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
 </resources>
