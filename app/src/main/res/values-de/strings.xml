@@ -597,9 +597,11 @@
     <string name="prefilter_hint">Eine Domain pro Zeile, ohne URL oder *. Gilt auch für Subdomains. Höchstens 1.000 Zeilen und 32.768 Zeichen pro Liste.</string>
     <string name="prefilter_invalid">Ungültige Liste. Eine Domain pro Zeile eingeben und die Grenzen beachten.</string>
     <string name="prefilter_save_error">Regeln konnten nicht gespeichert werden. Bitte erneut versuchen.</string>
-    <string name="unbound_profiles">Unbound-Profile anzeigen (DoT über VPN)</string>
-    <string name="unbound_help">Wähle anschließend Unbound · DoT beim gewünschten Anbieter. Die lokale Engine startet nur für dieses Profil: DNS-Cache, DNSSEC-Prüfung und verschlüsseltes DoT. Nutzt das PDM-VPN ohne ADB. Kein Rückfall auf unverschlüsseltes DNS.</string>
+    <string name="unbound_profiles">Unbound-Profile anzeigen</string>
+    <string name="unbound_help">Wählen Sie eigenständiges Unbound unter Unbound oder Unbound mit DoT bei einem Anbieter. Die Engine startet nur für das aktivierte Profil. Beide Modi verwenden das PDM-VPN, einen Cache und DNSSEC. Der eigenständige Modus nutzt unverschlüsseltes DNS; der DoT-Modus bleibt zum Anbieter verschlüsselt, ohne unverschlüsselten Rückfall.</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
     <string name="dns4eu_legal_note">Rechtliche Sperren können auch für das ungefilterte Profil gelten.</string>
+    <string name="unbound_recursive_name">Eigenständig</string>
+    <string name="unbound_recursive_description">Löst Namen direkt über Root- und autoritative Server auf, ohne zwischengeschalteten DNS-Anbieter. Verwendet unverschlüsseltes UDP/TCP auf Port 53, lokalen Cache und DNSSEC-Prüfung. Das Netzwerk muss Port 53 zulassen. Nutzt das PDM-VPN und den optionalen Vorfilter.</string>
 </resources>

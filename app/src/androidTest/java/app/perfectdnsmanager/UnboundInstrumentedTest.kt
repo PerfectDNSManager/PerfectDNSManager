@@ -35,11 +35,55 @@ class UnboundInstrumentedTest {
         }
     }
 
+    @Test fun standaloneRecursionValidatesDnssecAndDoesNotNeedProviderBootstrap() {
+        // Blocking IPv6 transport must not strip AAAA records from answers.
+        val prefs = context.getSharedPreferences("prefs", 0)
+        val previous = prefs.getBoolean("disable_ipv6", false)
+        prefs.edit().putBoolean("disable_ipv6", true).commit()
+        try {
+            UnboundBackend.open(context, "unbound://recursive").use { backend ->
+                for (type in listOf(Type.A, Type.AAAA)) {
+                    val request = query("cloudflare.com.", type)
+                    val answer = Message(requireNotNull(backend.query(request)))
+                    assertEquals(Rcode.NOERROR, answer.rcode)
+                    assertTrue(answer.getSection(Section.ANSWER).any { it.type == type })
+                    assertTrue(answer.header.getFlag(Flags.AD.toInt()))
+                }
+                val bogus = backend.query(query("dnssec-failed.org.", Type.A))
+                assertTrue(bogus == null || Message(bogus).rcode == Rcode.SERVFAIL)
+            }
+        } finally { prefs.edit().putBoolean("disable_ipv6", previous).commit() }
+    }
+
+    @Test fun controlledRootReferralReachesSeparateAuthoritativeServer() {
+        org.junit.Assume.assumeTrue(InstrumentationRegistry.getArguments().getString("recursiveFixture") == "true")
+        // Unsigned, isolated hierarchy: DNSSEC is tested separately with the production anchors.
+        // Production UnboundBackend always uses the bundled IANA anchors, never this file.
+        val anchors = File(context.cacheDir, "unsigned-recursion-fixture.key").apply { writeText("") }
+        val handle = UnboundNative.create(emptyArray(), "", anchors.absolutePath, true, false)
+        assertTrue(handle != 0L)
+        try {
+            for (type in listOf(Type.A, Type.AAAA)) {
+                val response = Message(requireNotNull(UnboundNative.resolve(handle, "www.pdmproof.", type)))
+                assertEquals(Rcode.NOERROR, response.rcode)
+                assertFalse(response.header.getFlag(Flags.AD.toInt()))
+                val address = response.getSection(Section.ANSWER).first { it.type == type }
+                if (type == Type.A) assertEquals("203.0.113.80", (address as ARecord).address.hostAddress)
+                else assertEquals(java.net.InetAddress.getByName("2001:db8::80"), (address as AAAARecord).address)
+            }
+        } finally { UnboundNative.destroy(handle); anchors.delete() }
+    }
+
+    @Test fun nativeModesNeverFallBackToRecursionImplicitly() {
+        assertEquals(0L, UnboundNative.create(emptyArray(), "", "", false, true))
+        assertEquals(0L, UnboundNative.create(arrayOf("1.1.1.1@853#one.one.one.one"), "", "", true, true))
+    }
+
     @Test fun wrongTlsNameFailsClosedAndClosingPendingQueriesIsSafe() {
         fun asset(name: String): String = File(context.cacheDir, "test-$name").apply {
             context.assets.open("unbound/$name").use { input -> outputStream().use { input.copyTo(it) } }
         }.absolutePath
-        val handle = UnboundNative.create(arrayOf("1.1.1.1@853#wrong.invalid"), asset("cacert.pem"), asset("root.key"))
+        val handle = UnboundNative.create(arrayOf("1.1.1.1@853#wrong.invalid"), asset("cacert.pem"), asset("root.key"), false, true)
         assertTrue(handle != 0L)
         try {
             val wire = UnboundNative.resolve(handle, "cloudflare.com.", Type.A)

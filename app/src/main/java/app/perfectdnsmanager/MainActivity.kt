@@ -112,7 +112,7 @@ open class MainActivity : AppCompatActivity() {
     }
 
     private fun typeLabelFor(type: DnsType) = when (type) {
-        DnsType.UNBOUND -> "Unbound · DoT"
+        DnsType.UNBOUND -> "Unbound"
         DnsType.DOH -> "DoH"; DnsType.DOT -> "DoT"; DnsType.DOQ -> "DoQ"; DnsType.DEFAULT -> "Standard"
     }
 
@@ -490,7 +490,7 @@ open class MainActivity : AppCompatActivity() {
         sb.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), s1, sb.length, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         if (dnsActive) {
             selectedProfile?.let {
-                sb.append("\n").append(getString(R.string.report_profile_fmt, it.providerName, it.name))
+                sb.append("\n").append(getString(R.string.report_profile_fmt, it.providerName, it.displayName(this)))
             }
         }
         sb.append("\n\n")
@@ -998,7 +998,7 @@ open class MainActivity : AppCompatActivity() {
         val reportBuilder = app.perfectdnsmanager.util.SecureReportBuilder(this,
             app.perfectdnsmanager.util.SecureReportBuilder.Snapshot(
                 lastCarrierName, lastIpv4, ipv6Status(lastIpv6), statusFirstLineSnapshot,
-                selectedProfile?.let { "${it.providerName} - ${it.name}" } ?: getString(R.string.report_label_none),
+                selectedProfile?.let { "${it.providerName} - ${it.displayName(this)}" } ?: getString(R.string.report_label_none),
                 kernelVersion(), lastBlockingResult, lastLeakResult, lastLeakIspResult, lastSpeedResult))
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -1150,7 +1150,7 @@ open class MainActivity : AppCompatActivity() {
         if (selectedProfile != null) {
             val typeLabel = typeLabelFor(selectedProfile!!.type)
             val methodLabel = if (selectedProfile!!.type == DnsType.DOT) "ADB" else "VPN"
-            tvSelectDns.text = "${selectedProfile!!.providerName} - ${selectedProfile!!.name} ($typeLabel / $methodLabel)"
+            tvSelectDns.text = "${selectedProfile!!.providerName} - ${selectedProfile!!.displayName(this)} ($typeLabel / $methodLabel)"
             ivSelectedDnsIcon.setImageResource(DnsProfile.getProviderIcon(selectedProfile!!.providerName))
             ivSelectedDnsIcon.visibility = View.VISIBLE
         } else {

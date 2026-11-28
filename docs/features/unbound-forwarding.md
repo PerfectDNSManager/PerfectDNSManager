@@ -1,61 +1,59 @@
-# Unbound local avec fournisseur DoT
+# Unbound local : autonome ou fournisseur DoT
 
-Option expérimentale de la préparation 2.4.12-beta.1, désactivée par défaut.
+Depuis 2.4.14-beta.1, les deux modes sont optionnels et désactivés à la première
+installation. Dans **Paramètres DNS avancés**, activer **Afficher les profils
+Unbound**, puis choisir le profil dans la liste DNS et activer PDM.
 
-Dans les paramètres DNS avancés, activer « Afficher les profils Unbound ».
-Choisir ensuite un profil « Unbound · DoT » chez le fournisseur souhaité et
-activer PDM. Afficher ces profils ne démarre pas le moteur. Il s'arrête lorsque
-PDM est désactivé ou qu'un autre type de profil est activé.
+- **Unbound → Autonome** : résolution récursive directe, sans fournisseur DNS
+  intermédiaire. Le moteur contacte les racines puis les serveurs autoritaires.
+  Les échanges utilisent le DNS classique non chiffré en UDP/TCP 53 ; ce port
+  doit être autorisé par le réseau. Le premier résultat peut prendre plus de temps.
+- **Un fournisseur → profil Unbound** : cache et validation locale, avec
+  transmission au fournisseur en DoT authentifié. La description du profil
+  porte la mention « Unbound · DoT ». Aucun repli en DNS non chiffré.
 
-Chemin des requêtes :
+Les deux modes utilisent le VPN DNS PDM, son éventuel préfiltre local, un cache
+et la validation DNSSEC des zones signées. DNSSEC authentifie les données mais
+ne chiffre pas les échanges. Le mode autonome ne garantit pas qu’un réseau
+n’intercepte pas le port 53 ; la validation protège les zones signées, pas les
+zones non signées. Il ne contourne pas une panne réseau ou un blocage du port 53.
 
-    Application → VPN DNS PDM → préfiltre éventuel → Unbound → fournisseur DoT
+Afficher les profils ne démarre aucun moteur. Unbound démarre uniquement quand
+son profil est activé et s’arrête à la désactivation ou au changement de profil.
+Les profils Unbound sont exclus du benchmark automatique. Les anciennes
+configurations avec fournisseur DoT et les profils personnels restent valides.
+Le choix du mode ne modifie ni le fournisseur enregistré ni les réglages IPv6.
 
-Unbound apporte un cache local partagé et vérifie DNSSEC pour les zones signées.
-Le fournisseur continue à résoudre les noms et à appliquer ses politiques.
-Ce mode n'est donc ni un résolveur autonome « neutre », ni un outil anti-DPI.
-Le préfiltre suivi directement d'un fournisseur DoH/DoQ reste suffisant pour
-bloquer des domaines localement avec un fournisseur au choix.
+## Anciennes box et IPv6
 
-## Anciennes box
+Android 5/API 21 reste pris en charge sur quatre architectures, avec alignement
+16 Ko des bibliothèques natives. Le mode DoT embarque TLS et ses certificats CA,
+ce qui peut aider sur une ancienne box dont le magasin système est périmé.
+Ce bénéfice ne met pas à jour les autres applications ni Android lui-même.
 
-Cette intégration permet du DoT sans configuration ADB, dès Android 5, au moyen
-du VPN PDM. Elle embarque une bibliothèque TLS et un magasin de certificats
-récents, ce qui peut aider lorsque le vieux magasin système ne reconnaît plus
-le certificat du fournisseur. Ce bénéfice appartient à cette intégration et
-à ses dépendances, pas à une propriété magique d'Unbound. Les autres applications
-et Android lui-même ne sont pas mis à jour par cette option.
+IPv6 est autorisé par défaut. Si l’utilisateur active son blocage, Unbound utilise
+IPv4 pour ses échanges amont, dans les deux modes. Il continue à répondre aux
+questions AAAA : le choix du transport ne supprime pas les données DNS IPv6.
 
-Les connexions restent authentifiées : ne pas désactiver la vérification TLS
-pour compenser une horloge incorrecte, un certificat expiré ou un fournisseur
-injoignable. Le hostname du fournisseur est résolu une fois par le DNS du réseau physique
-avant le démarrage du VPN (sans utiliser un ancien VPN en cours de fermeture) ; les requêtes des applications transmises par ce
-moteur utilisent ensuite le DoT, sans repli DNS non chiffré.
+## Implémentation et limites
 
-Si le DoH existant fonctionne déjà bien, le bénéfice peut être limité. Unbound
-consomme de la mémoire et grossit l'APK. Il occupe le VPN Android comme les autres
-modes locaux de PDM ; le DoT natif Android/ADB reste le choix sans VPN.
-Il ne répare pas la connectivité IPv6 d'une box ou d'un FAI.
+- Profil autonome explicite `unbound://recursive`, ID de preset 90000. Aucun
+  hostname à résoudre au démarrage ; seules les ancres DNSSEC sont chargées.
+- Hints racine intégrés à la version épinglée d’Unbound ; aucun chargement de
+  `resolv.conf`, aucun forwarder et aucun bootstrap DNS système en mode autonome.
+- Le JNI refuse un mode DoT sans adresse et un mode autonome avec des forwarders.
+  Les profils mélangeant autonome et fournisseur en DNS secondaire sont rejetés.
+- DoT : CA + SNI + nom authentifié ; le hostname du fournisseur est résolu sur
+  le réseau physique, pas via un ancien VPN en cours de fermeture.
+- Minimisation des noms interrogés, caches bornés, 128 ports/sockets UDP sortants
+  maximum et 8 connexions TCP sortantes ; 64 requêtes natives en attente maximum.
+  Délai natif 20 secondes pour une récursion à froid, 8 secondes pour le relais DoT.
+- Aucun serveur d’écoute DNS ouvert sur le réseau local : la bibliothèque reçoit
+  les requêtes du VPN dans le processus de PDM. La plage DNS synthétique du VPN
+  est exclue des destinations amont pour empêcher une boucle locale.
+- Il occupe le VPN Android. Le DoT natif Android/ADB reste le mode sans VPN.
+  Ce n’est pas un moteur anti-DPI.
 
-## État des vérifications
+Documentation officielle : https://unbound.docs.nlnetlabs.nl/en/latest/manpages/libunbound.html
 
-Voir `../audit/2026-11-27-unbound-beta.md`. Les résultats sur émulateur ne remplacent
-pas un essai sur les box physiques, notamment ARM 32 bits et réseaux changeants.
-Aucune publication stable n'est autorisée par cette préparation.
-
-## Unbound peut-il fonctionner sans fournisseur ?
-
-Oui. Unbound sait être un résolveur récursif autonome : racine DNS → serveurs du
-TLD → serveurs faisant autorité pour le domaine. Dans ce mode, il ne demande pas
-la réponse complète à Cloudflare, ControlD ou un autre résolveur public.
-DNSSEC authentifie les données des zones signées ; il ne chiffre pas ces échanges.
-La récursion directe utilise généralement le DNS classique UDP/TCP 53, car les
-serveurs faisant autorité ne proposent pas tous un transport chiffré utilisable.
-
-PDM expose actuellement uniquement le mode forwarder avec DoT authentifié, pour
-la demande de sortie chiffrée et de choix du fournisseur. Le JNI configure
-`ub_ctx_set_fwd`, `ub_ctx_set_tls(1)` et `do-udp: no`. Un mode récursif autonome
-serait une autre option explicite, avec des exigences réseau et de confidentialité
-différentes ; il n’est pas activé dans cette bêta.
-
-Documentation officielle : https://unbound.docs.nlnetlabs.nl/en/latest/
+Cette version est une bêta. Aucune publication stable ni modification de Worker.

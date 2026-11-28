@@ -605,9 +605,11 @@
     <string name="prefilter_hint">نطاق واحد في كل سطر، دون URL أو *. يشمل النطاقات الفرعية. الحد الأقصى لكل قائمة: 1,000 سطر و32,768 حرفًا.</string>
     <string name="prefilter_invalid">قائمة غير صالحة. أدخل نطاقًا واحدًا في كل سطر والتزم بالحدود.</string>
     <string name="prefilter_save_error">تعذّر حفظ القواعد. حاول مجددًا.</string>
-    <string name="unbound_profiles">عرض ملفات Unbound ‏(DoT عبر VPN)</string>
-    <string name="unbound_help">اختر بعدها Unbound · DoT لدى المزوّد المطلوب. يعمل المحرّك المحلي لهذا الملف فقط: ذاكرة DNS مؤقتة، وتحقق DNSSEC، واتصال DoT مشفّر. يستخدم VPN الخاص بـ PDM دون ADB. لا يعود إلى DNS غير مشفّر.</string>
+    <string name="unbound_profiles">إظهار ملفات Unbound</string>
+    <string name="unbound_help">اختر Unbound المستقل ضمن Unbound، أو Unbound مع DoT لدى أحد المزودين. يعمل المحرك فقط عند تفعيل ملفه. يستخدم الوضعان VPN الخاص بـ PDM والتخزين المؤقت وDNSSEC. يستخدم الوضع المستقل DNS غير مشفر؛ ويحافظ وضع DoT على اتصال مشفر بالمزود دون الرجوع إلى اتصال غير مشفر.</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
     <string name="dns4eu_legal_note">قد تُطبَّق قيود حجب قانونية حتى على الملف غير المصفّى.</string>
+    <string name="unbound_recursive_name">مستقل</string>
+    <string name="unbound_recursive_description">يحل الأسماء مباشرة عبر خوادم الجذر والخوادم الموثوقة دون مزود DNS وسيط. يستخدم UDP/TCP غير مشفر على المنفذ 53 مع تخزين مؤقت محلي والتحقق عبر DNSSEC. يجب أن تسمح الشبكة بالمنفذ 53. يستخدم VPN الخاص بـ PDM والتصفية المسبقة الاختيارية.</string>
 </resources>

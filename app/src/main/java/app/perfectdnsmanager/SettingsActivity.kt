@@ -1397,14 +1397,14 @@ class SettingsActivity : AppCompatActivity() {
         }.getOrNull()?.takeIf { app.perfectdnsmanager.util.ProfileValidation.isUsable(it) }
         info.text = if (profile == null) getString(R.string.auto_reconnect_no_dns) else {
             val typeLabel = when (profile.type) {
-                app.perfectdnsmanager.data.DnsType.UNBOUND -> "Unbound · DoT"
+                app.perfectdnsmanager.data.DnsType.UNBOUND -> "Unbound"
                 app.perfectdnsmanager.data.DnsType.DOH -> "DoH"
                 app.perfectdnsmanager.data.DnsType.DOT -> "DoT"
                 app.perfectdnsmanager.data.DnsType.DOQ -> "DoQ"
                 app.perfectdnsmanager.data.DnsType.DEFAULT -> "Standard"
             }
             val methodLabel = if (profile.type == app.perfectdnsmanager.data.DnsType.DOT) "ADB" else "VPN"
-            getString(R.string.auto_reconnect_dns_info, "${profile.providerName} - ${profile.name} ($typeLabel / $methodLabel)")
+            getString(R.string.auto_reconnect_dns_info, "${profile.providerName} - ${profile.displayName(this)} ($typeLabel / $methodLabel)")
         }
         info.visibility = View.VISIBLE
     }

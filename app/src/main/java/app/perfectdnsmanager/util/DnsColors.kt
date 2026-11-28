@@ -47,7 +47,7 @@ object DnsColors {
     fun labelForType(type: DnsType): String = when (type) {
         DnsType.DOH -> "DoH"
         DnsType.DOQ -> "DoQ"
-        DnsType.UNBOUND -> "Unbound · DoT"
+        DnsType.UNBOUND -> "Unbound"
         DnsType.DOT -> "DoT"
         DnsType.DEFAULT -> "Standard"
     }

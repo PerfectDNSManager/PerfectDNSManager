@@ -612,9 +612,11 @@
     <string name="prefilter_hint">One domain per line, without a URL or *. Includes subdomains. Maximum: 1,000 lines and 32,768 characters per list.</string>
     <string name="prefilter_invalid">Invalid list. Enter one domain per line and stay within the limits.</string>
     <string name="prefilter_save_error">Could not save rules. Please try again.</string>
-    <string name="unbound_profiles">Show Unbound profiles (DoT over VPN)</string>
-    <string name="unbound_help">Then choose Unbound · DoT under your preferred provider. The local engine starts only for that profile: DNS cache, DNSSEC validation and encrypted DoT. Uses the PDM VPN, without ADB. No fallback to unencrypted DNS.</string>
+    <string name="unbound_profiles">Show Unbound profiles</string>
+    <string name="unbound_help">Choose standalone Unbound under Unbound, or Unbound with DoT under a provider. The engine starts only for the activated profile. Both modes use the PDM VPN, caching and DNSSEC. Standalone mode uses unencrypted DNS; DoT mode keeps an encrypted connection to the provider, with no plaintext fallback.</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
     <string name="dns4eu_legal_note">Legal blocks may apply, including to the unfiltered profile.</string>
+    <string name="unbound_recursive_name">Standalone</string>
+    <string name="unbound_recursive_description">Resolves directly through root and authoritative servers, without an intermediate DNS provider. Uses unencrypted UDP/TCP port 53, local caching and DNSSEC validation. The network must allow port 53. Uses the PDM VPN and optional prefilter.</string>
 </resources>

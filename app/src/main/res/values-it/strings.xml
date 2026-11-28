@@ -601,9 +601,11 @@
     <string name="prefilter_hint">Un dominio per riga, senza URL o *. Include i sottodomini. Massimo: 1.000 righe e 32.768 caratteri per elenco.</string>
     <string name="prefilter_invalid">Elenco non valido. Inserisci un dominio per riga e rispetta i limiti.</string>
     <string name="prefilter_save_error">Impossibile salvare le regole. Riprova.</string>
-    <string name="unbound_profiles">Mostra profili Unbound (DoT tramite VPN)</string>
-    <string name="unbound_help">Poi scegli Unbound · DoT nel provider desiderato. Il motore locale si avvia solo per quel profilo: cache DNS, verifica DNSSEC e DoT cifrato. Usa la VPN di PDM, senza ADB. Nessun ripiego su DNS non cifrato.</string>
+    <string name="unbound_profiles">Mostra profili Unbound</string>
+    <string name="unbound_help">Scegli Unbound autonomo nella voce Unbound oppure Unbound con DoT presso un fornitore. Il motore si avvia solo per il profilo attivato. Entrambe le modalità usano la VPN PDM, la cache e DNSSEC. La modalità autonoma usa DNS non cifrato; la modalità DoT mantiene la connessione cifrata al fornitore, senza ripiego in chiaro.</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
     <string name="dns4eu_legal_note">Possono essere applicati blocchi legali anche al profilo senza filtri.</string>
+    <string name="unbound_recursive_name">Autonomo</string>
+    <string name="unbound_recursive_description">Risolve direttamente tramite server radice e autoritativi, senza un fornitore DNS intermedio. Usa UDP/TCP 53 non cifrato, cache locale e validazione DNSSEC. La rete deve consentire la porta 53. Utilizza la VPN PDM e il prefiltro opzionale.</string>
 </resources>

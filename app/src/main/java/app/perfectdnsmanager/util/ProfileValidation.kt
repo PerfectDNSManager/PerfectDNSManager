@@ -50,7 +50,8 @@ object ProfileValidation {
         } catch (_: Exception) { false }
         DnsType.UNBOUND -> try {
             val uri = URI(raw)
-            validUrl(raw, "unbound") && isHostname(uri.host) && uri.rawPath in listOf("", "/") && uri.rawQuery == null
+            app.perfectdnsmanager.data.UnboundMode.isRecursive(raw) ||
+                (validUrl(raw, "unbound") && isHostname(uri.host) && uri.rawPath in listOf("", "/") && uri.rawQuery == null)
         } catch (_: Exception) { false }
         DnsType.DOT -> isHostname(raw)
         DnsType.DEFAULT -> isIpv4(raw)
@@ -59,6 +60,11 @@ object ProfileValidation {
         if (profile == null) return false
         @Suppress("SENSELESS_COMPARISON")
         if (profile.type == null || profile.primary == null || profile.providerName == null || profile.name == null) return false
+        if (profile.type == DnsType.UNBOUND) {
+            // A DoT profile must never acquire a plaintext fallback through secondary DNS.
+            if (app.perfectdnsmanager.data.UnboundMode.isRecursive(profile.primary) && !profile.secondary.isNullOrBlank()) return false
+            if (profile.secondary?.let(app.perfectdnsmanager.data.UnboundMode::isRecursive) == true) return false
+        }
         return profile.name.isNotBlank() && profile.name.length <= 128 &&
             profile.providerName.isNotBlank() && profile.providerName.length <= 128 &&
             listOfNotNull(profile.primaryV6, profile.secondaryV6).all { it.isBlank() || isIpv6(it) } &&

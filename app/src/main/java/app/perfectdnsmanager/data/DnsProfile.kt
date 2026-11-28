@@ -27,6 +27,10 @@ data class DnsProfile(
     val isOperatorDns: Boolean = false,
     val isAdblock: Boolean = false
 ) {
+    fun displayName(context: Context): String =
+        if (!isCustom && id == UnboundMode.RECURSIVE_PRESET_ID && UnboundMode.isRecursive(primary))
+            context.getString(R.string.unbound_recursive_name) else name
+
     /**
      * Description localisée. Si [descResId] est défini, on récupère la string
      * et on lui ajoute le suffixe (DoH/DoQ/DoT) selon [type] — ça évite 50+
@@ -45,7 +49,7 @@ data class DnsProfile(
         // est implicite par la liste UI.
         val suffix = when (type) {
             DnsType.DOH -> "DoH"
-            DnsType.UNBOUND -> "Unbound · DoT"
+            DnsType.UNBOUND -> if (UnboundMode.isRecursive(primary)) "Unbound" else "Unbound · DoT"
             DnsType.DOT -> "DoT"
             DnsType.DOQ -> "DoQ"
             else -> null
@@ -443,6 +447,11 @@ data class DnsProfile(
                     primary = "unbound://${it.primary}", secondary = it.secondary?.let { host -> "unbound://$host" })
             }
         }
-        fun getDefaultPresets(): List<DnsProfile> = presetsWithUnbound
+        private val allPresets by lazy {
+            presetsWithUnbound + DnsProfile(id = UnboundMode.RECURSIVE_PRESET_ID,
+                providerName = "Unbound", name = "Recursive", type = DnsType.UNBOUND,
+                primary = UnboundMode.RECURSIVE_ENDPOINT, descResId = R.string.unbound_recursive_description)
+        }
+        fun getDefaultPresets(): List<DnsProfile> = allPresets
     }
 }

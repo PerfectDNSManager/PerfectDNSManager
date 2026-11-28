@@ -601,9 +601,11 @@
     <string name="prefilter_hint">Один домен на строку, без URL и *. Включает поддомены. Не более 1 000 строк и 32 768 символов на список.</string>
     <string name="prefilter_invalid">Недопустимый список. Укажите по одному домену на строку и соблюдайте ограничения.</string>
     <string name="prefilter_save_error">Не удалось сохранить правила. Повторите попытку.</string>
-    <string name="unbound_profiles">Показывать профили Unbound (DoT через VPN)</string>
-    <string name="unbound_help">Затем выберите Unbound · DoT у нужного провайдера. Локальный модуль запускается только для этого профиля: кеш DNS, проверка DNSSEC и шифрованный DoT. Использует VPN PDM без ADB. Перехода на незашифрованный DNS нет.</string>
+    <string name="unbound_profiles">Показывать профили Unbound</string>
+    <string name="unbound_help">Выберите автономный Unbound в разделе Unbound или Unbound с DoT у провайдера. Движок запускается только для активированного профиля. Оба режима используют VPN PDM, кэш и DNSSEC. Автономный режим использует незашифрованный DNS; режим DoT сохраняет шифрование до провайдера без перехода на открытый DNS.</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
     <string name="dns4eu_legal_note">Блокировки по требованиям закона могут применяться даже к профилю без фильтрации.</string>
+    <string name="unbound_recursive_name">Автономный</string>
+    <string name="unbound_recursive_description">Разрешает имена напрямую через корневые и авторитетные серверы без промежуточного DNS-провайдера. Использует незашифрованный UDP/TCP 53, локальный кэш и проверку DNSSEC. Сеть должна разрешать порт 53. Работает через VPN PDM с необязательным предварительным фильтром.</string>
 </resources>

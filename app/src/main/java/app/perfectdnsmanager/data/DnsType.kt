@@ -5,5 +5,5 @@ enum class DnsType {
     DOH, // DNS over HTTPS
     DOT, // Android Private DNS over TLS
     DOQ, // DNS over QUIC
-    UNBOUND // On-demand local cache/validator with authenticated DoT forwarding
+    UNBOUND // On-demand local resolver: explicit recursion or authenticated DoT forwarding
 }

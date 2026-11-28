@@ -597,9 +597,11 @@
     <string name="prefilter_hint">প্রতি লাইনে একটি ডোমেন, URL বা * ছাড়া। সাবডোমেনও অন্তর্ভুক্ত। প্রতি তালিকায় সর্বোচ্চ ১,০০০ লাইন ও ৩২,৭৬৮ অক্ষর।</string>
     <string name="prefilter_invalid">তালিকাটি সঠিক নয়। প্রতি লাইনে একটি ডোমেন লিখুন এবং সীমা মেনে চলুন।</string>
     <string name="prefilter_save_error">নিয়ম সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।</string>
-    <string name="unbound_profiles">Unbound প্রোফাইল দেখান (VPN দিয়ে DoT)</string>
-    <string name="unbound_help">এরপর পছন্দের প্রদানকারীর অধীনে Unbound · DoT বেছে নিন। স্থানীয় ইঞ্জিন শুধু এই প্রোফাইলের জন্য চলে: DNS ক্যাশ, DNSSEC যাচাই ও এনক্রিপ্ট করা DoT। ADB ছাড়াই PDM-এর VPN ব্যবহার করে। এনক্রিপশনহীন DNS-এ ফিরে যায় না।</string>
+    <string name="unbound_profiles">Unbound প্রোফাইল দেখান</string>
+    <string name="unbound_help">Unbound বিভাগে স্বতন্ত্র Unbound অথবা কোনো প্রদানকারীর অধীনে DoT সহ Unbound বেছে নিন। ইঞ্জিন কেবল সক্রিয় প্রোফাইলের জন্য চালু হয়। উভয় মোড PDM VPN, ক্যাশ ও DNSSEC ব্যবহার করে। স্বতন্ত্র মোডে DNS এনক্রিপ্ট করা হয় না; DoT মোড প্রদানকারী পর্যন্ত এনক্রিপ্ট করা সংযোগ রাখে এবং এনক্রিপশনবিহীন DNS-এ ফিরে যায় না।</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
     <string name="dns4eu_legal_note">ফিল্টারবিহীন প্রোফাইলেও আইনি কারণে ব্লক প্রযোজ্য হতে পারে।</string>
+    <string name="unbound_recursive_name">স্বতন্ত্র</string>
+    <string name="unbound_recursive_description">মধ্যবর্তী DNS প্রদানকারী ছাড়াই রুট ও প্রামাণিক সার্ভারের মাধ্যমে সরাসরি নাম সমাধান করে। এনক্রিপশনবিহীন UDP/TCP পোর্ট 53, স্থানীয় ক্যাশ ও DNSSEC যাচাই ব্যবহার করে। নেটওয়ার্কে পোর্ট 53 অনুমোদিত হতে হবে। PDM VPN ও ঐচ্ছিক প্রিফিল্টার ব্যবহার করে।</string>
 </resources>

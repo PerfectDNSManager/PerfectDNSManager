@@ -39,6 +39,7 @@ void answer(void* arg, int error, ub_result* result) {
 }
 struct Engine {
     ub_ctx* ctx = ub_ctx_create();
+    int timeoutSeconds = 8;
     std::mutex mutex;
     std::atomic<bool> closed{false};
     std::thread worker;
@@ -85,21 +86,35 @@ std::string text(JNIEnv* env, jstring input) {
 }
 }
 extern "C" JNIEXPORT jlong JNICALL
-Java_app_perfectdnsmanager_service_UnboundNative_create(JNIEnv* env, jobject, jobjectArray addresses, jstring ca, jstring anchors) {
+Java_app_perfectdnsmanager_service_UnboundNative_create(JNIEnv* env, jobject, jobjectArray addresses, jstring ca, jstring anchors, jboolean recursive, jboolean allowIpv6) {
     try {
-        if (!addresses || env->GetArrayLength(addresses) < 1 || env->GetArrayLength(addresses) > 8) return 0;
+        if (!addresses) return 0;
+        const auto count = env->GetArrayLength(addresses);
+        // An empty forward list must NEVER silently enable plaintext recursion.
+        if ((recursive && count != 0) || (!recursive && (count < 1 || count > 8))) return 0;
         auto engine = std::make_shared<Engine>();
         if (!engine->ctx) return 0;
         if (!engine->option("verbosity:", "0") || !engine->option("use-syslog:", "no") ||
             !engine->option("log-queries:", "no") || !engine->option("log-replies:", "no") ||
             !engine->option("log-servfail:", "no") || !engine->option("msg-cache-size:", "2m") ||
             !engine->option("rrset-cache-size:", "4m") || !engine->option("key-cache-size:", "1m") ||
-            !engine->option("outgoing-num-tcp:", "8") || !engine->option("do-udp:", "no") ||
-            !engine->option("tls-use-sni:", "yes") ||
-            !engine->option("tls-cert-bundle:", text(env, ca).c_str()) ||
+            !engine->option("outgoing-num-tcp:", "8") ||
+            !engine->option("outgoing-range:", "128") ||
+            !engine->option("do-not-query-address:", "192.0.2.0/24") ||
+            !engine->option("infra-cache-numhosts:", "512") ||
+            !engine->option("do-ip6:", allowIpv6 ? "yes" : "no") ||
+            !engine->option("do-udp:", recursive ? "yes" : "no") ||
+            !engine->option("do-tcp:", "yes") ||
+            !engine->option("qname-minimisation:", "yes") ||
             ub_ctx_add_ta_file(engine->ctx, text(env, anchors).c_str()) != 0 ||
             ub_ctx_async(engine->ctx, 1) != 0) return 0;
-        for (jsize i = 0; i < env->GetArrayLength(addresses); ++i) {
+        if (recursive) {
+            // Built-in root hints, no system resolv.conf, no forwarder or TLS relay.
+            if (ub_ctx_set_fwd(engine->ctx, nullptr) != 0 || ub_ctx_set_tls(engine->ctx, 0) != 0) return 0;
+            engine->timeoutSeconds = 20;
+        } else if (text(env, ca).empty() || !engine->option("tls-use-sni:", "yes") ||
+                   !engine->option("tls-cert-bundle:", text(env, ca).c_str())) return 0;
+        for (jsize i = 0; i < count; ++i) {
             auto value = static_cast<jstring>(env->GetObjectArrayElement(addresses, i));
             std::string address = text(env, value); env->DeleteLocalRef(value);
             // Every address must carry a TLS authentication name, never anonymous TLS.
@@ -107,7 +122,7 @@ Java_app_perfectdnsmanager_service_UnboundNative_create(JNIEnv* env, jobject, jo
                 address.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-:@#") != std::string::npos ||
                 ub_ctx_set_fwd(engine->ctx, address.c_str()) != 0) return 0;
         }
-        if (ub_ctx_set_tls(engine->ctx, 1) != 0) return 0;
+        if (!recursive && ub_ctx_set_tls(engine->ctx, 1) != 0) return 0;
         engine->start();
         std::lock_guard<std::mutex> lock(registryMutex);
         jlong id = nextId++; registry.emplace(id, engine); return id;
@@ -131,7 +146,7 @@ Java_app_perfectdnsmanager_service_UnboundNative_resolve(JNIEnv* env, jobject, j
         }
         {
             std::unique_lock<std::mutex> lock(request->mutex);
-            request->ready.wait_for(lock, std::chrono::seconds(8), [&] { return request->done; });
+            request->ready.wait_for(lock, std::chrono::seconds(engine->timeoutSeconds), [&] { return request->done; });
         }
         std::vector<unsigned char> packet;
         {

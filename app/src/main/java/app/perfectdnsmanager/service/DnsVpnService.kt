@@ -264,6 +264,8 @@ class DnsVpnService : VpnService() {
                     ProfileValidation.isValidPrimary(app.perfectdnsmanager.data.DnsType.DOQ, v) ||
                     ProfileValidation.isValidPrimary(app.perfectdnsmanager.data.DnsType.UNBOUND, v)
                 require(usable(primary) && (secondary.isNullOrBlank() || usable(secondary)))
+                require(!app.perfectdnsmanager.data.UnboundMode.isRecursive(secondary.orEmpty()))
+                require(!app.perfectdnsmanager.data.UnboundMode.isRecursive(primary) || secondary.isNullOrBlank())
                 if (!PrivateDnsGuard.tryDisable(this)) {
                     postPrivateDnsLockedNotification()
                     stopSelfResult(startId); return@execute
@@ -416,7 +418,8 @@ class DnsVpnService : VpnService() {
             tunReaderThread!!.start()
             // Mettre à jour la notification avec le vrai DNS (startForeground déjà appelé dans onStartCommand)
             val nm = getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
-            startForeground(NOTIF_ID, mkNotif("DNS: ${redactDnsUrl(dnsServer)}"))
+            startForeground(NOTIF_ID, mkNotif("DNS: " + if (app.perfectdnsmanager.data.UnboundMode.isRecursive(dnsServer))
+                "Unbound · ${getString(R.string.unbound_recursive_name)}" else redactDnsUrl(dnsServer)))
             getSharedPreferences("prefs", MODE_PRIVATE).edit().putBoolean("vpn_active", true).apply()
         } catch (e: Exception) {
             Log.e(T, "Start err: ${e.javaClass.simpleName}"); stopVpn(); stopSelfResult(startId)

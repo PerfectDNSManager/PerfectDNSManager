@@ -597,9 +597,11 @@
     <string name="prefilter_hint">प्रति पंक्ति एक डोमेन, बिना URL या * के। सबडोमेन भी शामिल हैं। प्रति सूची अधिकतम 1,000 पंक्तियाँ और 32,768 वर्ण।</string>
     <string name="prefilter_invalid">सूची अमान्य है। प्रति पंक्ति एक डोमेन लिखें और सीमाओं का पालन करें।</string>
     <string name="prefilter_save_error">नियम सेव नहीं हो सके। फिर से प्रयास करें।</string>
-    <string name="unbound_profiles">Unbound प्रोफ़ाइल दिखाएँ (VPN पर DoT)</string>
-    <string name="unbound_help">फिर अपने प्रदाता के अंतर्गत Unbound · DoT चुनें। स्थानीय इंजन केवल इस प्रोफ़ाइल के लिए चलता है: DNS कैश, DNSSEC सत्यापन और एन्क्रिप्टेड DoT। ADB के बिना PDM का VPN उपयोग होता है। बिना एन्क्रिप्शन वाले DNS पर वापस नहीं जाता।</string>
+    <string name="unbound_profiles">Unbound प्रोफ़ाइल दिखाएँ</string>
+    <string name="unbound_help">Unbound में स्वतंत्र Unbound चुनें या किसी प्रदाता में DoT के साथ Unbound चुनें। इंजन केवल सक्रिय प्रोफ़ाइल के लिए शुरू होता है। दोनों मोड PDM VPN, कैश और DNSSEC का उपयोग करते हैं। स्वतंत्र मोड में DNS एन्क्रिप्टेड नहीं होता; DoT मोड प्रदाता तक एन्क्रिप्टेड कनेक्शन रखता है और बिना एन्क्रिप्शन वाले DNS पर नहीं लौटता।</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
     <string name="dns4eu_legal_note">बिना फ़िल्टर वाली प्रोफ़ाइल पर भी कानूनी प्रतिबंध लागू हो सकते हैं।</string>
+    <string name="unbound_recursive_name">स्वतंत्र</string>
+    <string name="unbound_recursive_description">बीच में किसी DNS प्रदाता के बिना रूट और प्रामाणिक सर्वरों से सीधे नाम हल करता है। बिना एन्क्रिप्शन वाले UDP/TCP पोर्ट 53, स्थानीय कैश और DNSSEC सत्यापन का उपयोग करता है। नेटवर्क पर पोर्ट 53 की अनुमति होनी चाहिए। PDM VPN और वैकल्पिक प्रीफ़िल्टर का उपयोग करता है।</string>
 </resources>

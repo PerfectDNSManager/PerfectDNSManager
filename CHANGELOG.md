@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.4.14-beta.1 — 28 novembre 2026
+
+- Unbound autonome en option : nouvelle entrée Unbound → Autonome, avec résolution récursive directe depuis les racines DNS, cache local et validation DNSSEC, sans fournisseur intermédiaire. Le réseau doit autoriser le DNS non chiffré en UDP/TCP 53.
+- Choix conservé des profils Unbound avec fournisseur DoT chiffré. Les deux modes utilisent le VPN et le préfiltre éventuel ; démarrage uniquement à l’activation du profil, arrêt au changement ou à la déconnexion. Aucun repli automatique du DoT vers le mode autonome.
+- Descriptions et réglages adaptés dans les 12 langues ; profils autonomes cachés tant que les profils Unbound ne sont pas autorisés. Les profils DoT existants restent inchangés.
+- IPv6 toujours autorisé par défaut. Lorsque son blocage est choisi, les échanges Unbound passent en IPv4, sans supprimer les réponses AAAA.
+- Bibliothèques natives reconstruites pour les quatre architectures, Android 5 minimum et alignement 16 Ko conservés. Ressources du résolveur bornées et protection contre les boucles vers les DNS virtuels du VPN.
+
+Publication bêta uniquement ; stable 2.4.11 inchangée.
+
 ## 2.4.13-beta.1 — 27 novembre 2026
 
 - Amorçage DoH par le DNS du réseau physique, avec conservation des adresses IPv4/IPv6 et des adresses alternatives ; les DNS publics UDP restent un dernier recours. Évite la dépendance exclusive à UDP/53 public pour joindre le fournisseur DoH.

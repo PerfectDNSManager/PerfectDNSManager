@@ -20,16 +20,23 @@ Bundled trust material, updated through app releases rather than runtime fetch:
 - `root.key`: active DS anchors 20326 and 38696 extracted from that XML,
   SHA256 `2c212250f1ec271109464e0db2f674f2b6b497da6a177d4d1b264fccb0f6d111`.
 
-TLS uses the bundled CA roots AND the selected provider's hostname. No
-trust-all callback, anonymous TLS, UDP fallback or autonomous recursive mode.
-DNSSEC validation is mandatory; intentionally invalid signatures fail closed.
-The host name of the DoT provider is bootstrapped through system DNS before
-establishing the PDM VPN. Browsing queries go through authenticated DoT.
+Two explicit native modes (never an automatic fallback):
+- DoT forwarding uses the bundled CA roots AND the selected provider hostname.
+  No trust-all callback, anonymous TLS or UDP fallback. Its hostname is resolved
+  on a physical network before establishing the VPN.
+- Recursive mode uses built-in Unbound root hints, no forwarder and no system
+  resolv.conf. It uses ordinary UDP/TCP 53 without transport encryption.
+  QNAME minimisation is enabled. Only the DNSSEC anchors are needed at startup.
+DNSSEC validation is mandatory in both modes; bogus signatures fail closed.
+An empty DoT destination list or a recursive list with destinations is rejected.
+IPv6 upstream transport follows the blocking preference; AAAA data is preserved.
+The VPN synthetic DNS subnet is excluded from upstream queries to prevent loops.
 
 Each active endpoint owns a context, bounded cache (2 MiB message, 4 MiB rrset,
-1 MiB key), at most 64 outstanding JNI queries and an 8-second query deadline.
+1 MiB key), at most 64 outstanding JNI queries and an 8-second DoT / 20-second recursive query deadline.
+Outgoing UDP sockets are bounded to 128 and outgoing TCP connections to 8.
 Libunbound is loaded only when an Unbound profile starts. Closing cancels the
 worker before freeing callback state; handles are idempotently invalidated.
 No listening DNS socket or privileged port is needed. The existing DNS-only
-VPN captures virtual DNS addresses; public DoT connections use the underlying
+VPN captures virtual DNS addresses; upstream DNS connections use the underlying
 network. This still occupies Android's VPN slot, unlike system Private DNS.

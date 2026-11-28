@@ -23,6 +23,24 @@ class UnboundProfilesTest {
             assertTrue(ProfileValidation.isUsable(local))
         }
     }
+    @Test fun autonomousModeIsExplicitAndSurvivesConfigValidation() {
+        val p = DnsProfile.getDefaultPresets().single { it.id == UnboundMode.RECURSIVE_PRESET_ID }
+        assertEquals("Unbound", p.providerName)
+        assertTrue(ProfileValidation.isUsable(p))
+        assertTrue(UnboundMode.isRecursive(p.primary))
+        assertFalse(p.isAdblock)
+        assertFalse(p.isCustom)
+        assertFalse(ProfileValidation.isUsable(p.copy(secondary = "unbound://one.one.one.one")))
+        assertFalse(ProfileValidation.isUsable(p.copy(primary = "unbound://one.one.one.one", secondary = UnboundMode.RECURSIVE_ENDPOINT)))
+        val document = "{\"profiles\":[" + com.google.gson.Gson().toJson(p) + "]}"
+        val imported = ConfigValidation.parse(document).getAsJsonArray("profiles").single().asJsonObject
+        assertEquals(UnboundMode.RECURSIVE_ENDPOINT, imported.get("primary").asString)
+        assertFalse(imported.get("isCustom").asBoolean)
+        for (bad in listOf("unbound://recursive/", "unbound://recursive:853", "unbound://recursive?forward=1", "unbound://user@recursive", "unbound://recursive#x"))
+            assertFalse(bad, ProfileValidation.isValidPrimary(DnsType.UNBOUND, bad))
+        assertFalse(UnboundMode.isRecursive("unbound://recursive.example.com"))
+        assertTrue(BenchmarkProfiles.select(listOf(p), true, true, true).isEmpty())
+    }
     @Test fun personalIdsAreRedactedForLocalDotToo() {
         assertEquals("unbound://***.dns.nextdns.io", redactDnsUrl("unbound://secret.dns.nextdns.io"))
         assertEquals("unbound://***.dns.controld.com", redactDnsUrl("unbound://secret.dns.controld.com"))

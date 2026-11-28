@@ -595,9 +595,11 @@
     <string name="prefilter_hint">每行一个域名，不含 URL 或 *。包含子域名。每份列表最多 1,000 行、32,768 个字符。</string>
     <string name="prefilter_invalid">列表无效。请每行输入一个域名，并遵守数量限制。</string>
     <string name="prefilter_save_error">无法保存规则，请重试。</string>
-    <string name="unbound_profiles">显示 Unbound 配置（通过 VPN 使用 DoT）</string>
-    <string name="unbound_help">然后在所需服务商下选择 Unbound · DoT。本地引擎仅在使用此配置时启动，提供 DNS 缓存、DNSSEC 验证和加密 DoT。使用 PDM VPN，无需 ADB。不会回退到未加密的 DNS。</string>
+    <string name="unbound_profiles">显示 Unbound 配置</string>
+    <string name="unbound_help">在 Unbound 项目中选择独立模式，或在服务商项目中选择通过 DoT 转发的 Unbound。引擎仅在启用对应配置时启动。两种模式都使用 PDM VPN、缓存和 DNSSEC。独立模式使用未加密的 DNS；DoT 模式保持到服务商的加密连接，不会回退到未加密 DNS。</string>
     <string name="unbound_label">Unbound · DoT</string>
     <string name="unbound_endpoint_hint">unbound://dns.example:853</string>
     <string name="dns4eu_legal_note">即使使用无过滤配置，也可能受到法律要求的屏蔽。</string>
+    <string name="unbound_recursive_name">独立模式</string>
+    <string name="unbound_recursive_description">直接通过根服务器和权威服务器解析，无需中间 DNS 服务商。使用未加密的 UDP/TCP 53 端口、本地缓存和 DNSSEC 验证。网络必须允许访问 53 端口。使用 PDM VPN 和可选的预过滤器。</string>
 </resources>

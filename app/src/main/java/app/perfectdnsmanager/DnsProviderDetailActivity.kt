@@ -579,7 +579,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
             }
             holder.tvTypeBadge.background = badgeBg
 
-            holder.tvProfileName.text = profile.name
+            holder.tvProfileName.text = profile.displayName(holder.itemView.context)
             holder.tvProfileName.textSize = 15f
             holder.tvProfileName.setTextColor(Color.WHITE)
 
@@ -587,7 +587,7 @@ class DnsProviderDetailActivity : AppCompatActivity() {
             holder.tvMethod.setTextColor(badgeColor)
 
             holder.tvAddress.text = profile.primary
-            holder.tvAddress.visibility = View.VISIBLE
+            holder.tvAddress.visibility = if (app.perfectdnsmanager.data.UnboundMode.isRecursive(profile.primary)) View.GONE else View.VISIBLE
 
             val desc = profile.displayDescription(holder.itemView.context)
             holder.tvDescription.text = desc
