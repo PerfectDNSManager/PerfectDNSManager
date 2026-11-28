@@ -602,4 +602,7 @@
     <string name="dns4eu_legal_note">フィルタリングなしのプロファイルにも、法令に基づくブロックが適用される場合があります。</string>
     <string name="unbound_recursive_name">単独動作</string>
     <string name="unbound_recursive_description">中継DNSプロバイダーを使わず、ルートサーバーと権威サーバーから直接名前解決します。暗号化されていないUDP/TCPポート53、ローカルキャッシュ、DNSSEC検証を使用します。ネットワークがポート53を許可している必要があります。PDM VPNと任意の事前フィルターを使用します。</string>
+    <string name="antidpi_title">ローカルのアンチDPI（ベータ）</string>
+    <string name="antidpi_help">ByeDPIを使用する実験的な機能です。PDMのVPNプロファイルで他のアプリの通信を処理し、選択したDNSと事前フィルターを維持します。Android/ADBのDoTでは動作しません。IPアドレスを隠したり通信を暗号化したりする機能ではありません。接続が遅くなる場合は無効にしてください。IPv6は設定に従います。</string>
+    <string name="antidpi_failed">アンチDPIエンジンが停止しました。PDMは切断されています。再接続するか、この機能を無効にしてください。</string>
 </resources>

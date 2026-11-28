@@ -619,4 +619,7 @@
     <string name="dns4eu_legal_note">Legal blocks may apply, including to the unfiltered profile.</string>
     <string name="unbound_recursive_name">Standalone</string>
     <string name="unbound_recursive_description">Resolves directly through root and authoritative servers, without an intermediate DNS provider. Uses unencrypted UDP/TCP port 53, local caching and DNSSEC validation. The network must allow port 53. Uses the PDM VPN and optional prefilter.</string>
+    <string name="antidpi_title">Local anti-DPI (beta)</string>
+    <string name="antidpi_help">Experimental option based on ByeDPI. With a PDM VPN profile, processes traffic from other apps while keeping your chosen DNS and prefilter. Inactive with Android/ADB DoT. Does not hide your IP or encrypt traffic. May slow some connections; disable if needed. IPv6 follows your setting.</string>
+    <string name="antidpi_failed">The anti-DPI engine stopped. PDM is disconnected; reconnect or disable this option.</string>
 </resources>

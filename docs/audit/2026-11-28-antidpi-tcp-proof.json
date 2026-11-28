@@ -1,0 +1,39 @@
+{
+  "fixture": "TLS with SNI pdm-antidpi.test on host loopback",
+  "flows": [
+    {
+      "source": "10.0.2.16",
+      "port": 46833,
+      "payload_sizes": [
+        126,
+        132,
+        80,
+        83
+      ],
+      "sni_split": true
+    },
+    {
+      "source": "10.0.2.16",
+      "port": 36697,
+      "payload_sizes": [
+        126,
+        132,
+        80,
+        83
+      ],
+      "sni_split": true
+    },
+    {
+      "source": "10.0.2.16",
+      "port": 48830,
+      "payload_sizes": [
+        258,
+        80,
+        83,
+        24
+      ],
+      "sni_split": false
+    }
+  ],
+  "limitation": "Observed mechanism only; no claim of real ISP DPI bypass."
+}

@@ -390,6 +390,10 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // URL Rewrite (fonction avancée)
+        findViewById<android.widget.CheckBox>(R.id.cbAntiDpi).apply {
+            isChecked = prefs.getBoolean("antidpi_enabled", false)
+            setOnCheckedChangeListener { _, checked -> prefs.edit().putBoolean("antidpi_enabled", checked).apply() }
+        }
         findViewById<android.widget.CheckBox>(R.id.cbUnboundProfiles).apply {
             isChecked = prefs.getBoolean("show_unbound_dns", false)
             setOnCheckedChangeListener { _, checked -> prefs.edit().putBoolean("show_unbound_dns", checked).apply() }

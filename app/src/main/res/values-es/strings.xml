@@ -608,4 +608,7 @@
     <string name="dns4eu_legal_note">Pueden aplicarse bloqueos legales, incluso al perfil sin filtros.</string>
     <string name="unbound_recursive_name">Autónomo</string>
     <string name="unbound_recursive_description">Resuelve directamente mediante servidores raíz y autoritativos, sin proveedor DNS intermediario. Usa UDP/TCP 53 sin cifrar, caché local y validación DNSSEC. La red debe permitir el puerto 53. Utiliza la VPN de PDM y el prefiltro opcional.</string>
+    <string name="antidpi_title">Anti-DPI local (beta)</string>
+    <string name="antidpi_help">Opción experimental basada en ByeDPI. Con un perfil VPN de PDM, procesa el tráfico de otras apps y conserva el DNS elegido y el prefiltro. Inactiva con DoT de Android/ADB. No oculta su IP ni cifra el tráfico. Puede ralentizar conexiones; desactívela si es necesario. IPv6 respeta su ajuste.</string>
+    <string name="antidpi_failed">El motor anti-DPI se detuvo. PDM está desconectado; vuelva a conectar o desactive esta opción.</string>
 </resources>

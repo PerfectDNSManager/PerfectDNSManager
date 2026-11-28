@@ -128,5 +128,6 @@
             android:theme="@style/Theme.PerfectDNSChanger"
             android:exported="false" />
 
+        <service android:name=".service.AntiDpiWorkerService" android:exported="false" android:process=":antidpi" android:stopWithTask="false" />
     </application>
 </manifest>

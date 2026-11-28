@@ -604,4 +604,7 @@
     <string name="dns4eu_legal_note">Rechtliche Sperren können auch für das ungefilterte Profil gelten.</string>
     <string name="unbound_recursive_name">Eigenständig</string>
     <string name="unbound_recursive_description">Löst Namen direkt über Root- und autoritative Server auf, ohne zwischengeschalteten DNS-Anbieter. Verwendet unverschlüsseltes UDP/TCP auf Port 53, lokalen Cache und DNSSEC-Prüfung. Das Netzwerk muss Port 53 zulassen. Nutzt das PDM-VPN und den optionalen Vorfilter.</string>
+    <string name="antidpi_title">Lokales Anti-DPI (Beta)</string>
+    <string name="antidpi_help">Experimentelle Option auf Basis von ByeDPI. Verarbeitet mit einem PDM-VPN-Profil den Verkehr anderer Apps; DNS-Auswahl und Vorfilter bleiben erhalten. Bei Android/ADB-DoT inaktiv. Verbirgt weder Ihre IP noch verschlüsselt es den Verkehr. Kann Verbindungen verlangsamen; bei Bedarf deaktivieren. IPv6 folgt Ihrer Einstellung.</string>
+    <string name="antidpi_failed">Die Anti-DPI-Engine wurde beendet. PDM ist getrennt; verbinden Sie sich erneut oder deaktivieren Sie diese Option.</string>
 </resources>

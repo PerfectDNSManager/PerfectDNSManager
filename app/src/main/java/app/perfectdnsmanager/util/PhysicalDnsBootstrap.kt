@@ -20,6 +20,15 @@ object PhysicalDnsBootstrap {
                     cm.getNetworkCapabilities(network)?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true
             }
         } catch (_: Exception) { emptyList() }
-        return BootstrapAddresses.resolve(networks.map { network -> { network.getAllByName(host).toList() } }, emptyList())
+        return BootstrapAddresses.resolve(networks.map { network -> {
+            val addresses = network.getAllByName(host).toList()
+            val routes = cm.getLinkProperties(network)?.routes
+            // A full VPN adds an IPv6 address even on IPv4-only access networks.
+            // Do not mistake it for a usable route to an upstream IPv6 resolver.
+            // This only selects provider transport addresses; DNS AAAA answers and
+            // the user's IPv6 policy are untouched.
+            if (routes.isNullOrEmpty()) addresses
+            else addresses.filter { address -> routes.any { it.matches(address) } }
+        } }, emptyList())
     }
 }

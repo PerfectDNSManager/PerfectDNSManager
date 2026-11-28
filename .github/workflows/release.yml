@@ -57,6 +57,9 @@ jobs:
       - name: Build optional Unbound native libraries from pinned sources
         run: python3 tools/build_unbound_native.py
 
+      - name: Build optional anti-DPI native libraries from pinned sources
+        run: python3 tools/build_antidpi_native.py
+
       - name: Validate all translations
         run: python3 tools/check_translations.py
 

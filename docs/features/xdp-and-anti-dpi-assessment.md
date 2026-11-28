@@ -79,3 +79,9 @@ Sources :
 - https://github.com/Oihalitz/xdp-dns-evadeproxy/blob/455427ea2af820ee30629f3d71814b2a7c273c32/src/main.rs
 - https://developers.cloudflare.com/workers/runtime-apis/tcp-sockets/
 - https://github.com/romanvht/ByeByeDPI/blob/master/README-en.md
+
+## Mise à jour — bêta 2.4.15
+
+L’option locale utilisant les moteurs ByeDPI et HEV est décrite dans
+[Anti-DPI local](local-anti-dpi.md). Cette étude reste le contexte historique ;
+le mode DoT système/ADB ne lance toujours pas de tunnel anti-DPI.

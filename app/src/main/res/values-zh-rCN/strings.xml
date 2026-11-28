@@ -602,4 +602,7 @@
     <string name="dns4eu_legal_note">即使使用无过滤配置，也可能受到法律要求的屏蔽。</string>
     <string name="unbound_recursive_name">独立模式</string>
     <string name="unbound_recursive_description">直接通过根服务器和权威服务器解析，无需中间 DNS 服务商。使用未加密的 UDP/TCP 53 端口、本地缓存和 DNSSEC 验证。网络必须允许访问 53 端口。使用 PDM VPN 和可选的预过滤器。</string>
+    <string name="antidpi_title">本地反 DPI（测试版）</string>
+    <string name="antidpi_help">基于 ByeDPI 的实验性选项。使用 PDM VPN 配置时处理其他应用的流量，保留所选 DNS 和预过滤功能。使用 Android/ADB DoT 时不生效。不会隐藏 IP 或加密流量。可能使部分连接变慢；必要时请关闭。IPv6 遵循您的设置。</string>
+    <string name="antidpi_failed">反 DPI 引擎已停止。PDM 已断开；请重新连接或关闭此选项。</string>
 </resources>

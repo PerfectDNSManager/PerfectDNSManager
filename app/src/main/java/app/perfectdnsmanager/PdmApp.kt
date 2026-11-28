@@ -9,6 +9,15 @@ import java.security.Security
 class PdmApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        // The optional native worker has no UI/TLS provider or shared-preference
+        // initialization. SharedPreferences must have only the main-process writer.
+        val processName = if (android.os.Build.VERSION.SDK_INT >= 28) getProcessName() else runCatching {
+            java.io.File("/proc/self/cmdline").inputStream().use { input ->
+                val bytes=ByteArray(256); val size=input.read(bytes)
+                if (size>0) String(bytes,0,size,Charsets.UTF_8).substringBefore('\u0000') else ""
+            }
+        }.getOrDefault("")
+        if (processName == "$packageName:antidpi") return
         // Agent15 must use Android algorithm names for RSA-PSS TLS signatures.
         // Configure before any QUIC handshake; certificate validation stays enabled.
         tech.kwik.agent15.env.PlatformMapping.usePlatformMapping(

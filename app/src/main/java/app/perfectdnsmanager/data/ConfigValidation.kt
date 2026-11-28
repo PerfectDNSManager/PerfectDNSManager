@@ -13,7 +13,7 @@ object ConfigValidation {
     const val REJECTED_PROFILES_KEY = "__rejectedProfiles"
     private val gson = Gson()
     private val settingsKeys = setOf("auto_reconnect_dns", "disable_ipv6", "adb_dot_enabled",
-        "operator_dns_enabled", "advanced_features_enabled", "show_doq_dns", "allow_adblock_profiles", "show_profile_variants", "show_standard_dns", "show_unbound_dns")
+        "operator_dns_enabled", "advanced_features_enabled", "show_doq_dns", "allow_adblock_profiles", "show_profile_variants", "show_standard_dns", "show_unbound_dns", "antidpi_enabled")
 
     fun parse(json: String): JsonObject {
         require(json.length <= MAX_BYTES && json.toByteArray(Charsets.UTF_8).size <= MAX_BYTES) { "Configuration too large" }

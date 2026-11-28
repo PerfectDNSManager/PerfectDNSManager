@@ -618,4 +618,7 @@
     <string name="dns4eu_legal_note">Des blocages légaux peuvent s’appliquer, même au profil sans filtre.</string>
     <string name="unbound_recursive_name">Autonome</string>
     <string name="unbound_recursive_description">Résolution directe auprès des serveurs racine puis des serveurs faisant autorité, sans fournisseur DNS intermédiaire. Échanges non chiffrés en UDP/TCP 53, cache local et validation DNSSEC. Nécessite que le réseau autorise le port 53. Utilise le VPN PDM et le préfiltre éventuel.</string>
+    <string name="antidpi_title">Anti-DPI local (bêta)</string>
+    <string name="antidpi_help">Option expérimentale basée sur ByeDPI. Avec un profil VPN PDM, traite le trafic des autres applications, en conservant le DNS choisi et le préfiltre. Inactif avec le DoT Android/ADB. Ne masque pas votre IP et ne chiffre pas le trafic. Peut ralentir certaines connexions ; désactivez si nécessaire. IPv6 suit votre réglage.</string>
+    <string name="antidpi_failed">Le moteur anti-DPI s’est arrêté. PDM est déconnecté ; reconnectez-vous ou désactivez cette option.</string>
 </resources>

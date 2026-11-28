@@ -9,6 +9,9 @@ import android.content.Intent
 import android.net.VpnService
 import android.os.Build
 import android.os.ParcelFileDescriptor
+import android.system.Os
+import android.system.StructPollfd
+import android.system.ErrnoException
 import android.system.OsConstants
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -26,7 +29,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.DatagramPacket
 import java.net.DatagramSocket
@@ -141,10 +143,13 @@ class DnsVpnService : VpnService() {
     }
 
     // Local prefilter: immutable snapshots swapped by the control executor.
+    private val transportSettingsRevision = java.util.concurrent.atomic.AtomicLong(0)
+    @Volatile private var antiDpiSession: AntiDpiSession? = null
     private val unboundBackends = ConcurrentHashMap<String, UnboundBackend>()
     @Volatile private var prefilter = app.perfectdnsmanager.data.DnsPrefilter()
     private val prefilterListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        if (key == "disable_ipv6" && !destroyed && isRunning) {
+        if (key == "disable_ipv6" || key == "antidpi_enabled") transportSettingsRevision.incrementAndGet()
+        if ((key == "disable_ipv6" || key == "antidpi_enabled") && !destroyed && isRunning) {
             val expected = generation.get()
             control.execute {
                 // Includes changes from configuration import. Restart the live endpoint,
@@ -299,6 +304,7 @@ class DnsVpnService : VpnService() {
 
     private fun startVpn(startId: Int) {
         activeStartId = startId
+        val settingsRevision = transportSettingsRevision.get()
         // Garde anti double-start : si une pile VPN tourne déjà (ex. deux ACTION_RESTART
         // rapprochés, ou restart différé + start), on la ferme d'abord — sinon on écrase
         // vpnInterface/tunOut/sockets/executor/doqClient sans les libérer (grosse fuite).
@@ -319,7 +325,7 @@ class DnsVpnService : VpnService() {
                 .setSession("Perfect DNS Manager")
                 .setMtu(1500)
                 .addAddress("192.0.2.1", 32)
-                .setBlocking(true)
+                .setBlocking(false)
 
             val disableIpv6 = getSharedPreferences("prefs", Context.MODE_PRIVATE)
                 .getBoolean("disable_ipv6", false)
@@ -361,6 +367,34 @@ class DnsVpnService : VpnService() {
                 } catch (e: Exception) { Log.w(T, "IPv6 block err: ${e.message}") }
             }
 
+            if (getSharedPreferences("prefs", MODE_PRIVATE).getBoolean("antidpi_enabled", false)) {
+                // The engine and DNS upstreams share PDM's UID. Excluding our own UID
+                // avoids recursion for native Unbound/ByeDPI sockets without root.
+                builder.addDisallowedApplication(packageName)
+                builder.addRoute("0.0.0.0", 0)
+                if (!disableIpv6) {
+                    builder.addAddress("fdfe:dcba:9876::1", 126)
+                    builder.addRoute("::", 0)
+                }
+                val engineGeneration = sessionGeneration
+                val session = AntiDpiSession(this, { packet ->
+                    synchronized(tunOutLock) {
+                        if (isRunning && engineGeneration == generation.get()) {
+                            try { tunOut?.let { Os.write(it.fd, packet, 0, packet.size) } }
+                            catch (e: ErrnoException) { if (e.errno != OsConstants.EAGAIN) throw e }
+                        }
+                    }
+                }, {
+                    if (!destroyed) runCatching { control.execute {
+                        if (engineGeneration == generation.get() && antiDpiSession != null) {
+                            stopVpn(); postAntiDpiFailure(); stopSelfResult(startId)
+                        }
+                    } }
+                })
+                antiDpiSession = session
+                session.start(!disableIpv6)
+            }
+
             upstreamMap.clear()
             val a1 = "192.0.2.2"
             upstreamMap[a1] = dnsServer
@@ -392,18 +426,32 @@ class DnsVpnService : VpnService() {
                 java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy()
             )
             val localGeneration = sessionGeneration
-            val localInput = FileInputStream(vpnInterface!!.fileDescriptor)
+            val localFd = vpnInterface!!.fileDescriptor
             isRunning = true; isVpnRunning = true; instance = this
 
             tunReaderThread = Thread({
-                val input = localInput
+                val poll = StructPollfd().apply { fd = localFd; events = OsConstants.POLLIN.toShort() }
                 val buf = ByteArray(32767)
                 while (isRunning && localGeneration == generation.get()) {
                     try {
-                        val n = input.read(buf)
-                        if (n > 0) onTunPacket(buf.copyOf(n), localGeneration)
+                        // A blocking read can keep the TUN alive after close on old kernels.
+                        // Poll a nonblocking descriptor so stop always retires this reader.
+                        if (Os.poll(arrayOf(poll), 250) == 0) continue
+                        if (!isRunning || localGeneration != generation.get()) break
+                        if (poll.revents.toInt() and (OsConstants.POLLERR or OsConstants.POLLHUP or OsConstants.POLLNVAL) != 0) break
+                        val n = Os.read(localFd, buf, 0, buf.size)
+                        if (n > 0) {
+                            val packet = buf.copyOf(n)
+                            val engine = antiDpiSession
+                            if (engine == null || app.perfectdnsmanager.util.AntiDpiPackets.isVirtualDns(packet)) {
+                                onTunPacket(packet, localGeneration)
+                            } else if (app.perfectdnsmanager.util.AntiDpiPackets.canForward(packet, !disableIpv6)) {
+                                engine.send(packet)
+                            }
+                        }
                         else if (n < 0) break
                     } catch (e: Exception) {
+                        if (e is ErrnoException && e.errno == OsConstants.EAGAIN) continue
                         if (isRunning) Log.e(T, "TunReader err", e)
                         break
                     }
@@ -418,11 +466,25 @@ class DnsVpnService : VpnService() {
             tunReaderThread!!.start()
             // Mettre à jour la notification avec le vrai DNS (startForeground déjà appelé dans onStartCommand)
             val nm = getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
-            startForeground(NOTIF_ID, mkNotif("DNS: " + if (app.perfectdnsmanager.data.UnboundMode.isRecursive(dnsServer))
-                "Unbound · ${getString(R.string.unbound_recursive_name)}" else redactDnsUrl(dnsServer)))
+            startForeground(NOTIF_ID, mkNotif("DNS: " + (if (app.perfectdnsmanager.data.UnboundMode.isRecursive(dnsServer))
+                "Unbound · ${getString(R.string.unbound_recursive_name)}" else redactDnsUrl(dnsServer)) + if (antiDpiSession != null) " · ByeDPI" else ""))
             getSharedPreferences("prefs", MODE_PRIVATE).edit().putBoolean("vpn_active", true).apply()
+            // A preference can change while the native process is starting.
+            // Reconcile once ready, without losing the latest toggle or endpoint.
+            if (settingsRevision != transportSettingsRevision.get()) {
+                val expected = sessionGeneration
+                control.execute {
+                    if (!destroyed && isRunning && expected == generation.get()) {
+                        sessionGeneration = generation.incrementAndGet()
+                        stopVpn(); startVpn(activeStartId)
+                    }
+                }
+            }
         } catch (e: Exception) {
-            Log.e(T, "Start err: ${e.javaClass.simpleName}"); stopVpn(); stopSelfResult(startId)
+            val antiDpiFailed = antiDpiSession != null
+            Log.e(T, "Start err: ${e.javaClass.simpleName}"); stopVpn()
+            if (antiDpiFailed) postAntiDpiFailure()
+            stopSelfResult(startId)
         }
     }
 
@@ -775,6 +837,7 @@ class DnsVpnService : VpnService() {
     /** Called only by the serial control executor. Close first to wake blocked reads. */
     private fun stopVpn() {
         isRunning = false; isVpnRunning = false
+        antiDpiSession?.close(); antiDpiSession = null
         if (instance === this) instance = null
         try { okHttpClient.dispatcher.cancelAll(); okHttpClient.connectionPool.evictAll() } catch (_: Exception) {}
         try { queryExecutor?.shutdownNow() } catch (_: Exception) {}; queryExecutor = null
@@ -788,6 +851,11 @@ class DnsVpnService : VpnService() {
         localDnsMap.clear(); rewriteRules = DnsRewriteIndex.empty(); prefilter = app.perfectdnsmanager.data.DnsPrefilter()
         getSharedPreferences("prefs", MODE_PRIVATE).edit().putBoolean("vpn_active", false).putString("vpn_label", "").apply()
         // Keep foreground status during a profile change. Android removes it when the service stops.
+    }
+
+    private fun postAntiDpiFailure() {
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+            .notify(2003, mkNotif(getString(R.string.antidpi_failed)))
     }
 
     private fun mkNotif(msg: String): Notification {

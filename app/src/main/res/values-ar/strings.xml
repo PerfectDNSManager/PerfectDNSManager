@@ -612,4 +612,7 @@
     <string name="dns4eu_legal_note">قد تُطبَّق قيود حجب قانونية حتى على الملف غير المصفّى.</string>
     <string name="unbound_recursive_name">مستقل</string>
     <string name="unbound_recursive_description">يحل الأسماء مباشرة عبر خوادم الجذر والخوادم الموثوقة دون مزود DNS وسيط. يستخدم UDP/TCP غير مشفر على المنفذ 53 مع تخزين مؤقت محلي والتحقق عبر DNSSEC. يجب أن تسمح الشبكة بالمنفذ 53. يستخدم VPN الخاص بـ PDM والتصفية المسبقة الاختيارية.</string>
+    <string name="antidpi_title">مكافحة DPI محليًا (تجريبي)</string>
+    <string name="antidpi_help">خيار تجريبي يعتمد على ByeDPI. مع ملف VPN في PDM، يعالج حركة التطبيقات الأخرى مع الاحتفاظ بخادم DNS المختار والفلتر المسبق. لا يعمل مع DoT عبر Android/ADB. لا يخفي عنوان IP ولا يشفّر الحركة. قد يبطئ بعض الاتصالات؛ عطّله عند الحاجة. يتبع IPv6 إعدادك.</string>
+    <string name="antidpi_failed">توقف محرك مكافحة DPI. تم فصل PDM؛ أعد الاتصال أو عطّل هذا الخيار.</string>
 </resources>

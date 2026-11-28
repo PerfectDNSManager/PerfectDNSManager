@@ -30,7 +30,8 @@ public class SmokeRunner extends Instrumentation {
             pass("actual page size "+page);
             if("tls".equals(args.getString("mode"))) { tls(); result.putString("stream",output.toString()+"ALL PASSED\n");finish(-1,result);return; }
             if(!"network".equals(args.getString("mode"))) { argon(); pairing(); profiles(); screens(); }
-            if(!"offline".equals(args.getString("mode"))) vpn();
+            if("true".equals(args.getString("antiDpiChecks"))) antiDpi();
+            else if(!"offline".equals(args.getString("mode"))) vpn();
             result.putString("stream",output.toString()+"ALL PASSED\n"); finish(-1,result);
         } catch(Throwable e) { result.putString("stream",output.toString()+android.util.Log.getStackTraceString(e));finish(1,result); }
     }
@@ -83,6 +84,53 @@ public class SmokeRunner extends Instrumentation {
         org.json.JSONArray profiles=new JSONObject(exported).getJSONArray("profiles");boolean found=false;
         for(int i=0;i<profiles.length();i++){JSONObject p=profiles.getJSONObject(i);if("Legacy smoke".equals(p.optString("name"))) {check("https://example.com/dns-query".equals(p.getString("primary")),"Persisted endpoint");check("DOH".equals(p.getString("type")),"Persisted type");found=true;}}
         check(found,"Imported profile roundtrip");pass("legacy configuration import/export through production Gson");
+    }
+    private boolean fullVpn() {
+        android.net.ConnectivityManager cm=(android.net.ConnectivityManager)getTargetContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        for(android.net.Network n:cm.getAllNetworks()) {
+            android.net.NetworkCapabilities caps=cm.getNetworkCapabilities(n);
+            android.net.LinkProperties lp=cm.getLinkProperties(n);
+            if(caps!=null&&lp!=null&&caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_VPN))
+                for(android.net.RouteInfo r:lp.getRoutes())if(r.getDestination().getPrefixLength()==0&&r.getDestination().getAddress() instanceof java.net.Inet4Address)return true;
+        }
+        return false;
+    }
+    private void remoteProbe(boolean blocked) throws Exception {
+        String options=blocked?"-e dnsOnly true -e rcode 3":"";
+        if(!blocked && "true".equals(args.getString("ipv6Fixture")))options+=" -e ipv6Fixture true";
+        android.os.ParcelFileDescriptor fd=getUiAutomation().executeShellCommand("am instrument -w "+options+" app.perfectdnsmanager.antidpiprobe/.Probe");
+        java.io.ByteArrayOutputStream out=new java.io.ByteArrayOutputStream();
+        try(java.io.InputStream in=new android.os.ParcelFileDescriptor.AutoCloseInputStream(fd)) {
+            byte[] b=new byte[4096];int n;while((n=in.read(b))!=-1)out.write(b,0,n);
+        }
+        String text=out.toString("UTF-8");check(text.contains("ALL PASSED"),text);
+    }
+    private void antiDpi() throws Exception {
+        Context context=getTargetContext();
+        android.app.Activity activity=startActivitySync(new Intent().setClassName(context,"app.perfectdnsmanager.MainActivity").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        Intent consent=android.net.VpnService.prepare(context);
+        if(consent!=null && "true".equals(args.getString("allowConsentDialog"))) {
+            runOnMainSync(() -> activity.startActivityForResult(consent,189));
+            long end=SystemClock.elapsedRealtime()+60000;
+            while(android.net.VpnService.prepare(context)!=null&&SystemClock.elapsedRealtime()<end)SystemClock.sleep(100);
+        }
+        check(android.net.VpnService.prepare(context)==null,"VPN consent on disposable AVD");
+        context.getSharedPreferences("prefs",0).edit().putBoolean("dns_prefilter_enabled",false).putBoolean("antidpi_enabled",true).putBoolean("disable_ipv6",false).commit();
+        Intent start=new Intent("app.perfectdnsmanager.START_VPN").setClassName(context,"app.perfectdnsmanager.service.DnsVpnService").putExtra("dns_primary",args.getString("endpoint","https://one.one.one.one/dns-query"));
+        try {
+            if(Build.VERSION.SDK_INT>=26)context.startForegroundService(start);else context.startService(start);
+            long end=SystemClock.elapsedRealtime()+30000;
+            while(!fullVpn()&&SystemClock.elapsedRealtime()<end)SystemClock.sleep(100);
+            check(fullVpn(),"Optimized anti-DPI full VPN");SystemClock.sleep(500);remoteProbe(false);
+            Class<?> config=appClass("app.perfectdnsmanager.data.ConfigManager");Object manager=config.getConstructor(Context.class).newInstance(context);
+            String filter="{\"dnsPrefilter\":{\"enabled\":true,\"builtin\":false,\"blocked\":\"example.com\",\"allowed\":\"\"}}";
+            method(config,"importConfig",String.class,boolean.class).invoke(manager,filter,true);SystemClock.sleep(300);remoteProbe(true);
+            method(config,"importConfig",String.class,boolean.class).invoke(manager,filter.replace("true","false"),true);
+            pass("optimized anti-DPI: separate UID TCP/TLS/UDP, selected DNS A/AAAA and local prefilter"+("true".equals(args.getString("ipv6Fixture"))?", IPv6 fixture":""));
+        } finally {
+            context.startService(new Intent("app.perfectdnsmanager.STOP_VPN").setClassName(context,"app.perfectdnsmanager.service.DnsVpnService"));
+            context.getSharedPreferences("prefs",0).edit().putBoolean("dns_prefilter_enabled",false).putBoolean("antidpi_enabled",false).commit();
+        }
     }
     private void vpn() throws Exception {
         Context context=getTargetContext();
