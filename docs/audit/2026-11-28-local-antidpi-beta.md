@@ -1,4 +1,4 @@
-# Anti-DPI local — préparation 2.4.15-beta.1
+# Anti-DPI local — 2.4.15-beta.1
 
 Branche `codex/pdm-antidpi-beta`, bêta uniquement. Stable 2.4.11, main,
 Worker et site non modifiés.
@@ -57,3 +57,18 @@ l’alias IPv6 de QEMU, pas avec une connectivité Internet IPv6 publique.
   TLS de production n’a été désactivée pour contourner cette limite.
 - ARMv7 : les nouvelles sources C sont compilées avec VFPv3-D16, sans imposer
   NEON ; contrôle des attributs des objets compilés. Pas d’essai physique ARM.
+
+## APK optimisé
+
+- Build release, 56 tests unitaires et lint : réussite, zéro erreur lint.
+- Alignement ELF/APK 16 Ko, API 21 et quatre ABI contrôlés ; les moteurs dans
+  l’APK correspondent aux bibliothèques finales. Aucune fixture de test embarquée.
+- SmokeRunner de framework sur API 21/4 Ko et API 36/16 Ko : réussite complète
+  (Argon2, ADB lorsque disponible, import/export Gson, quatre écrans, anti-DPI,
+  DNS A/AAAA, préfiltre, TCP/TLS/UDP ; IPv6 local sur API 36).
+- Sur l’image 16 Ko, l’installation incrémentale ADB a causé un SIGBUS dans le
+  chargeur ELF avant les tests. La réinstallation standard du même APK avec
+  `adb install --no-incremental -r` a permis de réussir toute la suite. Aucun
+  changement du code ou de l’alignement n’a été fait pour ce nouvel essai.
+- Ces copies optimisées sont signées avec la clé de test Android uniquement
+  pour l’instrumentation. Seul l’APK signé par la CI est destiné à la publication.

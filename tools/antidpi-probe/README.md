@@ -13,7 +13,8 @@ upstream sockets intentionally bypass the VPN under PDM's own UID.
 4. For optimized APK tests, use the existing framework SmokeRunner with
    `antiDpiChecks=true`, the actual `expectedPageSize`, and optionally
    `ipv6Fixture=true`. The APK and runner must share the disposable debug key.
-   Never publish that test-signed APK.
+   Never publish that test-signed APK. Use `adb install --no-incremental -r`
+   on the 16 KiB emulator; its incremental ELF loading caused SIGBUS during testing.
 
 The fixture's generated test certificate is pinned only in the probe APK.
 Its private key stays under ignored build/; no changes to PDM trust or TLS.
