@@ -1,0 +1,21 @@
+{
+  "beta": "https://github.com/PerfectDNSManager/PerfectDNSManager/releases/tag/v2.4.15-beta.1",
+  "size": 21203342,
+  "sha256": "e0e4ef3e6a898760282a42af5f098c1358d4e019b92a1790ba89ed65d092b347",
+  "alias_identical": true,
+  "stable_unchanged": "v2.4.11",
+  "production_signer_unchanged": true,
+  "min_sdk": 21,
+  "version_code": 20415,
+  "source_commit": "1e83e64ebbb320c5d86dd06a0a6fdfddb7b8af19",
+  "traffic_logs_disabled": true,
+  "ci_run": 46098209824,
+  "production_upgrade_from": "2.4.14-beta.1",
+  "production_upgrade_api": 21,
+  "settings_preserved": true,
+  "ipv6_blocking_default": false,
+  "antidpi_default": false,
+  "ci_apk_instrumentation_16k": "passed",
+  "physical_arm_tested": false,
+  "recursive_public_network_validation": "blocked by host DNS/53 interception; same failure without anti-DPI"
+}

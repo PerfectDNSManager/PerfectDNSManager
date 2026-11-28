@@ -24,8 +24,7 @@ pas le moteur. Détails et limites : [fonctionnement](../features/local-anti-dpi
 - Correction du cycle arrêt/redémarrage : attente de mort du processus natif
   précédent avant une nouvelle liaison Binder.
 
-Les résultats des validations finales et de publication seront ajoutés après
-leur exécution. Aucun résultat matériel ARM ou contournement de DPI opérateur
+Les validations finales et les preuves de publication figurent ci-dessous. Aucun résultat matériel ARM ou contournement de DPI opérateur
 réel n’est revendiqué. IPv6 est testé avec la fixture locale accessible par
 l’alias IPv6 de QEMU, pas avec une connectivité Internet IPv6 publique.
 
@@ -94,3 +93,32 @@ La variante sans traces passe aussi le scénario réseau optimisé sur API 21
 nécessaire pour réinitialiser l’autorisation VPN après les désinstallations
 successives de copies signées différemment ; le consentement a ensuite été
 accordé via le dialogue Android normal. Logcat proxy ne contient aucune trace.
+
+## Limite de validation de la combinaison avec Unbound autonome
+
+Les essais anti-DPI + `unbound://recursive` sur API 21 et API 36 renvoient
+SERVFAIL pour `example.com` (le trafic TCP/TLS/UDP de fixture passe). Le même
+résultat est reproduit avec le VPN DNS seul, sans anti-DPI, sur l’APK optimisé ;
+le préfiltre local A/AAAA fonctionne toujours dans cette référence. Une requête
+UDP/53 à l’adresse réservée `192.0.2.254` reçoit NOERROR et deux réponses A :
+le réseau hôte intercepte effectivement DNS/53. Ce n’est pas une validation
+de récursion publique indépendante ni une garantie de fonctionnement sur ce
+réseau. Les résultats natifs positifs sur d’autres domaines ne lèvent pas
+cette limite. Aucun repli vers un fournisseur ni affaiblissement DNSSEC ajouté.
+
+## Publication et vérification finale
+
+- CI réussie : https://github.com/PerfectDNSManager/PerfectDNSManager/actions/runs/46098209824
+- Bêta : https://github.com/PerfectDNSManager/PerfectDNSManager/releases/tag/v2.4.15-beta.1
+- Source du tag : `1e83e64ebbb320c5d86dd06a0a6fdfddb7b8af19`.
+- APK : 21 203 342 octets ; SHA-256
+  `e0e4ef3e6a898760282a42af5f098c1358d4e019b92a1790ba89ed65d092b347`.
+- Version numérotée et `latest-beta` identiques ; certificat de production
+  inchangé, un seul signataire. API 21 et quatre ABI, alignement 16 Ko contrôlés.
+- L’APK téléchargé de CI, re-signé uniquement en copie pour l’instrumentation,
+  passe la suite optimisée sur API 36/16 Ko (UI, natif et transport anti-DPI).
+- Mise à jour des APK de production 2.4.14 → 2.4.15-beta.1 sur API 21 réussie
+  sans désinstallation : lancement, code 20415 et réglage avancé conservé.
+  Blocage IPv6 toujours faux, nouvelle option anti-DPI absente/désactivée.
+- Stable v2.4.11, release ID 436358160 et digest de l’APK stable inchangés.
+  Aucun push main, déploiement Worker ou publication du site.
