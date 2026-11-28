@@ -7,6 +7,7 @@
 - IPv6 reste autorisé par défaut ; le moteur suit le réglage explicite de blocage. Le trafic TCP/UDP des autres applications est transmis localement, sans masquer l’IP ni ajouter de chiffrement. L’efficacité dépend du réseau et du type de blocage.
 - Moteur chargé à la demande dans un processus privé, limites de sessions et de buffers, arrêt au changement de mode et détection de panne. Android 5, les quatre architectures et l’alignement 16 Ko sont conservés.
 - Déconnexion fiable sur les anciens noyaux Android : lecture du tunnel non bloquante. Amorçage du fournisseur Unbound limité aux adresses routables sur le réseau physique, sans modifier les réponses AAAA ni le réglage IPv6.
+- Traces de trafic des moteurs tiers désactivées pour ne pas inscrire les destinations visitées dans les journaux Android.
 - Option sauvegardée dans les configurations et textes ajoutés dans les douze langues.
 
 Publication bêta uniquement ; stable 2.4.11 inchangée.

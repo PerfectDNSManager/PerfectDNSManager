@@ -34,6 +34,13 @@ s=s.replace("if (val <= 0 || val > 0xffff || *end)","if (val < 0 || val > 0xffff
 s=subprocess.check_output(['git','-C',str(OUT/'byedpi'),'show','HEAD:proxy.c'],text=True)
 s=s.replace('    return srvfd;', '    extern void pdm_listener_ready(int);\n    pdm_listener_ready(srvfd);\n    return srvfd;')
 (OUT/'byedpi/proxy.c').write_text(s)
+# Upstream ANDROID_APP enables traffic logs unconditionally, including hostnames.
+# Keep only uniperror's generic syscall errors; never emit proxy traffic records.
+p=OUT/'byedpi/error.h'
+s=p.read_text()
+needle='__android_log_print(s, "proxy", str, ##__VA_ARGS__)'
+assert s.count(needle)==1 and s.count('#define LOG_ENABLED 1')==1
+p.write_text(s.replace(needle,'((void)0)').replace('#define LOG_ENABLED 1','#define LOG_ENABLED 0'))
 # Retain non-NEON ARMv7 compatibility; no optional SIMD instruction baseline.
 for p in (OUT/'hev').rglob('Android.mk'):
  s=p.read_text().replace('-mfpu=neon','-mfpu=vfpv3-d16');p.write_text(s)
@@ -59,4 +66,7 @@ run(NDK/'ndk-build','NDK_PROJECT_PATH=null','APP_BUILD_SCRIPT='+str(mk),'APP_ABI
 for abi in ['armeabi-v7a','arm64-v8a','x86','x86_64']:
  for lib in ['libpdm_antidpi.so','libhev-socks5-tunnel.so']:
   target=ROOT/'app/src/main/jniLibs'/abi/lib;shutil.copy2(OUT/'libs'/abi/lib,target)
+for abi in ['armeabi-v7a','arm64-v8a','x86','x86_64']:
+ data=(ROOT/'app/src/main/jniLibs'/abi/'libpdm_antidpi.so').read_bytes()
+ assert not any(marker in data for marker in [b'host: %.*s',b'bytes: %s',b'not resolved: %.*s']), abi
 print('Anti-DPI: four ABIs built for API 21 with 16 KiB alignment')

@@ -16,3 +16,6 @@ private one-session Android worker, bounded packet bridge, IPv6 setting,
 64-session limit and ARMv7 baseline without mandatory NEON. No arbitrary CLI,
 daemon, file-based strategies or certificate-validation bypass is exposed.
 Licenses are bundled alongside this notice.
+
+PDM disables upstream Android proxy traffic logs; HEV logs go to /dev/null.
+Generic PDM lifecycle/error notifications remain available.

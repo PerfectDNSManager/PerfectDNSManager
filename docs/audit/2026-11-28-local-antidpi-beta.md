@@ -72,3 +72,25 @@ l’alias IPv6 de QEMU, pas avec une connectivité Internet IPv6 publique.
   changement du code ou de l’alignement n’a été fait pour ce nouvel essai.
 - Ces copies optimisées sont signées avec la clé de test Android uniquement
   pour l’instrumentation. Seul l’APK signé par la CI est destiné à la publication.
+
+- Contrôle supplémentaire de l’APK optimisé sur API 36 : profil DoQ Control D
+  (`quic://p0.freedns.controld.com`), sonde réseau distincte et préfiltre réussis.
+
+## Confidentialité des moteurs tiers
+
+La première fabrication CI a été annulée avant publication : le mode
+`ANDROID_APP` de ByeDPI active les traces d’hôtes et de premiers octets même
+avec debug à zéro. Le patch désactive `LOG` et `LOG_ENABLED` dans ce mode.
+Les erreurs génériques de syscall et les états PDM restent disponibles.
+HEV écrit vers `/dev/null`. Un contrôle de construction vérifie l’absence
+des formats de traces sensibles dans les quatre bibliothèques ByeDPI.
+
+Après désactivation des traces, l’APK optimisé passe à nouveau sur API 36/16 Ko.
+La capture montre toujours le SNI découpé en segments de 126 et 132 octets ;
+aucune trace proxy d’hôte ou de contenu n’est présente dans logcat.
+
+La variante sans traces passe aussi le scénario réseau optimisé sur API 21
+(Unbound/DoT, A/AAAA, préfiltre, TCP/TLS/UDP). Un redémarrage de l’AVD a été
+nécessaire pour réinitialiser l’autorisation VPN après les désinstallations
+successives de copies signées différemment ; le consentement a ensuite été
+accordé via le dialogue Android normal. Logcat proxy ne contient aucune trace.

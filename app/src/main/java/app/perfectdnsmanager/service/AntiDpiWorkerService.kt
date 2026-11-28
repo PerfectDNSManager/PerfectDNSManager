@@ -49,6 +49,7 @@ class AntiDpiWorkerService : Service() {
                       tcp-read-write-timeout: 120000
                       udp-read-write-timeout: 30000
                       log-level: error
+                      log-file: /dev/null
                 """.trimIndent()
                 val descriptor = bridge.detachFd()
                 Thread({

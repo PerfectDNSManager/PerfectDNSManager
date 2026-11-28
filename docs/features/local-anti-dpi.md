@@ -44,6 +44,8 @@ sont arrêtés par PDM. Les réponses DNS AAAA ne sont pas supprimées.
 - La perte du moteur est détectée : le VPN est arrêté, l'état connecté est
   retiré et une notification explique l'échec. Ce n'est pas un kill switch :
   Android reprend son réseau normal après l'arrêt du VPN.
+- Les traces de trafic ByeDPI sont supprimées à la compilation ; les journaux HEV
+  vont vers `/dev/null`. Les notifications et erreurs génériques PDM restent disponibles.
 - Aucun argument de ligne de commande arbitraire, script, téléchargement de
   stratégie ou changement des certificats de confiance n'est proposé.
 - API 21 minimum, quatre ABI, alignement ELF 16 Ko. Les performances sur box
