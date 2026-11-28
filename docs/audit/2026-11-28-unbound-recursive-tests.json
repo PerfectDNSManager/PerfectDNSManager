@@ -1,0 +1,42 @@
+{
+  "source_commit": "e610b98d42e0f42f272f20551fa0edc812d02db0",
+  "jvm": {
+    "tests": 54,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "checks": {
+    "native_api21": {
+      "passed": true,
+      "log_sha256": "40d7b1e81179701324697f43487379e09f8fc87e0eacdab57021ad7729309c67"
+    },
+    "controlled_recursion_api36": {
+      "passed": true,
+      "log_sha256": "4974633b6e6c6c94259c2405ed0dbbe4f23d062ca9de34c5620630321e436259"
+    },
+    "dot_vpn_api21": {
+      "passed": true,
+      "log_sha256": "a595c3dea6b18c5e55e8dafed1975d44df872018607559c071984310f55a043d"
+    },
+    "dot_vpn_api36_16k": {
+      "passed": true,
+      "log_sha256": "3bb98b89849b7c1cc1fb689a379e536fa7b283c1deeb94b8debae7d4d22fe393"
+    },
+    "blocked_recursive_api21": {
+      "passed": true,
+      "log_sha256": "def6dc2deee3f16abbf4f2127835527c62ddf65d5c7f516458c4336f4ac562df"
+    },
+    "blocked_recursive_api36": {
+      "passed": true,
+      "log_sha256": "f90b8a8bb8b5b86a3f927c2649ba13fc68bee429b5859fe1e96ca77868d4b6b3"
+    }
+  },
+  "translations": {
+    "resources": 517,
+    "languages": 12
+  },
+  "public_recursive_vpn": "Not successful: test network intercepts public port 53; controlled recursion and explicit failure tested separately",
+  "physical_arm_devices_tested": false,
+  "end_to_end_ipv6_tested": false
+}

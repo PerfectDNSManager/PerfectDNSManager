@@ -1,9 +1,10 @@
 # Optional local recursive resolver: Unbound
 
-Status: original feasibility note, superseded by the optional authenticated DoT
-forwarder implementation described in `../../native/unbound/README.md`.
-Autonomous recursion below remains a design alternative, not an implemented
-mode. No publication.
+Status: historical feasibility note. Both optional authenticated DoT forwarding
+and standalone recursion are now implemented for beta 2.4.14-beta.1. See
+[the current user and implementation guide](unbound-forwarding.md) and
+[the verification report](../audit/2026-11-28-unbound-recursive-beta.md).
+The remaining text records the original design considerations, not release status.
 
 Suggested user-facing choice: “Local resolution — Unbound”, alongside existing
 DNS providers. Start the engine only while this profile is active, release its

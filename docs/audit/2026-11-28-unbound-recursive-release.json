@@ -1,0 +1,18 @@
+{
+  "beta": "https://github.com/PerfectDNSManager/PerfectDNSManager/releases/tag/v2.4.14-beta.1",
+  "size": 20484713,
+  "sha256": "777f203007d3879d2731d09b981cf1b0d56ac900d7b1342569bc36e01fca2bfa",
+  "alias_identical": true,
+  "stable_unchanged": "v2.4.11",
+  "production_signer_unchanged": true,
+  "min_sdk": 21,
+  "version_code": 20414,
+  "ci_run": "https://github.com/PerfectDNSManager/PerfectDNSManager/actions/runs/46087797902",
+  "ci_conclusion": "success",
+  "api21_upgrade_from": "2.4.13-beta.1",
+  "api21_upgrade_without_uninstall": true,
+  "api21_launch": "ok",
+  "unbound_visibility_preference_preserved": true,
+  "ipv6_blocking_remains_disabled": true,
+  "standalone_profile_visible_after_expanding_unbound_group": true
+}

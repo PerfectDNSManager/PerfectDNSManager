@@ -33,6 +33,8 @@ conservée. Aucun changement du Worker ou de la branche main.
 - APK optimisé sur API 21/4 Ko et API 36/16 Ko : VPN Unbound avec DoT Cloudflare, A/AAAA,
   DNSSEC signé et invalide, préfiltre et routes IPv6 OFF/ON/OFF réussis. HTTPS vérifié sur API 36 ;
   sonde HTTPS système omise sur API 21 (magasin de CA ancien).
+- API 21 et API 36 : sur ce réseau intercepté, le VPN autonome renvoie bien
+  SERVFAIL ; le préfiltre local renvoie NXDOMAIN en A et AAAA comme attendu.
 - Cette hiérarchie est volontairement non signée et utilise un fichier d'ancres
   vide uniquement dans l'instrumentation. Le backend de production charge
   toujours les ancres IANA embarquées. Les validations DNSSEC sont séparées.
@@ -57,3 +59,21 @@ physiquement ici. Le mode autonome nécessite un réseau autorisant réellement
 l'accès aux serveurs DNS publics ; sinon choisir explicitement un fournisseur
 DoT. Aucun abaissement de DNSSEC ni désactivation IPv6 par défaut n'est ajouté
 pour contourner les particularités de l'environnement de test.
+
+## Publication vérifiée
+
+- Release `v2.4.14-beta.1` et pointeur `latest-beta` publiés en prerelease ;
+  workflow 46087797902 réussi. Stable `v2.4.11` et digest de son APK inchangés.
+- APK téléchargés indépendamment : fichiers numéroté et rolling identiques,
+  20 484 713 octets, SHA256
+  `777f203007d3879d2731d09b981cf1b0d56ac900d7b1342569bc36e01fca2bfa`.
+- Certificat de production inchangé, minSdk 21, versionCode 20414, quatre ABI
+  et alignement 16 Ko vérifiés sur l'APK publié.
+- Sur l'AVD API 21, installation de la bêta de production 2.4.13, puis mise à
+  jour directe vers 2.4.14 sans désinstallation : succès et lancement réussi.
+  Option Unbound conservée, blocage IPv6 toujours désactivé. Le profil autonome
+  et sa description apparaissent après ouverture du groupe Unbound ; le marqueur
+  technique n'est pas affiché comme une adresse DNS.
+
+Les fichiers JSON voisins consignent les résultats et limites. Les émulateurs
+jetables utilisés pour cette vérification sont arrêtés après les tests.
